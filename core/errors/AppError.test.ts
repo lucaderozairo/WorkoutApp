@@ -29,3 +29,17 @@ describe('EventConflictError', () => {
     expect(err.context).toEqual({ a: '1', b: '2' });
   });
 });
+
+describe('Error name assignment', () => {
+  it('sets the error name to the class name', () => {
+    const err = new InvalidSetWeightError('too heavy');
+    expect(err.name).toBe('InvalidSetWeightError');
+  });
+});
+
+describe('Context handling', () => {
+  it('context is undefined when not provided', () => {
+    const err = new SessionAlreadyDeletedError('already gone');
+    expect(err.context).toBeUndefined();
+  });
+});

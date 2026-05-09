@@ -1,5 +1,18 @@
+export type DomainErrorCode =
+  | 'INVALID_SET_WEIGHT'
+  | 'SESSION_ALREADY_DELETED'
+  | 'EVENT_CONFLICT'
+  | 'BLUEPRINT_NOT_FOUND';
+
+export type InfraErrorCode =
+  | 'NETWORK_OFFLINE'
+  | 'STORAGE_FULL'
+  | 'SYNC_CONFLICT_UNRESOLVABLE'
+  | 'REMOTE_UNAVAILABLE'
+  | 'MIGRATION_REQUIRED';
+
 export abstract class DomainError extends Error {
-  abstract readonly code: string;
+  abstract readonly code: DomainErrorCode;
   readonly context?: Record<string, unknown>;
   constructor(message: string, context?: Record<string, unknown>) {
     super(message);
@@ -9,7 +22,7 @@ export abstract class DomainError extends Error {
 }
 
 export abstract class InfraError extends Error {
-  abstract readonly code: string;
+  abstract readonly code: InfraErrorCode;
   constructor(message: string) {
     super(message);
     this.name = this.constructor.name;
