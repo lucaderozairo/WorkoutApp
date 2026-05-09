@@ -9,7 +9,6 @@ import type { PersonalRecord, StatsSummary } from '@features/progress_analysis';
 
 import { HealthTab } from '../components/profile/HealthTab';
 import { ActivitiesTab } from '../components/profile/ActivitiesTab';
-import { NutritionScreen } from './NutritionScreen';
 import type { MockAchievement, MockGoal } from '@data/mock/profile';
 
 import '@features/progress_analysis';
@@ -20,7 +19,7 @@ registerEquipmentMileagePolicy();
 
 type ProfileView = { displayName: string; email: string; unitPreference: UnitSystem };
 
-type ProfileTab = 'activities' | 'health' | 'nutrition' | 'overview';
+type ProfileTab = 'activities' | 'health' | 'overview';
 
 export function OverviewTab() {
   const achievements = (useQuery<MockAchievement[]>('profile_achievements') ?? []) as MockAchievement[];
@@ -149,13 +148,11 @@ export function ProfileScreen() {
         <button className={`tab${activeTab === 'overview' ? ' active' : ''}`} onClick={() => setActiveTab('overview')}>Overview</button>
         <button className={`tab${activeTab === 'activities' ? ' active' : ''}`} onClick={() => setActiveTab('activities')}>Activities</button>
         <button className={`tab${activeTab === 'health'     ? ' active' : ''}`} onClick={() => setActiveTab('health')}>Health</button>
-        <button className={`tab${activeTab === 'nutrition'  ? ' active' : ''}`} onClick={() => setActiveTab('nutrition')}>Nutrition</button>
       </div>
 
       {activeTab === 'overview' && <OverviewTab />}
       {activeTab === 'activities' && <ActivitiesTab />}
       {activeTab === 'health'     && <HealthTab />}
-      {activeTab === 'nutrition'  && <NutritionScreen />}
 
     </div>
   );

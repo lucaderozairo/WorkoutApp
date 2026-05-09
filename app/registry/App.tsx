@@ -7,7 +7,6 @@ import { LogScreen } from '@ui/layouts';
 import { ProgressScreen } from '@ui/layouts';
 import { SessionDetailScreen } from '@ui/layouts';
 import { ExerciseHistoryScreen } from '@ui/layouts';
-import { NutritionScreen } from '@ui/layouts';
 import { SocialScreen } from '@ui/layouts';
 import { MessageScreen } from '@ui/layouts';
 import { ProfileScreen } from '@ui/layouts';
@@ -38,8 +37,7 @@ export function App() {
               <>
                 <Route path="/schedule" element={<TrainingPlansScreen />} />
                 <Route path="/progress" element={<ProgressScreen onOpenSettings={openSettings} />} />
-                <Route path="/nutrition" element={<NutritionScreen />} />
-                <Route path="/social" element={<SocialScreen />} />
+<Route path="/social" element={<SocialScreen />} />
                 <Route path="/messages" element={<MessageScreen />} />
               </>
             )}

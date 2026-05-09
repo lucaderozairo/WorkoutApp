@@ -2,7 +2,6 @@ export { TabNavigation } from './TabNavigation';
 export { DashboardScreen } from './DashboardScreen';
 export { LogScreen } from './LogScreen';
 export { ProgressScreen } from './ProgressScreen';
-export { NutritionScreen } from './NutritionScreen';
 export { SocialScreen } from './SocialScreen';
 export { MessageScreen } from './MessageScreen';
 export { ProfileScreen } from './ProfileScreen';
