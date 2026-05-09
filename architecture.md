@@ -1,3 +1,5 @@
+> **Superseded.** This document reflects the original architecture. See `architecture_suggested.md` for the current target and `architecture_migration_plan.md` for the migration status.
+
 # Fitness App — Full Architecture
 
 This document defines the complete UI and system architecture for a local-first fitness platform spanning mobile and desktop. The structure is expressed in a component-tree style (JSX-like pseudocode) to map directly to implementation in React or Flutter.

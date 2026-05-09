@@ -11,17 +11,21 @@ const pt = (overrides: Partial<GpsPoint> & { timestamp: string }): GpsPoint => (
 });
 
 describe('gpsPointsToHRSeries', () => {
-  it('maps elapsed minutes and HR', () => {
+  it('maps cumulative distance (m) and HR', () => {
+    // Points at distinct locations so distance accumulates
     const points = [
-      pt({ timestamp: '2025-09-08T10:00:00.000Z', heartRate: 120 }),
-      pt({ timestamp: '2025-09-08T10:01:00.000Z', heartRate: 140 }),
-      pt({ timestamp: '2025-09-08T10:02:00.000Z', heartRate: 160 }),
+      pt({ timestamp: '2025-09-08T10:00:00.000Z', lat: 51.4000, lng: -0.3000, heartRate: 120 }),
+      pt({ timestamp: '2025-09-08T10:01:00.000Z', lat: 51.4010, lng: -0.3000, heartRate: 140 }),
+      pt({ timestamp: '2025-09-08T10:02:00.000Z', lat: 51.4020, lng: -0.3000, heartRate: 160 }),
     ];
-    expect(gpsPointsToHRSeries(points)).toEqual([
-      { x: 0, y: 120 },
-      { x: 1, y: 140 },
-      { x: 2, y: 160 },
-    ]);
+    const series = gpsPointsToHRSeries(points);
+    expect(series.length).toBe(3);
+    expect(series[0].x).toBe(0);        // first point always at 0
+    expect(series[0].y).toBe(120);
+    expect(series[1].x).toBeGreaterThan(0); // subsequent points accumulate distance
+    expect(series[1].y).toBe(140);
+    expect(series[2].x).toBeGreaterThan(series[1].x);
+    expect(series[2].y).toBe(160);
   });
 
   it('filters out points with no heart rate', () => {
@@ -39,15 +43,19 @@ describe('gpsPointsToHRSeries', () => {
 
 describe('gpsPointsToPaceSeries', () => {
   it('converts speed (m/s) to pace (min/km) rounded to 1dp', () => {
-    const points = [pt({ timestamp: '2025-09-08T10:00:00.000Z', speed: 3.0 })];
+    // Need at least 2 points; speed is read from curr (index 1)
+    const points = [
+      pt({ timestamp: '2025-09-08T10:00:00.000Z', lat: 51.4000, lng: -0.3000, speed: 1.0 }),
+      pt({ timestamp: '2025-09-08T10:01:00.000Z', lat: 51.4010, lng: -0.3000, speed: 3.0 }),
+    ];
     // 3.0 m/s → 1000 / 3.0 / 60 = 5.555... → rounded to 5.6
     expect(gpsPointsToPaceSeries(points)[0].y).toBeCloseTo(5.6, 1);
   });
 
   it('filters out points with no speed or zero speed', () => {
     const points = [
-      pt({ timestamp: '2025-09-08T10:00:00.000Z', speed: 0 }),
-      pt({ timestamp: '2025-09-08T10:01:00.000Z' }),
+      pt({ timestamp: '2025-09-08T10:00:00.000Z', lat: 51.4000, lng: -0.3000, speed: 0 }),
+      pt({ timestamp: '2025-09-08T10:01:00.000Z', lat: 51.4010, lng: -0.3000, speed: 0 }),
     ];
     expect(gpsPointsToPaceSeries(points).length).toBe(0);
   });

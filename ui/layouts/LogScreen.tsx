@@ -1371,7 +1371,7 @@ function FinishedView({ session }: { session: ActiveSessionView }) {
       <div className="surface flat column compact">
         <div className="row align-center space-between">
           <span className="detail">{session.name}</span>
-          <span className="caption muted">{sessionDateLabel(session.startedAt)}</span>
+          <span className="caption muted">{session.startedAt != null ? sessionDateLabel(session.startedAt) : '—'}</span>
         </div>
       </div>
 
@@ -1406,14 +1406,18 @@ function FinishedView({ session }: { session: ActiveSessionView }) {
                     </button>
                   </div>
                   <div className="grid-4">
-                    {ex.metrics?.map((m, i) => (
-                      <div key={i} className="surface column compact align-center">
-                        <span className="eyebrow">{m.label}</span>
-                        <span className="mono num detail">{m.value}
-                          {m.unit && <span className="muted caption"> {m.unit}</span>}
-                        </span>
-                      </div>
-                    ))}
+                    {CARDIO_FIELDS.map((f, i) => {
+                      const raw = ex.cardioSet?.[f.key] as number | undefined;
+                      const display = raw != null && raw > 0 ? f.toDisplay(raw) : '—';
+                      return (
+                        <div key={i} className="surface column compact align-center">
+                          <span className="eyebrow">{f.label}</span>
+                          <span className="mono num detail">{display}
+                            {display !== '—' && <span className="muted caption"> {f.unit}</span>}
+                          </span>
+                        </div>
+                      );
+                    })}
                   </div>
                 </>
               );
@@ -1500,7 +1504,7 @@ function ExercisePicker({
   });
 
   const groupKeys = filtered.reduce<string[]>((acc, ex) => {
-    const key = 'cat' in ex ? ex.cat : (isStretch ? 'Stretch' : 'Cardio');
+    const key = 'cat' in ex ? (ex as { cat: string }).cat : (isStretch ? 'Stretch' : 'Cardio');
     if (!acc.includes(key)) acc.push(key);
     return acc;
   }, []);

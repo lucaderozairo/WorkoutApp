@@ -11,7 +11,7 @@ interface State { hasError: boolean; }
 export class DomainErrorBoundary extends Component<Props, State> {
   state: State = { hasError: false };
 
-  static getDerivedStateFromError(): State {
+  static getDerivedStateFromError(_error: Error): State {
     return { hasError: true };
   }
 

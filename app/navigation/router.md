@@ -15,6 +15,7 @@ Tab-based navigation with nested modal routes. The router holds no business logi
 | `/social` | `ui/layouts/social_screen` | Social |
 | `/social/event/:id` | `ui/layouts/event_detail_screen` | Social |
 | `/profile` | `ui/layouts/profile_screen` | Profile |
+| `/notifications` | `ui/layouts/notifications_screen` | — |
 
 ## Modal routes
 Modals are addressable so they can be deep-linked and back-button-aware.
