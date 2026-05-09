@@ -24,6 +24,7 @@ import type { SessionHistoryItem, EditingSessionsView } from '@features/training
 import type { RecentCardioView, CardioSession } from '@features/cardio';
 import { MonthCalendar } from '@ui/components/log/MonthCalendar';
 import { WeekCalendar } from '@ui/components/log/WeekCalendar';
+import { WorkoutFilterLayer } from '@ui/components/workout/WorkoutFilterLayer';
 import type { Id } from '@shared/types';
 import { cryptoIdGenerator } from '@core/id-generator';
 import {
@@ -1803,6 +1804,15 @@ export function LogScreen() {
             filters={sessionFilters}
             onChange={setSessionFilters}
             exerciseOptions={allExerciseNames}
+          />
+
+          <WorkoutFilterLayer
+            sessionType={sessionFilters.type}
+            exercise={sessionFilters.exercise || undefined}
+            dateRange={sessionFilters.dateRange}
+            onClearType={() => setSessionFilters(prev => ({ ...prev, type: 'all' }))}
+            onClearExercise={() => setSessionFilters(prev => ({ ...prev, exercise: '' }))}
+            onClearDateRange={() => setSessionFilters(prev => ({ ...prev, dateRange: 'all' }))}
           />
 
           {sessionFilters.view === 'list' && (() => {
