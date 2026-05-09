@@ -12,6 +12,7 @@ import { MessageScreen } from '@ui/layouts';
 import { ProfileScreen } from '@ui/layouts';
 import { TrainingPlansScreen } from '@ui/layouts';
 import { SettingsScreen } from '@ui/layouts';
+import { NotificationsScreen } from '@ui/layouts';
 import { NewSessionScreen } from '@ui/layouts';
 import { SettingsModal } from '@ui/components/modals/SettingsModal';
 import { APP_MODE } from '@config/app-mode';
@@ -46,6 +47,7 @@ export function App() {
             <Route path="/exercise/:exerciseName" element={<ExerciseHistoryScreen />} />
             <Route path="/profile" element={<ProfileScreen />} />
             <Route path="/settings" element={<SettingsScreen />} />
+            <Route path="/notifications" element={<NotificationsScreen />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </main>

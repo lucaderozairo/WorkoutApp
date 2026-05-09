@@ -10,3 +10,4 @@ export { ExerciseHistoryScreen } from './ExerciseHistoryScreen';
 export { TrainingPlansScreen } from './TrainingPlansScreen';
 export { SettingsScreen } from './SettingsScreen';
 export { NewSessionScreen } from './NewSessionScreen';
+export { NotificationsScreen } from './NotificationsScreen';
