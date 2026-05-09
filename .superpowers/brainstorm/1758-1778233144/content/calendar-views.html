@@ -1,0 +1,447 @@
+<style>
+  .phone {
+    width: 370px;
+    min-height: 700px;
+    border: 2px solid var(--line);
+    border-radius: 36px;
+    overflow: hidden;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .phone-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 18px 10px;
+    flex-shrink: 0;
+  }
+  .phone-header h2 { font-size: 20px; font-weight: 700; margin: 0 0 2px; }
+  .phone-scroll { overflow-y: auto; flex: 1; padding: 0; }
+
+  .phones-wrap {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-start;
+    align-items: flex-start;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+  .phone-col { display: flex; flex-direction: column; gap: 6px; align-items: center; }
+  .phone-col .label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+
+  /* View switcher */
+  .view-switcher {
+    display: flex;
+    gap: 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    padding: 8px 12px;
+  }
+  .view-tab {
+    flex: 1;
+    text-align: center;
+    padding: 6px 4px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 8px;
+    color: var(--text-muted);
+  }
+  .view-tab.active { background: var(--surface); color: var(--text); border: 1px solid var(--line); }
+
+  /* Filter row */
+  .filter-row {
+    display: flex;
+    gap: 6px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .chip {
+    border: 1.5px solid var(--line);
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--bg);
+    white-space: nowrap;
+  }
+  .chip.active { background: #7c6af7; border-color: #7c6af7; color: #fff; }
+  .chip.sort { margin-left: auto; }
+
+  /* Month grid */
+  .cal-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px 6px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+  }
+  .cal-nav .month-title { font-weight: 700; font-size: 15px; }
+  .cal-nav .arrow {
+    width: 30px; height: 30px; border-radius: 8px;
+    border: 1.5px solid var(--line); background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; cursor: pointer;
+  }
+  .cal-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    padding: 6px 12px 2px;
+    background: var(--surface);
+  }
+  .cal-weekdays span { text-align: center; font-size: 10px; font-weight: 600; color: var(--text-muted); }
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    padding: 4px 12px 10px;
+    background: var(--surface);
+  }
+  .cal-day {
+    aspect-ratio: 1;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    position: relative;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .cal-day.empty { opacity: 0; }
+  .cal-day.today { background: #7c6af7; color: #fff; font-weight: 700; }
+  .cal-day.has-session::after {
+    content: '';
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: #7c6af7;
+    position: absolute;
+    bottom: 3px;
+  }
+  .cal-day.today.has-session::after { background: #fff; }
+  .cal-day.selected-day { border: 2px solid #7c6af7; }
+  .cal-day.faded { color: var(--text-muted); opacity: 0.4; }
+
+  /* Day's sessions list */
+  .day-sessions {
+    padding: 10px 12px;
+  }
+  .day-header { font-weight: 700; font-size: 13px; margin-bottom: 8px; color: var(--text-muted); }
+  .s-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 0; border-bottom: 1px solid var(--line);
+  }
+  .s-item:last-child { border-bottom: none; }
+  .s-icon { font-size: 18px; }
+  .s-info { flex: 1; }
+  .s-name { font-weight: 600; font-size: 12px; }
+  .s-meta { font-size: 11px; color: var(--text-muted); }
+  .s-btns { display: flex; gap: 4px; }
+  .btn-sm {
+    width: 26px; height: 26px; border-radius: 7px;
+    border: 1.5px solid var(--line); background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+  }
+
+  /* Week grid */
+  .week-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+  }
+  .week-title { font-weight: 600; font-size: 12px; line-height: 1.3; text-align: center; }
+  .week-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    padding: 8px 10px;
+    gap: 4px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+  }
+  .week-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .week-day .wd-label { font-size: 10px; font-weight: 600; color: var(--text-muted); }
+  .week-day .wd-num {
+    width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600;
+  }
+  .week-day .wd-num.today { background: #7c6af7; color: #fff; }
+  .week-day .wd-num.has { border: 2px solid #7c6af7; }
+  .week-day .wd-dot { width: 5px; height: 5px; border-radius: 50%; background: #7c6af7; }
+  .week-day .wd-dot.hidden { opacity: 0; }
+  .week-day.selected-wd .wd-num { background: rgba(124,106,247,0.15); }
+
+  /* List view items */
+  .list-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 9px 12px; border-bottom: 1px solid var(--line);
+  }
+  .list-item:last-child { border-bottom: none; }
+  .li-icon { width: 32px; height: 32px; border-radius: 9px; background: rgba(124,106,247,0.1); display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0; }
+  .li-info { flex: 1; }
+  .li-name { font-weight: 600; font-size: 12px; margin-bottom: 1px; }
+  .li-meta { font-size: 11px; color: var(--text-muted); }
+  .li-right { display:flex;flex-direction:column;align-items:flex-end;gap:3px; }
+  .li-date { font-size: 11px; color: var(--text-muted); }
+
+  .year-label { padding: 5px 12px 1px; font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+</style>
+
+<h2>Calendar & Filter Views</h2>
+<p class="subtitle">Three ways to view your session history. The view switcher lives at the top of the session list section.</p>
+
+<div class="phones-wrap">
+
+  <!-- PHONE 1: LIST view with filter -->
+  <div class="phone-col">
+    <div class="label">List (default)</div>
+    <div class="phone">
+      <div class="phone-header"><h2>Workout</h2></div>
+      <div class="phone-scroll">
+        <!-- View switcher -->
+        <div class="view-switcher">
+          <div class="view-tab active">≡ List</div>
+          <div class="view-tab">▦ Month</div>
+          <div class="view-tab">⬚ Week</div>
+        </div>
+        <!-- Filters -->
+        <div class="filter-row">
+          <div class="chip active">All</div>
+          <div class="chip">Gym</div>
+          <div class="chip">Run</div>
+          <div class="chip">Cycle</div>
+          <div class="chip sort">↕ Newest</div>
+        </div>
+        <!-- Time range sub-row -->
+        <div class="filter-row" style="background:var(--bg);padding:6px 12px;">
+          <div class="chip active">All time</div>
+          <div class="chip">Past 7d</div>
+          <div class="chip">Past 30d</div>
+        </div>
+        <div class="year-label">2026</div>
+        <div class="list-item">
+          <div class="li-icon">🏋️</div>
+          <div class="li-info"><div class="li-name">Upper Body A</div><div class="li-meta">4 exercises · 45 min · 3 PRs</div></div>
+          <div class="li-right"><div class="li-date">Today</div><div style="display:flex;gap:3px"><div class="btn-sm">✏️</div><div class="btn-sm">↗️</div></div></div>
+        </div>
+        <div class="list-item">
+          <div class="li-icon">🏃</div>
+          <div class="li-info"><div class="li-name">Morning Run</div><div class="li-meta">8.4 km · 42:10 · 5:01/km</div></div>
+          <div class="li-right"><div class="li-date">May 7</div><div style="display:flex;gap:3px"><div class="btn-sm">✏️</div><div class="btn-sm">↗️</div></div></div>
+        </div>
+        <div class="list-item">
+          <div class="li-icon">🏋️</div>
+          <div class="li-info"><div class="li-name">Leg Day</div><div class="li-meta">5 exercises · 62 min</div></div>
+          <div class="li-right"><div class="li-date">May 5</div><div style="display:flex;gap:3px"><div class="btn-sm">✏️</div><div class="btn-sm">↗️</div></div></div>
+        </div>
+        <div class="list-item">
+          <div class="li-icon">🚴</div>
+          <div class="li-info"><div class="li-name">Evening Ride</div><div class="li-meta">22 km · 1:05 · 300W avg</div></div>
+          <div class="li-right"><div class="li-date">May 3</div><div style="display:flex;gap:3px"><div class="btn-sm">✏️</div><div class="btn-sm">↗️</div></div></div>
+        </div>
+        <div class="year-label">2025</div>
+        <div class="list-item">
+          <div class="li-icon">🏋️</div>
+          <div class="li-info"><div class="li-name">Push Day</div><div class="li-meta">4 exercises · 50 min</div></div>
+          <div class="li-right"><div class="li-date">Dec 30</div><div style="display:flex;gap:3px"><div class="btn-sm">✏️</div><div class="btn-sm">↗️</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHONE 2: MONTH view -->
+  <div class="phone-col">
+    <div class="label">Month grid</div>
+    <div class="phone">
+      <div class="phone-header"><h2>Workout</h2></div>
+      <div class="phone-scroll">
+        <div class="view-switcher">
+          <div class="view-tab">≡ List</div>
+          <div class="view-tab active">▦ Month</div>
+          <div class="view-tab">⬚ Week</div>
+        </div>
+        <div class="filter-row">
+          <div class="chip active">All</div>
+          <div class="chip">Gym</div>
+          <div class="chip">Run</div>
+          <div class="chip sort">↕</div>
+        </div>
+        <!-- Month nav -->
+        <div class="cal-nav">
+          <div class="arrow">‹</div>
+          <div class="month-title">May 2026</div>
+          <div class="arrow">›</div>
+        </div>
+        <!-- Weekday headers -->
+        <div class="cal-weekdays">
+          <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+        </div>
+        <!-- May 2026: starts Thursday (day 4) -->
+        <div class="cal-grid">
+          <div class="cal-day empty"></div>
+          <div class="cal-day empty"></div>
+          <div class="cal-day empty"></div>
+          <div class="cal-day">1</div>
+          <div class="cal-day">2</div>
+          <div class="cal-day has-session">3</div>
+          <div class="cal-day">4</div>
+          <div class="cal-day has-session">5</div>
+          <div class="cal-day">6</div>
+          <div class="cal-day has-session">7</div>
+          <div class="cal-day today has-session selected-day">8</div>
+          <div class="cal-day">9</div>
+          <div class="cal-day">10</div>
+          <div class="cal-day">11</div>
+          <div class="cal-day">12</div>
+          <div class="cal-day">13</div>
+          <div class="cal-day">14</div>
+          <div class="cal-day">15</div>
+          <div class="cal-day">16</div>
+          <div class="cal-day">17</div>
+          <div class="cal-day">18</div>
+          <div class="cal-day">19</div>
+          <div class="cal-day">20</div>
+          <div class="cal-day">21</div>
+          <div class="cal-day">22</div>
+          <div class="cal-day">23</div>
+          <div class="cal-day">24</div>
+          <div class="cal-day">25</div>
+          <div class="cal-day">26</div>
+          <div class="cal-day">27</div>
+          <div class="cal-day">28</div>
+          <div class="cal-day">29</div>
+          <div class="cal-day">30</div>
+          <div class="cal-day">31</div>
+        </div>
+        <!-- Sessions for selected day -->
+        <div class="day-sessions">
+          <div class="day-header">Thu 8 May</div>
+          <div class="s-item">
+            <div class="s-icon">🏋️</div>
+            <div class="s-info"><div class="s-name">Upper Body A</div><div class="s-meta">45 min · 3 PRs</div></div>
+            <div class="s-btns"><div class="btn-sm">✏️</div><div class="btn-sm">↗️</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHONE 3: WEEK view -->
+  <div class="phone-col">
+    <div class="label">Week grid</div>
+    <div class="phone">
+      <div class="phone-header"><h2>Workout</h2></div>
+      <div class="phone-scroll">
+        <div class="view-switcher">
+          <div class="view-tab">≡ List</div>
+          <div class="view-tab">▦ Month</div>
+          <div class="view-tab active">⬚ Week</div>
+        </div>
+        <div class="filter-row">
+          <div class="chip active">All</div>
+          <div class="chip">Gym</div>
+          <div class="chip">Run</div>
+          <div class="chip sort">↕</div>
+        </div>
+        <!-- Week nav -->
+        <div class="week-nav">
+          <div class="arrow" style="width:28px;height:28px;border-radius:7px;border:1.5px solid var(--line);background:var(--bg);display:flex;align-items:center;justify-content:center;">‹</div>
+          <div class="week-title">Mon 4 May – Sun 10 May<br><span style="font-size:10px;color:var(--text-muted);font-weight:400">2026</span></div>
+          <div class="arrow" style="width:28px;height:28px;border-radius:7px;border:1.5px solid var(--line);background:var(--bg);display:flex;align-items:center;justify-content:center;">›</div>
+        </div>
+        <!-- Week day row -->
+        <div class="week-days">
+          <div class="week-day">
+            <div class="wd-label">M</div>
+            <div class="wd-num">4</div>
+            <div class="wd-dot hidden"></div>
+          </div>
+          <div class="week-day">
+            <div class="wd-label">T</div>
+            <div class="wd-num has">5</div>
+            <div class="wd-dot"></div>
+          </div>
+          <div class="week-day">
+            <div class="wd-label">W</div>
+            <div class="wd-num">6</div>
+            <div class="wd-dot hidden"></div>
+          </div>
+          <div class="week-day">
+            <div class="wd-label">T</div>
+            <div class="wd-num has">7</div>
+            <div class="wd-dot"></div>
+          </div>
+          <div class="week-day selected-wd">
+            <div class="wd-label">F</div>
+            <div class="wd-num today">8</div>
+            <div class="wd-dot" style="background:#fff;outline:1px solid #7c6af7"></div>
+          </div>
+          <div class="week-day">
+            <div class="wd-label">S</div>
+            <div class="wd-num faded" style="opacity:0.4">9</div>
+            <div class="wd-dot hidden"></div>
+          </div>
+          <div class="week-day">
+            <div class="wd-label">S</div>
+            <div class="wd-num faded" style="opacity:0.4">10</div>
+            <div class="wd-dot hidden"></div>
+          </div>
+        </div>
+        <!-- Sessions for selected day -->
+        <div class="day-sessions">
+          <div class="day-header">Thu 8 May — today</div>
+          <div class="s-item">
+            <div class="s-icon">🏋️</div>
+            <div class="s-info"><div class="s-name">Upper Body A</div><div class="s-meta">45 min · 3 PRs</div></div>
+            <div class="s-btns"><div class="btn-sm">✏️</div><div class="btn-sm">↗️</div></div>
+          </div>
+        </div>
+        <!-- Tue sessions -->
+        <div class="day-sessions" style="border-top:1px solid var(--line)">
+          <div class="day-header">Tue 5 May</div>
+          <div class="s-item">
+            <div class="s-icon">🏋️</div>
+            <div class="s-info"><div class="s-name">Leg Day</div><div class="s-meta">62 min</div></div>
+            <div class="s-btns"><div class="btn-sm">✏️</div><div class="btn-sm">↗️</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="section" style="margin-top:20px">
+  <h3>Notes on the week view</h3>
+  <p>In the week view I've shown both options: clicking a day shows just that day's sessions below, OR the week view always shows all sessions for that week grouped by day. Which do you prefer?</p>
+  <div class="options" style="margin-top:12px">
+    <div class="option" data-choice="click-day" onclick="toggleSelect(this)">
+      <div class="letter">A</div>
+      <div class="content">
+        <h3>Click day → show only that day</h3>
+        <p>Tap a day to filter the list below to just that day's sessions</p>
+      </div>
+    </div>
+    <div class="option" data-choice="show-all-grouped" onclick="toggleSelect(this)">
+      <div class="letter">B</div>
+      <div class="content">
+        <h3>Always show full week, grouped by day</h3>
+        <p>All sessions for the week shown at once, each under their day header</p>
+      </div>
+    </div>
+  </div>
+</div>

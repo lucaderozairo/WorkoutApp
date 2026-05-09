@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap');
+
+h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--t-2xl);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--t-xl);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: var(--t-md);
+  line-height: 1.3;
+}
+
+h4, h5, h6 {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: var(--t-sm);
+  line-height: 1.3;
+}
+
+/* Display: large decorative heading, no semantic level implied */
+.display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-size: var(--t-lg);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+/* Eyebrow: small uppercase label above a heading */
+.eyebrow,
+.field__label,
+.stat__eyebrow,
+.splits-table th,
+.app-tabbar a {
+  font-size: var(--t-xs);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+/* Text utilities */
+.muted { color: var(--ink-muted); }
+.faint { color: var(--ink-faint); }
+.text-center { text-align: center; }
+.uppercase,
+.chip--source,
+.tag {
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.num,
+.input--num,
+input.num,
+.stat__num,
+.splits-table td,
+.cal .day {
+  font-variant-numeric: tabular-nums;
+}
+.mono,
+.input--num,
+input.num,
+.stat__trend,
+.chip--source,
+.tag,
+.cal .day {
+  font-family: var(--font-mono);
+}
+
+/* Legacy size classes kept for backward compat */
+.detail  { font-size: var(--t-sm); }
+.caption { font-size: var(--t-xs); color: var(--ink-muted); }
+
+a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+a.active {
+  color: var(--accent);
+}

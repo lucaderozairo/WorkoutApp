@@ -1,0 +1,41 @@
+/* ── Carousel ── */
+.carousel-pager {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: var(--s-3);
+  -webkit-overflow-scrolling: touch;
+}
+.carousel-page {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  min-width: 0;
+}
+
+/* ── Exercise rail ── */
+.exercise-rail {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  padding: var(--s-2);
+  background: var(--surface-0);
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+}
+.exercise-rail .pill { flex-shrink: 0; }
+
+
+/* Fixed-position banner wrapping RestTimerAlert */
+.bottom-banner {
+  position: fixed;
+  bottom: calc(var(--nav-height, 56px) + var(--s-1, 12px));
+  left: var(--s-2, 12px);
+  right: var(--s-2, 12px);
+  z-index: 60;
+  overflow: hidden;
+}
+
+

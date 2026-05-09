@@ -1,0 +1,642 @@
+/* ════════════════════════════════════════════
+   PILL — status/category label with dot
+   ════════════════════════════════════════════ */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  font-size: var(--t-xs);
+  font-weight: 500;
+  letter-spacing: .02em;
+  color: var(--ink);
+  background: var(--surface-2);
+  border-radius: var(--r-pill);
+  white-space: nowrap;
+}
+.pill::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--pill-color, var(--ink-faint));
+  flex-shrink: 0;
+}
+.pill.plain::before { display: none; }
+.pill.active {
+  outline: 1.5px solid currentColor;
+  font-weight: 600;
+}
+
+/* Activity category pills */
+.pill--strength, .pill.lift     { --pill-color: var(--c-strength); }
+.pill--cardio,   .pill.run      { --pill-color: var(--c-cardio); }
+.pill--recovery, .pill.rowing   { --pill-color: var(--c-recovery); }
+.pill--nutrition,.pill.cycle    { --pill-color: var(--c-nutrition); }
+.pill--water,    .pill.swim     { --pill-color: var(--c-water); }
+.pill--mind                     { --pill-color: var(--c-mind); }
+
+/* Sleep stage pills (aliases) */
+.pill.awake { --pill-color: var(--color-sleep-awake); }
+.pill.light { --pill-color: var(--color-sleep-light); }
+.pill.deep  { --pill-color: var(--color-sleep-deep); }
+.pill.rem   { --pill-color: var(--color-sleep-rem); }
+
+/* Status pills */
+.pill--ok   { --pill-color: var(--ok); }
+.pill--warn { --pill-color: var(--warn); }
+.pill--bad  { --pill-color: var(--bad); }
+
+/* Accent pill */
+.pill--accent {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.pill--accent::before { background: var(--accent-ink); }
+
+@media (max-width: 360px) {
+  .pill { padding: 3px var(--s-2); }
+}
+
+
+/* ════════════════════════════════════════════
+   CHIP — interactive filter/segment control
+   ════════════════════════════════════════════ */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 6px var(--s-3);
+  font-size: var(--t-sm);
+  font-weight: 500;
+  color: var(--ink-muted);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  cursor: pointer;
+  transition: all .12s var(--ease);
+}
+.chip:hover {
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+.chip--active,
+.chip.active {
+  color: var(--ink);
+  background: var(--surface-2);
+  border-color: var(--line-strong);
+}
+.chip--source {
+  font-size: var(--t-xs);
+  padding: 3px var(--s-2);
+}
+.chip__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--dot, var(--ink-faint));
+  flex-shrink: 0;
+}
+
+
+/* ════════════════════════════════════════════
+   STAT — big number + label
+   ════════════════════════════════════════════ */
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.stat__num {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--t-2xl);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.stat__unit {
+  font-family: var(--font-ui);
+  font-size: var(--t-md);
+  font-weight: 400;
+  color: var(--ink-muted);
+  letter-spacing: 0;
+}
+.stat__trend {
+  font-size: var(--t-sm);
+  color: var(--ink-muted);
+}
+.stat__trend--up   { color: var(--ok); }
+.stat__trend--down { color: var(--bad); }
+
+.stat--hero .stat__num { font-size: var(--t-4xl); }
+.stat--mega .stat__num { font-size: var(--t-5xl); }
+.stat--inline {
+  flex-direction: row;
+  align-items: baseline;
+  gap: var(--s-2);
+}
+.stat--inline .stat__num { font-size: var(--t-xl); }
+
+
+/* ════════════════════════════════════════════
+   TAG — inline mono label with dot
+   ════════════════════════════════════════════ */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--t-sm);
+  color: var(--ink-muted);
+}
+.tag::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--tag-color, var(--ink-faint));
+  flex-shrink: 0;
+}
+
+
+/* ════════════════════════════════════════════
+   AVATAR
+   ════════════════════════════════════════════ */
+.avatar {
+  --size: 45px;
+  width: var(--size);
+  height: var(--size);
+  margin-right:var(--s-1);
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-strength), var(--c-mind));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: calc(var(--size) * 0.4);
+  color: white;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.avatar.sm { --size: 28px; }
+.avatar.lg { --size: 56px; }
+.avatar.xl { --size: 80px; }
+
+
+/* ════════════════════════════════════════════
+   BAR — linear progress
+   ════════════════════════════════════════════ */
+.bar {
+  width: 100%;
+  height: var(--bar-height, 6px);
+  background: var(--surface-2);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+}
+.bar__fill {
+  height: 100%;
+  width: var(--fill, 50%);
+  background: var(--bar-color, var(--accent));
+  border-radius: inherit;
+  transition: width .4s var(--ease);
+}
+
+
+/* ════════════════════════════════════════════
+   METER — segmented macro bar
+   ════════════════════════════════════════════ */
+.meter {
+  display: flex;
+  width: 100%;
+  height: var(--meter-height, 8px);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  background: var(--surface-2);
+}
+.meter__seg {
+  height: 100%;
+  background: var(--seg-color, var(--accent));
+  width: var(--seg-width, 33%);
+}
+
+
+/* ════════════════════════════════════════════
+   RING — circular SVG progress
+   ════════════════════════════════════════════ */
+.ring {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+}
+.ring__svg { transform: rotate(-90deg); }
+.ring__track {
+  fill: none;
+  stroke: var(--surface-2);
+  stroke-width: var(--ring-width, 12);
+}
+.ring__fill {
+  fill: none;
+  stroke: var(--ring-color, var(--accent));
+  stroke-width: var(--ring-width, 12);
+  stroke-linecap: round;
+  transition: stroke-dashoffset .6s var(--ease);
+}
+.ring__inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  gap: 2px;
+  text-align: center;
+}
+
+
+/* ════════════════════════════════════════════
+   SPARK — inline sparkline
+   ════════════════════════════════════════════ */
+.spark {
+  display: block;
+  width: 100%;
+  height: 32px;
+  overflow: visible;
+}
+.spark path {
+  fill: none;
+  stroke: var(--spark-color, var(--ink-muted));
+  stroke-width: 1.5;
+}
+.spark polygon,
+.spark-fill {
+  fill: var(--spark-color, var(--accent));
+  opacity: .18;
+}
+
+
+/* ════════════════════════════════════════════
+   GLASS TRACKER — water intake
+   ════════════════════════════════════════════ */
+.mini-chart {
+  aspect-ratio: 8;
+  width: 100%;
+  min-height: 100px;
+}
+
+.glass-tracker {
+  display: flex;
+  gap: 6px;
+}
+.glass {
+  flex: 1;
+  aspect-ratio: 1 / 1.4;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 2px 2px 6px 6px;
+  background: linear-gradient(
+    to top,
+    transparent 0%,
+    transparent var(--glass-empty, 100%),
+    var(--c-water) var(--glass-empty, 100%),
+    var(--c-water) 100%
+  );
+  opacity: .9;
+}
+.glass--full {
+  background: var(--c-water);
+  border-color: var(--c-water);
+}
+
+
+/* ════════════════════════════════════════════
+   DOT — sport/activity indicator
+   ════════════════════════════════════════════ */
+.dot {
+  display: inline-block;
+  width: var(--s-3);
+  height: var(--s-3);
+  border-radius: 50%;
+  background: var(--ink-faint);
+  opacity: .5;
+}
+.dot.active  { opacity: 1; background: var(--accent); }
+.dot.lift    { opacity: 1; background: var(--c-strength); }
+.dot.run     { opacity: 1; background: var(--c-cardio); }
+.dot.cycle   { opacity: 1; background: var(--c-nutrition); }
+.dot.swim    { opacity: 1; background: var(--c-water); }
+.dot.rowing  { opacity: 1; background: var(--c-recovery); }
+.dot.transparent {opacity: 0;}
+.dot.ink { opacity: 1; background: var(--ink); }
+.dot.sm { width: var(--s-2); height: var(--s-2); }
+
+/* ════════════════════════════════════════════
+   BADGE
+   ════════════════════════════════════════════ */
+.badge {
+  display: inline-block;
+  padding: 3px var(--s-2);
+  border-radius: var(--r-xs);
+  font-size: var(--t-xs);
+  font-weight: 700;
+}
+.badge.green {
+  background: color-mix(in srgb, var(--ok) 18%, transparent);
+  color: color-mix(in srgb, var(--ok) 50%, #000);
+}
+.badge.amber {
+  background: color-mix(in srgb, var(--warn) 18%, transparent);
+  color: color-mix(in srgb, var(--warn) 60%, #000);
+}
+.badge.blue {
+  background: color-mix(in srgb, var(--c-recovery) 18%, transparent);
+  color: color-mix(in srgb, var(--c-recovery) 60%, #000);
+}
+
+
+/* ════════════════════════════════════════════
+   RARITY
+   ════════════════════════════════════════════ */
+.rarity-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-pill);
+  flex-shrink: 0;
+}
+.rarity-dot.common    { background: var(--color-common); }
+.rarity-dot.rare      { background: var(--color-rare); }
+.rarity-dot.epic      { background: var(--color-epic); }
+.rarity-dot.legendary { background: var(--color-legendary); }
+
+.color-common    { color: var(--color-common); }
+.color-rare      { color: var(--color-rare); }
+.color-epic      { color: var(--color-epic); }
+.color-legendary { color: var(--color-legendary); }
+
+
+/* ════════════════════════════════════════════
+   SEG BAR — filled segments
+   ════════════════════════════════════════════ */
+.seg-bar {
+  display: flex;
+  gap: var(--s-1);
+  height: 6px;
+}
+.seg-bar .seg {
+  flex: 1;
+  background: var(--surface-3);
+  border-radius: 2px;
+}
+.seg-bar .seg.filled { background: var(--accent); }
+
+
+/* ════════════════════════════════════════════
+   SKELETON
+   ════════════════════════════════════════════ */
+.skeleton, .skeleton:hover {
+  border: none;
+  color: transparent;
+  background: linear-gradient(
+    90deg,
+    var(--surface-3) 0%,
+    var(--surface-2) 35%,
+    var(--surface-2) 65%,
+    var(--surface-3) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: var(--r-lg);
+  line-height: 1;
+  width: fit-content;
+  letter-spacing: -1px;
+  animation: skeleton-load 2s infinite ease-in-out;
+}
+@keyframes skeleton-load {
+  0%   { background-position-x: 100%; }
+  100% { background-position-x: -100%; }
+}
+.skeleton.full  { width: 100%; }
+.skeleton.half  { width: 50%; }
+.skeleton.media {
+  border-radius: var(--r-sm);
+  min-height: 100px;
+}
+button.skeleton {
+  height: var(--s-6);
+}
+.skeleton.avatar {
+  width: var(--size);
+  height: var(--size);
+}
+
+
+/* ════════════════════════════════════════════
+   TABS
+   ════════════════════════════════════════════ */
+.tabs {
+  display: flex;
+  width: 100%;
+}
+.tabs > * { flex: 1; }
+.tab {
+  border-radius: 0;
+  background: var(--surface-1);
+  border: none;
+  box-shadow: none;
+  padding: var(--s-2);
+  font-size: var(--t-sm);
+  color: var(--ink-muted);
+  border-bottom: 2px solid transparent;
+  transition: color .12s var(--ease), border-color .12s var(--ease);
+}
+.tabs .tab:first-child {
+  border-top-left-radius: var(--r-sm);
+}
+.tabs .tab:last-child {
+  border-top-right-radius: var(--r-sm);
+}
+.tab.active {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+  background: var(--surface-1);
+}
+.tab:hover:not(.active) { background: var(--surface-2); }
+
+
+/* ════════════════════════════════════════════
+   ALERT
+   ════════════════════════════════════════════ */
+.alert {
+  padding: var(--s-3);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+
+
+/* ════════════════════════════════════════════
+   SWITCH
+   ════════════════════════════════════════════ */
+.switch input {
+  background-color: var(--surface-2);
+  width: var(--s-8);
+}
+
+
+/* ════════════════════════════════════════════
+   MODAL
+   ════════════════════════════════════════════ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.modal-overlay .surface {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 280px;
+  max-height: 80vh;
+  overflow-y: auto;
+  border-radius: var(--r-md) var(--r-md) 0 0;
+  padding: var(--s-5);
+  z-index: 201;
+}
+
+/* ════════════════════════════════════════════
+   INLINE ACTION DROPDOWN — positioned below its trigger
+   ════════════════════════════════════════════ */
+.fullscreen-overlay-dismiss {
+  position: fixed;
+  inset: 0;
+  z-index: 199;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: default;
+}
+.action-menu-wrap { position: relative; }
+.action-menu {
+  position: absolute;
+  top: calc(100% + var(--s-1));
+  left: 0;
+  z-index: 200;
+  min-width: 180px;
+}
+
+/* ════════════════════════════════════════════
+   CALENDAR — day cells
+   ════════════════════════════════════════════ */
+.cal .day {
+  padding: var(--s-1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-1);
+  font-size: var(--t-xs);
+  border-radius: var(--r-sm);
+  background: transparent;
+  position: relative;
+  cursor: pointer;
+  transition: background-color .12s var(--ease);
+  
+}
+
+.cal button.day[data-today] {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.cal .day .caption {
+  line-height: .7;
+}
+
+.cal .day:hover { background: var(--surface-2); }
+
+
+.cal .day .dot{height: var(--s-1);width: var(--s-1);}
+
+/* ════════════════════════════════════════════
+   SPLITS TABLE — 1 km splits for cardio sessions
+   ════════════════════════════════════════════ */
+.splits-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--t-sm);
+}
+.splits-table th {
+  text-align: left;
+  padding: var(--s-1) var(--s-2) var(--s-2);
+}
+.splits-table td {
+  padding: var(--s-2);
+  color: var(--ink);
+  border-top: 1px solid var(--line);
+}
+.splits-table td:first-child {
+  color: var(--ink-muted);
+  font-size: var(--t-xs);
+  font-weight: 600;
+}
+.splits-table .elev-up   { color: var(--ok); }
+.splits-table .elev-down { color: var(--c-cardio); }
+
+/* ════════════════════════════════════════════
+   LEAFLET — map controls themed to design system
+   ════════════════════════════════════════════ */
+/* Semantic media container heights */
+.media-sm { height: var(--media-sm); }
+.media-md { height: var(--media-md); }
+.media-lg { height: var(--media-lg); }
+
+@media (min-width: 600px) {
+  .media-sm { height: var(--media-md); }
+  .media-md { height: var(--media-lg); }
+}
+
+.map { width: 100%; }
+/* Isolate Leaflet's internal z-indexes so they don't escape the map container */
+.map-root { isolation: isolate; }
+.map-root .leaflet-tile-pane        { z-index: 2; }
+.map-root .leaflet-overlay-pane     { z-index: 4; }
+.map-root .leaflet-shadow-pane      { z-index: 5; }
+.map-root .leaflet-marker-pane      { z-index: 6; }
+.map-root .leaflet-tooltip-pane     { z-index: 7; }
+.map-root .leaflet-popup-pane       { z-index: 8; }
+.map-root .leaflet-control-container { z-index: 9; }
+
+.leaflet-bar {
+  border: 1px solid var(--line-strong) !important;
+  border-radius: var(--r-sm) !important;
+  box-shadow: var(--box-shadow-sm) !important;
+  overflow: hidden;
+}
+.leaflet-bar a {
+  background: var(--surface-1) !important;
+  color: var(--ink) !important;
+  border-bottom-color: var(--line) !important;
+  font-family: var(--font-ui) !important;
+  width: 28px !important;
+  height: 28px !important;
+  line-height: 28px !important;
+}
+.leaflet-bar a:hover { background: var(--surface-2) !important; }
+.leaflet-bar a:last-child { border-bottom: none !important; }
+.leaflet-control-attribution {
+  background: var(--surface-1) !important;
+  color: var(--ink-faint) !important;
+  border: 1px solid var(--line) !important;
+  font-size: 10px !important;
+  padding: 2px 6px !important;
+}
+.leaflet-control-attribution a { color: var(--accent) !important; }

@@ -1,0 +1,152 @@
+.row {
+  display: flex;
+  flex-direction: row;
+  gap: var(--s-1, var(--s-3));
+}
+
+/* .stack is the canonical column container; .column is an alias */
+.stack,
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+/* .cluster: wrapping row, useful for tag groups and filter bars */
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.row.compact,
+.stack.compact,
+.column.compact {
+  gap: var(--s-1);
+}
+
+.row.space-between,
+.stack.space-between,
+.column.space-between {
+  justify-content: space-between;
+}
+
+.row.space-around,
+.stack.space-around,
+.column.space-around {
+  justify-content: space-around;
+}
+
+.row.center,
+.stack.center,
+.column.center {
+  justify-content: center;
+}
+
+.row.center .spread,
+.stack.center .spread,
+.column.center .spread {
+  flex: 1 1 0;
+}
+
+.row.align-center,
+.stack.align-center,
+.column.align-center {
+  align-items: center;
+}
+
+.row.align-top    { align-items: flex-start; }
+.row.align-bottom { align-items: flex-end; }
+
+.stack.align-left,
+.column.align-left  { align-items: flex-start; }
+
+.stack.align-right,
+.column.align-right { align-items: flex-end; }
+
+.row.align-top > *,
+.row.align-bottom > *,
+.stack.align-left > *,
+.stack.align-right > *,
+.column.align-left > *,
+.column.align-right > * {
+  margin: 0;
+}
+
+.auto-grid {
+  columns: 320px;
+  column-gap: var(--s-4);
+}
+.auto-grid > * {
+  break-inside: avoid;
+  margin-bottom: var(--s-4);
+}
+
+.auto-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--s-4);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: var(--s-1);
+}
+
+.scroll-row {
+  display: flex;
+  flex-direction: row;
+  gap: var(--s-1);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.scroll-row > * {
+  flex-shrink: 0;
+  width: auto;
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s-3);
+}
+
+/* ── Calendar grid ── */
+.cal {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--s-2);
+}
+
+table {
+  text-align: left;
+}
+
+.chart-ylabel {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: var(--t-xs);
+  color: var(--ink-faint);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+
+
+/* ── Narrow viewport (≤360px) ── */
+@media (max-width: 360px) {
+  .row {
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+  .row.compact { gap: var(--s-1); }
+
+  .stack,
+  .column { gap: var(--s-2); }
+
+  h1 { font-size: var(--t-xl); }
+  h2 { font-size: var(--t-lg); }
+  h3 { font-size: var(--t-md); }
+}

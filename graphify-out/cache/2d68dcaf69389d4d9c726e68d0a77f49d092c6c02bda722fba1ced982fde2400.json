@@ -1,0 +1,1 @@
+{"nodes": [{"id": "activityconfig", "label": "activityConfig.ts", "file_type": "code", "source_file": "ui\\components\\log\\activityConfig.ts", "source_location": "L1"}], "edges": [{"source": "activityconfig", "target": "types", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "ui\\components\\log\\activityConfig.ts", "source_location": "L1", "weight": 1.0}]}

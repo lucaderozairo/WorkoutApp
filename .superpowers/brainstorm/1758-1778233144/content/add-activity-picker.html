@@ -1,0 +1,362 @@
+<style>
+  .phone {
+    width: 360px;
+    height: 700px;
+    border: 2px solid var(--line);
+    border-radius: 36px;
+    overflow: hidden;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .phone-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 18px 10px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .phone-header h2 { font-size: 20px; font-weight: 700; margin: 0; }
+  .header-btn {
+    background: #7c6af7; color: #fff;
+    border: none; border-radius: 10px;
+    padding: 6px 14px; font-size: 13px; font-weight: 600;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .phone-scroll { overflow-y: auto; flex: 1; }
+
+  .phones-wrap {
+    display: flex; gap: 20px; justify-content: flex-start;
+    align-items: flex-start; overflow-x: auto; padding-bottom: 8px;
+  }
+  .phone-col { display: flex; flex-direction: column; gap: 8px; align-items: center; flex-shrink: 0; }
+  .phone-col .label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+
+  /* Inline picker */
+  .inline-picker {
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    padding: 12px;
+  }
+  .picker-row {
+    display: flex; gap: 8px; align-items: stretch;
+  }
+  .sport-chip {
+    flex: 1;
+    background: var(--bg); border: 1.5px solid var(--line);
+    border-radius: 12px; padding: 8px 4px 7px;
+    text-align: center; font-size: 11px; font-weight: 500;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+  }
+  .sport-chip.sel { border-color: #7c6af7; background: rgba(124,106,247,0.08); color: #7c6af7; }
+  .sport-chip .em { font-size: 20px; }
+  .sport-chip.recent-badge { position: relative; }
+  .other-chip {
+    width: 58px; flex-shrink: 0;
+    background: var(--bg); border: 1.5px solid var(--line);
+    border-radius: 12px; padding: 8px 4px 7px;
+    text-align: center; font-size: 11px; font-weight: 500;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+  }
+  .other-chip .em { font-size: 20px; }
+  .action-row { display: flex; gap: 8px; margin-top: 10px; }
+  .btn-start { flex:1; background:#7c6af7; color:#fff; border:none; border-radius:10px; padding:10px; font-weight:600; font-size:13px; text-align:center; }
+  .btn-plan { flex:1; background:var(--bg); border:1.5px solid var(--line); border-radius:10px; padding:10px; font-weight:600; font-size:13px; text-align:center; }
+  .route-row { margin-top: 8px; background: var(--bg); border: 1.5px dashed var(--line); border-radius:10px; padding:7px 12px; font-size:12px; color: var(--text-muted); display:flex;align-items:center;gap:6px; }
+
+  /* Shared list bits */
+  .upcoming-strip { background: var(--surface); border-bottom: 1px solid var(--line); padding: 8px 12px; }
+  .upcoming-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing:.07em; margin-bottom: 6px; }
+  .plan-chip { display: inline-flex; align-items: center; gap: 5px; background: var(--bg); border: 1.5px solid var(--line); border-radius: 20px; padding: 4px 10px; font-size: 11px; font-weight: 500; margin-right: 5px; }
+  .view-switcher { display:flex; background: var(--bg); border-bottom: 1px solid var(--line); padding: 8px 12px; gap: 0; }
+  .view-tab { flex:1; text-align:center; padding:6px 4px; font-size:11px; font-weight:600; border-radius:8px; color:var(--text-muted); }
+  .view-tab.active { background: var(--surface); color: var(--text); border: 1px solid var(--line); }
+  .filter-row { display:flex; gap:6px; padding:8px 12px; border-bottom:1px solid var(--line); background:var(--surface); align-items:center; }
+  .chip { border:1.5px solid var(--line); border-radius:20px; padding:4px 10px; font-size:11px; font-weight:500; background:var(--bg); white-space:nowrap; }
+  .chip.active { background:#7c6af7; border-color:#7c6af7; color:#fff; }
+  .year-label { padding:5px 12px 1px; font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.08em; }
+  .list-item { display:flex; align-items:flex-start; gap:8px; padding:9px 12px; border-bottom:1px solid var(--line); }
+  .li-icon { width:32px; height:32px; border-radius:9px; background:rgba(124,106,247,0.1); display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0; }
+  .li-info { flex:1; }
+  .li-name { font-weight:600; font-size:12px; margin-bottom:1px; }
+  .li-meta { font-size:11px; color:var(--text-muted); }
+  .li-right { display:flex;flex-direction:column;align-items:flex-end;gap:3px; }
+  .li-date { font-size:11px; color:var(--text-muted); }
+  .btn-sm { width:26px; height:26px; border-radius:7px; border:1.5px solid var(--line); background:var(--bg); display:flex;align-items:center;justify-content:center;font-size:11px; }
+
+  /* Full activity grid overlay */
+  .activity-overlay {
+    position: absolute; inset: 0;
+    background: var(--bg);
+    display: flex; flex-direction: column;
+    z-index: 30;
+  }
+  .overlay-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .back-btn { font-size: 20px; color: #7c6af7; font-weight: 700; cursor: pointer; }
+  .overlay-title { font-size: 16px; font-weight: 700; }
+  .search-bar {
+    margin: 10px 14px 6px;
+    background: var(--surface);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--text-muted);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .overlay-scroll { flex: 1; overflow-y: auto; padding: 4px 14px 14px; }
+  .cat-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing:.08em; color: var(--text-muted); margin: 12px 0 6px; }
+  .act-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; }
+  .act-chip {
+    background: var(--surface); border: 1.5px solid var(--line);
+    border-radius: 12px; padding: 8px 4px 7px;
+    text-align: center; font-size: 11px; font-weight: 500;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+  }
+  .act-chip .em { font-size: 20px; }
+  .act-chip.recent { border-color: #7c6af7; background: rgba(124,106,247,0.06); }
+</style>
+
+<h2>Add Activity — Refined Picker</h2>
+<p class="subtitle">Header button expands inline. 3 recent sports + Other. Other opens a searchable full grid.</p>
+
+<div class="phones-wrap">
+
+  <!-- PHONE 1: Collapsed (default, no session active) -->
+  <div class="phone-col">
+    <div class="label">Collapsed (default)</div>
+    <div class="phone">
+      <div class="phone-header">
+        <h2>Workout</h2>
+        <div class="header-btn">＋ Add</div>
+      </div>
+      <div class="phone-scroll">
+        <div class="upcoming-strip">
+          <div class="upcoming-label">Upcoming</div>
+          <div class="plan-chip">🏃 Run · Tomorrow</div>
+          <div class="plan-chip">🏋️ Push · Fri</div>
+        </div>
+        <div class="view-switcher">
+          <div class="view-tab active">≡ List</div>
+          <div class="view-tab">▦ Month</div>
+          <div class="view-tab">⬚ Week</div>
+        </div>
+        <div class="filter-row">
+          <div class="chip active">All</div>
+          <div class="chip">Gym</div>
+          <div class="chip">Run</div>
+          <div class="chip" style="margin-left:auto">↕ Newest</div>
+        </div>
+        <div class="year-label">2026</div>
+        <div class="list-item">
+          <div class="li-icon">🏋️</div>
+          <div class="li-info"><div class="li-name">Upper Body A</div><div class="li-meta">45 min · 3 PRs</div></div>
+          <div class="li-right"><div class="li-date">Today</div><div style="display:flex;gap:3px"><div class="btn-sm">✏️</div><div class="btn-sm">↗️</div></div></div>
+        </div>
+        <div class="list-item">
+          <div class="li-icon">🏃</div>
+          <div class="li-info"><div class="li-name">Morning Run</div><div class="li-meta">8.4 km · 42:10</div></div>
+          <div class="li-right"><div class="li-date">May 7</div><div style="display:flex;gap:3px"><div class="btn-sm">✏️</div><div class="btn-sm">↗️</div></div></div>
+        </div>
+        <div class="list-item">
+          <div class="li-icon">🏋️</div>
+          <div class="li-info"><div class="li-name">Leg Day</div><div class="li-meta">62 min</div></div>
+          <div class="li-right"><div class="li-date">May 5</div><div style="display:flex;gap:3px"><div class="btn-sm">✏️</div><div class="btn-sm">↗️</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHONE 2: Expanded inline (Gym selected, recents = Gym/Run/Cycle) -->
+  <div class="phone-col">
+    <div class="label">Expanded — Gym selected</div>
+    <div class="phone">
+      <div class="phone-header">
+        <h2>Workout</h2>
+        <div class="header-btn" style="background:var(--surface);color:var(--text);border:1.5px solid var(--line);">✕ Close</div>
+      </div>
+      <div class="phone-scroll">
+        <div class="inline-picker">
+          <div class="picker-row">
+            <div class="sport-chip sel">
+              <span class="em">🏋️</span>
+              <span>Gym</span>
+            </div>
+            <div class="sport-chip">
+              <span class="em">🏃</span>
+              <span>Run</span>
+            </div>
+            <div class="sport-chip">
+              <span class="em">🚴</span>
+              <span>Cycle</span>
+            </div>
+            <div class="other-chip">
+              <span class="em">⊕</span>
+              <span>Other</span>
+            </div>
+          </div>
+          <div class="action-row">
+            <div class="btn-start">▶ Start now</div>
+            <div class="btn-plan">📅 Plan</div>
+          </div>
+        </div>
+        <div class="upcoming-strip">
+          <div class="upcoming-label">Upcoming</div>
+          <div class="plan-chip">🏃 Run · Tomorrow</div>
+          <div class="plan-chip">🏋️ Push · Fri</div>
+        </div>
+        <div class="view-switcher">
+          <div class="view-tab active">≡ List</div>
+          <div class="view-tab">▦ Month</div>
+          <div class="view-tab">⬚ Week</div>
+        </div>
+        <div class="filter-row">
+          <div class="chip active">All</div>
+          <div class="chip">Gym</div>
+          <div class="chip">Run</div>
+          <div class="chip" style="margin-left:auto">↕ Newest</div>
+        </div>
+        <div class="year-label">2026</div>
+        <div class="list-item">
+          <div class="li-icon">🏋️</div>
+          <div class="li-info"><div class="li-name">Upper Body A</div><div class="li-meta">45 min · 3 PRs</div></div>
+          <div class="li-right"><div class="li-date">Today</div><div style="display:flex;gap:3px"><div class="btn-sm">✏️</div><div class="btn-sm">↗️</div></div></div>
+        </div>
+        <div class="list-item">
+          <div class="li-icon">🏃</div>
+          <div class="li-info"><div class="li-name">Morning Run</div><div class="li-meta">8.4 km · 42:10</div></div>
+          <div class="li-right"><div class="li-date">May 7</div><div style="display:flex;gap:3px"><div class="btn-sm">✏️</div><div class="btn-sm">↗️</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHONE 3: Expanded — Run selected (shows route row) -->
+  <div class="phone-col">
+    <div class="label">Expanded — Run selected</div>
+    <div class="phone">
+      <div class="phone-header">
+        <h2>Workout</h2>
+        <div class="header-btn" style="background:var(--surface);color:var(--text);border:1.5px solid var(--line);">✕ Close</div>
+      </div>
+      <div class="phone-scroll">
+        <div class="inline-picker">
+          <div class="picker-row">
+            <div class="sport-chip">
+              <span class="em">🏋️</span>
+              <span>Gym</span>
+            </div>
+            <div class="sport-chip sel">
+              <span class="em">🏃</span>
+              <span>Run</span>
+            </div>
+            <div class="sport-chip">
+              <span class="em">🚴</span>
+              <span>Cycle</span>
+            </div>
+            <div class="other-chip">
+              <span class="em">⊕</span>
+              <span>Other</span>
+            </div>
+          </div>
+          <div class="route-row">
+            <span>🗺️</span>
+            <span style="flex:1">Add route (optional)</span>
+            <span style="color:#7c6af7;font-weight:600;font-size:14px">＋</span>
+          </div>
+          <div class="action-row">
+            <div class="btn-start">▶ Start now</div>
+            <div class="btn-plan">📅 Plan</div>
+          </div>
+        </div>
+        <div class="upcoming-strip">
+          <div class="upcoming-label">Upcoming</div>
+          <div class="plan-chip">🏃 Run · Tomorrow</div>
+        </div>
+        <div class="view-switcher">
+          <div class="view-tab active">≡ List</div>
+          <div class="view-tab">▦ Month</div>
+          <div class="view-tab">⬚ Week</div>
+        </div>
+        <div class="filter-row">
+          <div class="chip active">All</div>
+          <div class="chip">Gym</div>
+          <div class="chip">Run</div>
+          <div class="chip" style="margin-left:auto">↕ Newest</div>
+        </div>
+        <div class="year-label">2026</div>
+        <div class="list-item">
+          <div class="li-icon">🏃</div>
+          <div class="li-info"><div class="li-name">Morning Run</div><div class="li-meta">8.4 km · 42:10</div></div>
+          <div class="li-right"><div class="li-date">Today</div><div style="display:flex;gap:3px"><div class="btn-sm">✏️</div><div class="btn-sm">↗️</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHONE 4: "Other" full grid overlay -->
+  <div class="phone-col">
+    <div class="label">"Other" → full activity grid</div>
+    <div class="phone">
+      <div class="phone-header">
+        <h2>Workout</h2>
+        <div class="header-btn" style="background:var(--surface);color:var(--text);border:1.5px solid var(--line);">✕ Close</div>
+      </div>
+      <div class="phone-scroll" style="position:relative">
+        <!-- overlay fills the scroll area -->
+        <div class="activity-overlay" style="position:relative;inset:auto;height:100%">
+          <div class="overlay-header">
+            <div class="back-btn">‹</div>
+            <div class="overlay-title">Choose activity</div>
+          </div>
+          <div class="search-bar">🔍 Search activities…</div>
+          <div class="overlay-scroll">
+            <div class="cat-label">Recent</div>
+            <div class="act-grid">
+              <div class="act-chip recent"><span class="em">🏋️</span>Gym</div>
+              <div class="act-chip recent"><span class="em">🏃</span>Run</div>
+              <div class="act-chip recent"><span class="em">🚴</span>Cycle</div>
+            </div>
+            <div class="cat-label">Outdoor</div>
+            <div class="act-grid">
+              <div class="act-chip"><span class="em">🥾</span>Hike</div>
+              <div class="act-chip"><span class="em">⛷️</span>Ski</div>
+              <div class="act-chip"><span class="em">🏂</span>Snowboard</div>
+              <div class="act-chip"><span class="em">🧗</span>Climb</div>
+            </div>
+            <div class="cat-label">Water</div>
+            <div class="act-grid">
+              <div class="act-chip"><span class="em">🏊</span>Swim</div>
+              <div class="act-chip"><span class="em">🚣</span>Row</div>
+              <div class="act-chip"><span class="em">🏄</span>Surf</div>
+              <div class="act-chip"><span class="em">🛶</span>Kayak</div>
+            </div>
+            <div class="cat-label">Gym & Fitness</div>
+            <div class="act-grid">
+              <div class="act-chip"><span class="em">🧘</span>Yoga</div>
+              <div class="act-chip"><span class="em">🥊</span>Boxing</div>
+              <div class="act-chip"><span class="em">🤸</span>Stretch</div>
+              <div class="act-chip"><span class="em">⚡</span>HIIT</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="section" style="margin-top:16px">
+  <p><strong>How recents work:</strong> The 3 sport chips start as Gym / Run / Cycle. Each time you log a session, that sport moves to the front. So if you log a Hike, the chips become Hike / Gym / Run (Cycle falls off into the Other grid).</p>
+  <p>Does this look right? Any tweaks to the layout or the activity categories in the full grid?</p>
+</div>

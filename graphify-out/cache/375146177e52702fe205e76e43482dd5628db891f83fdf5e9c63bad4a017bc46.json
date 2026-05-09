@@ -1,0 +1,1 @@
+{"nodes": [{"id": "id_generator", "label": "id-generator.ts", "file_type": "code", "source_file": "core\\id-generator.ts", "source_location": "L1"}], "edges": [{"source": "id_generator", "target": "contracts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "core\\id-generator.ts", "source_location": "L1", "weight": 1.0}]}

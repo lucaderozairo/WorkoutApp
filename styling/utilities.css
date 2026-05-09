@@ -1,0 +1,67 @@
+.bg-primary   { background: var(--color-primary); }
+.bg-surface   { background: var(--color-surface); }
+.bg-background { background: var(--color-background); }
+.bg-text-primary { background: var(--color-text-primary); }
+.bg-text-secondary { background: var(--color-text-secondary); }
+.bg-lift      { background: var(--color-lift); }
+.bg-run       { background: var(--color-run); }
+.bg-cycle     { background: var(--color-cycle); }
+.bg-swim      { background: var(--color-swim); }
+.bg-rowing    { background: var(--color-rowing); }
+
+.radius-0 { border-radius: var(--border-radius-0); }
+.radius-1 { border-radius: var(--border-radius-1); }
+.radius-2 { border-radius: var(--border-radius-2); }
+.radius-3 { border-radius: var(--border-radius-3); }
+
+.shadow-sm,
+.elev-1 { box-shadow: var(--box-shadow-sm); }
+.shadow-md,
+.elev-2 { box-shadow: var(--box-shadow-md); }
+.shadow-lg,
+.elev-3 { box-shadow: var(--box-shadow-lg); }
+
+.warning {
+  --status-color: var(--bad);
+  background: color-mix(in srgb, var(--status-color) 10%, transparent);
+  border-color: var(--status-color);
+  color: var(--status-color);
+}
+.warning:hover {
+  background: color-mix(in srgb, var(--status-color) 16%, transparent);
+}
+.caution {
+  --status-color: var(--warn);
+  background: color-mix(in srgb, var(--status-color) 10%, transparent);
+  border-color: var(--status-color);
+  color: var(--status-color);
+}
+.caution:hover {
+  background: color-mix(in srgb, var(--status-color) 16%, transparent);
+}
+.danger {
+  --status-color: var(--bad);
+  background: color-mix(in srgb, var(--status-color) 10%, transparent);
+  border-color: var(--status-color);
+  color: var(--status-color);
+}
+.danger:hover {
+  background: color-mix(in srgb, var(--status-color) 16%, transparent);
+}
+
+.interactive {
+  cursor: pointer;
+  transition:
+    background-color .12s var(--ease),
+    box-shadow .12s var(--ease);
+}
+.interactive:hover,
+.interactive.active {
+  background: var(--surface-2);
+  box-shadow: var(--box-shadow-lg);
+}
+.locked      { opacity: 0.3; }
+.grow        { flex: 1; min-width: 0; }
+
+@media (max-width: 760px)  { .desktop-only { display: none; } }
+@media (min-width: 761px)  { .mobile-only  { display: none; } }

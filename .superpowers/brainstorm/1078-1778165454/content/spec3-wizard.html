@@ -1,0 +1,208 @@
+<h2>Spec 3 — Activity Planning Wizard</h2>
+<p class="subtitle">Four-step flow. Review each step and flag anything to change.</p>
+
+<div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;">
+
+  <!-- Step 0: Entry point -->
+  <div>
+    <div class="label" style="margin-bottom:8px;">Entry — Workout tab</div>
+    <div style="width:200px;background:#1a1a2e;border-radius:12px;overflow:hidden;">
+      <div style="padding:12px;border-bottom:1px solid #2a2a4e;">
+        <div style="font-size:12px;font-weight:600;color:#e0e0e0;margin-bottom:8px;">Workout</div>
+        <div style="display:flex;gap:6px;">
+          <div style="flex:1;background:#7eb8f7;border-radius:6px;padding:7px;text-align:center;font-size:11px;color:#0a0a1e;font-weight:600;">▶ Start now</div>
+          <div style="flex:1;background:#2a2a4e;border-radius:6px;padding:7px;text-align:center;font-size:11px;color:#aaa;font-weight:600;">📋 Plan</div>
+        </div>
+      </div>
+      <div style="padding:12px;">
+        <div style="font-size:10px;color:#666;margin-bottom:6px;">RECENT SESSIONS</div>
+        <div style="background:#2a2a4e;border-radius:6px;padding:8px;margin-bottom:6px;">
+          <div style="font-size:11px;color:#e0e0e0;">Push Day</div>
+          <div style="font-size:10px;color:#666;">Today · 52 min</div>
+        </div>
+        <div style="background:#2a2a4e;border-radius:6px;padding:8px;">
+          <div style="font-size:11px;color:#e0e0e0;">5k Run</div>
+          <div style="font-size:10px;color:#666;">Yesterday · 26:40</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 1: Type -->
+  <div>
+    <div class="label" style="margin-bottom:8px;">Step 1 — Choose type</div>
+    <div style="width:200px;background:#1a1a2e;border-radius:12px;overflow:hidden;">
+      <div style="padding:12px;border-bottom:1px solid #2a2a4e;">
+        <div style="font-size:10px;color:#666;">STEP 1 OF 4</div>
+        <div style="font-size:12px;font-weight:600;color:#e0e0e0;margin-top:4px;">What are you planning?</div>
+      </div>
+      <div style="padding:12px;display:flex;flex-direction:column;gap:6px;">
+        <div style="background:#7eb8f7;border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:8px;">
+          <span style="font-size:16px;">🏋️</span>
+          <div>
+            <div style="font-size:12px;font-weight:600;color:#0a0a1e;">Gym session</div>
+            <div style="font-size:10px;color:#1a2a3e;">Exercises, sets & reps</div>
+          </div>
+        </div>
+        <div style="background:#2a2a4e;border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:8px;">
+          <span style="font-size:16px;">🏃</span>
+          <div>
+            <div style="font-size:12px;color:#e0e0e0;">Run</div>
+            <div style="font-size:10px;color:#666;">Route, pace & markers</div>
+          </div>
+        </div>
+        <div style="background:#2a2a4e;border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:8px;">
+          <span style="font-size:16px;">🚴</span>
+          <div>
+            <div style="font-size:12px;color:#e0e0e0;">Cycle</div>
+            <div style="font-size:10px;color:#666;">Route, pace & markers</div>
+          </div>
+        </div>
+        <div style="background:#2a2a4e;border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:8px;">
+          <span style="font-size:16px;">🏊</span>
+          <div>
+            <div style="font-size:12px;color:#e0e0e0;">Swim</div>
+            <div style="font-size:10px;color:#666;">Distance & pace</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2a: Gym -->
+  <div>
+    <div class="label" style="margin-bottom:8px;">Step 2a — Gym config</div>
+    <div style="width:200px;background:#1a1a2e;border-radius:12px;overflow:hidden;">
+      <div style="padding:12px;border-bottom:1px solid #2a2a4e;">
+        <div style="font-size:10px;color:#666;">STEP 2 OF 4 · GYM SESSION</div>
+        <div style="font-size:12px;font-weight:600;color:#e0e0e0;margin-top:4px;">Plan exercises</div>
+      </div>
+      <div style="padding:12px;">
+        <input style="width:100%;background:#2a2a4e;border:none;border-radius:6px;padding:7px;font-size:11px;color:#e0e0e0;box-sizing:border-box;margin-bottom:8px;" placeholder="Session name e.g. Push Day" />
+        <div style="background:#2a2a4e;border-radius:6px;padding:8px;margin-bottom:6px;">
+          <div style="font-size:11px;color:#e0e0e0;margin-bottom:4px;">Bench Press</div>
+          <div style="font-size:10px;color:#7eb8f7;">4 × 8 · 80 kg</div>
+        </div>
+        <div style="background:#2a2a4e;border-radius:6px;padding:8px;margin-bottom:6px;">
+          <div style="font-size:11px;color:#e0e0e0;margin-bottom:4px;">Overhead Press</div>
+          <div style="font-size:10px;color:#7eb8f7;">3 × 10 · 50 kg</div>
+        </div>
+        <div style="background:#2a2a4e;border-radius:6px;padding:8px;margin-bottom:8px;border:1px dashed #444;text-align:center;">
+          <div style="font-size:11px;color:#666;">+ Add exercise</div>
+        </div>
+        <div style="background:#7eb8f7;border-radius:6px;padding:7px;text-align:center;font-size:11px;color:#0a0a1e;font-weight:600;">Next →</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2b: Run -->
+  <div>
+    <div class="label" style="margin-bottom:8px;">Step 2b — Run config</div>
+    <div style="width:210px;background:#1a1a2e;border-radius:12px;overflow:hidden;">
+      <div style="padding:12px;border-bottom:1px solid #2a2a4e;">
+        <div style="font-size:10px;color:#666;">STEP 2 OF 4 · RUN</div>
+        <div style="font-size:12px;font-weight:600;color:#e0e0e0;margin-top:4px;">Route & pacing</div>
+      </div>
+      <div style="padding:12px;">
+        <!-- Route toggle -->
+        <div style="display:flex;gap:4px;margin-bottom:8px;">
+          <div style="flex:1;background:#7eb8f7;border-radius:5px;padding:5px;text-align:center;font-size:10px;color:#0a0a1e;font-weight:600;">🗺 Draw route</div>
+          <div style="flex:1;background:#2a2a4e;border-radius:5px;padding:5px;text-align:center;font-size:10px;color:#666;">📂 Saved</div>
+        </div>
+        <!-- Map placeholder -->
+        <div style="background:#1e2a3e;border-radius:6px;height:90px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;border:1px solid #2a3a5e;position:relative;">
+          <div style="font-size:10px;color:#7eb8f7;text-align:center;">Tap to place waypoints<br/><span style="color:#444;">Leaflet map</span></div>
+          <!-- Fake route line -->
+          <svg style="position:absolute;top:0;left:0;width:100%;height:100%;" viewBox="0 0 186 90">
+            <polyline points="20,70 50,45 90,30 140,50 170,35" stroke="#7eb8f7" stroke-width="2" fill="none" stroke-dasharray="4,2" opacity="0.6"/>
+            <circle cx="20" cy="70" r="4" fill="#7eb8f7"/>
+            <circle cx="50" cy="45" r="3" fill="#555"/>
+            <circle cx="90" cy="30" r="3" fill="#555"/>
+            <circle cx="140" cy="50" r="3" fill="#555"/>
+            <circle cx="170" cy="35" r="4" fill="#e87070"/>
+          </svg>
+        </div>
+        <div style="font-size:10px;color:#7eb8f7;margin-bottom:8px;">Distance: 5.2 km (auto-calculated)</div>
+        <!-- Pace input -->
+        <div style="margin-bottom:8px;">
+          <div style="font-size:10px;color:#666;margin-bottom:3px;">TARGET PACE</div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <input style="width:60px;background:#2a2a4e;border:none;border-radius:5px;padding:5px;font-size:12px;color:#e0e0e0;text-align:center;" value="5:00" />
+            <span style="font-size:10px;color:#666;">min/km</span>
+          </div>
+        </div>
+        <!-- Distance markers -->
+        <div style="font-size:10px;color:#666;margin-bottom:4px;">DISTANCE MARKERS (auto)</div>
+        <div style="background:#2a2a4e;border-radius:6px;padding:6px;margin-bottom:8px;">
+          <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;"><span style="color:#888;">1 km</span><span style="color:#7eb8f7;">5:00</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;"><span style="color:#888;">2 km</span><span style="color:#7eb8f7;">10:00</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;"><span style="color:#888;">3 km</span><span style="color:#7eb8f7;">15:00</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;"><span style="color:#888;">4 km</span><span style="color:#7eb8f7;">20:00</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;"><span style="color:#888;">5.2 km</span><span style="color:#7eb8f7;">26:00</span></div>
+        </div>
+        <div style="background:#7eb8f7;border-radius:6px;padding:7px;text-align:center;font-size:11px;color:#0a0a1e;font-weight:600;">Next →</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: Schedule -->
+  <div>
+    <div class="label" style="margin-bottom:8px;">Step 3 — Schedule</div>
+    <div style="width:190px;background:#1a1a2e;border-radius:12px;overflow:hidden;">
+      <div style="padding:12px;border-bottom:1px solid #2a2a4e;">
+        <div style="font-size:10px;color:#666;">STEP 3 OF 4</div>
+        <div style="font-size:12px;font-weight:600;color:#e0e0e0;margin-top:4px;">When?</div>
+      </div>
+      <div style="padding:12px;">
+        <div style="font-size:10px;color:#666;margin-bottom:4px;">DATE</div>
+        <div style="background:#2a2a4e;border-radius:6px;padding:8px;margin-bottom:10px;font-size:12px;color:#e0e0e0;">📅 Thu 8 May 2026</div>
+        <div style="font-size:10px;color:#666;margin-bottom:4px;">TIME</div>
+        <div style="background:#2a2a4e;border-radius:6px;padding:8px;margin-bottom:10px;font-size:12px;color:#e0e0e0;">⏰ 07:30</div>
+        <div style="font-size:10px;color:#666;margin-bottom:4px;">NOTES (optional)</div>
+        <div style="background:#2a2a4e;border-radius:6px;padding:8px;margin-bottom:10px;font-size:11px;color:#555;min-height:40px;">Add notes...</div>
+        <div style="background:#7eb8f7;border-radius:6px;padding:7px;text-align:center;font-size:11px;color:#0a0a1e;font-weight:600;">Next →</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4: Review -->
+  <div>
+    <div class="label" style="margin-bottom:8px;">Step 4 — Review & save</div>
+    <div style="width:190px;background:#1a1a2e;border-radius:12px;overflow:hidden;">
+      <div style="padding:12px;border-bottom:1px solid #2a2a4e;">
+        <div style="font-size:10px;color:#666;">STEP 4 OF 4</div>
+        <div style="font-size:12px;font-weight:600;color:#e0e0e0;margin-top:4px;">Review plan</div>
+      </div>
+      <div style="padding:12px;">
+        <div style="background:#2a2a4e;border-radius:6px;padding:10px;margin-bottom:8px;">
+          <div style="font-size:10px;color:#7eb8f7;margin-bottom:3px;">🏃 RUN</div>
+          <div style="font-size:13px;font-weight:600;color:#e0e0e0;margin-bottom:6px;">Morning Run</div>
+          <div style="font-size:10px;color:#888;">Thu 8 May · 07:30</div>
+          <div style="font-size:10px;color:#888;margin-top:2px;">5.2 km · 5:00/km · ~26 min</div>
+        </div>
+        <div style="font-size:10px;color:#666;margin-bottom:4px;">MARKERS</div>
+        <div style="background:#2a2a4e;border-radius:6px;padding:6px;margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:2px;"><span style="color:#888;">1 km</span><span style="color:#7eb8f7;">5:00</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;"><span style="color:#888;">5.2 km</span><span style="color:#7eb8f7;">26:00</span></div>
+        </div>
+        <div style="background:#7eb8f7;border-radius:6px;padding:8px;text-align:center;font-size:12px;color:#0a0a1e;font-weight:700;">Save plan</div>
+        <div style="margin-top:6px;text-align:center;font-size:10px;color:#555;">Appears in Workout + Schedule</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="margin-top:20px;background:#1e1e2e;border-radius:8px;padding:14px;max-width:600px;">
+  <div style="font-size:12px;font-weight:600;color:#7eb8f7;margin-bottom:8px;">Design notes</div>
+  <ul style="font-size:12px;color:#ccc;margin:0;padding-left:16px;line-height:1.9;">
+    <li>Route drawn on Leaflet map (already in project). Click to add waypoints, distance auto-calculated.</li>
+    <li>Saved routes tab shows previously completed or saved routes as a list to select from.</li>
+    <li>Swim has no map step — just pool length, target distance, and target pace per 100m.</li>
+    <li>Distance markers calculated as: cumulative time = distance × pace. Interval: every 1 km (run/swim) or every 5 km (cycle).</li>
+    <li>Planned session stored with type, name, date/time, exercises or route+pace, markers.</li>
+    <li>Schedule screen picks up planned sessions by date.</li>
+  </ul>
+</div>
+
+<p style="font-size:13px;color:#aaa;margin-top:16px;">Does this flow look right? Any steps or details to adjust?</p>

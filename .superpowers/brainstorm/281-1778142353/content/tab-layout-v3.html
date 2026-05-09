@@ -1,0 +1,120 @@
+<h2>Workout Tab — Revised</h2>
+<p class="subtitle">Week header on schedule strip · filter panel replaces "load more"</p>
+
+<div class="section">
+  <div class="mockup" style="max-width:420px;margin:0 auto">
+    <div class="mockup-header" style="background:#6366f1;color:#fff">Workout Tab (mobile)</div>
+    <div class="mockup-body" style="padding:0">
+
+      <!-- Schedule strip with date header -->
+      <div style="border-bottom:1px solid #e2e8f0;padding:12px 14px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+          <span style="font-size:13px;font-weight:700;color:#0f172a">May 2026</span>
+          <div style="display:flex;gap:6px">
+            <span style="font-size:12px;color:#6366f1;cursor:pointer">‹ prev</span>
+            <span style="font-size:12px;color:#6366f1;cursor:pointer">next ›</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:5px">
+          <div style="flex:1;background:#f0fdf4;border:1px solid #86efac;border-radius:7px;padding:6px;text-align:center;font-size:11px;cursor:pointer">
+            <div style="color:#64748b;font-size:10px">Mon</div>
+            <div style="font-weight:700;font-size:13px">5</div>
+            <div style="width:6px;height:6px;background:#22c55e;border-radius:50%;margin:3px auto 0"></div>
+          </div>
+          <div style="flex:1;background:#6366f1;border-radius:7px;padding:6px;text-align:center;font-size:11px;color:#fff">
+            <div style="opacity:.8;font-size:10px">Tue</div>
+            <div style="font-weight:700;font-size:13px">6</div>
+            <div style="font-size:9px;opacity:.8;margin-top:2px">Today</div>
+          </div>
+          <div style="flex:1;background:#fef3c7;border:1px solid #fcd34d;border-radius:7px;padding:6px;text-align:center;font-size:11px;cursor:pointer">
+            <div style="color:#64748b;font-size:10px">Wed</div>
+            <div style="font-weight:700;font-size:13px">7</div>
+            <div style="font-size:12px;margin-top:1px">🏃</div>
+          </div>
+          <div style="flex:1;background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;padding:6px;text-align:center;font-size:11px;color:#94a3b8">
+            <div style="font-size:10px">Thu</div>
+            <div style="font-weight:600;font-size:13px">8</div>
+          </div>
+          <div style="flex:1;background:#f8fafc;border:1px dashed #e2e8f0;border-radius:7px;padding:6px;text-align:center;font-size:11px;color:#94a3b8">
+            <div style="font-size:10px">Fri</div>
+            <div style="font-weight:600;font-size:13px">9</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- New workout button -->
+      <div style="padding:12px 14px;border-bottom:1px solid #e2e8f0">
+        <div style="background:#6366f1;color:#fff;padding:10px 12px;border-radius:8px;font-size:13px;font-weight:600;text-align:center">+ New Workout</div>
+      </div>
+
+      <!-- Filter bar — always visible above session list -->
+      <div style="padding:10px 14px;border-bottom:1px solid #e2e8f0;background:#fafafa">
+        <div style="font-size:10px;color:#64748b;letter-spacing:.06em;text-transform:uppercase;margin-bottom:7px">Filter sessions</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <!-- Date range chip — active -->
+          <div style="background:#6366f1;color:#fff;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:4px;cursor:pointer">
+            📅 Last 30 days <span style="opacity:.7;font-size:10px">✕</span>
+          </div>
+          <!-- Session type chip -->
+          <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:20px;padding:4px 10px;font-size:11px;color:#334155;cursor:pointer">
+            Type ＋
+          </div>
+          <!-- Exercise chip -->
+          <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:20px;padding:4px 10px;font-size:11px;color:#334155;cursor:pointer">
+            Exercise ＋
+          </div>
+        </div>
+      </div>
+
+      <!-- "Type" dropdown — shown expanded to illustrate -->
+      <div style="margin:0 14px;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 8px 8px;background:#fff;padding:10px;font-size:12px">
+        <div style="font-size:10px;color:#64748b;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px">Session type</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px">
+          <div style="background:#6366f1;color:#fff;border-radius:5px;padding:4px 9px;font-size:11px;cursor:pointer">All</div>
+          <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:5px;padding:4px 9px;font-size:11px;cursor:pointer">Push Day</div>
+          <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:5px;padding:4px 9px;font-size:11px;cursor:pointer">Pull Day</div>
+          <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:5px;padding:4px 9px;font-size:11px;cursor:pointer">🏃 Run</div>
+          <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:5px;padding:4px 9px;font-size:11px;cursor:pointer">Legs</div>
+        </div>
+
+        <div style="font-size:10px;color:#64748b;letter-spacing:.06em;text-transform:uppercase;margin:10px 0 6px">Exercise included</div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:6px 8px;display:flex;align-items:center;gap:6px;margin-bottom:6px">
+          <span style="font-size:12px;color:#94a3b8">🔍</span>
+          <span style="font-size:12px;color:#94a3b8">Search exercises… e.g. Bench Press</span>
+        </div>
+        <!-- Exercise chip selected -->
+        <div style="display:inline-flex;align-items:center;gap:4px;background:#ede9fe;border:1px solid #c4b5fd;border-radius:5px;padding:4px 9px;font-size:11px;color:#4c1d95">
+          Bench Press <span style="opacity:.6;cursor:pointer">✕</span>
+        </div>
+      </div>
+
+      <!-- Session list filtered -->
+      <div style="padding:12px 14px">
+        <div style="font-size:10px;color:#64748b;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">2 sessions matched</div>
+
+        <div style="margin-bottom:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:11px 12px;font-size:12px;cursor:pointer">
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <span style="font-weight:700;font-size:13px">Push Day A</span>
+            <span style="color:#64748b;font-size:11px">May 5</span>
+          </div>
+          <div style="color:#64748b;font-size:11px;margin-top:3px">6 exercises · 52 min</div>
+          <div style="display:inline-block;margin-top:5px;background:#ede9fe;color:#4c1d95;font-size:10px;padding:2px 6px;border-radius:4px">Bench Press ✓</div>
+        </div>
+
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:11px 12px;font-size:12px;cursor:pointer">
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <span style="font-weight:700;font-size:13px">Push Day B</span>
+            <span style="color:#64748b;font-size:11px">Apr 28</span>
+          </div>
+          <div style="color:#64748b;font-size:11px;margin-top:3px">5 exercises · 45 min</div>
+          <div style="display:inline-block;margin-top:5px;background:#ede9fe;color:#4c1d95;font-size:10px;padding:2px 6px;border-radius:4px">Bench Press ✓</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:16px">
+  <p class="subtitle">Filter bar is always shown above the list — chips expand inline. Does the interaction model feel right?</p>
+</div>

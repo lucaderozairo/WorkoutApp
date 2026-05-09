@@ -1,0 +1,343 @@
+<style>
+  .phone {
+    width: 360px;
+    height: 720px;
+    border: 2px solid var(--line);
+    border-radius: 36px;
+    overflow: hidden;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .phone-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 18px 10px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .phone-header h2 { font-size: 20px; font-weight: 700; margin: 0; }
+  .phone-scroll { overflow-y: auto; flex: 1; }
+
+  .phones-wrap {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-start;
+    align-items: flex-start;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+  .phone-col { display: flex; flex-direction: column; gap: 8px; align-items: center; flex-shrink: 0; }
+  .phone-col .label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+
+  /* Shared session list bits */
+  .view-switcher {
+    display: flex;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    padding: 8px 12px;
+    gap: 0;
+  }
+  .view-tab {
+    flex: 1; text-align: center; padding: 6px 4px;
+    font-size: 11px; font-weight: 600; border-radius: 8px;
+    color: var(--text-muted);
+  }
+  .view-tab.active { background: var(--surface); color: var(--text); border: 1px solid var(--line); }
+  .filter-row {
+    display: flex; gap: 6px; padding: 8px 12px;
+    border-bottom: 1px solid var(--line); background: var(--surface);
+    align-items: center; overflow-x: auto;
+  }
+  .chip {
+    border: 1.5px solid var(--line); border-radius: 20px;
+    padding: 4px 10px; font-size: 11px; font-weight: 500;
+    background: var(--bg); white-space: nowrap;
+  }
+  .chip.active { background: #7c6af7; border-color: #7c6af7; color: #fff; }
+  .chip.sort { margin-left: auto; }
+  .year-label { padding: 5px 12px 1px; font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+  .list-item { display: flex; align-items: flex-start; gap: 8px; padding: 9px 12px; border-bottom: 1px solid var(--line); }
+  .li-icon { width: 32px; height: 32px; border-radius: 9px; background: rgba(124,106,247,0.1); display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0; }
+  .li-info { flex: 1; }
+  .li-name { font-weight: 600; font-size: 12px; margin-bottom: 1px; }
+  .li-meta { font-size: 11px; color: var(--text-muted); }
+  .li-right { display:flex;flex-direction:column;align-items:flex-end;gap:3px; }
+  .li-date { font-size: 11px; color: var(--text-muted); }
+  .btn-sm { width: 26px; height: 26px; border-radius: 7px; border: 1.5px solid var(--line); background: var(--bg); display:flex;align-items:center;justify-content:center;font-size:11px; }
+  .upcoming-strip {
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    padding: 8px 12px;
+  }
+  .upcoming-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing:.07em; margin-bottom: 6px; }
+  .plan-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--bg); border: 1.5px solid var(--line); border-radius: 20px;
+    padding: 4px 10px; font-size: 11px; font-weight: 500; margin-right: 5px; white-space: nowrap;
+  }
+
+  /* OPTION A — FAB */
+  .fab {
+    position: absolute;
+    bottom: 18px; right: 18px;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: #7c6af7;
+    color: #fff;
+    font-size: 26px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 16px rgba(124,106,247,0.4);
+    z-index: 10;
+  }
+  /* FAB sheet overlay */
+  .fab-sheet {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+    border-radius: 20px 20px 0 0;
+    padding: 16px;
+    z-index: 20;
+  }
+  .fab-sheet-handle { width: 36px; height: 4px; background: var(--line); border-radius: 2px; margin: 0 auto 14px; }
+  .fab-sheet-title { font-size: 15px; font-weight: 700; margin-bottom: 12px; }
+  .activity-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 14px; }
+  .activity-chip { background: var(--bg); border: 1.5px solid var(--line); border-radius: 12px; padding: 8px 4px 7px; text-align: center; font-size: 11px; }
+  .activity-chip .em { font-size: 22px; display: block; margin-bottom: 3px; }
+  .activity-chip.sel { border-color: #7c6af7; background: rgba(124,106,247,0.08); color: #7c6af7; }
+  .action-row { display: flex; gap: 8px; }
+  .btn-start { flex:1; background:#7c6af7; color:#fff; border:none; border-radius:10px; padding:10px; font-weight:600; font-size:13px; text-align:center; }
+  .btn-plan { flex:1; background:var(--bg); border:1.5px solid var(--line); border-radius:10px; padding:10px; font-weight:600; font-size:13px; text-align:center; }
+
+  /* OPTION B — inline header button */
+  .header-btn {
+    background: #7c6af7; color: #fff;
+    border: none; border-radius: 10px;
+    padding: 6px 14px; font-size: 13px; font-weight: 600;
+    display: flex; align-items: center; gap: 5px;
+  }
+  /* Inline expanded row */
+  .inline-picker {
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    padding: 12px;
+  }
+  .inline-picker .mini-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; margin-bottom: 10px; }
+  .mini-chip { background: var(--bg); border: 1.5px solid var(--line); border-radius: 10px; padding: 7px 4px 5px; text-align: center; font-size: 11px; }
+  .mini-chip .em { font-size: 18px; display: block; margin-bottom: 2px; }
+  .mini-chip.sel { border-color: #7c6af7; background: rgba(124,106,247,0.08); color: #7c6af7; }
+
+  /* OPTION C — pill button inline, collapses -->  bottom sheet less prominent */
+  .top-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .add-pill {
+    background: #7c6af7; color: #fff; border-radius: 20px;
+    padding: 7px 16px; font-size: 13px; font-weight: 600;
+    display: flex; align-items: center; gap: 5px;
+  }
+</style>
+
+<h2>Add Activity — Button Style</h2>
+<p class="subtitle">Three ways to trigger the activity picker. Underlying picker content is identical.</p>
+
+<div class="phones-wrap">
+
+  <!-- OPTION A: FAB + bottom sheet -->
+  <div class="phone-col">
+    <div class="label">A — FAB + bottom sheet</div>
+    <div class="phone">
+      <div class="phone-header">
+        <h2>Workout</h2>
+      </div>
+      <div class="phone-scroll">
+        <div class="upcoming-strip">
+          <div class="upcoming-label">Upcoming</div>
+          <div class="plan-chip">🏃 Run · Tomorrow</div>
+          <div class="plan-chip">🏋️ Push · Fri</div>
+        </div>
+        <div class="view-switcher">
+          <div class="view-tab active">≡ List</div>
+          <div class="view-tab">▦ Month</div>
+          <div class="view-tab">⬚ Week</div>
+        </div>
+        <div class="filter-row">
+          <div class="chip active">All</div>
+          <div class="chip">Gym</div>
+          <div class="chip">Run</div>
+          <div class="chip sort">↕ Newest</div>
+        </div>
+        <div class="year-label">2026</div>
+        <div class="list-item">
+          <div class="li-icon">🏋️</div>
+          <div class="li-info"><div class="li-name">Upper Body A</div><div class="li-meta">45 min · 3 PRs</div></div>
+          <div class="li-right"><div class="li-date">Today</div><div style="display:flex;gap:3px"><div class="btn-sm">✏️</div><div class="btn-sm">↗️</div></div></div>
+        </div>
+        <div class="list-item">
+          <div class="li-icon">🏃</div>
+          <div class="li-info"><div class="li-name">Morning Run</div><div class="li-meta">8.4 km · 42:10</div></div>
+          <div class="li-right"><div class="li-date">May 7</div><div style="display:flex;gap:3px"><div class="btn-sm">✏️</div><div class="btn-sm">↗️</div></div></div>
+        </div>
+        <div class="list-item">
+          <div class="li-icon">🏋️</div>
+          <div class="li-info"><div class="li-name">Leg Day</div><div class="li-meta">62 min</div></div>
+          <div class="li-right"><div class="li-date">May 5</div><div style="display:flex;gap:3px"><div class="btn-sm">✏️</div><div class="btn-sm">↗️</div></div></div>
+        </div>
+      </div>
+      <!-- FAB -->
+      <div class="fab">＋</div>
+      <!-- Bottom sheet (shown open) -->
+      <div class="fab-sheet">
+        <div class="fab-sheet-handle"></div>
+        <div class="fab-sheet-title">New activity</div>
+        <div class="activity-grid">
+          <div class="activity-chip sel"><span class="em">🏋️</span>Gym</div>
+          <div class="activity-chip"><span class="em">🏃</span>Run</div>
+          <div class="activity-chip"><span class="em">🚴</span>Cycle</div>
+          <div class="activity-chip"><span class="em">🥾</span>Hike</div>
+          <div class="activity-chip"><span class="em">🏊</span>Swim</div>
+          <div class="activity-chip"><span class="em">🚣</span>Row</div>
+          <div class="activity-chip"><span class="em">⛷️</span>Ski</div>
+          <div class="activity-chip"><span class="em">🧘</span>Yoga</div>
+        </div>
+        <div class="action-row">
+          <div class="btn-start">▶ Start now</div>
+          <div class="btn-plan">📅 Plan</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTION B: Header button → inline expand -->
+  <div class="phone-col">
+    <div class="label">B — Header button → inline expand</div>
+    <div class="phone">
+      <div class="phone-header">
+        <h2>Workout</h2>
+        <div class="header-btn">＋ Add</div>
+      </div>
+      <div class="phone-scroll">
+        <!-- Inline picker expanded -->
+        <div class="inline-picker">
+          <div class="mini-grid">
+            <div class="mini-chip sel"><span class="em">🏋️</span>Gym</div>
+            <div class="mini-chip"><span class="em">🏃</span>Run</div>
+            <div class="mini-chip"><span class="em">🚴</span>Cycle</div>
+            <div class="mini-chip"><span class="em">🥾</span>Hike</div>
+            <div class="mini-chip"><span class="em">🏊</span>Swim</div>
+            <div class="mini-chip"><span class="em">🚣</span>Row</div>
+            <div class="mini-chip"><span class="em">⛷️</span>Ski</div>
+            <div class="mini-chip"><span class="em">🧘</span>Yoga</div>
+          </div>
+          <div class="action-row">
+            <div class="btn-start">▶ Start now</div>
+            <div class="btn-plan">📅 Plan</div>
+          </div>
+        </div>
+        <div class="upcoming-strip">
+          <div class="upcoming-label">Upcoming</div>
+          <div class="plan-chip">🏃 Run · Tomorrow</div>
+          <div class="plan-chip">🏋️ Push · Fri</div>
+        </div>
+        <div class="view-switcher">
+          <div class="view-tab active">≡ List</div>
+          <div class="view-tab">▦ Month</div>
+          <div class="view-tab">⬚ Week</div>
+        </div>
+        <div class="filter-row">
+          <div class="chip active">All</div>
+          <div class="chip">Gym</div>
+          <div class="chip">Run</div>
+          <div class="chip sort">↕ Newest</div>
+        </div>
+        <div class="year-label">2026</div>
+        <div class="list-item">
+          <div class="li-icon">🏋️</div>
+          <div class="li-info"><div class="li-name">Upper Body A</div><div class="li-meta">45 min · 3 PRs</div></div>
+          <div class="li-right"><div class="li-date">Today</div><div style="display:flex;gap:3px"><div class="btn-sm">✏️</div><div class="btn-sm">↗️</div></div></div>
+        </div>
+        <div class="list-item">
+          <div class="li-icon">🏃</div>
+          <div class="li-info"><div class="li-name">Morning Run</div><div class="li-meta">8.4 km · 42:10</div></div>
+          <div class="li-right"><div class="li-date">May 7</div><div style="display:flex;gap:3px"><div class="btn-sm">✏️</div><div class="btn-sm">↗️</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTION C: Pill in its own bar -->
+  <div class="phone-col">
+    <div class="label">C — Pill bar (always visible)</div>
+    <div class="phone">
+      <div class="phone-header">
+        <h2>Workout</h2>
+      </div>
+      <div class="phone-scroll">
+        <div class="top-bar">
+          <div class="add-pill">＋ Add activity</div>
+        </div>
+        <div class="upcoming-strip">
+          <div class="upcoming-label">Upcoming</div>
+          <div class="plan-chip">🏃 Run · Tomorrow</div>
+          <div class="plan-chip">🏋️ Push · Fri</div>
+        </div>
+        <div class="view-switcher">
+          <div class="view-tab active">≡ List</div>
+          <div class="view-tab">▦ Month</div>
+          <div class="view-tab">⬚ Week</div>
+        </div>
+        <div class="filter-row">
+          <div class="chip active">All</div>
+          <div class="chip">Gym</div>
+          <div class="chip">Run</div>
+          <div class="chip sort">↕ Newest</div>
+        </div>
+        <div class="year-label">2026</div>
+        <div class="list-item">
+          <div class="li-icon">🏋️</div>
+          <div class="li-info"><div class="li-name">Upper Body A</div><div class="li-meta">45 min · 3 PRs</div></div>
+          <div class="li-right"><div class="li-date">Today</div><div style="display:flex;gap:3px"><div class="btn-sm">✏️</div><div class="btn-sm">↗️</div></div></div>
+        </div>
+        <div class="list-item">
+          <div class="li-icon">🏃</div>
+          <div class="li-info"><div class="li-name">Morning Run</div><div class="li-meta">8.4 km · 42:10</div></div>
+          <div class="li-right"><div class="li-date">May 7</div><div style="display:flex;gap:3px"><div class="btn-sm">✏️</div><div class="btn-sm">↗️</div></div></div>
+        </div>
+        <div class="list-item">
+          <div class="li-icon">🏋️</div>
+          <div class="li-info"><div class="li-name">Leg Day</div><div class="li-meta">62 min</div></div>
+          <div class="li-right"><div class="li-date">May 5</div><div style="display:flex;gap:3px"><div class="btn-sm">✏️</div><div class="btn-sm">↗️</div></div></div>
+        </div>
+        <div class="list-item">
+          <div class="li-icon">🚴</div>
+          <div class="li-info"><div class="li-name">Evening Ride</div><div class="li-meta">22 km · 1:05</div></div>
+          <div class="li-right"><div class="li-date">May 3</div><div style="display:flex;gap:3px"><div class="btn-sm">✏️</div><div class="btn-sm">↗️</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="section" style="margin-top:16px">
+  <p>A = FAB bottom-right, tapping opens a bottom sheet with the sport grid. Clean, lots of screen space for the list.<br>
+  B = "+ Add" button in the header — tapping reveals an inline expand below the header, collapses when dismissed.<br>
+  C = Purple pill always visible in its own bar — always one tap away, opens a bottom sheet or modal.</p>
+  <p>Which feels right?</p>
+  <div class="options" style="margin-top:10px">
+    <div class="option" data-choice="a" onclick="toggleSelect(this)"><div class="letter">A</div><div class="content"><h3>FAB + bottom sheet</h3><p>Floating ＋ button, sport picker slides up from bottom</p></div></div>
+    <div class="option" data-choice="b" onclick="toggleSelect(this)"><div class="letter">B</div><div class="content"><h3>Header button → inline expand</h3><p>"＋ Add" in the header, picker expands inline below it</p></div></div>
+    <div class="option" data-choice="c" onclick="toggleSelect(this)"><div class="letter">C</div><div class="content"><h3>Pill bar always visible</h3><p>Purple "＋ Add activity" pill permanently in its own bar</p></div></div>
+  </div>
+</div>

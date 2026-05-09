@@ -1,0 +1,104 @@
+form {
+  padding: var(--s-2);
+  border-radius: var(--r-xs);
+  font-size: var(--t-md);
+}
+
+input,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+input[type="url"],
+input[type="tel"],
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="week"],
+textarea,
+select,
+.input {
+  background: var(--surface-1);
+  color: var(--ink);
+  padding: 10px var(--s-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
+  font-family: var(--font-ui);
+  font-size: var(--t-md);
+  resize: none;
+  min-height: var(--s-6);
+  width: 100%;
+  transition: border-color .12s var(--ease);
+}
+
+input:hover,
+textarea:hover,
+select:hover,
+.input:hover {
+  border-color: var(--ink-faint);
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+.input:focus-visible {
+  border-color: var(--accent);
+  outline: 2px solid var(--accent);
+  outline-offset: 0;
+}
+
+/* ── Input variants ── */
+.input--sm,
+input.sm {
+  padding: 6px var(--s-2);
+  font-size: var(--t-sm);
+  min-height: unset;
+}
+
+.input--num,
+input.num {
+  text-align: center;
+}
+
+input[type="number"] { flex: 1; }
+input[type="range"]  { padding: 0; }
+
+/* ── Progress / Meter (native elements) ── */
+progress {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: var(--s-4);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  border: none;
+}
+::-webkit-progress-bar         { background: var(--surface-2); }
+::-webkit-progress-value       { background: var(--accent); }
+::-moz-progress-bar            { background: var(--accent); }
+
+/* ── Error text ── */
+.error-text {
+  font-size: var(--t-xs);
+  color: var(--bad);
+}
+
+/* ── Narrow viewport overrides ── */
+@media (max-width: 360px) {
+  input,
+  input[type="text"],
+  input[type="number"],
+  input[type="search"],
+  input[type="date"],
+  input[type="time"],
+  input[type="datetime-local"],
+  textarea,
+  select,
+  .input {
+    min-width: 0;
+    flex: 1 1 40px;
+  }
+  select { flex: 0 1 auto; }
+}

@@ -1,0 +1,173 @@
+<h2>Tab Layout — Revised</h2>
+<p class="subtitle">Sessions include runs · titles prominent · no set count · schedule strip is tappable</p>
+
+<div class="section">
+  <div class="split" style="gap:24px">
+
+    <!-- WORKOUT TAB -->
+    <div class="mockup" style="flex:1">
+      <div class="mockup-header" style="background:#6366f1;color:#fff">Workout Tab</div>
+      <div class="mockup-body" style="padding:0">
+
+        <!-- Mobile-only schedule strip -->
+        <div style="border-bottom:1px solid #e2e8f0;padding:12px 14px">
+          <div style="font-size:10px;color:#64748b;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">This week — tap a day to view session</div>
+          <div style="display:flex;gap:5px">
+
+            <!-- Past day with session — tappable -->
+            <div style="flex:1;background:#f0fdf4;border:1px solid #86efac;border-radius:7px;padding:6px;text-align:center;font-size:11px;cursor:pointer">
+              <div style="color:#64748b">Mon</div>
+              <div style="font-weight:700;font-size:13px">5</div>
+              <div style="width:6px;height:6px;background:#22c55e;border-radius:50%;margin:3px auto 0"></div>
+            </div>
+
+            <!-- Today (active) -->
+            <div style="flex:1;background:#6366f1;border-radius:7px;padding:6px;text-align:center;font-size:11px;color:#fff">
+              <div style="opacity:.8">Tue</div>
+              <div style="font-weight:700;font-size:13px">6</div>
+              <div style="font-size:9px;opacity:.8;margin-top:2px">Today</div>
+            </div>
+
+            <!-- Past day — run session -->
+            <div style="flex:1;background:#fef3c7;border:1px solid #fcd34d;border-radius:7px;padding:6px;text-align:center;font-size:11px;cursor:pointer">
+              <div style="color:#64748b">Wed</div>
+              <div style="font-weight:700;font-size:13px">7</div>
+              <div style="font-size:9px;color:#b45309;margin-top:2px">🏃</div>
+            </div>
+
+            <!-- Future / rest -->
+            <div style="flex:1;background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;padding:6px;text-align:center;font-size:11px;color:#94a3b8">
+              <div>Thu</div>
+              <div style="font-weight:600;font-size:13px">8</div>
+            </div>
+
+            <div style="flex:1;background:#f8fafc;border:1px dashed #e2e8f0;border-radius:7px;padding:6px;text-align:center;font-size:11px;color:#94a3b8">
+              <div>Fri</div>
+              <div style="font-weight:600;font-size:13px">9</div>
+            </div>
+          </div>
+          <div style="font-size:10px;color:#64748b;margin-top:6px">Green dot = lift session · 🏃 = run · tap to jump to that session</div>
+        </div>
+
+        <!-- New workout button -->
+        <div style="padding:12px 14px;border-bottom:1px solid #e2e8f0">
+          <div style="background:#6366f1;color:#fff;padding:10px 12px;border-radius:8px;font-size:13px;font-weight:600;text-align:center">+ New Workout</div>
+        </div>
+
+        <!-- Session list — mixed runs + lifts, no set count -->
+        <div style="padding:12px 14px">
+          <div style="font-size:10px;color:#64748b;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">Recent Sessions</div>
+
+          <!-- Strength session -->
+          <div style="margin-bottom:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:11px 12px;font-size:12px;cursor:pointer">
+            <div style="display:flex;justify-content:space-between;align-items:baseline">
+              <span style="font-weight:700;font-size:13px">Push Day A</span>
+              <span style="color:#64748b;font-size:11px">Yesterday</span>
+            </div>
+            <div style="color:#64748b;font-size:11px;margin-top:3px">6 exercises · 52 min</div>
+          </div>
+
+          <!-- Run session -->
+          <div style="margin-bottom:8px;background:#fef9f0;border:1px solid #fed7aa;border-radius:8px;padding:11px 12px;font-size:12px;cursor:pointer">
+            <div style="display:flex;justify-content:space-between;align-items:baseline">
+              <span style="font-weight:700;font-size:13px">🏃 Morning Run</span>
+              <span style="color:#64748b;font-size:11px">Wed</span>
+            </div>
+            <div style="color:#64748b;font-size:11px;margin-top:3px">8.2 km · 41 min · 5:00/km</div>
+          </div>
+
+          <!-- Strength session -->
+          <div style="margin-bottom:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:11px 12px;font-size:12px;cursor:pointer">
+            <div style="display:flex;justify-content:space-between;align-items:baseline">
+              <span style="font-weight:700;font-size:13px">Pull Day A</span>
+              <span style="color:#64748b;font-size:11px">Mon</span>
+            </div>
+            <div style="color:#64748b;font-size:11px;margin-top:3px">5 exercises · 48 min</div>
+          </div>
+
+          <!-- Run session -->
+          <div style="margin-bottom:8px;background:#fef9f0;border:1px solid #fed7aa;border-radius:8px;padding:11px 12px;font-size:12px;cursor:pointer">
+            <div style="display:flex;justify-content:space-between;align-items:baseline">
+              <span style="font-weight:700;font-size:13px">🏃 Easy Run</span>
+              <span style="color:#64748b;font-size:11px">Sun</span>
+            </div>
+            <div style="color:#64748b;font-size:11px;margin-top:3px">5.5 km · 30 min · 5:27/km</div>
+          </div>
+
+          <div style="background:#f8fafc;border:1px dashed #cbd5e1;border-radius:8px;padding:10px;font-size:11px;color:#94a3b8;text-align:center">Load more…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROGRESS TAB (unchanged from prior) -->
+    <div class="mockup" style="flex:1">
+      <div class="mockup-header" style="background:#0ea5e9;color:#fff">Progress Tab</div>
+      <div class="mockup-body" style="padding:0">
+        <div style="border-bottom:1px solid #e2e8f0;padding:8px 14px;font-size:11px;color:#64748b;letter-spacing:.05em;text-transform:uppercase">Session types — grouped with sparkline</div>
+        <div style="padding:14px;border-bottom:1px solid #e2e8f0">
+          <div style="margin-bottom:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:11px 12px;font-size:12px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-weight:700;font-size:13px">Push Day A</span>
+              <span style="background:#dbeafe;color:#1d4ed8;font-size:10px;padding:2px 7px;border-radius:12px">12×</span>
+            </div>
+            <div style="height:32px;background:#eff6ff;border-radius:4px;margin-top:7px;position:relative;overflow:hidden">
+              <div style="position:absolute;bottom:0;left:0;right:0;display:flex;align-items:flex-end;gap:2px;padding:2px">
+                <div style="flex:1;height:16px;background:#6366f1;border-radius:2px;opacity:.5"></div>
+                <div style="flex:1;height:20px;background:#6366f1;border-radius:2px;opacity:.6"></div>
+                <div style="flex:1;height:18px;background:#6366f1;border-radius:2px;opacity:.7"></div>
+                <div style="flex:1;height:26px;background:#6366f1;border-radius:2px;opacity:.85"></div>
+                <div style="flex:1;height:32px;background:#6366f1;border-radius:2px"></div>
+              </div>
+            </div>
+            <div style="font-size:10px;color:#64748b;margin-top:4px">Volume trend · last 5 sessions</div>
+          </div>
+
+          <!-- Run type -->
+          <div style="margin-bottom:8px;background:#fef9f0;border:1px solid #fed7aa;border-radius:8px;padding:11px 12px;font-size:12px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-weight:700;font-size:13px">🏃 Runs</span>
+              <span style="background:#ffedd5;color:#c2410c;font-size:10px;padding:2px 7px;border-radius:12px">8×</span>
+            </div>
+            <div style="height:32px;background:#fff7ed;border-radius:4px;margin-top:7px;position:relative;overflow:hidden">
+              <div style="position:absolute;bottom:0;left:0;right:0;display:flex;align-items:flex-end;gap:2px;padding:2px">
+                <div style="flex:1;height:18px;background:#f97316;border-radius:2px;opacity:.5"></div>
+                <div style="flex:1;height:22px;background:#f97316;border-radius:2px;opacity:.6"></div>
+                <div style="flex:1;height:20px;background:#f97316;border-radius:2px;opacity:.7"></div>
+                <div style="flex:1;height:28px;background:#f97316;border-radius:2px;opacity:.85"></div>
+                <div style="flex:1;height:26px;background:#f97316;border-radius:2px"></div>
+              </div>
+            </div>
+            <div style="font-size:10px;color:#64748b;margin-top:4px">Distance trend · last 5 runs</div>
+          </div>
+
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:11px 12px;font-size:12px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-weight:700;font-size:13px">Pull Day A</span>
+              <span style="background:#dbeafe;color:#1d4ed8;font-size:10px;padding:2px 7px;border-radius:12px">8×</span>
+            </div>
+            <div style="height:32px;background:#eff6ff;border-radius:4px;margin-top:7px;position:relative;overflow:hidden">
+              <div style="position:absolute;bottom:0;left:0;right:0;display:flex;align-items:flex-end;gap:2px;padding:2px">
+                <div style="flex:1;height:20px;background:#0ea5e9;border-radius:2px;opacity:.5"></div>
+                <div style="flex:1;height:20px;background:#0ea5e9;border-radius:2px;opacity:.6"></div>
+                <div style="flex:1;height:26px;background:#0ea5e9;border-radius:2px;opacity:.7"></div>
+                <div style="flex:1;height:24px;background:#0ea5e9;border-radius:2px;opacity:.85"></div>
+                <div style="flex:1;height:30px;background:#0ea5e9;border-radius:2px"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:14px">
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px;font-size:11px;color:#64748b;text-align:center;height:50px;display:flex;align-items:center;justify-content:center">
+            Tap a session type → detailed graphs + exercise history
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section" style="margin-top:16px">
+  <p class="subtitle">Does this look right? Happy to adjust anything before I write the spec.</p>
+</div>

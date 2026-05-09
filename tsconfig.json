@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "strict": true,
+    "isolatedModules": true,
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "paths": {
+      "@app/*": ["./app/*"],
+      "@ui/*": ["./ui/*"],
+      "@features/*": ["./features/*"],
+      "@data/*": ["./data/*"],
+      "@core/*": ["./core/*"],
+      "@shared/*": ["./shared/*"],
+      "@styling/*": ["./styling/*"],
+      "@config/*": ["./config/*"]
+    }
+  },
+  "include": ["vite-env.d.ts", "app", "ui", "features", "data", "core", "shared", "styling", "config"],
+  "exclude": ["node_modules", "dist", "build"]
+}

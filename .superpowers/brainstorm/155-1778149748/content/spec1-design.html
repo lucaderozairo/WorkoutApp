@@ -1,0 +1,108 @@
+<h2>Spec 1 — Full Design</h2>
+<p class="subtitle">Review each section and confirm before we write the doc</p>
+
+<div class="section">
+  <h3>1 · Mobile nav</h3>
+  <div style="background:#1e1e2e;border-radius:8px;padding:16px;max-width:480px;">
+    <div style="display:flex;gap:2px;background:#1a1a2e;border-radius:12px;padding:10px 8px;margin-bottom:12px;">
+      <div style="flex:1;text-align:center;padding:8px 4px;"><div style="font-size:20px;">🏠</div><div style="font-size:10px;color:#888;margin-top:4px;">Home</div></div>
+      <div style="flex:1;text-align:center;padding:8px 4px;"><div style="font-size:20px;">💪</div><div style="font-size:10px;color:#888;margin-top:4px;">Workout</div></div>
+      <div style="flex:1;text-align:center;padding:8px 4px;background:#2a2a3e;border-radius:8px;"><div style="font-size:20px;">⚡</div><div style="font-size:10px;color:#7eb8f7;margin-top:4px;">Activity</div></div>
+      <div style="flex:1;text-align:center;padding:8px 4px;"><div style="font-size:20px;">👥</div><div style="font-size:10px;color:#888;margin-top:4px;">Social</div></div>
+      <div style="flex:1;text-align:center;padding:8px 4px;"><div style="font-size:20px;">👤</div><div style="font-size:10px;color:#888;margin-top:4px;">Profile</div></div>
+    </div>
+    <ul style="font-size:12px;color:#aaa;margin:0;padding-left:16px;line-height:1.8;">
+      <li>Nutrition tab removed from mobile nav — slot replaced by Activity</li>
+      <li>Activity routes to <code>/activity</code> (placeholder for Spec 3)</li>
+      <li>Desktop sidebar keeps all existing tabs + gains Activity</li>
+      <li>Nutrition stays in desktop sidebar (not hidden on desktop)</li>
+    </ul>
+  </div>
+</div>
+
+<div class="section">
+  <h3>2 · Profile screen tabs</h3>
+  <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;">
+    <div style="width:240px;">
+      <div style="background:#1a1a2e;border-radius:12px;overflow:hidden;">
+        <div style="background:#16213e;padding:16px;text-align:center;border-bottom:1px solid #2a2a4e;">
+          <div style="width:48px;height:48px;background:#3a3a5e;border-radius:50%;margin:0 auto 8px;"></div>
+          <div style="font-size:13px;font-weight:600;color:#e0e0e0;">Alex Johnson</div>
+          <div style="font-size:11px;color:#666;margin-top:3px;">148 sessions · 342 lifts · 89 km</div>
+          <div style="margin-top:8px;display:flex;gap:6px;justify-content:center;">
+            <div style="font-size:10px;color:#888;background:#2a2a4e;padding:3px 8px;border-radius:20px;">Achievements</div>
+            <div style="font-size:10px;color:#888;background:#2a2a4e;padding:3px 8px;border-radius:20px;">PRs</div>
+            <div style="font-size:10px;color:#888;background:#2a2a4e;padding:3px 8px;border-radius:20px;">Goals</div>
+          </div>
+        </div>
+        <div style="display:flex;border-bottom:1px solid #2a2a4e;">
+          <div style="flex:1;text-align:center;padding:9px 4px;font-size:11px;color:#7eb8f7;border-bottom:2px solid #7eb8f7;font-weight:600;">Activities</div>
+          <div style="flex:1;text-align:center;padding:9px 4px;font-size:11px;color:#555;">Health</div>
+          <div style="flex:1;text-align:center;padding:9px 4px;font-size:11px;color:#555;">Nutrition</div>
+        </div>
+        <div style="padding:10px;">
+          <div style="background:#2a2a4e;border-radius:6px;padding:8px;margin-bottom:6px;">
+            <div style="font-size:11px;color:#e0e0e0;font-weight:500;">Upper Push — Mon</div>
+            <div style="font-size:10px;color:#888;margin-top:2px;">8 exercises · 52 min · ♥ 12 likes</div>
+          </div>
+          <div style="background:#2a2a4e;border-radius:6px;padding:8px;margin-bottom:6px;">
+            <div style="font-size:11px;color:#e0e0e0;font-weight:500;">5k Run — Sat</div>
+            <div style="font-size:10px;color:#888;margin-top:2px;">5.2 km · 26:40 · ♥ 8 likes</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;max-width:340px;">
+      <div style="background:#1e1e2e;border-radius:8px;padding:12px;">
+        <div style="font-size:12px;font-weight:600;color:#7eb8f7;margin-bottom:6px;">Activities tab</div>
+        <ul style="font-size:12px;color:#ccc;margin:0;padding-left:16px;line-height:1.8;">
+          <li>Only sessions flagged as shared to feed</li>
+          <li>Card: title, date, key stats, likes count</li>
+          <li>Tap → existing SessionDetailScreen</li>
+          <li>Empty state: "No shared sessions yet"</li>
+        </ul>
+      </div>
+      <div style="background:#1e1e2e;border-radius:8px;padding:12px;">
+        <div style="font-size:12px;font-weight:600;color:#7eb8f7;margin-bottom:6px;">Health tab</div>
+        <ul style="font-size:12px;color:#ccc;margin:0;padding-left:16px;line-height:1.8;">
+          <li>Body metrics block (weight, resting HR, HRV, VO₂ max) — moved from hero</li>
+          <li>Sleep summary — same data as Dashboard sleep card</li>
+          <li>Injuries — moved from hero</li>
+        </ul>
+      </div>
+      <div style="background:#1e1e2e;border-radius:8px;padding:12px;">
+        <div style="font-size:12px;font-weight:600;color:#7eb8f7;margin-bottom:6px;">Nutrition tab</div>
+        <ul style="font-size:12px;color:#ccc;margin:0;padding-left:16px;line-height:1.8;">
+          <li>Renders <code>&lt;NutritionScreen /&gt;</code> unchanged</li>
+          <li>No visual changes to nutrition content</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>3 · Likes (replaces kudos)</h3>
+  <div style="background:#1e1e2e;border-radius:8px;padding:12px;max-width:480px;">
+    <ul style="font-size:12px;color:#ccc;margin:0;padding-left:16px;line-height:1.8;">
+      <li>All instances of "kudos" → "likes" across the app</li>
+      <li>Social feed, activity cards, session detail all updated</li>
+      <li>Icon: ♥ heart (replaces raised fist / clap if any exist)</li>
+    </ul>
+  </div>
+</div>
+
+<div class="section">
+  <h3>4 · What's not in Spec 1</h3>
+  <div style="background:#1e1e2e;border-radius:8px;padding:12px;max-width:480px;">
+    <ul style="font-size:12px;color:#888;margin:0;padding-left:16px;line-height:1.8;">
+      <li>Activity screen content → Spec 3 (planning)</li>
+      <li>Discover (events/groups map) → Spec 2</li>
+      <li>Live run notifications → Spec 4</li>
+      <li>Social screen Events/Groups tabs — unchanged for now</li>
+    </ul>
+  </div>
+</div>
+
+<p style="font-size:13px;color:#aaa;margin-top:16px;">Does this design look right? Any changes before I write the spec doc?</p>

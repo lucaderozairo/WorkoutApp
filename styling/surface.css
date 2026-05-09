@@ -1,0 +1,106 @@
+.surface {
+  width: 100%;
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  box-shadow: var(--box-shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: var(--s-4);
+}
+.surface.row {
+  flex-direction: row;
+}
+.surface.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--s-3);
+}
+.surface.compact {
+  min-height: unset;
+  padding: var(--s-3);
+}
+.surface.stat {
+  min-height: unset;
+  text-align: center;
+  align-items: center;
+}
+.trend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-5);
+  border-bottom: 1px solid var(--line);
+}
+.trend-item:last-child {
+  border-bottom: none;
+}
+.trend-item > :first-child {
+  flex: 1;
+}
+
+/* ── Pain scale ── */
+.pain-scale {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.pain-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 1px solid var(--line-strong);
+}
+.pain-dot[data-active="true"] {
+  background: var(--bad);
+  border-color: var(--bad);
+}
+
+/* ── Surface variants ── */
+.surface.flat {
+  background: var(--surface-2);
+  border-color: transparent;
+}
+.surface.accent {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: transparent;
+}
+.surface.inset {
+  background: var(--surface-2);
+  border-style: dashed;
+}
+.surface.tight {
+  padding: var(--s-1);
+}
+.surface.bare {
+  padding: 0;
+  overflow: hidden;
+}
+
+/* ── Divider ── */
+hr {
+  height: 1px;
+  background: var(--line);
+  border: 0;
+  margin: 0;
+}
+
+/* ── Block (segmented bar unit) ── */
+.block {
+  flex: 1 1 0;
+  min-width: 20px;
+  min-height: var(--t-xs);
+  box-shadow: var(--box-shadow-sm);
+}
+
+/* ── Narrow viewport overrides ── */
+@media (max-width: 360px) {
+  .surface {
+    padding: var(--s-3);
+    min-height: unset;
+    gap: var(--s-2);
+  }
+}

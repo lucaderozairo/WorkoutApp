@@ -1,0 +1,151 @@
+<h2>Spec 1 — Nav + Profile Tabs</h2>
+<p class="subtitle">Proposed changes to mobile nav and profile screen structure</p>
+
+<div class="section">
+  <h3>Mobile Nav (bottom bar)</h3>
+  <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;">
+
+    <div>
+      <div class="label" style="margin-bottom:8px;">Before</div>
+      <div style="display:flex;gap:2px;background:#1a1a2e;border-radius:12px;padding:10px 8px;width:320px;">
+        <div style="flex:1;text-align:center;padding:8px 4px;border-radius:8px;">
+          <div style="font-size:20px;">🏠</div>
+          <div style="font-size:10px;color:#888;margin-top:4px;">Home</div>
+        </div>
+        <div style="flex:1;text-align:center;padding:8px 4px;border-radius:8px;">
+          <div style="font-size:20px;">💪</div>
+          <div style="font-size:10px;color:#888;margin-top:4px;">Workout</div>
+        </div>
+        <div style="flex:1;text-align:center;padding:8px 4px;border-radius:8px;background:#2a2a3e;">
+          <div style="font-size:20px;">🥗</div>
+          <div style="font-size:10px;color:#e8b4b8;margin-top:4px;">Nutrition</div>
+        </div>
+        <div style="flex:1;text-align:center;padding:8px 4px;border-radius:8px;">
+          <div style="font-size:20px;">👥</div>
+          <div style="font-size:10px;color:#888;margin-top:4px;">Social</div>
+        </div>
+        <div style="flex:1;text-align:center;padding:8px 4px;border-radius:8px;">
+          <div style="font-size:20px;">👤</div>
+          <div style="font-size:10px;color:#888;margin-top:4px;">Profile</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="label" style="margin-bottom:8px;">After</div>
+      <div style="display:flex;gap:2px;background:#1a1a2e;border-radius:12px;padding:10px 8px;width:320px;">
+        <div style="flex:1;text-align:center;padding:8px 4px;border-radius:8px;">
+          <div style="font-size:20px;">🏠</div>
+          <div style="font-size:10px;color:#888;margin-top:4px;">Home</div>
+        </div>
+        <div style="flex:1;text-align:center;padding:8px 4px;border-radius:8px;">
+          <div style="font-size:20px;">💪</div>
+          <div style="font-size:10px;color:#888;margin-top:4px;">Workout</div>
+        </div>
+        <div style="flex:1;text-align:center;padding:8px 4px;border-radius:8px;background:#2a2a3e;">
+          <div style="font-size:20px;">⚡</div>
+          <div style="font-size:10px;color:#7eb8f7;margin-top:4px;">Activity</div>
+        </div>
+        <div style="flex:1;text-align:center;padding:8px 4px;border-radius:8px;">
+          <div style="font-size:20px;">👥</div>
+          <div style="font-size:10px;color:#888;margin-top:4px;">Social</div>
+        </div>
+        <div style="flex:1;text-align:center;padding:8px 4px;border-radius:8px;">
+          <div style="font-size:20px;">👤</div>
+          <div style="font-size:10px;color:#888;margin-top:4px;">Profile</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:#7eb8f7;margin-top:8px;">Nutrition moves into Profile → Nutrition tab</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <h3>Profile Screen Structure</h3>
+  <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;">
+
+    <div style="width:240px;">
+      <div style="background:#1a1a2e;border-radius:12px;overflow:hidden;">
+        <!-- Hero stays -->
+        <div style="background:#16213e;padding:16px;text-align:center;border-bottom:1px solid #2a2a4e;">
+          <div style="width:52px;height:52px;background:#3a3a5e;border-radius:50%;margin:0 auto 8px;"></div>
+          <div style="font-size:14px;font-weight:600;color:#e0e0e0;">Alex Johnson</div>
+          <div style="font-size:11px;color:#888;margin-top:4px;">148 sessions · 342 lifts · 89 km</div>
+          <div style="margin-top:10px;display:flex;gap:8px;justify-content:center;">
+            <div style="font-size:11px;color:#888;background:#2a2a4e;padding:4px 10px;border-radius:20px;">Achievements</div>
+            <div style="font-size:11px;color:#888;background:#2a2a4e;padding:4px 10px;border-radius:20px;">PRs</div>
+            <div style="font-size:11px;color:#888;background:#2a2a4e;padding:4px 10px;border-radius:20px;">Goals</div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div style="display:flex;border-bottom:1px solid #2a2a4e;">
+          <div style="flex:1;text-align:center;padding:10px 4px;font-size:12px;color:#7eb8f7;border-bottom:2px solid #7eb8f7;">Activities</div>
+          <div style="flex:1;text-align:center;padding:10px 4px;font-size:12px;color:#666;">Health</div>
+          <div style="flex:1;text-align:center;padding:10px 4px;font-size:12px;color:#666;">Nutrition</div>
+        </div>
+
+        <!-- Tab content preview -->
+        <div style="padding:12px;">
+          <div style="font-size:11px;color:#888;margin-bottom:8px;">Shared to social feed</div>
+          <div style="background:#2a2a4e;border-radius:8px;padding:10px;margin-bottom:8px;">
+            <div style="font-size:12px;color:#e0e0e0;font-weight:500;">Upper Push — Mon</div>
+            <div style="font-size:11px;color:#888;margin-top:3px;">8 exercises · 52 min · 12 kudos</div>
+          </div>
+          <div style="background:#2a2a4e;border-radius:8px;padding:10px;margin-bottom:8px;">
+            <div style="font-size:12px;color:#e0e0e0;font-weight:500;">5k Run — Sat</div>
+            <div style="font-size:11px;color:#888;margin-top:3px;">5.2 km · 26:40 · 8 kudos</div>
+          </div>
+          <div style="background:#2a2a4e;border-radius:8px;padding:10px;">
+            <div style="font-size:12px;color:#e0e0e0;font-weight:500;">Leg Day — Wed</div>
+            <div style="font-size:11px;color:#888;margin-top:3px;">6 exercises · 48 min · 5 kudos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:340px;">
+      <div style="background:#1e1e2e;border-radius:8px;padding:12px;">
+        <div style="font-size:12px;font-weight:600;color:#7eb8f7;margin-bottom:6px;">Activities tab</div>
+        <div style="font-size:12px;color:#ccc;">Sessions the user has posted to the social feed. Shows title, date, key stats, kudos count.</div>
+      </div>
+      <div style="background:#1e1e2e;border-radius:8px;padding:12px;">
+        <div style="font-size:12px;font-weight:600;color:#7eb8f7;margin-bottom:6px;">Health tab</div>
+        <div style="font-size:12px;color:#ccc;">Body metrics (weight, resting HR, HRV, VO₂ max) + sleep summary + injuries. Consolidates what was scattered across Profile and Dashboard.</div>
+      </div>
+      <div style="background:#1e1e2e;border-radius:8px;padding:12px;">
+        <div style="font-size:12px;font-weight:600;color:#7eb8f7;margin-bottom:6px;">Nutrition tab</div>
+        <div style="font-size:12px;color:#ccc;">Full nutrition logging screen, identical to the current standalone tab. Moved here so mobile nav slot can be freed up.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <h3>Implementation approach</h3>
+  <div class="options">
+    <div class="option" data-choice="a" onclick="toggleSelect(this)">
+      <div class="letter">A</div>
+      <div class="content">
+        <h3>Component composition <span style="font-size:11px;color:#7eb8f7;">(Recommended)</span></h3>
+        <p>ProfileScreen renders tab buttons with useState. Each tab imports its existing screen component — Nutrition tab renders <code>&lt;NutritionScreen /&gt;</code>, Health tab renders existing metric/injury blocks. No duplication, reuses what already works.</p>
+      </div>
+    </div>
+    <div class="option" data-choice="b" onclick="toggleSelect(this)">
+      <div class="letter">B</div>
+      <div class="content">
+        <h3>Inline all content</h3>
+        <p>Same useState tab pattern as Social screen. All content written directly in ProfileScreen.tsx. Simpler, no component boundaries, but the file gets large. Fine if the Health and Activities sections stay small.</p>
+      </div>
+    </div>
+    <div class="option" data-choice="c" onclick="toggleSelect(this)">
+      <div class="letter">C</div>
+      <div class="content">
+        <h3>Nested routes</h3>
+        <p>/profile/activities, /profile/health, /profile/nutrition. Supports deep linking and browser back button. More setup, overkill unless you need shareable profile tab URLs.</p>
+      </div>
+    </div>
+  </div>
+</div>

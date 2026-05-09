@@ -1,0 +1,52 @@
+<h2>Spec 3 — Activity Planning</h2>
+<p class="subtitle">Three approaches to the planning flow. Pick one before we design the details.</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Multi-step wizard <span style="font-size:11px;color:#7eb8f7;">(Recommended)</span></h3>
+      <p>Single entry point in the Workout tab ("Plan a session"). Steps: <strong>1 Choose type → 2 Configure → 3 Schedule → 4 Review</strong>. The configuration step adapts based on type — exercise picker for gym, map + pace for cardio. Clean, guided, no cognitive overload.</p>
+      <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="font-size:11px;background:#2a2a4e;padding:2px 8px;border-radius:4px;color:#aaa;">Guided flow</span>
+        <span style="font-size:11px;background:#2a2a4e;padding:2px 8px;border-radius:4px;color:#aaa;">Works for all types</span>
+        <span style="font-size:11px;background:#2a2a4e;padding:2px 8px;border-radius:4px;color:#aaa;">More taps to complete</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Split entry points</h3>
+      <p>Two distinct buttons in the Workout tab: <strong>"Plan Gym Session"</strong> and <strong>"Plan Run / Ride / Swim"</strong>. Each opens a purpose-built form optimised for that type. Fewer steps, but duplicates the scheduling UI and diverges the UX surface area.</p>
+      <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="font-size:11px;background:#2a2a4e;padding:2px 8px;border-radius:4px;color:#aaa;">Faster per flow</span>
+        <span style="font-size:11px;background:#2a2a4e;padding:2px 8px;border-radius:4px;color:#aaa;">Two code paths to maintain</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Single scrollable form</h3>
+      <p>One long form with a type selector at the top. Changing the type shows/hides the relevant sections inline. No steps — everything visible at once. Fastest to fill in for experienced users, overwhelming for new ones.</p>
+      <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="font-size:11px;background:#2a2a4e;padding:2px 8px;border-radius:4px;color:#aaa;">Fewest taps</span>
+        <span style="font-size:11px;background:#2a2a4e;padding:2px 8px;border-radius:4px;color:#aaa;">Dense UX</span>
+        <span style="font-size:11px;background:#2a2a4e;padding:2px 8px;border-radius:4px;color:#aaa;">Hard to extend</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top:24px;background:#1e1e2e;border-radius:8px;padding:16px;max-width:520px;">
+  <div style="font-size:12px;font-weight:600;color:#7eb8f7;margin-bottom:8px;">What all approaches share</div>
+  <ul style="font-size:12px;color:#ccc;margin:0;padding-left:16px;line-height:1.9;">
+    <li><strong>Gym:</strong> exercise picker + sets/reps/weight + date/time</li>
+    <li><strong>Run/Cycle/Swim:</strong> map route (draw or load saved) + target pace + auto distance markers</li>
+    <li>Saved plan appears in Workout tab history and Schedule screen</li>
+    <li>Distance markers auto-calculate from pace (e.g. 5:00/km → 1km = 5:00, 2km = 10:00)</li>
+  </ul>
+</div>
