@@ -1808,7 +1808,7 @@ export function LogScreen() {
 
           <WorkoutFilterLayer
             sessionType={sessionFilters.type}
-            exercise={sessionFilters.exercise || undefined}
+            exercise={sessionFilters.exercise}
             dateRange={sessionFilters.dateRange}
             onClearType={() => setSessionFilters(prev => ({ ...prev, type: 'all' }))}
             onClearExercise={() => setSessionFilters(prev => ({ ...prev, exercise: '' }))}

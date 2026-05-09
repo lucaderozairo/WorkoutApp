@@ -1,10 +1,13 @@
+import { X } from 'lucide-react';
+import type { TypeFilter, TimeRange } from '@ui/components/log/SessionFilterBar';
+
 interface WorkoutFilterLayerProps {
-  sessionType?: string;       // e.g. 'strength', 'run', etc.
-  exercise?: string;          // specific exercise name
-  dateRange?: string;         // '7d' | '30d' | 'all'
-  onClearType?: () => void;
-  onClearExercise?: () => void;
-  onClearDateRange?: () => void;
+  sessionType?: TypeFilter;
+  exercise: string;
+  dateRange?: TimeRange;
+  onClearType: () => void;
+  onClearExercise: () => void;
+  onClearDateRange: () => void;
 }
 
 export function WorkoutFilterLayer({
@@ -17,7 +20,7 @@ export function WorkoutFilterLayer({
 }: WorkoutFilterLayerProps) {
   const hasActiveFilters =
     (sessionType && sessionType !== 'all') ||
-    exercise ||
+    (exercise && exercise !== '') ||
     (dateRange && dateRange !== 'all');
 
   if (!hasActiveFilters) return null;
@@ -26,17 +29,17 @@ export function WorkoutFilterLayer({
     <div className="row">
       {sessionType && sessionType !== 'all' && (
         <button className="chip active" onClick={onClearType}>
-          {sessionType} ✕
+          {sessionType} <X size={9} />
         </button>
       )}
-      {exercise && (
+      {exercise && exercise !== '' && (
         <button className="chip active" onClick={onClearExercise}>
-          {exercise} ✕
+          {exercise} <X size={9} />
         </button>
       )}
       {dateRange && dateRange !== 'all' && (
         <button className="chip active" onClick={onClearDateRange}>
-          {dateRange} ✕
+          {dateRange} <X size={9} />
         </button>
       )}
     </div>
