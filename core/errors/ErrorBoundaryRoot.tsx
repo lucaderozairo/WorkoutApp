@@ -17,7 +17,7 @@ export class ErrorBoundaryRoot extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ padding: '3rem', textAlign: 'center' }}>
+        <div className="column surface compact align-center">
           <h2>App crashed</h2>
           <p>Please refresh the page.</p>
         </div>

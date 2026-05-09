@@ -22,7 +22,7 @@ export class DomainErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return this.props.fallback ?? (
-        <div className="column surface" style={{ padding: '2rem', textAlign: 'center' }}>
+        <div className="column surface compact align-center">
           <p>Something went wrong in {this.props.domain}.</p>
           <button className="primary" onClick={() => this.setState({ hasError: false })}>
             Retry
