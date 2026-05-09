@@ -5,7 +5,6 @@ import {
   CalendarDays,
   TrendingUp,
   Users,
-  Utensils,
   User,
   Settings,
   Bell,
@@ -22,7 +21,6 @@ const allDesktopTabs = [
   { label: 'Progress', path: '/progress', icon: <TrendingUp size={18} /> },
   { label: 'Social', path: '/social', icon: <Users size={18} /> },
   { label: 'Messages', path: '/messages', icon: <MessageSquare size={18} /> },
-  { label: 'Nutrition', path: '/nutrition', icon: <Utensils size={18} /> },
   { label: 'Profile', path: '/profile', icon: <User size={18} /> },
 ];
 
