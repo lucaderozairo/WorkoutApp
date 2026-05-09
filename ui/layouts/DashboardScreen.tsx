@@ -12,9 +12,9 @@ import { registerHabitProjections, registerStreakMilestonePolicy } from '@featur
 import { SleepLarge } from '@ui/components/widgets/SleepWidgets';
 import { CalendarLarge } from '@ui/components/widgets/CalendarWidgets';
 import { WelcomeWidget } from '@ui/components/widgets/WelcomeWidget';
-import { ConditionsWidget } from '@ui/components/widgets/ConditionsWidget';
 import { ScheduleWidget } from '@ui/components/widgets/ScheduleWidget';
 import { WeatherWidget } from '@ui/components/widgets/WeatherWidget';
+import { SleepCard } from '@ui/components/dashboard/SleepCard';
 import { sleepEntryToSession, GOAL_MINUTES, DAY_LABELS } from '@ui/components/dashboard/dashboardUtils';
 
 import '@features/training_log';
@@ -81,8 +81,10 @@ export function DashboardScreen() {
   <div className="column">
     <WelcomeWidget workoutsThisWeek={workoutsThisWeek} scoreClass={scoreClass} />
     <div className="auto-grid">
+      <SleepCard score={SCORE} scoreClass={scoreClass} readiness={readiness ?? null} />
       {lastNight && <SleepLarge session={lastNight} goalMinutes={GOAL_MINUTES} weeklyTrend={weeklyTrend} scoreHistory={scoreHistory} />}
       <WeatherWidget />
+      <ScheduleWidget appointments={todayAppointments} />
       <CalendarLarge />
     </div>
     </div>
