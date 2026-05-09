@@ -5,7 +5,7 @@ import {
   registerEquipmentMileagePolicy,
 } from '@features/profile';
 import type { UnitSystem } from '@features/profile';
-import type { PersonalRecord, StatsSummary } from '@features/progress_analysis';
+import type { StatsSummary } from '@features/progress_analysis';
 
 import { HealthTab } from '../components/profile/HealthTab';
 import { ActivitiesTab } from '../components/profile/ActivitiesTab';
@@ -25,7 +25,6 @@ export function ProfileScreen() {
   const [activeTab, setActiveTab] = useState<ProfileTab>('overview');
 
   const profile = useQuery<ProfileView>('profile');
-  const prs     = (useQuery<PersonalRecord[]>('personal_records') ?? []) as PersonalRecord[];
   const stats   = useQuery<StatsSummary>('stats_summary');
 
   const initial = profile?.displayName?.charAt(0).toUpperCase() ?? 'Y';
