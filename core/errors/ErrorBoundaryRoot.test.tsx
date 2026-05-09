@@ -1,30 +1,31 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { DomainErrorBoundary } from './DomainErrorBoundary';
+import { ErrorBoundaryRoot } from './ErrorBoundaryRoot';
 
 function Bomb() {
   throw new Error('test explosion');
 }
 
-describe('DomainErrorBoundary', () => {
+describe('ErrorBoundaryRoot', () => {
   let spy: ReturnType<typeof vi.spyOn>;
   beforeEach(() => { spy = vi.spyOn(console, 'error').mockImplementation(() => {}); });
   afterEach(() => spy.mockRestore());
 
-  it('renders fallback when child throws', () => {
+  it('renders crash fallback when child throws', () => {
     render(
-      <DomainErrorBoundary domain="workout">
+      <ErrorBoundaryRoot>
         <Bomb />
-      </DomainErrorBoundary>
+      </ErrorBoundaryRoot>
     );
-    expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
+    expect(screen.getByText(/app crashed/i)).toBeInTheDocument();
+    expect(screen.getByText(/refresh/i)).toBeInTheDocument();
   });
 
   it('renders children when no error', () => {
     render(
-      <DomainErrorBoundary domain="workout">
+      <ErrorBoundaryRoot>
         <span>ok</span>
-      </DomainErrorBoundary>
+      </ErrorBoundaryRoot>
     );
     expect(screen.getByText('ok')).toBeInTheDocument();
   });
