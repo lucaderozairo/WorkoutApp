@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { TelemetryLogger } from './TelemetryLogger';
 
 describe('TelemetryLogger', () => {
-  it('logs error events with domain and timestamp', () => {
+  it('logs error events with domain prefix', () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
     const logger = new TelemetryLogger();
     logger.logError('workout', new Error('test'), { sessionId: 'abc' });
