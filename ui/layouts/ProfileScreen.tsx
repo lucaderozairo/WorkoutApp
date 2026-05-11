@@ -7,9 +7,8 @@ import {
 import type { UnitSystem } from '@features/profile';
 import type { StatsSummary } from '@features/progress_analysis';
 
-import { HealthTab } from '../components/profile/HealthTab';
 import { ActivitiesTab } from '../components/profile/ActivitiesTab';
-import { OverviewTab } from '../components/profile/OverviewTab';
+import { HealthOverviewTab } from '../components/profile/HealthOverviewTab';
 
 import '@features/progress_analysis';
 import '@features/readiness';
@@ -19,10 +18,10 @@ registerEquipmentMileagePolicy();
 
 type ProfileView = { displayName: string; email: string; unitPreference: UnitSystem };
 
-type ProfileTab = 'activities' | 'health' | 'overview';
+type ProfileTab = 'activities' | 'health';
 
 export function ProfileScreen() {
-  const [activeTab, setActiveTab] = useState<ProfileTab>('overview');
+  const [activeTab, setActiveTab] = useState<ProfileTab>('health');
 
   const profile = useQuery<ProfileView>('profile');
   const stats   = useQuery<StatsSummary>('stats_summary');
@@ -67,14 +66,12 @@ export function ProfileScreen() {
       
       {/* ── Tabs ── */}
       <div className="tabs">
-        <button className={`tab${activeTab === 'overview' ? ' active' : ''}`} onClick={() => setActiveTab('overview')}>Overview</button>
         <button className={`tab${activeTab === 'activities' ? ' active' : ''}`} onClick={() => setActiveTab('activities')}>Activities</button>
         <button className={`tab${activeTab === 'health'     ? ' active' : ''}`} onClick={() => setActiveTab('health')}>Health</button>
       </div>
 
-      {activeTab === 'overview' && <OverviewTab />}
       {activeTab === 'activities' && <ActivitiesTab />}
-      {activeTab === 'health'     && <HealthTab />}
+      {activeTab === 'health'     && <HealthOverviewTab />}
 
     </div>
   );
