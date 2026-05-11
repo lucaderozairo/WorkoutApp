@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ErrorBoundaryRoot } from './ErrorBoundaryRoot';
 
-function Bomb() {
+function Bomb(): never {
   throw new Error('test explosion');
 }
 

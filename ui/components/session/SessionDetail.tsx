@@ -556,7 +556,7 @@ export function SessionDetail({ session, onClose, onEdit, onShare, asPage = fals
     icon = categoryIcon(session.category);
   } else if (isStrength) {
     defaultTitle = session.name;
-    date = new Date(session.startedAt).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+    date = new Date(session.startedAt ?? 0).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
     icon = categoryIcon('strength');
   }
 
