@@ -14,6 +14,7 @@ import { TrainingPlansScreen } from '@ui/layouts';
 import { SettingsScreen } from '@ui/layouts';
 import { NotificationsScreen } from '@ui/layouts';
 import { NewSessionScreen } from '@ui/layouts';
+import { HealthCategoryScreen } from '@ui/layouts';
 import { SettingsModal } from '@ui/components/modals/SettingsModal';
 import { APP_MODE } from '@config/app-mode';
 import '@features/training_log';
@@ -46,6 +47,7 @@ export function App() {
             <Route path="/new-session" element={<NewSessionScreen />} />
             <Route path="/exercise/:exerciseName" element={<ExerciseHistoryScreen />} />
             <Route path="/profile" element={<ProfileScreen />} />
+            <Route path="/profile/health/:category" element={<HealthCategoryScreen />} />
             <Route path="/settings" element={<SettingsScreen />} />
             <Route path="/notifications" element={<NotificationsScreen />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
