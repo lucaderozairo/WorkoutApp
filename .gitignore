@@ -45,3 +45,5 @@ legacy/
 # Agent tooling
 .claude-flow/
 .code-review-graph/
+.worktrees/
+.superpowers/
