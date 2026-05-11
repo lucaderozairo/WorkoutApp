@@ -64,11 +64,12 @@ interface TileButtonProps {
 function TileButton({ cat, isPinned = false, onClick, onLongPress }: TileButtonProps) {
   return (
     <button
-      className={`surface${isPinned ? ' selected' : ''}`}
+      className={`surface${isPinned ? ' pinned' : ''}`}
       onClick={onClick}
       onPointerDown={onLongPress.start}
       onPointerUp={onLongPress.cancel}
       onPointerLeave={onLongPress.cancel}
+      onPointerCancel={onLongPress.cancel}
     >
       <div className="column align-center">
         <div>{cat.icon}</div>
@@ -88,18 +89,19 @@ interface ListRowProps {
 function ListRow({ cat, isPinned = false, onClick, onLongPress }: ListRowProps) {
   return (
     <button
-      className={`row align-center${isPinned ? ' surface selected' : ''}`}
+      className={`row align-center${isPinned ? ' surface pinned' : ''}`}
       onClick={onClick}
       onPointerDown={onLongPress.start}
       onPointerUp={onLongPress.cancel}
       onPointerLeave={onLongPress.cancel}
+      onPointerCancel={onLongPress.cancel}
     >
       <span>{cat.icon}</span>
       <div className="grow stack compact">
         <span>{cat.name}</span>
         <span className="caption muted">{cat.subtitle}</span>
       </div>
-      <span className="faint">›</span>
+      <span className="faint" aria-hidden="true">›</span>
     </button>
   )
 }
@@ -151,8 +153,8 @@ export function HealthOverviewTab() {
     [query],
   )
 
-  const pinnedCats = filtered.filter(c => pinned.includes(c.slug))
-  const unpinnedCats = filtered.filter(c => !pinned.includes(c.slug))
+  const pinnedCats   = useMemo(() => filtered.filter(c =>  pinned.includes(c.slug)), [filtered, pinned])
+  const unpinnedCats = useMemo(() => filtered.filter(c => !pinned.includes(c.slug)), [filtered, pinned])
 
   return (
     <div className="stack">
@@ -163,6 +165,7 @@ export function HealthOverviewTab() {
         <input
           className="input grow"
           placeholder="Search categories…"
+          aria-label="Search health categories"
           value={query}
           onChange={e => setQuery(e.target.value)}
         />
@@ -170,8 +173,8 @@ export function HealthOverviewTab() {
 
       {/* View toggle */}
       <div className="cluster">
-        <button className={`chip${view === 'grid' ? ' active' : ''}`} onClick={() => setView('grid')}>Grid</button>
-        <button className={`chip${view === 'list' ? ' active' : ''}`} onClick={() => setView('list')}>List</button>
+        <button className={`chip${view === 'grid' ? ' active' : ''}`} aria-pressed={view === 'grid'} onClick={() => setView('grid')}>Grid</button>
+        <button className={`chip${view === 'list' ? ' active' : ''}`} aria-pressed={view === 'list'} onClick={() => setView('list')}>List</button>
       </div>
 
       {/* ── Grid view ── */}
