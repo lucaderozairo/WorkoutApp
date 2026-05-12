@@ -39,14 +39,15 @@
 .caution:hover {
   background: color-mix(in srgb, var(--status-color) 16%, transparent);
 }
-.danger {
-  --status-color: var(--bad);
-  background: color-mix(in srgb, var(--status-color) 10%, transparent);
-  border-color: var(--status-color);
-  color: var(--status-color);
-}
-.danger:hover {
-  background: color-mix(in srgb, var(--status-color) 16%, transparent);
+
+/* ── Semantic media container heights ── */
+.media-sm { height: var(--media-sm); }
+.media-md { height: var(--media-md); }
+.media-lg { height: var(--media-lg); }
+
+@media (min-width: 600px) {
+  .media-sm { height: var(--media-md); }
+  .media-md { height: var(--media-lg); }
 }
 
 .interactive {
@@ -62,6 +63,17 @@
 }
 .locked      { opacity: 0.3; }
 .grow        { flex: 1; min-width: 0; }
+.relative    { position: relative; }
+.absolute    { position: absolute; }
+.top         { top: var(--s-2); }
+.right       { right: var(--s-2); }
+.bottom      { bottom: var(--s-2); }
+.left        { left: var(--s-2); }
+.h-full      { height: 100%; }
+.text-center { text-align: center; }
+.emoji-sm    { font-size: 28px; }
+.emoji-md    { font-size: 32px; }
+.emoji-lg    { font-size: 36px; }
 
 @media (max-width: 760px)  { .desktop-only { display: none; } }
 @media (min-width: 761px)  { .mobile-only  { display: none; } }

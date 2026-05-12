@@ -84,6 +84,8 @@ button.ghost {
   color: var(--ink);
 }
 button.ghost:hover { background: var(--surface-2); }
+button.ghost.flush { padding-inline: 0; }
+button.ghost.flush:hover { background: transparent; }
 
 /* ── Icon ── */
 button.icon {
@@ -109,6 +111,7 @@ input[type="submit"].lg {
 }
 
 button.block { width: 100%; }
+button.active { background: var(--surface-2); border-color: var(--line-strong); }
 
 /* ── File upload ── */
 .custom-file-upload {

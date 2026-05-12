@@ -30,11 +30,6 @@
   flex-shrink: 0;
 }
 
-/* ── Type selector — selected accent border (no existing equivalent) ── */
-.surface.selected {
-  border-color: var(--accent);
-}
-
 /* ── Leaflet map container (height must be explicit for Leaflet) ── */
 .plan-map {
   width: 100%;
@@ -256,10 +251,40 @@
 }
 
 
-/* ── Narrow number inputs for set/rep counts and weight ── */
-.input-count {
-  width: 44px;
+/* ── Leaflet map controls themed to design system ── */
+.map { width: 100%; }
+/* Isolate Leaflet's internal z-indexes so they don't escape the map container */
+.map-root { isolation: isolate; }
+.map-root .leaflet-tile-pane        { z-index: 2; }
+.map-root .leaflet-overlay-pane     { z-index: 4; }
+.map-root .leaflet-shadow-pane      { z-index: 5; }
+.map-root .leaflet-marker-pane      { z-index: 6; }
+.map-root .leaflet-tooltip-pane     { z-index: 7; }
+.map-root .leaflet-popup-pane       { z-index: 8; }
+.map-root .leaflet-control-container { z-index: 9; }
+
+.leaflet-bar {
+  border: 1px solid var(--line-strong) !important;
+  border-radius: var(--r-sm) !important;
+  box-shadow: var(--box-shadow-sm) !important;
+  overflow: hidden;
 }
-.input-weight {
-  width: 56px;
+.leaflet-bar a {
+  background: var(--surface-1) !important;
+  color: var(--ink) !important;
+  border-bottom-color: var(--line) !important;
+  font-family: var(--font-ui) !important;
+  width: 28px !important;
+  height: 28px !important;
+  line-height: 28px !important;
 }
+.leaflet-bar a:hover { background: var(--surface-2) !important; }
+.leaflet-bar a:last-child { border-bottom: none !important; }
+.leaflet-control-attribution {
+  background: var(--surface-1) !important;
+  color: var(--ink-faint) !important;
+  border: 1px solid var(--line) !important;
+  font-size: 10px !important;
+  padding: 2px 6px !important;
+}
+.leaflet-control-attribution a { color: var(--accent) !important; }

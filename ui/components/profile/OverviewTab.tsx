@@ -36,7 +36,7 @@ export function OverviewTab() {
                     {pr.valueKg}<span className="faint">kg 1RM</span>
                   </span>
                 )}
-                <span className="pill pill--accent">PR</span>
+                <span className="pill accent">PR</span>
               </div>
             ))}
           </div>
@@ -55,7 +55,7 @@ export function OverviewTab() {
             <div key={goal.name} className="surface">
               <div className="row space-between align-center">
                 <span>{goal.name}</span>
-                <span className={`pill ${done ? 'pill--ok' : 'pill--warn'}`}>
+                <span className={`pill ${done ? 'ok' : 'warn'}`}>
                   {done ? 'Done' : 'In progress'}
                 </span>
               </div>

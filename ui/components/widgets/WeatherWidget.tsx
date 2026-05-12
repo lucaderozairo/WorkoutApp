@@ -54,7 +54,7 @@ const NEXT_5_HOURS = [
     { hour: '8pm', icon: '🌧', temp: 15, rain: 75 },
 ];
 
-function HourlyForecastRow() {
+export function HourlyForecastRow() {
     return (
         <div className="row space-between">
             {NEXT_5_HOURS.map(({ hour, icon, temp, rain }) => (
@@ -69,7 +69,7 @@ function HourlyForecastRow() {
     );
 }
 
-function DailyForecastChart() {
+export function DailyForecastChart() {
     return (
         <div className="column">
             <p className="caption">Temperature (°C) &amp; Rain chance (%)</p>
@@ -93,7 +93,7 @@ function DailyForecastChart() {
     );
 }
 
-function PrecipitationChart() {
+export function PrecipitationChart() {
     return (
         <div className="column">
             <p className="caption">Hourly rain chance (%)</p>
@@ -110,7 +110,7 @@ function PrecipitationChart() {
     );
 }
 
-function AirQualityPanel() {
+export function AirQualityPanel() {
     const { value, label, pm25, pm10, no2, o3 } = AQI_DATA;
     const badgeClass = value < 50 ? 'badge green' : value < 100 ? 'badge amber' : 'badge coral';
     return (

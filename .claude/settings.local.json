@@ -57,7 +57,10 @@
       "Bash(git add *)",
       "Bash(git commit *)",
       "Bash(Get-ChildItem -Path \".\" -Recurse -Include \"*ErrorBoundary*\")",
-      "Bash(Get-ChildItem \"C:\\\\Users\\\\Deroz01\\\\Documents\\\\Coding Projects\\\\Workout App\\\\workoutApp\" -Directory)"
+      "Bash(Get-ChildItem \"C:\\\\Users\\\\Deroz01\\\\Documents\\\\Coding Projects\\\\Workout App\\\\workoutApp\" -Directory)",
+      "Bash(git worktree *)",
+      "Bash(git checkout *)",
+      "Bash(git merge *)"
     ]
   },
   "enabledMcpjsonServers": [

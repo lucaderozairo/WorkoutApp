@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
 import type { TypeFilter } from './SessionFilterBar';
 import type { CombinedSession } from './calendarUtils';
 import { buildDateMap, getWeekStart, formatWeekRange, toDateKey } from './calendarUtils';
@@ -7,14 +8,15 @@ import { StrengthSessionItem, CardioSessionItem } from './SessionListItem';
 interface Props {
   sessions: CombinedSession[];
   typeFilter: TypeFilter;
+  renderFilter?: () => ReactNode;
 }
 
 const DAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
-export function WeekCalendar({ sessions, typeFilter }: Props) {
+export function WeekCalendar({ sessions, typeFilter, renderFilter }: Props) {
   const today = new Date();
   const [weekStart, setWeekStart] = useState(() => getWeekStart(today));
-  const [selectedKey, setSelectedKey] = useState(toDateKey(today.getTime()));
+  const [selectedKey, setSelectedKey] = useState<string | null>(toDateKey(today.getTime()));
 
   const dateMap = buildDateMap(sessions, typeFilter);
   const todayKey = toDateKey(today.getTime());
@@ -38,7 +40,24 @@ export function WeekCalendar({ sessions, typeFilter }: Props) {
     setSelectedKey(toDateKey(d.getTime()));
   }
 
-  const selectedSessions = dateMap.get(selectedKey) ?? [];
+  const weekStartKey = toDateKey(weekStart.getTime());
+  const weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekStart.getDate() + 6);
+  const weekEndKey = toDateKey(weekEnd.getTime());
+
+  const allWeekSessions = useMemo(() => {
+    const result: CombinedSession[] = [];
+    for (const entry of sessions) {
+      const ts = entry.kind === 'strength' ? entry.session.finishedAt : entry.session.startedAt;
+      const key = toDateKey(ts);
+      if (key >= weekStartKey && key <= weekEndKey) result.push(entry);
+    }
+    return result;
+  }, [sessions, weekStartKey, weekEndKey]);
+
+  const displaySessions = selectedKey
+    ? (dateMap.get(selectedKey) ?? [])
+    : allWeekSessions;
 
   return (
     <div className="column">
@@ -60,7 +79,7 @@ export function WeekCalendar({ sessions, typeFilter }: Props) {
               key={key}
               className={`column align-center grow ghost${isSelected ? ' primary' : ''}`}
               {...(isToday ? { 'data-today': true } : {})}
-              onClick={() => !isFuture && setSelectedKey(key)}
+              onClick={() => !isFuture && setSelectedKey(k => k === key ? null : key)}
               disabled={isFuture}
             >
               <span className="caption">{DAY_LABELS[i]}</span>
@@ -74,19 +93,26 @@ export function WeekCalendar({ sessions, typeFilter }: Props) {
         })}
       </div>
 
+      {renderFilter?.()}
+
       <div className="column">
         <div className="row space-between align-center compact surface flat">
           <span className="caption muted">
-            {new Date(selectedKey + 'T12:00:00').toLocaleDateString('en-GB', {
-              weekday: 'short', day: 'numeric', month: 'long',
-            })}
-            {selectedKey === todayKey ? ' — today' : ''}
+            {selectedKey
+              ? <>
+                  {new Date(selectedKey + 'T12:00:00').toLocaleDateString('en-GB', {
+                    weekday: 'short', day: 'numeric', month: 'long',
+                  })}
+                  {selectedKey === todayKey ? ' — today' : ''}
+                </>
+              : formatWeekRange(weekStart)
+            }
           </span>
         </div>
-        {selectedSessions.length === 0 ? (
-          <p className="muted caption compact">No sessions this day.</p>
+        {displaySessions.length === 0 ? (
+          <p className="muted caption compact">No sessions {selectedKey ? 'this day' : 'this week'}.</p>
         ) : (
-          selectedSessions.map((entry, i) =>
+          displaySessions.map((entry, i) =>
             entry.kind === 'strength'
               ? <StrengthSessionItem key={i} session={entry.session} />
               : <CardioSessionItem key={i} session={entry.session} />

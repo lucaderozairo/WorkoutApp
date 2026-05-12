@@ -12,3 +12,5 @@ export { SettingsScreen } from './SettingsScreen';
 export { NewSessionScreen } from './NewSessionScreen';
 export { NotificationsScreen } from './NotificationsScreen';
 export { HealthCategoryScreen } from './HealthCategoryScreen';
+export { WeatherScreen } from './WeatherScreen';
+export { WidgetPrototypeScreen } from './WidgetPrototypeScreen';

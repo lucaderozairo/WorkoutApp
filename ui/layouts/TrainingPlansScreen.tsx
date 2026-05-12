@@ -90,7 +90,7 @@ function PlanCard({ plan, adherenceRate }: { plan: TrainingPlan; adherenceRate: 
     <div className="surface column compact">
       <div className="row space-between align-center">
         <h3>{plan.name}</h3>
-        <span className={`pill${pct >= 80 ? ' pill--ok' : pct >= 60 ? '' : ' pill--warn'}`}>{pct}%</span>
+        <span className={`pill${pct >= 80 ? ' ok' : pct >= 60 ? '' : ' warn'}`}>{pct}%</span>
       </div>
       <span className="caption">Week {currentWeek} / {plan.durationWeeks} · Started {plan.startDate}</span>
       <progress value={currentWeek} max={plan.durationWeeks} />
@@ -219,7 +219,7 @@ function DayView({ anchor, workoutCalendar }: { anchor: Date; workoutCalendar: R
     <div className="surface column compact">
       <div className="row space-between align-center">
         <span style={{ fontWeight: 600 }}>{dateLabel}</span>
-        {isToday && <span className="pill pill--ok">Today</span>}
+        {isToday && <span className="pill ok">Today</span>}
       </div>
       <hr />
 
@@ -388,7 +388,7 @@ export function TrainingPlansScreen() {
           {(['month', 'week', 'day'] as CalView[]).map(v => (
             <button
               key={v}
-              className={`chip${calView === v ? ' chip--active' : ''}`}
+              className={`chip${calView === v ? ' active' : ''}`}
               onClick={() => setCalView(v)}
             >
               {v.charAt(0).toUpperCase() + v.slice(1)}
@@ -407,7 +407,7 @@ export function TrainingPlansScreen() {
         {FILTERS.map(f => (
           <button
             key={f.label}
-            className={`chip${activeFilters.has(f.label) ? ' chip--active' : ''}`}
+            className={`chip${activeFilters.has(f.label) ? ' active' : ''}`}
             style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
             onClick={() => toggleFilter(f.label)}
           >

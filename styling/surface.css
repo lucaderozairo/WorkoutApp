@@ -26,6 +26,11 @@
   text-align: center;
   align-items: center;
 }
+.surface.plain {
+  border-color: transparent;
+  box-shadow: none;
+}
+
 .trend-item {
   display: flex;
   align-items: center;
@@ -90,6 +95,11 @@ hr {
   background: var(--line);
   border: 0;
   margin: 0;
+}
+
+/* ── Selected state ── */
+.surface.selected {
+  border-color: var(--accent);
 }
 
 /* ── Block (segmented bar unit) ── */

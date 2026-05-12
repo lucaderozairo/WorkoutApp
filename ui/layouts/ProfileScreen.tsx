@@ -39,7 +39,7 @@ export function ProfileScreen() {
             <span>{profile?.displayName ?? 'You'}</span>
             <span className="mono muted">{profile?.email ?? ''}</span>
             <div className="cluster">
-              <span className="pill pill--accent">🔥 Active</span>
+              <span className="pill accent">🔥 Active</span>
             </div>
           </div>
         </div>

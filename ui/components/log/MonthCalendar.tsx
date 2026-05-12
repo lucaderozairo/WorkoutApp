@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
 import type { TypeFilter } from './SessionFilterBar';
 import type { CombinedSession } from './calendarUtils';
 import { buildDateMap, getMonthGrid, toDateKey } from './calendarUtils';
@@ -7,11 +8,12 @@ import { StrengthSessionItem, CardioSessionItem } from './SessionListItem';
 interface Props {
   sessions: CombinedSession[];
   typeFilter: TypeFilter;
+  renderFilter?: () => ReactNode;
 }
 
 const WEEKDAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
-export function MonthCalendar({ sessions, typeFilter }: Props) {
+export function MonthCalendar({ sessions, typeFilter, renderFilter }: Props) {
   const today = new Date();
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
@@ -35,7 +37,19 @@ export function MonthCalendar({ sessions, typeFilter }: Props) {
     setSelectedKey(null);
   }
 
-  const selectedSessions = selectedKey ? (dateMap.get(selectedKey) ?? []) : [];
+  const allMonthSessions = useMemo(() => {
+    const result: CombinedSession[] = [];
+    for (const entry of sessions) {
+      const ts = entry.kind === 'strength' ? entry.session.finishedAt : entry.session.startedAt;
+      const d = new Date(ts);
+      if (d.getFullYear() === year && d.getMonth() === month) result.push(entry);
+    }
+    return result;
+  }, [sessions, year, month]);
+
+  const displaySessions = selectedKey
+    ? (dateMap.get(selectedKey) ?? [])
+    : allMonthSessions;
 
   return (
     <div className="column">
@@ -75,27 +89,33 @@ export function MonthCalendar({ sessions, typeFilter }: Props) {
         })}
       </div>
 
-      {selectedKey && (
-        <div className="column">
-          <div className="row space-between align-center compact surface flat">
-            <button className="ghost sm" onClick={() => setSelectedKey(null)}>← Back</button>
-            <span className="caption muted">
-              {new Date(selectedKey + 'T12:00:00').toLocaleDateString('en-GB', {
-                weekday: 'short', day: 'numeric', month: 'long',
-              })}
-            </span>
-          </div>
-          {selectedSessions.length === 0 ? (
-            <p className="muted caption compact">No sessions this day.</p>
+      {renderFilter?.()}
+
+      <div className="column">
+        <div className="row space-between align-center compact surface flat">
+          {selectedKey ? (
+            <>
+              <button className="ghost sm" onClick={() => setSelectedKey(null)}>← Back</button>
+              <span className="caption muted">
+                {new Date(selectedKey + 'T12:00:00').toLocaleDateString('en-GB', {
+                  weekday: 'short', day: 'numeric', month: 'long',
+                })}
+              </span>
+            </>
           ) : (
-            selectedSessions.map((entry, i) =>
-              entry.kind === 'strength'
-                ? <StrengthSessionItem key={i} session={entry.session} />
-                : <CardioSessionItem key={i} session={entry.session} />
-            )
+            <span className="caption muted">All sessions · {monthLabel}</span>
           )}
         </div>
-      )}
+        {displaySessions.length === 0 ? (
+          <p className="muted caption compact">No sessions {selectedKey ? 'this day' : 'this month'}.</p>
+        ) : (
+          displaySessions.map((entry, i) =>
+            entry.kind === 'strength'
+              ? <StrengthSessionItem key={i} session={entry.session} />
+              : <CardioSessionItem key={i} session={entry.session} />
+          )
+        )}
+      </div>
     </div>
   );
 }

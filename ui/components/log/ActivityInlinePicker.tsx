@@ -28,7 +28,7 @@ export function ActivityInlinePicker({
           return (
             <button
               key={key}
-              className={`surface compact column${selectedActivity === key ? ' chip--active' : ''}`}
+              className={`surface compact column${selectedActivity === key ? ' active' : ''}`}
               onClick={() => onSelectActivity(key)}
             >
               <h2>{emoji}</h2>

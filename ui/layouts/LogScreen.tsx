@@ -17,14 +17,15 @@ import {
 import type { ActiveSessionView, ExerciseCategory } from '@features/training_log';
 import type { StrengthSet, CardioSet, TrainingSession } from '@features/training_log/domain/types';
 import { ScheduleStrip } from '@ui/components/log/ScheduleStrip';
-import { SessionFilterBar, SessionTypeExerciseFilter, DEFAULT_FILTERS } from '@ui/components/log/SessionFilterBar';
+import { SessionFilterBar, DEFAULT_FILTERS } from '@ui/components/log/SessionFilterBar';
 import type { SessionFilters } from '@ui/components/log/SessionFilterBar';
+import { WorkoutFilterBar } from '@ui/components/workout/WorkoutFilterBar';
 import { StrengthSessionItem, CardioSessionItem } from '@ui/components/log/SessionListItem';
 import type { SessionHistoryItem, EditingSessionsView } from '@features/training_log';
 import type { RecentCardioView, CardioSession } from '@features/cardio';
 import { MonthCalendar } from '@ui/components/log/MonthCalendar';
 import { WeekCalendar } from '@ui/components/log/WeekCalendar';
-import { WorkoutFilterLayer } from '@ui/components/workout/WorkoutFilterLayer';
+import { toDateKey } from '@ui/components/log/calendarUtils';
 import type { Id } from '@shared/types';
 import { cryptoIdGenerator } from '@core/id-generator';
 import {
@@ -1685,33 +1686,25 @@ export function LogScreen() {
     return Array.from(names).sort();
   }, [exerciseProgressions, exercisesBySession]);
 
-  const combinedSessions = useMemo((): CombinedEntry[] => {
-    const { type, exercise, dateRange } = sessionFilters;
-    const now = Date.now();
-    const cutoff =
-      dateRange === '7d'
-        ? now - 7 * 86_400_000
-        : dateRange === '30d'
-          ? now - 30 * 86_400_000
-          : 0;
-
+  const baseSessions = useMemo((): CombinedEntry[] => {
+    const { type, exercise, sessionName } = sessionFilters;
     const result: CombinedEntry[] = [];
 
     if (type === 'all' || type === 'strength') {
       for (const s of strengthHistory) {
-        if (s.startedAt < cutoff) continue;
         if (exercise) {
           const names = exercisesBySession.get(s.id);
           if (!names?.has(exercise)) continue;
         }
+        if (sessionName && !s.name.toLowerCase().includes(sessionName.toLowerCase())) continue;
         result.push({ kind: 'strength', session: s, matchedExercise: exercise || undefined });
       }
     }
 
     if (type !== 'strength' && !exercise) {
       for (const s of cardioView.sessions) {
-        if (s.startedAt < cutoff) continue;
         if (type !== 'all' && s.sport !== type) continue;
+        if (sessionName && !(s.title ?? '').toLowerCase().includes(sessionName.toLowerCase())) continue;
         result.push({ kind: 'cardio', session: s });
       }
     }
@@ -1720,15 +1713,24 @@ export function LogScreen() {
   }, [strengthHistory, cardioView, sessionFilters, exercisesBySession]);
 
   const filteredSessions = useMemo((): CombinedEntry[] => {
-    let result: CombinedEntry[] = combinedSessions;
-    if (sessionFilters.view === 'list' && sessionFilters.dateRange !== 'all') {
+    let result = baseSessions;
+
+    if (sessionFilters.dateFrom) {
+      const from = sessionFilters.dateFrom;
+      const to = sessionFilters.dateTo || from;
+      result = result.filter(e => {
+        const key = toDateKey(e.session.startedAt);
+        return key >= from && key <= to;
+      });
+    } else if (sessionFilters.dateRange !== 'all') {
       const days = sessionFilters.dateRange === '7d' ? 7 : 30;
       const cutoff = Date.now() - days * 86_400_000;
-      result = result.filter(entry => entry.session.startedAt >= cutoff);
+      result = result.filter(e => e.session.startedAt >= cutoff);
     }
+
     if (sessionFilters.sort === 'oldest') result = [...result].reverse();
     return result;
-  }, [combinedSessions, sessionFilters]);
+  }, [baseSessions, sessionFilters]);
 
   const { dispatch: addBlock } = useCommand(handleAddBlock);
   const { dispatch: addToSuperset } = useCommand(handleAddToSuperset);
@@ -1793,31 +1795,41 @@ export function LogScreen() {
 
           {sessionFilters.view === 'month' && (
             <MonthCalendar
-              sessions={combinedSessions}
+              sessions={baseSessions}
               typeFilter={sessionFilters.type}
+              renderFilter={() => (
+                <WorkoutFilterBar
+                  filters={sessionFilters}
+                  onChange={setSessionFilters}
+                  exerciseOptions={allExerciseNames}
+                  view="month"
+                />
+              )}
             />
           )}
           {sessionFilters.view === 'week' && (
             <WeekCalendar
-              sessions={combinedSessions}
+              sessions={baseSessions}
               typeFilter={sessionFilters.type}
+              renderFilter={() => (
+                <WorkoutFilterBar
+                  filters={sessionFilters}
+                  onChange={setSessionFilters}
+                  exerciseOptions={allExerciseNames}
+                  view="week"
+                />
+              )}
             />
           )}
 
-          <SessionTypeExerciseFilter
-            filters={sessionFilters}
-            onChange={setSessionFilters}
-            exerciseOptions={allExerciseNames}
-          />
-
-          <WorkoutFilterLayer
-            sessionType={sessionFilters.type}
-            exercise={sessionFilters.exercise}
-            dateRange={sessionFilters.dateRange}
-            onClearType={() => setSessionFilters(prev => ({ ...prev, type: 'all' }))}
-            onClearExercise={() => setSessionFilters(prev => ({ ...prev, exercise: '' }))}
-            onClearDateRange={() => setSessionFilters(prev => ({ ...prev, dateRange: 'all' }))}
-          />
+          {sessionFilters.view === 'list' && (
+            <WorkoutFilterBar
+              filters={sessionFilters}
+              onChange={setSessionFilters}
+              exerciseOptions={allExerciseNames}
+              view="list"
+            />
+          )}
 
           {sessionFilters.view === 'list' && (() => {
             if (filteredSessions.length === 0) {

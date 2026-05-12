@@ -22,7 +22,7 @@ select,
 .input {
   background: var(--surface-1);
   color: var(--ink);
-  padding: 10px var(--s-3);
+  padding: var(--s-2) var(--s-3);
   border: 1px solid var(--line-strong);
   border-radius: var(--r-sm);
   font-family: var(--font-ui);
@@ -78,6 +78,10 @@ progress {
 ::-webkit-progress-bar         { background: var(--surface-2); }
 ::-webkit-progress-value       { background: var(--accent); }
 ::-moz-progress-bar            { background: var(--accent); }
+
+/* ── Narrow count/weight inputs ── */
+.input-count  { width: 44px; }
+.input-weight { width: 56px; }
 
 /* ── Error text ── */
 .error-text {

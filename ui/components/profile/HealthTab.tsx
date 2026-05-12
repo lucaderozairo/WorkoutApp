@@ -71,7 +71,7 @@ export function HealthTab() {
       ) : injuries.map(inj => (
         <div key={inj.id} className="surface">
           <div className="row space-between align-center">
-            <span className="pill pill--bad">Active</span>
+            <span className="pill bad">Active</span>
             <span className="mono muted">{new Date(inj.recordedAt).toLocaleDateString()}</span>
           </div>
           <div className="stack">

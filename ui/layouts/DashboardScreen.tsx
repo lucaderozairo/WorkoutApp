@@ -81,10 +81,10 @@ export function DashboardScreen() {
   <div className="column">
     <WelcomeWidget workoutsThisWeek={workoutsThisWeek} scoreClass={scoreClass} />
     <div className="auto-grid">
-      <SleepCard score={SCORE} scoreClass={scoreClass} readiness={readiness ?? null} />
+      {/* <SleepCard score={SCORE} scoreClass={scoreClass} readiness={readiness ?? null} /> */}
       {lastNight && <SleepLarge session={lastNight} goalMinutes={GOAL_MINUTES} weeklyTrend={weeklyTrend} scoreHistory={scoreHistory} />}
       <WeatherWidget />
-      <ScheduleWidget appointments={todayAppointments} />
+      {/* <ScheduleWidget appointments={todayAppointments} /> */}
       <CalendarLarge />
     </div>
     </div>

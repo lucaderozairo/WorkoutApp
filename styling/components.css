@@ -29,12 +29,12 @@
 }
 
 /* Activity category pills */
-.pill--strength, .pill.lift     { --pill-color: var(--c-strength); }
-.pill--cardio,   .pill.run      { --pill-color: var(--c-cardio); }
-.pill--recovery, .pill.rowing   { --pill-color: var(--c-recovery); }
-.pill--nutrition,.pill.cycle    { --pill-color: var(--c-nutrition); }
-.pill--water,    .pill.swim     { --pill-color: var(--c-water); }
-.pill--mind                     { --pill-color: var(--c-mind); }
+.pill.lift    { --pill-color: var(--c-strength); }
+.pill.run     { --pill-color: var(--c-cardio); }
+.pill.rowing  { --pill-color: var(--c-recovery); }
+.pill.cycle   { --pill-color: var(--c-nutrition); }
+.pill.swim    { --pill-color: var(--c-water); }
+.pill.mind                      { --pill-color: var(--c-mind); }
 
 /* Sleep stage pills (aliases) */
 .pill.awake { --pill-color: var(--color-sleep-awake); }
@@ -43,16 +43,16 @@
 .pill.rem   { --pill-color: var(--color-sleep-rem); }
 
 /* Status pills */
-.pill--ok   { --pill-color: var(--ok); }
-.pill--warn { --pill-color: var(--warn); }
-.pill--bad  { --pill-color: var(--bad); }
+.pill.ok   { --pill-color: var(--ok); }
+.pill.warn { --pill-color: var(--warn); }
+.pill.bad  { --pill-color: var(--bad); }
 
 /* Accent pill */
-.pill--accent {
+.pill.accent {
   background: var(--accent);
   color: var(--accent-ink);
 }
-.pill--accent::before { background: var(--accent-ink); }
+.pill.accent::before { background: var(--accent-ink); }
 
 @media (max-width: 360px) {
   .pill { padding: 3px var(--s-2); }
@@ -66,10 +66,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--s-2);
-  padding: 6px var(--s-3);
-  font-size: var(--t-sm);
-  font-weight: 500;
-  color: var(--ink-muted);
+  padding: var(--s-2) var(--s-3);
   background: transparent;
   border: 1px solid var(--line);
   border-radius: var(--r-pill);
@@ -80,13 +77,12 @@
   color: var(--ink);
   border-color: var(--line-strong);
 }
-.chip--active,
 .chip.active {
   color: var(--ink);
   background: var(--surface-2);
   border-color: var(--line-strong);
 }
-.chip--source {
+.chip.source {
   font-size: var(--t-xs);
   padding: 3px var(--s-2);
 }
@@ -169,7 +165,7 @@
   --size: 45px;
   width: var(--size);
   height: var(--size);
-  margin-right:var(--s-1);
+
   border-radius: 50%;
   background: linear-gradient(135deg, var(--c-strength), var(--c-mind));
   display: inline-flex;
@@ -305,7 +301,7 @@
   );
   opacity: .9;
 }
-.glass--full {
+.glass.full {
   background: var(--c-water);
   border-color: var(--c-water);
 }
@@ -513,7 +509,24 @@ button.skeleton {
 }
 
 /* ════════════════════════════════════════════
-   INLINE ACTION DROPDOWN — positioned below its trigger
+   CHEVRON — animated expand/collapse indicator
+   ════════════════════════════════════════════ */
+.chevron { transition: transform var(--duration-short) var(--ease); }
+.chevron.open { transform: rotate(180deg); }
+
+/* ════════════════════════════════════════════
+   FILTER PANEL — floating filter panel width
+   ════════════════════════════════════════════ */
+.filter-panel { min-width: 260px; }
+.dropdown.filter-panel {
+  right: 0;
+  left: auto;
+  max-height: calc(100dvh - 160px);
+  overflow-y: auto;
+}
+
+/* ════════════════════════════════════════════
+   DROPDOWN — positioned below its trigger
    ════════════════════════════════════════════ */
 .fullscreen-overlay-dismiss {
   position: fixed;
@@ -523,14 +536,16 @@ button.skeleton {
   border: none;
   padding: 0;
   cursor: default;
+  border-radius: 0;
 }
-.action-menu-wrap { position: relative; }
-.action-menu {
+.fullscreen-overlay-dismiss:hover { background: transparent; }
+.dropdown-wrap { position: relative; }
+.dropdown {
   position: absolute;
   top: calc(100% + var(--s-1));
   left: 0;
   z-index: 200;
-  min-width: 180px;
+  min-width: 280px;
 }
 
 /* ════════════════════════════════════════════
@@ -567,6 +582,18 @@ button.skeleton {
 .cal .day .dot{height: var(--s-1);width: var(--s-1);}
 
 /* ════════════════════════════════════════════
+   CHART Y-AXIS LABEL
+   ════════════════════════════════════════════ */
+.chart-ylabel {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: var(--t-xs);
+  color: var(--ink-faint);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* ════════════════════════════════════════════
    SPLITS TABLE — 1 km splits for cardio sessions
    ════════════════════════════════════════════ */
 .splits-table {
@@ -591,52 +618,4 @@ button.skeleton {
 .splits-table .elev-up   { color: var(--ok); }
 .splits-table .elev-down { color: var(--c-cardio); }
 
-/* ════════════════════════════════════════════
-   LEAFLET — map controls themed to design system
-   ════════════════════════════════════════════ */
-/* Semantic media container heights */
-.media-sm { height: var(--media-sm); }
-.media-md { height: var(--media-md); }
-.media-lg { height: var(--media-lg); }
 
-@media (min-width: 600px) {
-  .media-sm { height: var(--media-md); }
-  .media-md { height: var(--media-lg); }
-}
-
-.map { width: 100%; }
-/* Isolate Leaflet's internal z-indexes so they don't escape the map container */
-.map-root { isolation: isolate; }
-.map-root .leaflet-tile-pane        { z-index: 2; }
-.map-root .leaflet-overlay-pane     { z-index: 4; }
-.map-root .leaflet-shadow-pane      { z-index: 5; }
-.map-root .leaflet-marker-pane      { z-index: 6; }
-.map-root .leaflet-tooltip-pane     { z-index: 7; }
-.map-root .leaflet-popup-pane       { z-index: 8; }
-.map-root .leaflet-control-container { z-index: 9; }
-
-.leaflet-bar {
-  border: 1px solid var(--line-strong) !important;
-  border-radius: var(--r-sm) !important;
-  box-shadow: var(--box-shadow-sm) !important;
-  overflow: hidden;
-}
-.leaflet-bar a {
-  background: var(--surface-1) !important;
-  color: var(--ink) !important;
-  border-bottom-color: var(--line) !important;
-  font-family: var(--font-ui) !important;
-  width: 28px !important;
-  height: 28px !important;
-  line-height: 28px !important;
-}
-.leaflet-bar a:hover { background: var(--surface-2) !important; }
-.leaflet-bar a:last-child { border-bottom: none !important; }
-.leaflet-control-attribution {
-  background: var(--surface-1) !important;
-  color: var(--ink-faint) !important;
-  border: 1px solid var(--line) !important;
-  font-size: 10px !important;
-  padding: 2px 6px !important;
-}
-.leaflet-control-attribution a { color: var(--accent) !important; }

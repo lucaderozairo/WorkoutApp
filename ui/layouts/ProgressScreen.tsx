@@ -6,6 +6,7 @@ import type { SessionHistoryItem, ActiveSessionView } from '@features/training_l
 import type { CardioSession, CardioSport, RecentCardioView } from '@features/cardio';
 import type { Insight } from '@features/insights';
 import type { Id } from '@shared/types';
+import type { ProgressionState } from '@features/progression';
 import { EmptyState } from '@ui/components/shared/EmptyState';
 import {
   handleAddAnnotation,
@@ -238,6 +239,10 @@ export function ProgressScreen({ onOpenSettings }: { onOpenSettings?: () => void
   const navigate = useNavigate();
 
   const history = (useQuery<SessionHistoryItem[]>('session_history') ?? []) as SessionHistoryItem[];
+  const progressions = (useQuery<ProgressionState>('exercise_progressions') ?? {}) as ProgressionState;
+  const exerciseList = Object.values(progressions).sort((a, b) =>
+    a.exerciseName.localeCompare(b.exerciseName)
+  );
 
   const sessionsByType = useMemo(() => {
     const map = new Map<string, SessionHistoryItem[]>();
@@ -325,10 +330,7 @@ export function ProgressScreen({ onOpenSettings }: { onOpenSettings?: () => void
           {Array.from(sessionsByType.entries()).map(([typeName, sessions]) => {
             const values = sessions.slice(-5).map((s) => s.totalSets);
             return (
-              <section
-                key={typeName}
-                className="surface compact interactive"
-                onClick={() => navigate(`/exercise/${encodeURIComponent(typeName)}`)}>
+              <section key={typeName} className="surface compact">
                 <div className="row space-between">
                   <strong>{typeName}</strong>
                   <span className="pill plain active">{sessions.length}×</span>
@@ -338,6 +340,36 @@ export function ProgressScreen({ onOpenSettings }: { onOpenSettings?: () => void
               </section>
             );
           })}
+
+          {exerciseList.length > 0 && (
+            <>
+              <p className="h3">Exercises</p>
+              {exerciseList.map(({ exerciseName, history: exHistory, plateauDetected }) => {
+                const values = exHistory.slice(-5).map(e => e.oneRepMaxEstimate);
+                const latest = exHistory[exHistory.length - 1];
+                return (
+                  <section
+                    key={exerciseName}
+                    className="surface compact interactive"
+                    onClick={() => navigate(`/exercise/${encodeURIComponent(exerciseName)}`)}>
+                    <div className="row space-between">
+                      <strong>{exerciseName}</strong>
+                      <div className="row">
+                        {plateauDetected && <span className="pill warn">⚠ Plateau</span>}
+                        <span className="pill plain active">{exHistory.length}×</span>
+                      </div>
+                    </div>
+                    <SparkBars values={values} />
+                    <div className="row space-between">
+                      <p className="caption">Est. 1RM trend · last {values.length} session{values.length !== 1 ? 's' : ''}</p>
+                      {latest && <span className="caption">{latest.maxWeightKg} kg</span>}
+                    </div>
+                  </section>
+                );
+              })}
+            </>
+          )}
+
           {sessionsByType.size === 0 && (
             <EmptyState
               icon="📋"

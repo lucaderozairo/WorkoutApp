@@ -79,7 +79,7 @@ export function NewSessionScreen() {
           return (
             <button
               key={key}
-              className={`surface compact column align-center grow${selected === key ? ' chip--active' : ''}`}
+              className={`surface compact column align-center grow${selected === key ? ' active' : ''}`}
               onClick={() => setSelected(key)}
             >
               <span>{emoji}</span>

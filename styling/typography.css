@@ -63,26 +63,9 @@ h4, h5, h6 {
 .faint { color: var(--ink-faint); }
 .text-center { text-align: center; }
 .uppercase,
-.chip--source,
-.tag {
-  text-transform: uppercase;
-  letter-spacing: .06em;
-}
-.num,
-.input--num,
-input.num,
-.stat__num,
-.splits-table td,
-.cal .day {
-  font-variant-numeric: tabular-nums;
-}
-.mono,
-.input--num,
-input.num,
-.stat__trend,
-.chip--source,
-.tag,
-.cal .day {
+
+
+.mono {
   font-family: var(--font-mono);
 }
 

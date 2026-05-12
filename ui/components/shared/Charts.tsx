@@ -84,13 +84,13 @@ function RingCenterLabel({
   return (
     <g>
       <text x={cx} y={cy - 4} textAnchor="middle"
-        fill="var(--color-text-primary)" fontSize={18}
+        fill="var(--color-text-primary)" fontSize="var(--t-sm)"
         fontFamily="var(--font-mono)" fontWeight="600">
         {score}
       </text>
       {subtitle && (
         <text x={cx} y={cy + 11} textAnchor="middle"
-          fill="var(--color-text-secondary)" fontSize={9} fontFamily="sans-serif">
+          fill="var(--color-text-secondary)" fontSize="var(--t-xs)" fontFamily="sans-serif">
           {subtitle}
         </text>
       )}
@@ -102,7 +102,7 @@ export function ScoreRing({
   score,
   color = 'var(--color-primary)',
   subtitle = 'score',
-  size = 88,
+  size = 80,
 }: ScoreRingProps) {
   const data = [{ value: score }, { value: 100 - score }];
   return (

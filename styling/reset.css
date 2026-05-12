@@ -39,6 +39,8 @@ main {
   color: var(--accent-ink);
 }
 
+table { text-align: left; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
