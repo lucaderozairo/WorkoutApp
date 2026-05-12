@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig({
+  base: '/WorkoutApp/',
   plugins: [react()],
   define: {
     __BUNDLED_DEV__: JSON.stringify(true),
