@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import { App } from '@app/registry/App';
 import { viewStore } from '@data/projections/views';
 import { PERSISTED_KEYS, loadFromStorage, clearStorage } from '@data/sources/local/persistence';
@@ -25,8 +25,8 @@ if (APP_MODE === 'prototype') {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <HashRouter>
       <App />
-    </BrowserRouter>
+    </HashRouter>
   </React.StrictMode>
 );
