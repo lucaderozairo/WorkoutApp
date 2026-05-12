@@ -68,6 +68,26 @@
   display: none;
 }
 
+/* ── Full-page route planner layout ── */
+.route-planner-screen {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Target the RouteMap's outer column wrapper so the map fills remaining height */
+.route-planner-screen > .column {
+  flex: 1;
+  min-height: 0;
+}
+
+.route-planner-screen .plan-map {
+  flex: 1;
+  min-height: 200px;
+  height: auto;
+}
+
 /* ── Route map controls (rails + search pill) ── */
 .route-map-wrap {
   position: relative;
@@ -179,7 +199,7 @@
   border-radius: var(--r-pill);
   background: #7eb8f7;
   border: 2px solid #ffffff;
-  box-shadow: 0 1px 3px rgba(0,0,0,.18);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
 }
 
 .route-anchor--start .route-anchor__dot {
@@ -196,7 +216,7 @@
   border-radius: var(--r-pill);
   background: var(--accent);
   border: 2px solid #ffffff;
-  box-shadow: 0 1px 3px rgba(0,0,0,.18);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
 }
 
 .route-search-dot {
@@ -204,37 +224,9 @@
   height: 8px;
   border-radius: var(--r-pill);
   background: var(--ink);
-  opacity: .75;
+  opacity: 0.75;
 }
 
-/* ── Ultra-narrow viewport tweaks (down to ~300px) ── */
-@media (max-width: 340px) {
-  .route-map-search-pill {
-    width: calc(100% - 120px);
-    top: var(--s-2);
-  }
-  .route-map-rail--left,
-  .route-map-rail--right {
-    top: var(--s-2);
-  }
-  .route-map-rail--left {
-    left: var(--s-2);
-  }
-  .route-map-rail--right {
-    right: var(--s-2);
-  }
-  .route-map-rail--left-bottom {
-    left: var(--s-2);
-    bottom: var(--s-2);
-  }
-  .route-map-rail--bottom-right {
-    right: var(--s-2);
-    bottom: var(--s-2);
-  }
-  .route-map-popover {
-    min-width: 140px;
-  }
-}
 
 /* On small devices: move controls above/below map to avoid overlap */
 @media (max-width: 600px) {
@@ -250,18 +242,35 @@
   }
 }
 
-
 /* ── Leaflet map controls themed to design system ── */
-.map { width: 100%; }
+.map {
+  width: 100%;
+}
 /* Isolate Leaflet's internal z-indexes so they don't escape the map container */
-.map-root { isolation: isolate; }
-.map-root .leaflet-tile-pane        { z-index: 2; }
-.map-root .leaflet-overlay-pane     { z-index: 4; }
-.map-root .leaflet-shadow-pane      { z-index: 5; }
-.map-root .leaflet-marker-pane      { z-index: 6; }
-.map-root .leaflet-tooltip-pane     { z-index: 7; }
-.map-root .leaflet-popup-pane       { z-index: 8; }
-.map-root .leaflet-control-container { z-index: 9; }
+.map-root {
+  isolation: isolate;
+}
+.map-root .leaflet-tile-pane {
+  z-index: 2;
+}
+.map-root .leaflet-overlay-pane {
+  z-index: 4;
+}
+.map-root .leaflet-shadow-pane {
+  z-index: 5;
+}
+.map-root .leaflet-marker-pane {
+  z-index: 6;
+}
+.map-root .leaflet-tooltip-pane {
+  z-index: 7;
+}
+.map-root .leaflet-popup-pane {
+  z-index: 8;
+}
+.map-root .leaflet-control-container {
+  z-index: 9;
+}
 
 .leaflet-bar {
   border: 1px solid var(--line-strong) !important;
@@ -278,8 +287,12 @@
   height: 28px !important;
   line-height: 28px !important;
 }
-.leaflet-bar a:hover { background: var(--surface-2) !important; }
-.leaflet-bar a:last-child { border-bottom: none !important; }
+.leaflet-bar a:hover {
+  background: var(--surface-2) !important;
+}
+.leaflet-bar a:last-child {
+  border-bottom: none !important;
+}
 .leaflet-control-attribution {
   background: var(--surface-1) !important;
   color: var(--ink-faint) !important;
@@ -287,4 +300,6 @@
   font-size: 10px !important;
   padding: 2px 6px !important;
 }
-.leaflet-control-attribution a { color: var(--accent) !important; }
+.leaflet-control-attribution a {
+  color: var(--accent) !important;
+}

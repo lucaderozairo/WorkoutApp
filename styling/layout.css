@@ -56,14 +56,22 @@
   align-items: center;
 }
 
-.row.align-top    { align-items: flex-start; }
-.row.align-bottom { align-items: flex-end; }
+.row.align-top {
+  align-items: flex-start;
+}
+.row.align-bottom {
+  align-items: flex-end;
+}
 
 .stack.align-left,
-.column.align-left  { align-items: flex-start; }
+.column.align-left {
+  align-items: flex-start;
+}
 
 .stack.align-right,
-.column.align-right { align-items: flex-end; }
+.column.align-right {
+  align-items: flex-end;
+}
 
 .row.align-top > *,
 .row.align-bottom > *,
@@ -85,16 +93,35 @@
 
 .widget-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   grid-auto-rows: minmax(160px, auto);
   gap: var(--s-3);
 }
-.widget-1x1 { grid-column: span 1; grid-row: span 1; }
-.widget-2x1 { grid-column: span 2; grid-row: span 1; }
-.widget-2x2 { grid-column: span 2; grid-row: span 2; }
+.widget-1x1 {
+  grid-column: span 1;
+  grid-row: span 1;
+  min-width: 0;
+}
+.widget-2x1 {
+  grid-column: span 2;
+  grid-row: span 1;
+  min-width: 0;
+}
+.widget-2x2 {
+  grid-column: span 2;
+  grid-row: span 2;
+  min-width: 0;
+}
+
+.widget {
+  min-height: 160px;
+  min-width: 160px;
+}
 
 @media (max-width: 640px) {
-  .widget-grid { grid-template-columns: repeat(2, 1fr); }
+  .widget-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .auto-columns {
@@ -105,9 +132,10 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: var(--s-1);
 }
+
 
 .scroll-row {
   display: flex;
@@ -134,19 +162,28 @@
   gap: var(--s-2);
 }
 
-
 /* ── Narrow viewport (≤360px) ── */
 @media (max-width: 360px) {
   .row {
     flex-wrap: wrap;
     gap: var(--s-2);
   }
-  .row.compact { gap: var(--s-1); }
+  .row.compact {
+    gap: var(--s-1);
+  }
 
   .stack,
-  .column { gap: var(--s-2); }
+  .column {
+    gap: var(--s-2);
+  }
 
-  h1 { font-size: var(--t-xl); }
-  h2 { font-size: var(--t-lg); }
-  h3 { font-size: var(--t-md); }
+  h1 {
+    font-size: var(--t-xl);
+  }
+  h2 {
+    font-size: var(--t-lg);
+  }
+  h3 {
+    font-size: var(--t-md);
+  }
 }

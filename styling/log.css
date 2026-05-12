@@ -25,8 +25,9 @@
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
 }
-.exercise-rail .pill { flex-shrink: 0; }
-
+.exercise-rail .pill {
+  flex-shrink: 0;
+}
 
 /* Fixed-position banner wrapping RestTimerAlert */
 .bottom-banner {
@@ -37,5 +38,3 @@
   z-index: 60;
   overflow: hidden;
 }
-
-

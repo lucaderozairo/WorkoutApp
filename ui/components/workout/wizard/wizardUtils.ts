@@ -6,6 +6,7 @@ const ACTIVITY_LABEL: Record<PlanType, string> = {
   run: 'Run',
   cycle: 'Ride',
   swim: 'Swim',
+  hike: 'Hike',
 };
 
 export function defaultSessionName(type: PlanType, hour = new Date().getHours()): string {

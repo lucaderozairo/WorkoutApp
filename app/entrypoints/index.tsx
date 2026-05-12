@@ -3,10 +3,15 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { App } from '@app/registry/App';
 import { viewStore } from '@data/projections/views';
-import { PERSISTED_KEYS, loadFromStorage } from '@data/sources/local/persistence';
+import { PERSISTED_KEYS, loadFromStorage, clearStorage } from '@data/sources/local/persistence';
 import { seedMockDataIfEmpty } from '@data/mock/seed';
 import { APP_MODE } from '@config/app-mode';
 import '@styling/global.css';
+
+if (APP_MODE === 'github-pages' && !localStorage.getItem('workout-app:gh-initialized')) {
+  clearStorage();
+  localStorage.setItem('workout-app:gh-initialized', '1');
+}
 
 // Hydrate persisted view keys before first render so projections start with saved state.
 for (const key of PERSISTED_KEYS) {

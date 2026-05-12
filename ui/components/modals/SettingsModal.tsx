@@ -39,7 +39,7 @@ export function SettingsContent() {
   };
 
   const handleThemeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const next = e.target.value === '1' ? 'light' : 'dark';
+    const next = e.target.value === '0' ? 'light' : 'dark';
     setTheme(next);
     document.documentElement.setAttribute('data-theme', next);
   };
@@ -98,7 +98,7 @@ export function SettingsContent() {
 
   return (
     <>
-      <section className="column">
+      {/* <section className="column">
         <h3 className="caption">Profile</h3>
         <div className="column">
           {profile ? (
@@ -111,17 +111,17 @@ export function SettingsContent() {
           <input className="input" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
           <button className="primary sm" onClick={handleSaveProfile}>Save</button>
         </div>
-      </section>
+      </section> */}
 
       <section className="column">
         <h3 className="caption">Appearance</h3>
         <div className="row space-between align-center">
           <span className="caption">{theme === 'dark' ? '🌙 Dark' : '☀️ Light'}</span>
           <label className="switch">
-            <input type="range" min="0" max="1" value={theme === 'light' ? 1 : 0} onChange={handleThemeChange} />
+            <input type="range" min="0" max="1" value={theme === 'light' ? 0 : 1} onChange={handleThemeChange} />
           </label>
         </div>
-        <div className="row space-between align-center">
+        {/* <div className="row space-between align-center">
           <span className="caption">Units</span>
           <div className="row">
             <button
@@ -137,7 +137,7 @@ export function SettingsContent() {
               Imperial
             </button>
           </div>
-        </div>
+        </div> */}
       </section>
 
       <section className="column">

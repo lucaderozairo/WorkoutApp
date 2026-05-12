@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 import { useQuery, useCommand } from '@ui/bindings';
+import { ImportDataWidget } from '@ui/components/widgets/ImportDataWidget';
+import { ExportDataWidget } from '@ui/components/widgets/ExportDataWidget';
 import type { TodayReadinessView } from '@features/readiness';
 import type { SessionHistoryItem } from '@features/training_log';
 import type { SleepEntryView } from '@features/readiness';
@@ -25,6 +27,8 @@ import '@features/news_feed';
 import '@features/training_plans';
 import '@features/goals';
 import '@features/habits';
+import { PlanRouteWidget } from '@ui/components/widgets/PlanRouteWidget';
+import { EditDisplayNameWidget } from '@ui/components/widgets/EditDisplayNameWidget';
 
 registerTrainingPlanProjections();
 registerAdherencePolicy();
@@ -78,15 +82,21 @@ export function DashboardScreen() {
   }));
 
   return (<>
-  <div className="column">
-    <WelcomeWidget workoutsThisWeek={workoutsThisWeek} scoreClass={scoreClass} />
-    <div className="auto-grid">
-      {/* <SleepCard score={SCORE} scoreClass={scoreClass} readiness={readiness ?? null} /> */}
-      {lastNight && <SleepLarge session={lastNight} goalMinutes={GOAL_MINUTES} weeklyTrend={weeklyTrend} scoreHistory={scoreHistory} />}
-      <WeatherWidget />
-      {/* <ScheduleWidget appointments={todayAppointments} /> */}
-      <CalendarLarge />
-    </div>
+    <div className="column">
+      <WelcomeWidget workoutsThisWeek={workoutsThisWeek} scoreClass={scoreClass} />
+      <div className="widget-grid">
+        <EditDisplayNameWidget />
+          <ImportDataWidget />
+          <ExportDataWidget />
+        <PlanRouteWidget />
+      </div>
+      <div className="auto-grid" hidden={true}>
+        {/* <SleepCard score={SCORE} scoreClass={scoreClass} readiness={readiness ?? null} /> */}
+        {lastNight && <SleepLarge session={lastNight} goalMinutes={GOAL_MINUTES} weeklyTrend={weeklyTrend} scoreHistory={scoreHistory} />}
+        <WeatherWidget />
+        {/* <ScheduleWidget appointments={todayAppointments} /> */}
+        <CalendarLarge />
+      </div>
     </div>
   </>
   );

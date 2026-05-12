@@ -5,6 +5,7 @@ export const PERSISTED_KEYS = [
   'editing_session',
   'planned_sessions',
   'wapp_recent_sports',
+  'display_name',
 ] as const;
 export type PersistedKey = typeof PERSISTED_KEYS[number];
 

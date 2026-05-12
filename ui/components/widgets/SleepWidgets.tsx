@@ -77,14 +77,14 @@ export function SleepLarge({
                 <span className="caption">{date}</span>
             </div>
 
-            <div className="row align-center">
+            <div className="row align-center space-between">
                 <ScoreRing
                     score={session.score}
                     color="var(--color-sleep-deep)"
                     subtitle="score"
                     size={88}
                 />
-                <div className="column">
+                <div className="column compact align-right">
                     <h2>{duration}</h2>
                     <span className="caption">goal {fmtMin(goalMinutes)} · {debtLabel}</span>
                     <div className="row">

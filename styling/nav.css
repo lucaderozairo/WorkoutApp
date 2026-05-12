@@ -18,6 +18,8 @@ main {
   overflow-y: auto;
   min-height: 0;
   background: var(--surface-0);
+  display: flex;
+  flex-direction: column;
 }
 
 /* ── Desktop rail (sidebar) ── */
@@ -27,32 +29,21 @@ main {
   border-right: 1px solid var(--line);
   display: flex;
   flex-direction: column;
-  gap: 2px;
   position: sticky;
   top: 0;
   height: 100dvh;
   overflow-y: auto;
 }
 
-.app-rail__logo {
-  padding: var(--s-5) var(--s-5);
-}
-
-.app-rail__nav {
-  padding: 0 var(--s-4);
-  display: flex;
-  flex-direction: column;
+.app-rail nav {
   flex: 1;
-  gap: 2px;
 }
 
-.app-rail__foot {
-  margin-top: auto;
-  padding: var(--s-3);
-  border-top: 1px solid var(--line);
+.app-rail div, .app-rail nav {
+  gap: var(--s-1)
 }
 
-.app-rail a {
+.app-rail a, .app-rail button.ghost {
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -62,11 +53,13 @@ main {
   min-height: 44px;
   color: var(--ink-muted);
   width: 100%;
-  transition: background-color .12s var(--ease), color .12s var(--ease);
+  transition:
+    background-color 0.12s var(--ease),
+    color 0.12s var(--ease);
   line-height: 1;
 }
 
-.app-rail a:hover {
+.app-rail a:hover, .app-rail button.ghost:hover {
   background: var(--surface-2);
   color: var(--ink);
 }
@@ -98,8 +91,12 @@ main {
   gap: var(--s-3);
 }
 
-.app-topbar__logo {
+.app-topbar a {
+  display: flex;
+  align-items: center;
   margin-right: auto;
+  gap: var(--s-2);
+  line-height: 1;
 }
 
 /* ── Mobile tabbar — fixed to bottom ── */
@@ -127,12 +124,16 @@ main {
   align-items: center;
   justify-content: center;
   gap: var(--s-2);
-  transition: color .12s var(--ease);
+  transition: color 0.12s var(--ease);
 }
 
-.app-tabbar a:hover { color: var(--ink); }
+.app-tabbar a:hover {
+  color: var(--ink);
+}
 
-.app-tabbar a.active { color: var(--ink); }
+.app-tabbar a.active {
+  color: var(--ink);
+}
 
 .app-tabbar a .icon {
   display: flex;
@@ -142,7 +143,9 @@ main {
 }
 
 /* Active icon gets accent colour */
-.app-tabbar a.active .icon { color: var(--accent); }
+.app-tabbar a.active .icon {
+  color: var(--accent);
+}
 
 /* ── Mobile: swap to stacked grid ── */
 @media (max-width: 780px) {
@@ -152,20 +155,29 @@ main {
     grid-template-areas: "top" "main";
   }
 
-  .app-rail   { display: none; }
-  .app-topbar { display: flex; }
-  .app-tabbar { display: block; }
+  .app-rail {
+    display: none;
+  }
+  .app-topbar {
+    display: flex;
+  }
+  .app-tabbar {
+    display: block;
+  }
 
   /* Push content above the fixed tabbar */
   main {
-    padding: var(--s-4) var(--s-4) calc(var(--nav-height) + var(--s-4) + env(safe-area-inset-bottom, 0));
+    padding: var(--s-4) var(--s-4)
+      calc(var(--nav-height) + var(--s-4) + env(safe-area-inset-bottom, 0));
     overflow-y: auto;
   }
 }
 
 /* ── Icon-only below 500px ── */
 @media (max-width: 500px) {
-  .app-tabbar a .detail { display: none; }
+  .app-tabbar a .detail {
+    display: none;
+  }
   .app-tabbar a {
     gap: 0;
     padding: var(--s-3) 0;
@@ -175,7 +187,8 @@ main {
     height: 24px;
   }
   main {
-    padding: var(--s-2) var(--s-2) calc(var(--nav-height) + var(--s-2) + env(safe-area-inset-bottom, 0));
+    padding: var(--s-2) var(--s-2)
+      calc(var(--nav-height) + var(--s-2) + env(safe-area-inset-bottom, 0));
     overflow-y: auto;
   }
 }

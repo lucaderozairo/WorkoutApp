@@ -8,7 +8,7 @@
   padding: 3px 10px;
   font-size: var(--t-xs);
   font-weight: 500;
-  letter-spacing: .02em;
+  letter-spacing: 0.02em;
   color: var(--ink);
   background: var(--surface-2);
   border-radius: var(--r-pill);
@@ -22,42 +22,73 @@
   background: var(--pill-color, var(--ink-faint));
   flex-shrink: 0;
 }
-.pill.plain::before { display: none; }
+.pill.plain::before {
+  display: none;
+}
 .pill.active {
   outline: 1.5px solid currentColor;
   font-weight: 600;
 }
 
 /* Activity category pills */
-.pill.lift    { --pill-color: var(--c-strength); }
-.pill.run     { --pill-color: var(--c-cardio); }
-.pill.rowing  { --pill-color: var(--c-recovery); }
-.pill.cycle   { --pill-color: var(--c-nutrition); }
-.pill.swim    { --pill-color: var(--c-water); }
-.pill.mind                      { --pill-color: var(--c-mind); }
+.pill.lift {
+  --pill-color: var(--c-strength);
+}
+.pill.run {
+  --pill-color: var(--c-cardio);
+}
+.pill.rowing {
+  --pill-color: var(--c-recovery);
+}
+.pill.cycle {
+  --pill-color: var(--c-nutrition);
+}
+.pill.swim {
+  --pill-color: var(--c-water);
+}
+.pill.mind {
+  --pill-color: var(--c-mind);
+}
 
 /* Sleep stage pills (aliases) */
-.pill.awake { --pill-color: var(--color-sleep-awake); }
-.pill.light { --pill-color: var(--color-sleep-light); }
-.pill.deep  { --pill-color: var(--color-sleep-deep); }
-.pill.rem   { --pill-color: var(--color-sleep-rem); }
+.pill.awake {
+  --pill-color: var(--color-sleep-awake);
+}
+.pill.light {
+  --pill-color: var(--color-sleep-light);
+}
+.pill.deep {
+  --pill-color: var(--color-sleep-deep);
+}
+.pill.rem {
+  --pill-color: var(--color-sleep-rem);
+}
 
 /* Status pills */
-.pill.ok   { --pill-color: var(--ok); }
-.pill.warn { --pill-color: var(--warn); }
-.pill.bad  { --pill-color: var(--bad); }
+.pill.ok {
+  --pill-color: var(--ok);
+}
+.pill.warn {
+  --pill-color: var(--warn);
+}
+.pill.bad {
+  --pill-color: var(--bad);
+}
 
 /* Accent pill */
 .pill.accent {
   background: var(--accent);
   color: var(--accent-ink);
 }
-.pill.accent::before { background: var(--accent-ink); }
-
-@media (max-width: 360px) {
-  .pill { padding: 3px var(--s-2); }
+.pill.accent::before {
+  background: var(--accent-ink);
 }
 
+@media (max-width: 360px) {
+  .pill {
+    padding: 3px var(--s-2);
+  }
+}
 
 /* ════════════════════════════════════════════
    CHIP — interactive filter/segment control
@@ -71,7 +102,7 @@
   border: 1px solid var(--line);
   border-radius: var(--r-pill);
   cursor: pointer;
-  transition: all .12s var(--ease);
+  transition: all 0.12s var(--ease);
 }
 .chip:hover {
   color: var(--ink);
@@ -93,7 +124,6 @@
   background: var(--dot, var(--ink-faint));
   flex-shrink: 0;
 }
-
 
 /* ════════════════════════════════════════════
    STAT — big number + label
@@ -125,18 +155,27 @@
   font-size: var(--t-sm);
   color: var(--ink-muted);
 }
-.stat__trend--up   { color: var(--ok); }
-.stat__trend--down { color: var(--bad); }
+.stat__trend--up {
+  color: var(--ok);
+}
+.stat__trend--down {
+  color: var(--bad);
+}
 
-.stat--hero .stat__num { font-size: var(--t-4xl); }
-.stat--mega .stat__num { font-size: var(--t-5xl); }
+.stat--hero .stat__num {
+  font-size: var(--t-4xl);
+}
+.stat--mega .stat__num {
+  font-size: var(--t-5xl);
+}
 .stat--inline {
   flex-direction: row;
   align-items: baseline;
   gap: var(--s-2);
 }
-.stat--inline .stat__num { font-size: var(--t-xl); }
-
+.stat--inline .stat__num {
+  font-size: var(--t-xl);
+}
 
 /* ════════════════════════════════════════════
    TAG — inline mono label with dot
@@ -157,7 +196,6 @@
   flex-shrink: 0;
 }
 
-
 /* ════════════════════════════════════════════
    AVATAR
    ════════════════════════════════════════════ */
@@ -177,10 +215,15 @@
   overflow: hidden;
   flex-shrink: 0;
 }
-.avatar.sm { --size: 28px; }
-.avatar.lg { --size: 56px; }
-.avatar.xl { --size: 80px; }
-
+.avatar.sm {
+  --size: 28px;
+}
+.avatar.lg {
+  --size: 56px;
+}
+.avatar.xl {
+  --size: 80px;
+}
 
 /* ════════════════════════════════════════════
    BAR — linear progress
@@ -197,9 +240,8 @@
   width: var(--fill, 50%);
   background: var(--bar-color, var(--accent));
   border-radius: inherit;
-  transition: width .4s var(--ease);
+  transition: width 0.4s var(--ease);
 }
-
 
 /* ════════════════════════════════════════════
    METER — segmented macro bar
@@ -218,7 +260,6 @@
   width: var(--seg-width, 33%);
 }
 
-
 /* ════════════════════════════════════════════
    RING — circular SVG progress
    ════════════════════════════════════════════ */
@@ -227,7 +268,9 @@
   display: inline-block;
   line-height: 0;
 }
-.ring__svg { transform: rotate(-90deg); }
+.ring__svg {
+  transform: rotate(-90deg);
+}
 .ring__track {
   fill: none;
   stroke: var(--surface-2);
@@ -238,7 +281,7 @@
   stroke: var(--ring-color, var(--accent));
   stroke-width: var(--ring-width, 12);
   stroke-linecap: round;
-  transition: stroke-dashoffset .6s var(--ease);
+  transition: stroke-dashoffset 0.6s var(--ease);
 }
 .ring__inner {
   position: absolute;
@@ -251,7 +294,6 @@
   gap: 2px;
   text-align: center;
 }
-
 
 /* ════════════════════════════════════════════
    SPARK — inline sparkline
@@ -270,9 +312,8 @@
 .spark polygon,
 .spark-fill {
   fill: var(--spark-color, var(--accent));
-  opacity: .18;
+  opacity: 0.18;
 }
-
 
 /* ════════════════════════════════════════════
    GLASS TRACKER — water intake
@@ -295,17 +336,16 @@
   background: linear-gradient(
     to top,
     transparent 0%,
-    transparent var(--glass-empty, 100%),
-    var(--c-water) var(--glass-empty, 100%),
+    transparent var(--glass-empxy, 100%),
+    var(--c-water) var(--glass-empxy, 100%),
     var(--c-water) 100%
   );
-  opacity: .9;
+  opacity: 0.9;
 }
 .glass.full {
   background: var(--c-water);
   border-color: var(--c-water);
 }
-
 
 /* ════════════════════════════════════════════
    DOT — sport/activity indicator
@@ -316,17 +356,43 @@
   height: var(--s-3);
   border-radius: 50%;
   background: var(--ink-faint);
-  opacity: .5;
+  opacity: 0.5;
 }
-.dot.active  { opacity: 1; background: var(--accent); }
-.dot.lift    { opacity: 1; background: var(--c-strength); }
-.dot.run     { opacity: 1; background: var(--c-cardio); }
-.dot.cycle   { opacity: 1; background: var(--c-nutrition); }
-.dot.swim    { opacity: 1; background: var(--c-water); }
-.dot.rowing  { opacity: 1; background: var(--c-recovery); }
-.dot.transparent {opacity: 0;}
-.dot.ink { opacity: 1; background: var(--ink); }
-.dot.sm { width: var(--s-2); height: var(--s-2); }
+.dot.active {
+  opacity: 1;
+  background: var(--accent);
+}
+.dot.lift {
+  opacity: 1;
+  background: var(--c-strength);
+}
+.dot.run {
+  opacity: 1;
+  background: var(--c-cardio);
+}
+.dot.cycle {
+  opacity: 1;
+  background: var(--c-nutrition);
+}
+.dot.swim {
+  opacity: 1;
+  background: var(--c-water);
+}
+.dot.rowing {
+  opacity: 1;
+  background: var(--c-recovery);
+}
+.dot.transparent {
+  opacity: 0;
+}
+.dot.ink {
+  opacity: 1;
+  background: var(--ink);
+}
+.dot.sm {
+  width: var(--s-2);
+  height: var(--s-2);
+}
 
 /* ════════════════════════════════════════════
    BADGE
@@ -351,7 +417,6 @@
   color: color-mix(in srgb, var(--c-recovery) 60%, #000);
 }
 
-
 /* ════════════════════════════════════════════
    RARITY
    ════════════════════════════════════════════ */
@@ -362,16 +427,31 @@
   border-radius: var(--r-pill);
   flex-shrink: 0;
 }
-.rarity-dot.common    { background: var(--color-common); }
-.rarity-dot.rare      { background: var(--color-rare); }
-.rarity-dot.epic      { background: var(--color-epic); }
-.rarity-dot.legendary { background: var(--color-legendary); }
+.rarity-dot.common {
+  background: var(--color-common);
+}
+.rarity-dot.rare {
+  background: var(--color-rare);
+}
+.rarity-dot.epic {
+  background: var(--color-epic);
+}
+.rarity-dot.legendary {
+  background: var(--color-legendary);
+}
 
-.color-common    { color: var(--color-common); }
-.color-rare      { color: var(--color-rare); }
-.color-epic      { color: var(--color-epic); }
-.color-legendary { color: var(--color-legendary); }
-
+.color-common {
+  color: var(--color-common);
+}
+.color-rare {
+  color: var(--color-rare);
+}
+.color-epic {
+  color: var(--color-epic);
+}
+.color-legendary {
+  color: var(--color-legendary);
+}
 
 /* ════════════════════════════════════════════
    SEG BAR — filled segments
@@ -386,13 +466,15 @@
   background: var(--surface-3);
   border-radius: 2px;
 }
-.seg-bar .seg.filled { background: var(--accent); }
-
+.seg-bar .seg.filled {
+  background: var(--accent);
+}
 
 /* ════════════════════════════════════════════
    SKELETON
    ════════════════════════════════════════════ */
-.skeleton, .skeleton:hover {
+.skeleton,
+.skeleton:hover {
   border: none;
   color: transparent;
   background: linear-gradient(
@@ -410,11 +492,19 @@
   animation: skeleton-load 2s infinite ease-in-out;
 }
 @keyframes skeleton-load {
-  0%   { background-position-x: 100%; }
-  100% { background-position-x: -100%; }
+  0% {
+    background-position-x: 100%;
+  }
+  100% {
+    background-position-x: -100%;
+  }
 }
-.skeleton.full  { width: 100%; }
-.skeleton.half  { width: 50%; }
+.skeleton.full {
+  width: 100%;
+}
+.skeleton.half {
+  width: 50%;
+}
 .skeleton.media {
   border-radius: var(--r-sm);
   min-height: 100px;
@@ -427,7 +517,6 @@ button.skeleton {
   height: var(--size);
 }
 
-
 /* ════════════════════════════════════════════
    TABS
    ════════════════════════════════════════════ */
@@ -435,7 +524,9 @@ button.skeleton {
   display: flex;
   width: 100%;
 }
-.tabs > * { flex: 1; }
+.tabs > * {
+  flex: 1;
+}
 .tab {
   border-radius: 0;
   background: var(--surface-1);
@@ -445,7 +536,9 @@ button.skeleton {
   font-size: var(--t-sm);
   color: var(--ink-muted);
   border-bottom: 2px solid transparent;
-  transition: color .12s var(--ease), border-color .12s var(--ease);
+  transition:
+    color 0.12s var(--ease),
+    border-color 0.12s var(--ease);
 }
 .tabs .tab:first-child {
   border-top-left-radius: var(--r-sm);
@@ -458,8 +551,9 @@ button.skeleton {
   border-bottom-color: var(--accent);
   background: var(--surface-1);
 }
-.tab:hover:not(.active) { background: var(--surface-2); }
-
+.tab:hover:not(.active) {
+  background: var(--surface-2);
+}
 
 /* ════════════════════════════════════════════
    ALERT
@@ -471,7 +565,6 @@ button.skeleton {
   border: 1px solid var(--line);
 }
 
-
 /* ════════════════════════════════════════════
    SWITCH
    ════════════════════════════════════════════ */
@@ -479,7 +572,6 @@ button.skeleton {
   background-color: var(--surface-2);
   width: var(--s-8);
 }
-
 
 /* ════════════════════════════════════════════
    MODAL
@@ -511,13 +603,19 @@ button.skeleton {
 /* ════════════════════════════════════════════
    CHEVRON — animated expand/collapse indicator
    ════════════════════════════════════════════ */
-.chevron { transition: transform var(--duration-short) var(--ease); }
-.chevron.open { transform: rotate(180deg); }
+.chevron {
+  transition: transform var(--duration-short) var(--ease);
+}
+.chevron.open {
+  transform: rotate(180deg);
+}
 
 /* ════════════════════════════════════════════
    FILTER PANEL — floating filter panel width
    ════════════════════════════════════════════ */
-.filter-panel { min-width: 260px; }
+.filter-panel {
+  min-width: 260px;
+}
 .dropdown.filter-panel {
   right: 0;
   left: auto;
@@ -538,8 +636,12 @@ button.skeleton {
   cursor: default;
   border-radius: 0;
 }
-.fullscreen-overlay-dismiss:hover { background: transparent; }
-.dropdown-wrap { position: relative; }
+.fullscreen-overlay-dismiss:hover {
+  background: transparent;
+}
+.dropdown-wrap {
+  position: relative;
+}
 .dropdown {
   position: absolute;
   top: calc(100% + var(--s-1));
@@ -563,8 +665,7 @@ button.skeleton {
   background: transparent;
   position: relative;
   cursor: pointer;
-  transition: background-color .12s var(--ease);
-  
+  transition: background-color 0.12s var(--ease);
 }
 
 .cal button.day[data-today] {
@@ -572,14 +673,18 @@ button.skeleton {
   color: var(--accent-ink);
 }
 
-.cal .day .caption {
-  line-height: .7;
+.cal .day .capxion {
+  line-height: 0.7;
 }
 
-.cal .day:hover { background: var(--surface-2); }
+.cal .day:hover {
+  background: var(--surface-2);
+}
 
-
-.cal .day .dot{height: var(--s-1);width: var(--s-1);}
+.cal .day .dot {
+  height: var(--s-1);
+  width: var(--s-1);
+}
 
 /* ════════════════════════════════════════════
    CHART Y-AXIS LABEL
@@ -615,7 +720,9 @@ button.skeleton {
   font-size: var(--t-xs);
   font-weight: 600;
 }
-.splits-table .elev-up   { color: var(--ok); }
-.splits-table .elev-down { color: var(--c-cardio); }
-
-
+.splits-table .elev-up {
+  color: var(--ok);
+}
+.splits-table .elev-down {
+  color: var(--c-cardio);
+}

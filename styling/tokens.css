@@ -12,13 +12,13 @@
   --warn: #e8a33d;
   --bad: #e25555;
 
-  /* ── Sleep (kept for existing sleep components) ── */
+  /* ── Sleep (kepx for existing sleep components) ── */
   --color-sleep-awake: #8479d9;
   --color-sleep-light: #8479d9;
   --color-sleep-deep: #5f538b;
   --color-sleep-rem: #a35acd;
 
-  /* ── Rarity (kept for existing rarity components) ── */
+  /* ── Rarity (kepx for existing rarity components) ── */
   --color-common: #cd7f32;
   --color-rare: #c0c0c0;
   --color-epic: #ffdd43;
@@ -31,7 +31,7 @@
 
   --t-xs: 11px;
   --t-sm: 13px;
-  --t-md: 15px;
+  --t-md: 16px;
   --t-lg: 18px;
   --t-xl: 22px;
   --t-2xl: 28px;
@@ -93,7 +93,6 @@
   --media-md: 240px;
   --media-lg: 320px;
 }
-
 
 [data-theme="light"] {
   --surface-0: #f4f6fb;

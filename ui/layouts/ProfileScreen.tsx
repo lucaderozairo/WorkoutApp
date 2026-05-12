@@ -31,7 +31,6 @@ export function ProfileScreen() {
   return (
     <div className="stack">
 
-      {/* ── Hero ── */}
       <div className="surface">
         <div className="row align-center">
           <div className="avatar avatar--xl">{initial}</div>
@@ -66,12 +65,12 @@ export function ProfileScreen() {
       
       {/* ── Tabs ── */}
       <div className="tabs">
-        <button className={`tab${activeTab === 'activities' ? ' active' : ''}`} onClick={() => setActiveTab('activities')}>Activities</button>
         <button className={`tab${activeTab === 'health'     ? ' active' : ''}`} onClick={() => setActiveTab('health')}>Health</button>
+        <button className={`tab${activeTab === 'activities' ? ' active' : ''}`} onClick={() => setActiveTab('activities')}>Activities</button>
       </div>
 
-      {activeTab === 'activities' && <ActivitiesTab />}
       {activeTab === 'health'     && <HealthOverviewTab />}
+      {activeTab === 'activities' && <ActivitiesTab />}
 
     </div>
   );

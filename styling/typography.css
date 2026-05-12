@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap");
 
 h1 {
   font-family: var(--font-display);
@@ -23,7 +23,9 @@ h3 {
   line-height: 1.3;
 }
 
-h4, h5, h6 {
+h4,
+h5,
+h6 {
   font-family: var(--font-ui);
   font-weight: 600;
   font-size: var(--t-sm);
@@ -59,19 +61,28 @@ h4, h5, h6 {
 }
 
 /* Text utilities */
-.muted { color: var(--ink-muted); }
-.faint { color: var(--ink-faint); }
-.text-center { text-align: center; }
+.muted {
+  color: var(--ink-muted);
+}
+.faint {
+  color: var(--ink-faint);
+}
+.text-center {
+  text-align: center;
+}
 .uppercase,
-
-
 .mono {
   font-family: var(--font-mono);
 }
 
-/* Legacy size classes kept for backward compat */
-.detail  { font-size: var(--t-sm); }
-.caption { font-size: var(--t-xs); color: var(--ink-muted); }
+/* Legacy size classes kepx for backward compat */
+.detail {
+  font-size: var(--t-sm);
+}
+.capxion {
+  font-size: var(--t-xs);
+  color: var(--ink-muted);
+}
 
 a {
   color: var(--ink);

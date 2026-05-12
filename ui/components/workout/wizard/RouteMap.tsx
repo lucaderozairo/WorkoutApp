@@ -89,7 +89,7 @@ interface RouteMapProps {
 }
 
 type EditMode = 'select' | 'add' | 'split';
-type BaseLayerId = 'plain' | 'topo' | 'sat';
+type BaseLayerId = 'plain' | 'dark' | 'topo' | 'sat';
 
 function parseLatLngQuery(inputRaw: string): [number, number] | null {
   const input = inputRaw.trim();
@@ -232,6 +232,11 @@ export function RouteMap({ waypoints, onChange, profile = 'foot', onRoutedDistan
         label: 'Plain',
         url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
       },
+      dark: {
+        id: 'dark' as const,
+        label: 'Dark',
+        url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+      },
       topo: {
         id: 'topo' as const,
         label: 'Topography',
@@ -298,8 +303,7 @@ export function RouteMap({ waypoints, onChange, profile = 'foot', onRoutedDistan
     const distanceMarkerPane = map.createPane(DISTANCE_MARKER_PANE);
     distanceMarkerPane.classList.add('route-distance-pane');
 
-    const initial = baseLayers.plain;
-    baseLayerIdRef.current = 'plain';
+    const initial = baseLayers[baseLayerIdRef.current];
     baseLayerRef.current = L.tileLayer(initial.url, { attribution: TILE_ATTR, maxZoom: 19 }).addTo(map);
 
     return () => {
@@ -928,68 +932,92 @@ export function RouteMap({ waypoints, onChange, profile = 'foot', onRoutedDistan
       )}
     </div>
 
-      <div className="route-map-mobile-controls row compact">
-        <button
-          type="button"
-          className={`${mode === 'select' ? 'primary' : 'ghost'} icon`}
-          onClick={() => setMode('select')}
-          aria-label="Select / pan"
-          aria-pressed={mode === 'select'}
-        >
-          <Cursor size={18} />
-        </button>
-        <button
-          type="button"
-          className={`${mode === 'add' ? 'primary' : 'ghost'} icon`}
-          onClick={() => setMode('add')}
-          aria-label="Add waypoint"
-          aria-pressed={mode === 'add'}
-        >
-          <Plus size={18} />
-        </button>
-        <button
-          type="button"
-          className={`${mode === 'split' ? 'primary' : 'ghost'} icon`}
-          onClick={() => setMode('split')}
-          aria-label="Split route (insert waypoint)"
-          aria-pressed={mode === 'split'}
-        >
-          <FiScissors size={18} />
-        </button>
-        <span className="grow" />
-        <button
-          type="button"
-          className={`${layersOpen ? 'primary' : 'ghost'} icon`}
-          onClick={() => {
-            setLayersOpen(v => !v);
-            setOverlaysOpen(false);
-          }}
-          aria-label="Map layers"
-          aria-expanded={layersOpen}
-        >
-          <Layers size={18} />
-        </button>
-        <button
-          type="button"
-          className={`${overlaysOpen ? 'primary' : 'ghost'} icon`}
-          onClick={() => {
-            setOverlaysOpen(v => !v);
-            setLayersOpen(false);
-          }}
-          aria-label="Overlays"
-          aria-expanded={overlaysOpen}
-        >
-          <Eye size={18} />
-        </button>
-        <button
-          type="button"
-          className="ghost icon danger"
-          onClick={deleteSelectedWaypoint}
-          aria-label="Delete selected waypoint"
-          disabled={selectedWaypointIdx == null}
-        >
-          <Trash2 size={18} />
-        </button>
+      <div className="route-map-mobile-controls column compact">
+        <div className="row compact">
+          <button
+            type="button"
+            className={`${mode === 'select' ? 'primary' : 'ghost'} icon`}
+            onClick={() => setMode('select')}
+            aria-label="Select / pan"
+            aria-pressed={mode === 'select'}
+          >
+            <Cursor size={18} />
+          </button>
+          <button
+            type="button"
+            className={`${mode === 'add' ? 'primary' : 'ghost'} icon`}
+            onClick={() => setMode('add')}
+            aria-label="Add waypoint"
+            aria-pressed={mode === 'add'}
+          >
+            <Plus size={18} />
+          </button>
+          <button
+            type="button"
+            className={`${mode === 'split' ? 'primary' : 'ghost'} icon`}
+            onClick={() => setMode('split')}
+            aria-label="Split route (insert waypoint)"
+            aria-pressed={mode === 'split'}
+          >
+            <FiScissors size={18} />
+          </button>
+          <span className="grow" />
+          <button
+            type="button"
+            className={`${layersOpen ? 'primary' : 'ghost'} icon`}
+            onClick={() => { setLayersOpen(v => !v); setOverlaysOpen(false); }}
+            aria-label="Map layers"
+            aria-expanded={layersOpen}
+          >
+            <Layers size={18} />
+          </button>
+          <button
+            type="button"
+            className={`${overlaysOpen ? 'primary' : 'ghost'} icon`}
+            onClick={() => { setOverlaysOpen(v => !v); setLayersOpen(false); }}
+            aria-label="Overlays"
+            aria-expanded={overlaysOpen}
+          >
+            <Eye size={18} />
+          </button>
+          <button
+            type="button"
+            className="ghost icon danger"
+            onClick={deleteSelectedWaypoint}
+            aria-label="Delete selected waypoint"
+            disabled={selectedWaypointIdx == null}
+          >
+            <Trash2 size={18} />
+          </button>
+        </div>
+        {layersOpen && (
+          <div className="row compact">
+            <span className="grow"></span>
+            {(Object.keys(baseLayers) as BaseLayerId[]).map(id => (
+              <button
+                key={id}
+                type="button"
+                className={`${baseLayerId === id ? 'primary' : 'ghost'} sm`}
+                onClick={() => switchBaseLayer(id)}
+              >
+                {baseLayers[id].label}
+              </button>
+            ))}
+          </div>
+        )}
+        {overlaysOpen && (
+          <div className="row compact">
+            <span className="grow"></span>
+            <button
+              type="button"
+              className={`${showDistanceMarkers ? 'primary' : 'ghost'} sm`}
+              onClick={() => toggleDistanceMarkers(!showDistanceMarkers)}
+              aria-pressed={showDistanceMarkers}
+            >
+              Distance markers
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

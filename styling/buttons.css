@@ -14,15 +14,15 @@ input[type="reset"],
   color: var(--ink);
   background: var(--surface-1);
   border: 1px solid var(--line-strong);
-  border-radius: var(--r-pill);
+  border-radius: var(--s-4);
   box-shadow: none;
   cursor: pointer;
   white-space: nowrap;
   text-align: center;
   transition:
-    background-color .12s var(--ease),
-    border-color .12s var(--ease),
-    transform .12s var(--ease);
+    background-color 0.12s var(--ease),
+    border-color 0.12s var(--ease),
+    transform 0.12s var(--ease);
 }
 
 button:hover,
@@ -39,7 +39,7 @@ button:active,
 input[type="button"]:active,
 input[type="submit"]:active,
 input[type="reset"]:active {
-  transform: scale(.98);
+  transform: scale(0.98);
 }
 
 button:focus-visible {
@@ -59,7 +59,7 @@ input[type="submit"].primary,
 button.primary:hover,
 input[type="submit"].primary:hover,
 .primary:hover {
-  filter: brightness(.95);
+  filter: brightness(0.95);
   background: var(--accent);
 }
 
@@ -83,9 +83,15 @@ button.ghost {
   box-shadow: none;
   color: var(--ink);
 }
-button.ghost:hover { background: var(--surface-2); }
-button.ghost.flush { padding-inline: 0; }
-button.ghost.flush:hover { background: transparent; }
+button.ghost:hover {
+  background: var(--surface-2);
+}
+button.ghost.flush {
+  padding-inline: 0;
+}
+button.ghost.flush:hover {
+  background: transparent;
+}
 
 /* ── Icon ── */
 button.icon {
@@ -110,24 +116,35 @@ input[type="submit"].lg {
   font-size: var(--t-md);
 }
 
-button.block { width: 100%; }
-button.active { background: var(--surface-2); border-color: var(--line-strong); }
+button.block {
+  width: 100%;
+}
+button.active {
+  background: var(--surface-2);
+  border-color: var(--line-strong);
+}
 
 /* ── File upload ── */
 .custom-file-upload {
   background: var(--surface-1);
   color: var(--ink);
 }
-input[type="file"] { display: none; }
+input[type="file"] {
+  display: none;
+}
 
 /* ── Form action buttons ── */
-input[type="submit"] { flex: 1 1 0; }
+input[type="submit"] {
+  flex: 1 1 0;
+}
 input[type="reset"] {
   color: var(--ink-muted);
   border-color: var(--line-strong);
   background: transparent;
 }
-input[type="reset"]:hover { background: var(--surface-2); }
+input[type="reset"]:hover {
+  background: var(--surface-2);
+}
 
 /* ── Narrow viewport overrides ── */
 @media (max-width: 360px) {

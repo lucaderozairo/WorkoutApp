@@ -1,35 +1,58 @@
+import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import {
-  Home,
-  Dumbbell,
-  CalendarDays,
-  TrendingUp,
-  Users,
-  User,
-  Settings,
-  Bell,
-  MessageSquare,
-} from 'lucide-react';
 import { APP_MODE } from '@config/app-mode';
+import type { Icon as PhosphorIcon } from 'phosphor-react';
+import { Bell, CalendarBlank, ChartLine, Chat, Compass, File, Gear, House, ToggleLeft, ToggleRight, UserCircle } from 'phosphor-react';
+
+function useTheme(): 'light' | 'dark' {
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const t = document.documentElement.getAttribute('data-theme');
+    return t === 'dark' ? 'dark' : 'light';
+  });
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      const t = document.documentElement.getAttribute('data-theme');
+      setTheme(t === 'dark' ? 'dark' : 'light');
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    return () => observer.disconnect();
+  }, []);
+  return theme;
+}
+
+function ThemeToggle({ size = 20 }: { size?: number }) {
+  const theme = useTheme();
+  const toggle = () => {
+    document.documentElement.setAttribute('data-theme', theme === 'light' ? 'dark' : 'light');
+  };
+  return (
+    <button className='ghost' onClick={toggle} title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}>
+      {theme === 'light'
+        ? <ToggleLeft size={size} weight="regular" />
+        : <ToggleRight size={size} weight="fill" />}
+        Theme
+    </button>
+  );
+}
 
 const GITHUB_PAGES_PATHS = new Set(['/dashboard', '/log', '/profile']);
 
-const allDesktopTabs = [
-  { label: 'Home', path: '/dashboard', icon: <Home size={18} /> },
-  { label: 'Workout', path: '/log', icon: <Dumbbell size={18} /> },
-  { label: 'Schedule', path: '/schedule', icon: <CalendarDays size={18} /> },
-  { label: 'Progress', path: '/progress', icon: <TrendingUp size={18} /> },
-  { label: 'Social', path: '/social', icon: <Users size={18} /> },
-  { label: 'Messages', path: '/messages', icon: <MessageSquare size={18} /> },
-  { label: 'Profile', path: '/profile', icon: <User size={18} /> },
+const allDesktopTabs: { label: string; path: string; Icon: PhosphorIcon }[] = [
+  { label: 'Home', path: '/dashboard', Icon: House },
+  { label: 'Workout', path: '/log', Icon: File },
+  { label: 'Schedule', path: '/schedule', Icon: CalendarBlank },
+  { label: 'Progress', path: '/progress', Icon: ChartLine },
+  { label: 'Social', path: '/social', Icon: Compass },
+  { label: 'Messages', path: '/messages', Icon: Chat },
+  { label: 'Profile', path: '/profile', Icon: UserCircle },
 ];
 
-const allMobileTabs = [
-  { label: 'Home', path: '/dashboard', icon: <Home size={22} /> },
-  { label: 'Workout', path: '/log', icon: <Dumbbell size={22} /> },
-  { label: 'Messages', path: '/messages', icon: <MessageSquare size={22} /> },
-  { label: 'Social', path: '/social', icon: <Users size={22} /> },
-  { label: 'Profile', path: '/profile', icon: <User size={22} /> },
+const allMobileTabs: { label: string; path: string; Icon: PhosphorIcon }[] = [
+  { label: 'Home', path: '/dashboard', Icon: House },
+  { label: 'Workout', path: '/log', Icon: File },
+  { label: 'Messages', path: '/messages', Icon: Chat },
+  { label: 'Social', path: '/social', Icon: Compass },
+  { label: 'Profile', path: '/profile', Icon: UserCircle },
 ];
 
 const desktopTabs = APP_MODE === 'github-pages'
@@ -49,39 +72,62 @@ export function TabNavigation({ onOpenSettings }: TabNavigationProps) {
     <>
       {/* Desktop rail — visible >780px */}
       <aside className="app-rail">
-        <div className="app-rail__logo brand">Fittrack</div>
-        <nav className="app-rail__nav">
-          {desktopTabs.map(tab => (
-            <NavLink key={tab.path} to={tab.path}>
-              <span className="icon">{tab.icon}</span>
-              <span className="detail">{tab.label}</span>
+        <div className="surface compact ghost">
+          <NavLink to={"/"}>
+            <span className='icon'>
+              <img src="./logo.png" alt="Fittrack logo" width="18" height="18" />
+            </span>
+            <span className="detail">Fittrack</span>
+          </NavLink>
+        </div>
+        <hr />
+        <nav className="surface ghost">
+          {desktopTabs.map(({ label, path, Icon }) => (
+            <NavLink key={path} to={path}>
+              {({ isActive }) => (
+                <>
+                  <span className="icon"><Icon size={18} weight={isActive ? 'fill' : 'regular'} /></span>
+                  <span className="detail">{label}</span>
+                </>
+              )}
             </NavLink>
           ))}
         </nav>
-        <div className="app-rail__foot">
+        <hr />
+        <div className="surface ghost">
           <NavLink to="/settings" title="Settings">
-            <span className="icon"><Settings size={18} /></span>
-            <span className="detail">Settings</span>
+            {({ isActive }) => (
+              <>
+                <span className="icon"><Gear size={18} weight={isActive ? 'fill' : 'regular'} /></span>
+                <span className="detail">Settings</span>
+              </>
+            )}
           </NavLink>
-          <a className="ghost icon" title="Notifications">
+          {/* <a className="ghost icon" title="Notifications">
             <Bell size={18} />
-            <span className="detail">
-              Notifications
-            </span>
-          </a>
+            <span className="detail">Notifications</span>
+          </a> */}
+
+          <ThemeToggle size={18} />
         </div>
       </aside>
 
       {/* Mobile topbar — visible ≤780px */}
-      <header className="app-topbar">
-        <span className="app-topbar__logo brand">Fittrack</span>
+      <header className="app-topbar row align-center space-between">
+          <NavLink key={"/"} to={"/"}>
+            <span className='icon'>
+              <img src="logo.png" alt="Fittrack logo" width="24" height="24" />
+            </span>
+            <h2>Fittrack</h2>
+          </NavLink>
         <div className="row">
-          <button className="ghost icon" title="Notifications">
+          <ThemeToggle size={20} />
+          {/* <button className="ghost icon" title="Notifications">
             <Bell size={20} />
-          </button>
+          </button> */}
           {onOpenSettings && (
             <button className="ghost icon" onClick={onOpenSettings} title="Settings">
-              <Settings size={20} />
+              <Gear size={20} />
             </button>
           )}
         </div>
@@ -90,10 +136,14 @@ export function TabNavigation({ onOpenSettings }: TabNavigationProps) {
       {/* Mobile bottom tabbar — visible ≤780px */}
       <nav className="app-tabbar">
         <div className="app-tabbar__list">
-          {mobileTabs.map(tab => (
-            <NavLink key={tab.path} to={tab.path}>
-              <span className="icon">{tab.icon}</span>
-              <span className="detail">{tab.label}</span>
+          {mobileTabs.map(({ label, path, Icon }) => (
+            <NavLink key={path} to={path}>
+              {({ isActive }) => (
+                <>
+                  <span className="icon"><Icon size={22} weight={isActive ? 'fill' : 'regular'} /></span>
+                  <span className="detail">{label}</span>
+                </>
+              )}
             </NavLink>
           ))}
         </div>

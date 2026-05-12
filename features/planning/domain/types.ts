@@ -1,6 +1,6 @@
 import type { Id, DomainEvent } from '@shared/types';
 
-export type PlanType = 'gym' | 'run' | 'cycle' | 'swim';
+export type PlanType = 'gym' | 'run' | 'cycle' | 'swim' | 'hike';
 
 export interface PlannedExercise {
   name: string;

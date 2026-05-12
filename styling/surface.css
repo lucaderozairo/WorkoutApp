@@ -73,6 +73,11 @@
   color: var(--accent-ink);
   border-color: transparent;
 }
+.surface.ghost {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
 .surface.inset {
   background: var(--surface-2);
   border-style: dashed;

@@ -2,6 +2,8 @@
 import { useState, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Search } from 'lucide-react'
+import { ChartContainer } from '../../patterns/charts/charts'
+import { CATEGORY_MOCK_CHARTS, type MiniChartDef } from '../../../data/mock/health-categories'
 
 // ─── Types & Registry ───────────────────────────────────────────────────────
 
@@ -24,47 +26,48 @@ export const SECTIONS = [
 
 export const HEALTH_CATEGORIES: HealthCategory[] = [
   // Physical & Activity
-  { slug: 'activity-mobility',  icon: '👣', name: 'Activity & Mobility',  subtitle: 'steps · distance · rings · workouts · VO₂ · daylight',        section: 'Physical & Activity' },
-  { slug: 'body-measurements',  icon: '⚖️', name: 'Body Measurements',    subtitle: 'weight · BMI · body fat · lean mass · waist',                  section: 'Physical & Activity' },
-  { slug: 'injuries',           icon: '🩹', name: 'Injuries',             subtitle: 'active · resolved · body part',                                section: 'Physical & Activity' },
-  { slug: 'routes',             icon: '🗺️', name: 'Routes',              subtitle: 'saved · Strava import · map view',                             section: 'Physical & Activity' },
-  { slug: 'cycle-tracking',     icon: '🩸', name: 'Cycle Tracking',       subtitle: 'period · BBT · ovulation · LH · fertility',                   section: 'Physical & Activity' },
+  { slug: 'activity-mobility', icon: '👣', name: 'Activity & Mobility', subtitle: 'steps · distance · workouts · VO₂ · daylight', section: 'Physical & Activity' },
+  { slug: 'body-measurements', icon: '⚖️', name: 'Body Measurements', subtitle: 'weight · BMI · body fat · lean mass · waist', section: 'Physical & Activity' },
+  { slug: 'injuries', icon: '🩹', name: 'Injuries', subtitle: 'active · resolved · body part', section: 'Physical & Activity' },
+  // { slug: 'routes', icon: '🗺️', name: 'Routes', subtitle: 'saved · Strava import · map view', section: 'Physical & Activity' },
+  // { slug: 'cycle-tracking', icon: '🩸', name: 'Cycle Tracking', subtitle: 'period · BBT · ovulation · LH · fertility', section: 'Physical & Activity' },
   // Heart & Vitals
-  { slug: 'heart',              icon: '❤️', name: 'Heart',               subtitle: 'HR · resting HR · HRV · ECG · AFib burden',                   section: 'Heart & Vitals' },
-  { slug: 'vitals',             icon: '🌡️', name: 'Vitals',             subtitle: 'SpO₂ · blood pressure · glucose · resp. rate · wrist temp',    section: 'Heart & Vitals' },
-  { slug: 'sleep',              icon: '😴', name: 'Sleep',               subtitle: 'duration · stages · score · breathing disturbances',           section: 'Heart & Vitals' },
+  { slug: 'heart', icon: '❤️', name: 'Heart', subtitle: 'HR · resting HR · HRV · ECG · AFib burden', section: 'Heart & Vitals' },
+  { slug: 'vitals', icon: '🌡️', name: 'Vitals', subtitle: 'SpO₂ · blood pressure · glucose · resp. rate · wrist temp', section: 'Heart & Vitals' },
+  { slug: 'sleep', icon: '😴', name: 'Sleep', subtitle: 'duration · stages · score · breathing disturbances', section: 'Heart & Vitals' },
   // Nutrition & Lifestyle
-  { slug: 'nutrition',          icon: '🥗', name: 'Nutrition',           subtitle: 'macros · vitamins · minerals · hydration · caffeine',          section: 'Nutrition & Lifestyle' },
-  { slug: 'mental-wellbeing',   icon: '🧠', name: 'Mental Wellbeing',    subtitle: 'mindfulness · state of mind · PHQ-9 · GAD-7',                 section: 'Nutrition & Lifestyle' },
-  { slug: 'symptoms',           icon: '🤒', name: 'Symptoms',            subtitle: 'respiratory · digestive · pain · fatigue · 30+ conditions',   section: 'Nutrition & Lifestyle' },
-  { slug: 'hearing',            icon: '👂', name: 'Hearing',             subtitle: 'env. sound · headphone levels · audiograms',                  section: 'Nutrition & Lifestyle' },
+  { slug: 'nutrition', icon: '🥗', name: 'Nutrition', subtitle: 'macros · vitamins · minerals · hydration · caffeine', section: 'Nutrition & Lifestyle' },
+  { slug: 'mental-wellbeing', icon: '🧠', name: 'Mental Wellbeing', subtitle: 'mindfulness · state of mind · PHQ-9 · GAD-7', section: 'Nutrition & Lifestyle' },
+  { slug: 'symptoms', icon: '🤒', name: 'Symptoms', subtitle: 'respiratory · digestive · pain · fatigue · 30+ conditions', section: 'Nutrition & Lifestyle' },
+  { slug: 'hearing', icon: '👂', name: 'Hearing', subtitle: 'env. sound · headphone levels · audiograms', section: 'Nutrition & Lifestyle' },
   // Medications & Records
-  { slug: 'medications',        icon: '💊', name: 'Medications',         subtitle: 'schedule · dose log · drug interactions',                     section: 'Medications & Records' },
-  { slug: 'health-records',     icon: '📋', name: 'Health Records',      subtitle: 'labs · allergies · immunizations · insulin · falls',          section: 'Medications & Records' },
+  { slug: 'medications', icon: '💊', name: 'Medications', subtitle: 'schedule · dose log · drug interactions', section: 'Medications & Records' },
+  { slug: 'health-records', icon: '📋', name: 'Health Records', subtitle: 'labs · allergies · immunizations · insulin · falls', section: 'Medications & Records' },
   // Wearable Recovery
-  { slug: 'readiness',          icon: '⚡', name: 'Readiness',           subtitle: 'Oura · WHOOP · Garmin',                                       section: 'Wearable Recovery' },
-  { slug: 'body-battery',       icon: '🔋', name: 'Body Battery',        subtitle: 'Garmin energy reserve',                                       section: 'Wearable Recovery' },
-  { slug: 'stress',             icon: '😤', name: 'Stress',              subtitle: 'Garmin stress score',                                         section: 'Wearable Recovery' },
-  { slug: 'skin-temperature',   icon: '🌡️', name: 'Skin Temperature',   subtitle: 'Oura · WHOOP overnight',                                      section: 'Wearable Recovery' },
+  { slug: 'readiness', icon: '⚡', name: 'Readiness', subtitle: 'Oura · WHOOP · Garmin', section: 'Wearable Recovery' },
+  { slug: 'body-battery', icon: '🔋', name: 'Body Battery', subtitle: 'Garmin energy reserve', section: 'Wearable Recovery' },
+  { slug: 'stress', icon: '😤', name: 'Stress', subtitle: 'Garmin stress score', section: 'Wearable Recovery' },
+  { slug: 'skin-temperature', icon: '🌡️', name: 'Skin Temperature', subtitle: 'Oura · WHOOP overnight', section: 'Wearable Recovery' },
   // Performance
-  { slug: 'goals-records',      icon: '🏆', name: 'Goals & Records',     subtitle: 'achievements · PRs · active goals',                           section: 'Performance' },
+  { slug: 'goals-records', icon: '🏆', name: 'Goals & Records', subtitle: 'achievements · PRs · active goals', section: 'Performance' },
 ]
 
 // ─── Internal sub-components ─────────────────────────────────────────────────
 
 type LongPressHandlers = { start: () => void; cancel: () => void }
 
-interface TileButtonProps {
+interface CategoryButtonProps {
   cat: HealthCategory
   isPinned?: boolean
   onClick: () => void
   onLongPress: LongPressHandlers
+  charts?: MiniChartDef[]
 }
 
-function TileButton({ cat, isPinned = false, onClick, onLongPress }: TileButtonProps) {
+function CategoryTile({ cat, isPinned = false, onClick, onLongPress, charts }: CategoryButtonProps) {
   return (
     <button
-      className={`surface${isPinned ? ' pinned' : ''}`}
+      className={`surface compact${isPinned ? ' pinned' : ''}`}
       onClick={onClick}
       onPointerDown={onLongPress.start}
       onPointerUp={onLongPress.cancel}
@@ -72,36 +75,43 @@ function TileButton({ cat, isPinned = false, onClick, onLongPress }: TileButtonP
       onPointerCancel={onLongPress.cancel}
     >
       <div className="column align-center">
-        <div>{cat.icon}</div>
+        <span>{cat.icon}</span>
         <span className="caption">{cat.name}</span>
       </div>
     </button>
   )
 }
 
-interface ListRowProps {
-  cat: HealthCategory
-  isPinned?: boolean
-  onClick: () => void
-  onLongPress: LongPressHandlers
-}
-
-function ListRow({ cat, isPinned = false, onClick, onLongPress }: ListRowProps) {
+function CategoryRow({ cat, isPinned = false, onClick, onLongPress, charts }: CategoryButtonProps) {
   return (
     <button
-      className={`row align-center${isPinned ? ' surface pinned' : ''}`}
+      className={`surface compact row align-center space-between${isPinned ? ' pinned' : ''}`}
       onClick={onClick}
       onPointerDown={onLongPress.start}
       onPointerUp={onLongPress.cancel}
       onPointerLeave={onLongPress.cancel}
       onPointerCancel={onLongPress.cancel}
     >
-      <span>{cat.icon}</span>
-      <div className="grow stack compact">
-        <span>{cat.name}</span>
-        <span className="caption muted">{cat.subtitle}</span>
+      <div className="row align-center">
+        <span className="icon">{cat.icon}</span>
+        <div className="stack compact align-left">
+          <span>{cat.name}</span>
+        </div>
       </div>
-      <span className="faint" aria-hidden="true">›</span>
+      <div className="row align-center">
+        {charts?.[0] && (
+          <div className="grow">
+            <ChartContainer
+              chartType={charts[0].chartType}
+              data={charts[0].data}
+              height={44}
+              axisShow={{ x: false, y: false }}
+              color={charts[0].color ?? 'var(--accent)'}
+            />
+          </div>
+        )}
+        <span className="faint" aria-hidden="true">›</span>
+      </div>
     </button>
   )
 }
@@ -153,7 +163,7 @@ export function HealthOverviewTab() {
     [query],
   )
 
-  const pinnedCats   = useMemo(() => filtered.filter(c =>  pinned.includes(c.slug)), [filtered, pinned])
+  const pinnedCats = useMemo(() => filtered.filter(c => pinned.includes(c.slug)), [filtered, pinned])
   const unpinnedCats = useMemo(() => filtered.filter(c => !pinned.includes(c.slug)), [filtered, pinned])
 
   return (
@@ -173,11 +183,49 @@ export function HealthOverviewTab() {
 
       {/* View toggle */}
       <div className="cluster">
-        <button className={`chip${view === 'grid' ? ' active' : ''}`} aria-pressed={view === 'grid'} onClick={() => setView('grid')}>Grid</button>
-        <button className={`chip${view === 'list' ? ' active' : ''}`} aria-pressed={view === 'list'} onClick={() => setView('list')}>List</button>
+        <button className={view === 'grid' ? 'chip active' : 'chip'} onClick={() => setView('grid')}>Grid</button>
+        <button className={view === 'list' ? 'chip active' : 'chip'} onClick={() => setView('list')}>List</button>
       </div>
 
-      {/* ── Grid view ── */}
+      {view === 'list' && (
+        <>
+          {pinnedCats.length > 0 && (
+            <>
+              <span className="eyebrow">Pinned</span>
+              {pinnedCats.map(cat => (
+                <CategoryRow
+                  key={cat.slug}
+                  cat={cat}
+                  isPinned
+                  onClick={() => navigate(`/profile/health/${cat.slug}`)}
+                  onLongPress={{ start: () => startPress(cat.slug), cancel: cancelPress }}
+                  charts={CATEGORY_MOCK_CHARTS[cat.slug]}
+                />
+              ))}
+              <hr />
+            </>
+          )}
+          {SECTIONS.map(section => {
+            const cats = unpinnedCats.filter(c => c.section === section)
+            if (!cats.length) return null
+            return (
+              <div key={section} className="stack compact">
+                <span className="eyebrow">{section}</span>
+                {cats.map(cat => (
+                  <CategoryRow
+                    key={cat.slug}
+                    cat={cat}
+                    onClick={() => navigate(`/profile/health/${cat.slug}`)}
+                    onLongPress={{ start: () => startPress(cat.slug), cancel: cancelPress }}
+                    charts={CATEGORY_MOCK_CHARTS[cat.slug]}
+                  />
+                ))}
+              </div>
+            )
+          })}
+        </>
+      )}
+
       {view === 'grid' && (
         <>
           {pinnedCats.length > 0 && (
@@ -185,19 +233,19 @@ export function HealthOverviewTab() {
               <span className="eyebrow">Pinned</span>
               <div className="grid-4">
                 {pinnedCats.map(cat => (
-                  <TileButton
+                  <CategoryTile
                     key={cat.slug}
                     cat={cat}
                     isPinned
                     onClick={() => navigate(`/profile/health/${cat.slug}`)}
                     onLongPress={{ start: () => startPress(cat.slug), cancel: cancelPress }}
+                    charts={CATEGORY_MOCK_CHARTS[cat.slug]}
                   />
                 ))}
               </div>
               <hr />
             </>
           )}
-
           {SECTIONS.map(section => {
             const cats = unpinnedCats.filter(c => c.section === section)
             if (!cats.length) return null
@@ -206,52 +254,15 @@ export function HealthOverviewTab() {
                 <span className="eyebrow">{section}</span>
                 <div className="grid">
                   {cats.map(cat => (
-                    <TileButton
+                    <CategoryTile
                       key={cat.slug}
                       cat={cat}
                       onClick={() => navigate(`/profile/health/${cat.slug}`)}
                       onLongPress={{ start: () => startPress(cat.slug), cancel: cancelPress }}
+                      charts={CATEGORY_MOCK_CHARTS[cat.slug]}
                     />
                   ))}
                 </div>
-              </div>
-            )
-          })}
-        </>
-      )}
-
-      {/* ── List view ── */}
-      {view === 'list' && (
-        <>
-          {pinnedCats.length > 0 && (
-            <>
-              <span className="eyebrow">Pinned</span>
-              {pinnedCats.map(cat => (
-                <ListRow
-                  key={cat.slug}
-                  cat={cat}
-                  isPinned
-                  onClick={() => navigate(`/profile/health/${cat.slug}`)}
-                  onLongPress={{ start: () => startPress(cat.slug), cancel: cancelPress }}
-                />
-              ))}
-            </>
-          )}
-
-          {SECTIONS.map(section => {
-            const cats = unpinnedCats.filter(c => c.section === section)
-            if (!cats.length) return null
-            return (
-              <div key={section}>
-                <span className="eyebrow">{section}</span>
-                {cats.map(cat => (
-                  <ListRow
-                    key={cat.slug}
-                    cat={cat}
-                    onClick={() => navigate(`/profile/health/${cat.slug}`)}
-                    onLongPress={{ start: () => startPress(cat.slug), cancel: cancelPress }}
-                  />
-                ))}
               </div>
             )
           })}

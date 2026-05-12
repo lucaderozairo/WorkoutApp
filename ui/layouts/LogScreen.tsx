@@ -23,6 +23,7 @@ import { WorkoutFilterBar } from '@ui/components/workout/WorkoutFilterBar';
 import { StrengthSessionItem, CardioSessionItem } from '@ui/components/log/SessionListItem';
 import type { SessionHistoryItem, EditingSessionsView } from '@features/training_log';
 import type { RecentCardioView, CardioSession } from '@features/cardio';
+import { handleDeleteCardioSession } from '@features/cardio';
 import { MonthCalendar } from '@ui/components/log/MonthCalendar';
 import { WeekCalendar } from '@ui/components/log/WeekCalendar';
 import { toDateKey } from '@ui/components/log/calendarUtils';
@@ -150,17 +151,6 @@ const PICKER_STRETCH: Array<{ name: string; muscle: string; equip: string }> = [
 
 const BT_OPTIONS = ['Standard', 'Superset', 'Circuit', 'Stretch', 'Cardio'] as const;
 
-const EXAMPLE_CONDITIONS: UICondition[] = [
-  {
-    id: 'cond-1',
-    active: true,
-    severity: 'moderate',
-    fullName: 'Left Shoulder Impingement',
-    bodyPart: 'Shoulder',
-    affectedExercises: ['Overhead Press', 'Lateral Raise', 'Bench Press'],
-    advice: 'Avoid pressing above shoulder height. Reduce load by 20–30%.',
-  },
-];
 const USER_ID = 'user-001' as Id<'User'>;
 
 // ─── Transformers ─────────────────────────────────────────────────────────────
@@ -1639,8 +1629,7 @@ export function LogScreen() {
   const navigate = useNavigate();
   const { sessionId: routeSessionId } = useParams<{ sessionId: string }>();
   const activeSession = useQuery<ActiveSessionView | null>('active_session');
-  const queriedConditions = (useQuery<UICondition[]>('active_conditions') ?? []) as UICondition[];
-  const conditions = queriedConditions.length ? queriedConditions : EXAMPLE_CONDITIONS;
+  const conditions = (useQuery<UICondition[]>('active_conditions') ?? []) as UICondition[];
 
   const editingSession = useMemo(() => {
     if (!routeSessionId) return null;
@@ -1735,6 +1724,20 @@ export function LogScreen() {
   const { dispatch: addBlock } = useCommand(handleAddBlock);
   const { dispatch: addToSuperset } = useCommand(handleAddToSuperset);
   const { dispatch: updateStartTime } = useCommand(handleUpdateSessionStartTime);
+  const { dispatch: deleteStrengthSession } = useCommand(handleDeleteSession);
+  const { dispatch: deleteCardioSession } = useCommand(handleDeleteCardioSession);
+
+  const [deleteConfirm, setDeleteConfirm] = useState<{ kind: 'strength' | 'cardio'; id: string } | null>(null);
+
+  async function handleConfirmDelete() {
+    if (!deleteConfirm) return;
+    if (deleteConfirm.kind === 'strength') {
+      await deleteStrengthSession({ type: 'DeleteSession', sessionId: deleteConfirm.id as Id<'Session'> });
+    } else {
+      await deleteCardioSession({ type: 'DeleteCardioSession', sessionId: deleteConfirm.id as Id<'CardioSession'> });
+    }
+    setDeleteConfirm(null);
+  }
 
   const timer = useSessionTimer(session?.startedAt ?? null);
   const timerNotStarted = session?.startedAt == null;
@@ -1830,7 +1833,9 @@ export function LogScreen() {
               view="list"
             />
           )}
-
+  <button className="surface compact" onClick={() => navigate('/new-session')}>
+              ＋ Add
+            </button>
           {sessionFilters.view === 'list' && (() => {
             if (filteredSessions.length === 0) {
               return <p className="caption">No sessions found</p>;
@@ -1854,10 +1859,12 @@ export function LogScreen() {
                             key={i}
                             session={entry.session}
                             matchedExercise={entry.matchedExercise}
+                            onDelete={() => setDeleteConfirm({ kind: 'strength', id: entry.session.id })}
                           />
                         : <CardioSessionItem
                             key={i}
                             session={entry.session}
+                            onDelete={() => setDeleteConfirm({ kind: 'cardio', id: entry.session.id })}
                           />
                     )}
                   </div>
@@ -1866,6 +1873,21 @@ export function LogScreen() {
             );
           })()}
         </div>
+
+      {deleteConfirm && (
+        <div className="modal-overlay">
+          <div className="surface column compact">
+            <span className="detail">Delete this session?</span>
+            <span className="caption faint">This cannot be undone.</span>
+            <div className="row space-between">
+              <button type="button" className="secondary" onClick={() => setDeleteConfirm(null)}>Cancel</button>
+              <button type="button" className="warning" onClick={handleConfirmDelete}>
+                <Trash2 size={12} /> Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       </UndoToastProvider>
     );
   }

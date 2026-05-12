@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import type { SessionHistoryItem } from "@features/training_log";
 import type { CardioSession } from "@features/cardio";
+import { Trash2 } from "lucide-react";
 
 function formatDuration(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -26,25 +27,36 @@ function formatDate(ts: number): string {
 interface StrengthItemProps {
   session: SessionHistoryItem;
   matchedExercise?: string;
+  onDelete?: () => void;
 }
 
-export function StrengthSessionItem({ session, matchedExercise }: StrengthItemProps) {
+export function StrengthSessionItem({ session, matchedExercise, onDelete }: StrengthItemProps) {
   const navigate = useNavigate();
   return (
     <section
       className="surface compact interactive"
       onClick={() => navigate(`/sessions/${session.id}`)}>
       <header className="row space-between align-center">
-        <strong>{session.name}</strong>
+        <strong className="grow">{session.name}</strong>
         <time className="caption" dateTime={new Date(session.startedAt).toISOString()}>
           {formatDate(session.startedAt)}
         </time>
+        {onDelete && (
+          <button
+            type="button"
+            className="ghost icon sm"
+            onClick={e => { e.stopPropagation(); onDelete(); }}
+            aria-label="Delete session"
+          >
+            <Trash2 size={13} />
+          </button>
+        )}
       </header>
       <div className="row align-center">
         <p className="caption">
           {session.exerciseCount} exercises · {formatDuration(session.durationSeconds)}
         </p>
-      {session.hasPR && <span className="badge green">PR</span>}
+        {session.hasPR && <span className="badge green">PR</span>}
       </div>
       {matchedExercise && (
         <span className="pill plain active">{matchedExercise}</span>
@@ -55,9 +67,10 @@ export function StrengthSessionItem({ session, matchedExercise }: StrengthItemPr
 
 interface CardioItemProps {
   session: CardioSession;
+  onDelete?: () => void;
 }
 
-export function CardioSessionItem({ session }: CardioItemProps) {
+export function CardioSessionItem({ session, onDelete }: CardioItemProps) {
   const navigate = useNavigate();
   const distKm = (session.distanceMeters / 1000).toFixed(1);
   const pace = formatPace(session.durationSeconds, session.distanceMeters);
@@ -70,10 +83,20 @@ export function CardioSessionItem({ session }: CardioItemProps) {
       className="surface compact interactive"
       onClick={() => navigate(`/sessions/${session.id}`)}>
       <header className="row space-between align-center">
-        <strong>{title}</strong>
+        <strong className="grow">{title}</strong>
         <time className="caption" dateTime={new Date(session.startedAt).toISOString()}>
           {formatDate(session.startedAt)}
         </time>
+        {onDelete && (
+          <button
+            type="button"
+            className="ghost icon sm"
+            onClick={e => { e.stopPropagation(); onDelete(); }}
+            aria-label="Delete session"
+          >
+            <Trash2 size={13} />
+          </button>
+        )}
       </header>
       <p className="caption">
         {session.distanceMeters > 0
