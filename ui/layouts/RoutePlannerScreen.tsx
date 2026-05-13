@@ -1,16 +1,12 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { RouteMap, totalDistanceKm } from '@ui/components/workout/wizard/RouteMap';
-import { handlePlanSession } from '@features/planning';
-import type { Id } from '@shared/types';
-
-const USER_ID = 'user-001' as Id<'User'>;
+import { handleSaveRoute } from '@features/planning';
 
 interface RoutePlannerState {
   waypoints?: [number, number][];
   profile?: 'foot' | 'bike';
   returnTo?: string;
-  // Opaque caller state that is round-tripped back on save
   callerState?: unknown;
 }
 
@@ -21,22 +17,22 @@ export function RoutePlannerScreen() {
 
   const [waypoints, setWaypoints] = useState<[number, number][]>(incoming.waypoints ?? []);
   const [routedKm, setRoutedKm] = useState(0);
+  const [routeName, setRouteName] = useState('');
 
   const profile = incoming.profile ?? 'foot';
   const displayKm = routedKm > 0 ? routedKm : totalDistanceKm(waypoints);
+  const isStandalone = !incoming.callerState;
 
   async function handleSave() {
     const dest = incoming.returnTo ?? (-1 as never);
 
-    if (!incoming.callerState && waypoints.length >= 2 && displayKm > 0) {
-      await handlePlanSession({
-        type: 'PlanSession',
-        userId: USER_ID,
-        planType: profile === 'bike' ? 'cycle' : 'run',
-        name: profile === 'bike' ? 'Cycle Route' : 'Run Route',
-        scheduledAt: Date.now(),
-        notes: '',
-        routeWaypoints: waypoints,
+    if (isStandalone && waypoints.length >= 2 && displayKm > 0) {
+      const name = routeName.trim() || (profile === 'bike' ? 'Cycle Route' : 'Run Route');
+      await handleSaveRoute({
+        type: 'SaveRoute',
+        name,
+        profile,
+        waypoints,
         distanceKm: displayKm,
       });
     }
@@ -59,6 +55,16 @@ export function RoutePlannerScreen() {
           Save{displayKm > 0 ? ` · ${displayKm.toFixed(1)} km` : ''}
         </button>
       </div>
+      {isStandalone && waypoints.length >= 2 && (
+        <div className="row compact" style={{ padding: '0 var(--space-2)' }}>
+          <input
+            className="input grow"
+            placeholder="Route name…"
+            value={routeName}
+            onChange={e => setRouteName(e.target.value)}
+          />
+        </div>
+      )}
       <RouteMap
         waypoints={waypoints}
         onChange={setWaypoints}

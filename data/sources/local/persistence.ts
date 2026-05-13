@@ -4,6 +4,7 @@ export const PERSISTED_KEYS = [
   'exercise_progressions',
   'editing_session',
   'planned_sessions',
+  'saved_routes',
   'wapp_recent_sports',
   'display_name',
 ] as const;

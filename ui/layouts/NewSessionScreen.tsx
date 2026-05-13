@@ -21,6 +21,7 @@ function todayDateString() {
 interface ReturnedRouteState {
   waypoints?: [number, number][];
   distanceKm?: number;
+  profile?: 'foot' | 'bike';
   callerState?: { selected: PlanType; name: string; date: string };
 }
 
@@ -142,9 +143,14 @@ export function NewSessionScreen() {
       </div>
 
       {ROUTE_ACTIVITIES.has(selected) && (
-        <button className="secondary" onClick={handleAddRoute}>
-          {routeLabel}
-        </button>
+        <div className="row compact">
+          <button className="secondary grow" onClick={handleAddRoute}>
+            {routeLabel}
+          </button>
+          <button className="secondary" onClick={() => navigate('/saved-routes', { state: { returnTo: '/new-session', callerState: { selected, name, date } } })}>
+            Saved Routes
+          </button>
+        </div>
       )}
 
       <button

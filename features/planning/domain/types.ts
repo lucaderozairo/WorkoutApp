@@ -33,9 +33,20 @@ export interface PlannedSession {
   paceSecPer100m?: number;
 }
 
+export interface SavedRoute {
+  id: Id<'SavedRoute'>;
+  name: string;
+  profile: 'foot' | 'bike';
+  waypoints: [number, number][];
+  distanceKm: number;
+  createdAt: number;
+}
+
 export type PlanningEvent =
   | DomainEvent<'SessionPlanned', PlannedSession>
-  | DomainEvent<'PlannedSessionDeleted', { planId: Id<'PlannedSession'> }>;
+  | DomainEvent<'PlannedSessionDeleted', { planId: Id<'PlannedSession'> }>
+  | DomainEvent<'RouteSaved', SavedRoute>
+  | DomainEvent<'RouteDeleted', { routeId: Id<'SavedRoute'> }>;
 
 export interface PlanSession {
   type: 'PlanSession';
@@ -59,4 +70,17 @@ export interface DeletePlannedSession {
   planId: Id<'PlannedSession'>;
 }
 
-export type PlanningCommand = PlanSession | DeletePlannedSession;
+export interface SaveRoute {
+  type: 'SaveRoute';
+  name: string;
+  profile: 'foot' | 'bike';
+  waypoints: [number, number][];
+  distanceKm: number;
+}
+
+export interface DeleteSavedRoute {
+  type: 'DeleteSavedRoute';
+  routeId: Id<'SavedRoute'>;
+}
+
+export type PlanningCommand = PlanSession | DeletePlannedSession | SaveRoute | DeleteSavedRoute;

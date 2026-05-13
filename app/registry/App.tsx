@@ -17,7 +17,7 @@ import { NewSessionScreen } from '@ui/layouts';
 import { HealthCategoryScreen } from '@ui/layouts';
 import { WeatherScreen } from '@ui/layouts';
 import { WidgetPrototypeScreen } from '@ui/layouts';
-import { RoutePlannerScreen } from '@ui/layouts';
+import { RoutePlannerScreen, SavedRoutesScreen } from '@ui/layouts';
 import { SettingsModal } from '@ui/components/modals/SettingsModal';
 import { APP_MODE } from '@config/app-mode';
 import '@features/training_log';
@@ -56,6 +56,7 @@ export function App() {
             <Route path="/settings" element={<SettingsScreen />} />
             <Route path="/notifications" element={<NotificationsScreen />} />
             <Route path="/plan-route" element={<RoutePlannerScreen />} />
+            <Route path="/saved-routes" element={<SavedRoutesScreen />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </main>

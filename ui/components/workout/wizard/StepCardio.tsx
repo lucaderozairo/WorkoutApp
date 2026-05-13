@@ -1,7 +1,8 @@
 import { useState, useMemo, useCallback } from 'react';
-import type { PlanType, DistanceMarker } from '@features/planning';
+import type { PlanType, DistanceMarker, SavedRoute } from '@features/planning';
 import { formatPace, parsePace, buildMarkers } from '@features/planning';
 import { RouteMap, totalDistanceKm } from './RouteMap';
+import { useQuery } from '@ui/bindings';
 
 interface StepCardioProps {
   planType: PlanType;  // 'run' | 'cycle'
@@ -27,6 +28,11 @@ export function StepCardio({
   const [routeTab, setRouteTab] = useState<'draw' | 'saved'>('draw');
   const [paceInput, setPaceInput] = useState(formatPace(paceSecPerKm));
   const [routedKm, setRoutedKm] = useState(0);
+
+  const savedRoutes = useQuery<SavedRoute[]>('saved_routes') ?? [];
+  const matchingRoutes = savedRoutes.filter(r =>
+    planType === 'cycle' ? r.profile === 'bike' : r.profile === 'foot'
+  );
 
   const distanceKm = useMemo(
     () => (routedKm > 0 ? routedKm : totalDistanceKm(waypoints)),
@@ -114,12 +120,28 @@ export function StepCardio({
               : `Distance: ${distanceKm} km · ${waypoints.length} waypoints · snapped to path`}
           </span>
         </div>
+      ) : matchingRoutes.length === 0 ? (
+        <div className="surface" style={{ textAlign: 'center', padding: 'var(--space-6)' }}>
+          <p className="caption muted">No saved routes yet.</p>
+          <p className="caption faint">Plan a route from the dashboard and save it first.</p>
+        </div>
       ) : (
-        <div className="surface">
-          <p className="caption muted">
-            Select from recent {planType} sessions to reuse a route.
-          </p>
-          <p className="caption faint">(Route selection from history — coming soon)</p>
+        <div className="column compact">
+          {matchingRoutes.map(route => (
+            <button
+              key={route.id}
+              type="button"
+              className={`surface row space-between align-center${waypoints === route.waypoints ? ' active' : ''}`}
+              onClick={() => onWaypointsChange(route.waypoints)}
+              style={{ cursor: 'pointer', textAlign: 'left' }}
+            >
+              <div className="column compact">
+                <strong>{route.name}</strong>
+                <span className="caption muted">{route.distanceKm.toFixed(1)} km</span>
+              </div>
+              {waypoints === route.waypoints && <span className="pill primary">Selected</span>}
+            </button>
+          ))}
         </div>
       )}
 
