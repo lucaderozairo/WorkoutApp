@@ -3,6 +3,7 @@ import { useState, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Search } from 'lucide-react'
 import { ChartContainer } from '../../patterns/charts/charts'
+import { APP_MODE } from '@config/app-mode'
 import { CATEGORY_MOCK_CHARTS, type MiniChartDef } from '../../../data/mock/health-categories'
 
 // ─── Types & Registry ───────────────────────────────────────────────────────
@@ -99,7 +100,7 @@ function CategoryRow({ cat, isPinned = false, onClick, onLongPress, charts }: Ca
         </div>
       </div>
       <div className="row align-center">
-        {charts?.[0] && (
+        {charts?.[0] && APP_MODE !== 'github-pages' && (
           <div className="grow">
             <ChartContainer
               chartType={charts[0].chartType}

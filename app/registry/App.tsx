@@ -42,7 +42,7 @@ export function App() {
               <>
                 <Route path="/schedule" element={<TrainingPlansScreen />} />
                 <Route path="/progress" element={<ProgressScreen onOpenSettings={openSettings} />} />
-<Route path="/social" element={<SocialScreen />} />
+                <Route path="/social" element={<SocialScreen />} />
                 <Route path="/messages" element={<MessageScreen />} />
               </>
             )}

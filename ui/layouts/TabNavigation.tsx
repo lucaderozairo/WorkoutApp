@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { APP_MODE } from '@config/app-mode';
 import type { Icon as PhosphorIcon } from 'phosphor-react';
 import { Bell, CalendarBlank, ChartLine, Chat, Compass, File, Gear, House, ToggleLeft, ToggleRight, UserCircle } from 'phosphor-react';
-
+import logo  from '/logo.png';
 function useTheme(): 'light' | 'dark' {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const t = document.documentElement.getAttribute('data-theme');
@@ -30,7 +30,7 @@ function ThemeToggle({ size = 20 }: { size?: number }) {
       {theme === 'light'
         ? <ToggleLeft size={size} weight="regular" />
         : <ToggleRight size={size} weight="fill" />}
-        Theme
+      Theme
     </button>
   );
 }
@@ -75,7 +75,7 @@ export function TabNavigation({ onOpenSettings }: TabNavigationProps) {
         <div className="surface compact ghost">
           <NavLink to={"/"}>
             <span className='icon'>
-              <img src="./logo.png" alt="Fittrack logo" width="18" height="18" />
+              <img src={logo} alt="Fittrack logo" width="18" height="18" />
             </span>
             <span className="detail">Fittrack</span>
           </NavLink>
@@ -114,12 +114,12 @@ export function TabNavigation({ onOpenSettings }: TabNavigationProps) {
 
       {/* Mobile topbar — visible ≤780px */}
       <header className="app-topbar row align-center space-between">
-          <NavLink key={"/"} to={"/"}>
-            <span className='icon'>
-              <img src="logo.png" alt="Fittrack logo" width="24" height="24" />
-            </span>
-            <h2>Fittrack</h2>
-          </NavLink>
+        <NavLink key={"/"} to={"/"}>
+          <span className='icon'>
+            <img src={logo} alt="Fittrack logo" width="24" height="24" />
+          </span>
+          <h2>Fittrack</h2>
+        </NavLink>
         <div className="row">
           <ThemeToggle size={20} />
           {/* <button className="ghost icon" title="Notifications">

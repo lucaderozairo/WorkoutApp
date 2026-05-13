@@ -3,6 +3,7 @@ import { handleResolveInjury } from '@features/profile'
 import type { Id } from '@shared/types'
 import { CATEGORY_MOCK_CHARTS } from '../../../data/mock/health-categories'
 import { ChartContainer } from '../../patterns/charts/charts'
+import { APP_MODE } from '@config/app-mode'
 
 type InjuryView = { id: Id<'Injury'>; description: string; bodyPart: string; recordedAt: number }
 const USER_ID = 'user-001' as Id<'User'>
@@ -20,13 +21,15 @@ export function InjuriesView() {
             <span className="eyebrow">{c.label}</span>
             {c.currentValue && <span className="pill">{c.currentValue}</span>}
           </div>
-          <ChartContainer
-            chartType={c.chartType}
-            data={c.data}
-            height={100}
-            axisShow={{ x: true, y: true }}
-            color={c.color ?? 'var(--accent)'}
-          />
+          {APP_MODE !== 'github-pages' && (
+            <ChartContainer
+              chartType={c.chartType}
+              data={c.data}
+              height={100}
+              axisShow={{ x: true, y: true }}
+              color={c.color ?? 'var(--accent)'}
+            />
+          )}
         </div>
       ))}
 
