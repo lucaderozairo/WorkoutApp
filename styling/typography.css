@@ -70,6 +70,10 @@ h6 {
 .text-center {
   text-align: center;
 }
+.text-right {
+  text-align: right;
+}
+
 .uppercase,
 .mono {
   font-family: var(--font-mono);

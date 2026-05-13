@@ -21,6 +21,7 @@ export function SavedRoutesScreen() {
   function handleSelect(route: SavedRoute) {
     if (!incoming.returnTo) return;
     navigate(incoming.returnTo, {
+      replace: true,
       state: {
         waypoints: route.waypoints,
         distanceKm: route.distanceKm,

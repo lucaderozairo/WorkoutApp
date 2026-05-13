@@ -8,7 +8,7 @@ import {
     RadialBarChart, RadialBar,
     ScatterChart, Scatter, ZAxis,
     Brush, ReferenceLine,
-    CartesianGrid, Tooltip, Rectangle,
+    CartesianGrid, Tooltip, Rectangle, LabelList,
     ResponsiveContainer, XAxis, YAxis,
 } from 'recharts';
 
@@ -76,7 +76,8 @@ export type ChartType =
     | 'pie' | 'radar' | 'radialbar' | 'scatter'
     | 'stacked-bar' | 'percent-area' | 'area-fill-value'
     | 'positive-negative' | 'brush-bar' | 'timeline'
-    | 'waterfall' | 'banded';
+    | 'waterfall' | 'banded'
+    | 'sets-bar';
 
 export function ChartContainer({
     data,
@@ -133,6 +134,44 @@ function ChartSelector({ chartType, data, color, axisShow }: {
                     {axisShow.y && <YAxis width={40} tick={tick} tickCount={5} />}
                 </BarChart>
             );
+
+        case 'sets-bar': {
+            const maxVal = Math.max(...xy.map(d => Number(d.y)), 0);
+            const step = maxVal < 50 ? 5 : maxVal < 100 ? 10 : 25;
+            const yMax = Math.max(step, Math.ceil(maxVal / step) * step);
+            const ticks = Array.from({ length: Math.floor(yMax / step) + 1 }, (_, i) => i * step);
+            return (
+                <BarChart data={xy} margin={{ top: 34, right: 5, bottom: 5, left: 0 }}>
+                    <CartesianGrid vertical={false} stroke="var(--line)" strokeDasharray="2 4" />
+                    <Bar dataKey="y" fill={color} radius={[2, 2, 0, 0]} isAnimationActive={false}>
+                        <LabelList
+                            dataKey="reps"
+                            position="top"
+                            offset={5}
+                            content={(props: any) => {
+                                const entry = xy[props.index];
+                                if (!entry) return null;
+                                return (<>
+                                    <text x={props.x + props.width / 2} y={props.y - 13} textAnchor="middle" fontSize="var(--t-xs)" fill="var(--ink-faint)">
+                                        {entry.y} kg
+                                    </text>
+                                    <text x={props.x + props.width / 2} y={props.y - 1} textAnchor="middle" fontSize="var(--t-xs)" fill="var(--ink-faint)">
+                                        x  {entry.reps}
+                                    </text>
+                                    </>
+                                );
+                            }}
+                        />
+                    </Bar>
+                    {axisShow.x && <XAxis height={20} dataKey="x" tick={tick} tickLine={false} axisLine={false} />}
+                    {axisShow.y && <YAxis width={20} tick={tick} ticks={ticks} domain={[0, yMax]} />}
+                    <Tooltip
+                        contentStyle={{ background: 'var(--surface-1)', border: '1px solid var(--line-strong)', borderRadius: 'var(--r-sm)', fontSize: 'var(--t-xs)' }}
+                        formatter={(value: any, _name: any, props: any) => [`${value} kg \u00d7 ${props.payload.reps} reps`]}
+                    />
+                </BarChart>
+            );
+        }
 
         case 'line':
             return (

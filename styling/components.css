@@ -318,11 +318,11 @@
 /* ════════════════════════════════════════════
    GLASS TRACKER — water intake
    ════════════════════════════════════════════ */
-.mini-chart {
+/* .mini-chart {
   aspect-ratio: 8;
   width: 100%;
   min-height: 100px;
-}
+} */
 
 .glass-tracker {
   display: flex;

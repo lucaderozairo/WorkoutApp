@@ -1,569 +1,397 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Route Planning Prototype</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #0f1115;
-            --surface: rgba(22, 24, 31, 0.92);
-            --surface-2: rgba(32, 35, 44, 0.92);
-            --surface-3: rgba(255, 255, 255, 0.06);
-            --border: rgba(255, 255, 255, 0.08);
-            --text: #f5f7fb;
-            --muted: #9ca3af;
-            --accent: #ff7b2c;
-            --green: #44d17a;
-            --blue: #4ea3ff;
-            --red: #ff6464;
-            --shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
-            --radius: 20px;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Route Planner Prototype</title>
 
-        * {
-            box-sizing: border-box;
-        }
+<style>
+  * {
+    box-sizing: border-box;
+  }
 
-        body {
-            margin: 0;
-            font-family: Inter, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            overflow: hidden;
-        }
+  body {
+    margin: 0;
+    font-family: Inter, sans-serif;
+    background: #f3f4f6;
+    height: 100vh;
+    overflow: hidden;
+  }
 
-        .app {
-            display: grid;
-            grid-template-columns: 320px 1fr 360px;
-            height: 100vh;
-        }
+  .app {
+    height: 100vh;
+    padding: 12px;
 
-        .sidebar,
-        .analytics {
-            background: var(--surface);
-            backdrop-filter: blur(18px);
-            border-right: 1px solid var(--border);
-            overflow-y: auto;
-        }
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
 
-        .analytics {
-            border-right: none;
-            border-left: 1px solid var(--border);
-        }
+  /* SEARCH */
 
-        .map-shell {
-            position: relative;
-            overflow: hidden;
-            background:
-                radial-gradient(circle at top left, rgba(255, 123, 44, 0.15), transparent 35%),
-                radial-gradient(circle at bottom right, rgba(78, 163, 255, 0.18), transparent 40%),
-                #17191f;
-        }
+  .search-bar {
+    width: 100%;
+    height: 56px;
 
-        .fake-map {
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                radial-gradient(circle at 20% 30%, rgba(80, 140, 90, 0.25), transparent 20%),
-                radial-gradient(circle at 70% 65%, rgba(50, 100, 160, 0.18), transparent 22%);
-            background-size: 40px 40px, 40px 40px, auto, auto;
-        }
+    border: none;
+    border-radius: 16px;
 
-        .route {
-            position: absolute;
-            inset: 0;
-        }
+    padding: 0 18px;
 
-        .route svg {
-            width: 100%;
-            height: 100%;
-        }
+    font-size: 15px;
+    background: white;
 
-        .route path {
-            fill: none;
-            stroke: url(#routeGradient);
-            stroke-width: 8;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            filter: drop-shadow(0 0 12px rgba(255, 123, 44, 0.5));
-        }
+    outline: none;
+    flex-shrink: 0;
+  }
 
-        .panel {
-            padding: 24px;
-            border-bottom: 1px solid var(--border);
-        }
+  /* MAP */
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.1rem;
-            font-weight: 700;
-        }
+  .map-container {
+    position: relative;
 
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, var(--accent), #ffb067);
-        }
+    flex: 1;
+    overflow: hidden;
 
-        .search {
-            margin-top: 22px;
-            background: var(--surface-3);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 14px 16px;
-            color: var(--muted);
-        }
+    border-radius: 20px;
+    background: #58d68d;
+  }
 
-        .section-title {
-            font-size: 0.82rem;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: var(--muted);
-            margin-bottom: 14px;
-        }
+  /* CONTROLS */
 
-        .tool-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
+  .map-controls {
+    position: absolute;
 
-        .tool {
-            background: var(--surface-3);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 16px;
-            min-height: 90px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
+    top: 16px;
+    left: 16px;
 
-        .tool strong {
-            font-size: 0.95rem;
-        }
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 
-        .tool span {
-            color: var(--muted);
-            font-size: 0.82rem;
-        }
+    z-index: 20;
+  }
 
-        .metric-row {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
-        }
+  .map-controls button {
+    width: 42px;
+    height: 42px;
 
-        .metric {
-            background: var(--surface-3);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 18px;
-        }
+    border: none;
+    border-radius: 12px;
 
-        .metric h3 {
-            margin: 0;
-            font-size: 1.7rem;
-        }
+    background: rgba(255,255,255,0.82);
+    backdrop-filter: blur(8px);
 
-        .metric p {
-            margin: 6px 0 0;
-            color: var(--muted);
-            font-size: 0.82rem;
-        }
+    cursor: pointer;
+    font-size: 18px;
+  }
 
-        .floating-topbar {
-            position: absolute;
-            top: 22px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 10px;
-            padding: 10px;
-            background: rgba(18, 20, 25, 0.84);
-            backdrop-filter: blur(18px);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            z-index: 10;
-            box-shadow: var(--shadow);
-        }
+  /* ROUTE */
 
-        .pill {
-            padding: 12px 16px;
-            border-radius: 14px;
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--muted);
-            font-size: 0.85rem;
-        }
+  .route-overlay {
+    position: absolute;
+    inset: 0;
 
-        .pill.active {
-            background: var(--accent);
-            color: white;
-            font-weight: 600;
-        }
+    width: 100%;
+    height: 100%;
+  }
 
-        .bottom-sheet {
-            position: absolute;
-            left: 24px;
-            right: 24px;
-            bottom: 24px;
-            background: rgba(16, 18, 23, 0.92);
-            border: 1px solid var(--border);
-            border-radius: 28px;
-            padding: 24px;
-            backdrop-filter: blur(20px);
-            box-shadow: var(--shadow);
-        }
+  .route-shadow {
+    fill: none;
 
-        .sheet-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
+    stroke: rgba(0,0,0,0.12);
+    stroke-width: 18;
 
-        .route-title h2 {
-            margin: 0;
-            font-size: 1.4rem;
-        }
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
 
-        .route-title p {
-            margin: 4px 0 0;
-            color: var(--muted);
-        }
+  .route-line {
+    fill: none;
 
-        .elevation {
-            height: 140px;
-            position: relative;
-            overflow: hidden;
-            border-radius: 18px;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
-        }
+    stroke: white;
+    stroke-width: 10;
 
-        .elevation svg {
-            width: 100%;
-            height: 100%;
-        }
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
 
-        .stats-bar {
-            margin-top: 18px;
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 14px;
-        }
+  .route-point {
+    stroke: white;
+    stroke-width: 4;
+  }
 
-        .stat {
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: 16px;
-            padding: 14px;
-        }
+  .start-point {
+    fill: #16a34a;
+  }
 
-        .stat strong {
-            display: block;
-            font-size: 1.05rem;
-        }
+  .mid-point {
+    fill: #2563eb;
+  }
 
-        .stat span {
-            color: var(--muted);
-            font-size: 0.78rem;
-        }
+  .finish-point {
+    fill: #ef4444;
+  }
 
-        .route-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+  /* TOOLS */
 
-        .route-card {
-            background: var(--surface-3);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 18px;
-        }
+  .tools-container {
+    position: absolute;
 
-        .route-card h4 {
-            margin: 0 0 10px;
-        }
+    top: 50%;
+    right: 16px;
 
-        .route-meta {
-            display: flex;
-            gap: 14px;
-            color: var(--muted);
-            font-size: 0.8rem;
-        }
+    transform: translateY(-50%);
 
-        .mobile-nav {
-            display: none;
-        }
+    width: 190px;
+    padding: 12px;
 
-        @media (max-width: 1100px) {
-            .app {
-                grid-template-columns: 280px 1fr;
-            }
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
 
-            .analytics {
-                display: none;
-            }
-        }
+    background: rgba(255,255,255,0.84);
+    backdrop-filter: blur(12px);
 
-        @media (max-width: 780px) {
-            body {
-                overflow: auto;
-            }
+    border-radius: 18px;
 
-            .app {
-                display: block;
-                height: auto;
-            }
+    z-index: 20;
+  }
 
-            .sidebar {
-                display: none;
-            }
+  .tool-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
 
-            .map-shell {
-                height: 100vh;
-            }
+  .tool-label {
+    font-size: 11px;
+    font-weight: 600;
 
-            .floating-topbar {
-                top: 16px;
-                left: 16px;
-                right: 16px;
-                transform: none;
-                overflow-x: auto;
-                justify-content: flex-start;
-            }
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 
-            .bottom-sheet {
-                left: 12px;
-                right: 12px;
-                bottom: 78px;
-                padding: 18px;
-            }
+    color: rgba(0,0,0,0.55);
 
-            .stats-bar {
-                grid-template-columns: repeat(2, 1fr);
-            }
+    padding: 0 4px 2px;
+  }
 
-            .mobile-nav {
-                position: fixed;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                display: grid;
-                grid-template-columns: repeat(5, 1fr);
-                background: rgba(18, 20, 25, 0.96);
-                border-top: 1px solid var(--border);
-                backdrop-filter: blur(20px);
-                z-index: 100;
-            }
+  .tool-button {
+    height: 40px;
 
-            .mobile-nav div {
-                padding: 14px 8px;
-                text-align: center;
-                color: var(--muted);
-                font-size: 0.75rem;
-            }
+    border: none;
+    border-radius: 10px;
 
-            .mobile-nav .active {
-                color: var(--accent);
-                font-weight: 700;
-            }
-        }
-    </style>
+    background: transparent;
+
+    cursor: pointer;
+
+    font-size: 13px;
+    text-align: left;
+
+    padding: 0 10px;
+
+    transition: background 0.15s ease;
+  }
+
+  .tool-button:hover {
+    background: rgba(0,0,0,0.06);
+  }
+
+  /* MOBILE */
+
+  @media (max-width: 600px) {
+
+    body {
+      overflow: auto;
+    }
+
+    .app {
+      height: auto;
+      min-height: 100vh;
+
+      display: flex;
+      flex-direction: column;
+
+      gap: 12px;
+    }
+
+    .search-bar {
+      width: 100%;
+      flex-shrink: 0;
+    }
+
+    .map-container {
+      position: relative;
+
+      width: 100%;
+      height: 65vh;
+      min-height: 500px;
+
+      flex: none;
+    }
+
+    .tools-container {
+      position: relative;
+
+      top: auto;
+      right: auto;
+
+      transform: none;
+
+      width: 100%;
+      margin-top: 0;
+
+      display: flex;
+      flex-direction: row;
+
+      gap: 14px;
+      padding: 12px;
+
+      overflow-x: auto;
+      overflow-y: hidden;
+
+      scrollbar-width: none;
+    }
+
+    .tools-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tool-group {
+      min-width: 180px;
+      flex-shrink: 0;
+    }
+  }
+</style>
 </head>
 
 <body>
-    <div class="app">
-        <aside class="sidebar">
-            <div class="panel">
-                <div class="logo">
-                    <div class="logo-icon"></div>
-                    Terrain Studio
-                </div>
-                <div class="search">Search routes, climbs, trails...</div>
-            </div>
 
-            <div class="panel">
-                <div class="section-title">Planning Tools</div>
-                <div class="tool-grid">
-                    <div class="tool">
-                        <strong>Loop Generator</strong>
-                        <span>Create circular routes</span>
-                    </div>
-                    <div class="tool">
-                        <strong>Trail Bias</strong>
-                        <span>Prefer off-road terrain</span>
-                    </div>
-                    <div class="tool">
-                        <strong>Climb Focus</strong>
-                        <span>Maximise elevation gain</span>
-                    </div>
-                    <div class="tool">
-                        <strong>Scenic Mode</strong>
-                        <span>Water + viewpoints</span>
-                    </div>
-                </div>
-            </div>
+<div class="app">
 
-            <div class="panel">
-                <div class="section-title">Metrics</div>
-                <div class="metric-row">
-                    <div class="metric">
-                        <h3>18.2km</h3>
-                        <p>Total Distance</p>
-                    </div>
-                    <div class="metric">
-                        <h3>642m</h3>
-                        <p>Elevation Gain</p>
-                    </div>
-                    <div class="metric">
-                        <h3>2h 14m</h3>
-                        <p>Estimated Time</p>
-                    </div>
-                    <div class="metric">
-                        <h3>7/10</h3>
-                        <p>Difficulty</p>
-                    </div>
-                </div>
-            </div>
-        </aside>
+  <!-- SEARCH -->
 
-        <main class="map-shell">
-            <div class="fake-map"></div>
+  <input
+    class="search-bar"
+    type="text"
+    placeholder="Search routes, places, trails..."
+  />
 
-            <div class="route">
-                <svg viewBox="0 0 1000 700" preserveAspectRatio="none">
-                    <defs>
-                        <linearGradient id="routeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="#44d17a" />
-                            <stop offset="45%" stop-color="#ffb347" />
-                            <stop offset="100%" stop-color="#ff6464" />
-                        </linearGradient>
-                    </defs>
-                    <path d="M120 500 C180 420, 220 360, 320 330 S520 210, 610 290 S740 480, 840 440" />
-                </svg>
-            </div>
+  <!-- MAP -->
 
-            <div class="floating-topbar">
-                <div class="pill active">Run</div>
-                <div class="pill">Cycle</div>
-                <div class="pill">Hike</div>
-                <div class="pill">Satellite</div>
-                <div class="pill">Terrain</div>
-                <div class="pill">Heatmap</div>
-            </div>
+  <div class="map-container">
 
-            <div class="bottom-sheet">
-                <div class="sheet-top">
-                    <div class="route-title">
-                        <h2>Alpine Ridge Long Run</h2>
-                        <p>Gradient-aware route analysis with synced terrain metrics</p>
-                    </div>
-                    <div class="pill active">Live Analysis</div>
-                </div>
+    <!-- CONTROLS -->
 
-                <div class="elevation">
-                    <svg viewBox="0 0 1000 200" preserveAspectRatio="none">
-                        <path
-                            d="M0 180 L80 160 L160 110 L240 130 L320 80 L400 100 L480 40 L560 65 L640 95 L720 60 L800 120 L900 90 L1000 170 L1000 200 L0 200 Z"
-                            fill="rgba(255,123,44,0.35)"></path>
-                        <path
-                            d="M0 180 L80 160 L160 110 L240 130 L320 80 L400 100 L480 40 L560 65 L640 95 L720 60 L800 120 L900 90 L1000 170"
-                            stroke="#ff9c57" stroke-width="5" fill="none"></path>
-                    </svg>
-                </div>
-
-                <div class="stats-bar">
-                    <div class="stat">
-                        <strong>5:12/km</strong>
-                        <span>Projected Pace</span>
-                    </div>
-                    <div class="stat">
-                        <strong>12%</strong>
-                        <span>Max Gradient</span>
-                    </div>
-                    <div class="stat">
-                        <strong>1,460</strong>
-                        <span>Calories</span>
-                    </div>
-                    <div class="stat">
-                        <strong>78%</strong>
-                        <span>Trail Surface</span>
-                    </div>
-                    <div class="stat">
-                        <strong>Zone 3</strong>
-                        <span>Expected Effort</span>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <aside class="analytics">
-            <div class="panel">
-                <div class="section-title">Suggested Routes</div>
-                <div class="route-list">
-                    <div class="route-card">
-                        <h4>Forest Loop Explorer</h4>
-                        <div class="route-meta">
-                            <span>14km</span>
-                            <span>420m gain</span>
-                            <span>Trail</span>
-                        </div>
-                    </div>
-
-                    <div class="route-card">
-                        <h4>River Tempo Route</h4>
-                        <div class="route-meta">
-                            <span>10km</span>
-                            <span>Flat</span>
-                            <span>Road</span>
-                        </div>
-                    </div>
-
-                    <div class="route-card">
-                        <h4>Mountain Climb Session</h4>
-                        <div class="route-meta">
-                            <span>22km</span>
-                            <span>980m gain</span>
-                            <span>Advanced</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="panel">
-                <div class="section-title">Conditions</div>
-                <div class="metric-row">
-                    <div class="metric">
-                        <h3>18°C</h3>
-                        <p>Temperature</p>
-                    </div>
-                    <div class="metric">
-                        <h3>12km/h</h3>
-                        <p>Wind Speed</p>
-                    </div>
-                </div>
-            </div>
-        </aside>
+    <div class="map-controls">
+      <button>+</button>
+      <button>−</button>
+      <button>◎</button>
+      <button>⤢</button>
     </div>
 
-    <div class="mobile-nav">
-        <div class="active">Map</div>
-        <div>Routes</div>
-        <div>Create</div>
-        <div>Analytics</div>
-        <div>Profile</div>
+    <!-- ROUTE -->
+
+    <svg
+      class="route-overlay"
+      viewBox="0 0 1200 800"
+      preserveAspectRatio="none"
+    >
+
+      <path
+        class="route-shadow"
+        d="M120 620
+           C220 540, 280 480, 360 500
+           S520 620, 650 520
+           S860 300, 1040 420"
+      />
+
+      <path
+        class="route-line"
+        d="M120 620
+           C220 540, 280 480, 360 500
+           S520 620, 650 520
+           S860 300, 1040 420"
+      />
+
+      <!-- START -->
+
+      <circle
+        class="route-point start-point"
+        cx="120"
+        cy="620"
+        r="11"
+      />
+
+      <!-- MID -->
+
+      <circle
+        class="route-point mid-point"
+        cx="360"
+        cy="500"
+        r="10"
+      />
+
+      <circle
+        class="route-point mid-point"
+        cx="650"
+        cy="520"
+        r="10"
+      />
+
+      <!-- FINISH -->
+
+      <circle
+        class="route-point finish-point"
+        cx="1040"
+        cy="420"
+        r="11"
+      />
+
+    </svg>
+
+  </div>
+
+  <!-- TOOLS -->
+
+  <aside class="tools-container">
+
+    <div class="tool-group">
+      <div class="tool-label">Route</div>
+
+      <button class="tool-button">
+        ✏️ Draw Route
+      </button>
+
+      <button class="tool-button">
+        ✂️ Cut Segment
+      </button>
+
+      <button class="tool-button">
+        🧹 Clear Route
+      </button>
     </div>
+
+    <div class="tool-group">
+      <div class="tool-label">Edit</div>
+
+      <button class="tool-button">
+        ↩️ Undo
+      </button>
+
+      <button class="tool-button">
+        ↪️ Redo
+      </button>
+
+      <button class="tool-button">
+        🔄 Reverse Route
+      </button>
+    </div>
+
+  </aside>
+
+</div>
+
 </body>
-
 </html>

@@ -33,7 +33,7 @@ export function WelcomeWidget({ workoutsThisWeek, scoreClass }: WelcomeWidgetPro
         <h2>{ greeting }, {displayName}.</h2>
       </div>
       <p className="detail">
-        {workoutLine} Recovery is <span className={`value ${scoreClass}`}>{recoveryWord}</span>. Let's keep it rolling.
+        {/* {{workoutLine} Recovery is <span className={`value ${scoreClass}`}>{recoveryWord}</span>. }Let's keep it rolling. */}
       </p>
     </div>
   );

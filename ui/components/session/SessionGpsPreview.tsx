@@ -10,7 +10,7 @@ interface SessionGpsPreviewProps {
 export function SessionGpsPreview({ track }: SessionGpsPreviewProps) {
   return (
     <section className="surface bare">
-      <div className="map media-lg">
+      <div className="media-lg">
         <Map track={track} interactive={true} colourMode="pace" />
       </div>
     </section>

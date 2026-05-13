@@ -211,42 +211,17 @@ function SocialBar({ session }: { session: CardioSession }) {
 
 /* ── Per-session set weight chart ── */
 
-function niceStep(max: number): number {
-  if (max <= 25) return 5;
-  if (max <= 50) return 10;
-  if (max <= 100) return 20;
-  if (max <= 200) return 40;
-  return 50;
-}
-
 function SessionSetChart({ sets }: { sets: StrengthSet[] }) {
   if (sets.length < 1) return null;
   const data = sets.map((s, i) => ({
     x: i + 1,
     y: s.weightKg,
     reps: s.reps,
-    timed: s.setType === 'emom',
   }));
-  const maxWeight = Math.max(...sets.map(s => s.weightKg));
-  const step = niceStep(maxWeight);
-  const yMax = Math.ceil(maxWeight / step) * step + step;
-  const ticks = Array.from({ length: Math.floor(yMax / step) + 1 }, (_, i) => i * step);
-
-  const renderLabel = (props: any) => {
-    const entry = data[props.index];
-    if (!entry) return null;
-    const text = `${entry.y}kg × ${entry.reps}${entry.timed ? 's' : ''}`;
-    return (
-      <text x={props.x + props.width / 2} y={props.y - 5} textAnchor="middle" fontSize={9} fill="var(--ink-faint)">
-        {text}
-      </text>
-    );
-  };
-
   return (
     <div className="row align-center">
       <span className="chart-ylabel">kg</span>
-      <ChartContainer data={data} chartType={"bar"} />
+      <ChartContainer data={data} chartType={"sets-bar"} />
     </div>
   );
 }

@@ -88,7 +88,7 @@ function applyAll(events: TrainingLogEvent[]): void {
 
 // ─── Command Handlers ────────────────────────────────────────
 
-export async function handleStartSession(cmd: StartSession): Promise<Result<void, string>> {
+export async function handleStartSession(cmd: StartSession): Promise<Result<{ sessionId: string }, string>> {
   if (!cmd.name.trim()) return err('Session name is required');
 
   const sessionId = cryptoIdGenerator.next<'Session'>();
@@ -108,7 +108,7 @@ export async function handleStartSession(cmd: StartSession): Promise<Result<void
 
   await repository.save(events);
   applyAll(events);
-  return ok(undefined);
+  return ok({ sessionId });
 }
 
 export async function handleAddBlock(cmd: AddBlock): Promise<Result<void, string>> {

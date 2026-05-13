@@ -17,7 +17,7 @@ import { NewSessionScreen } from '@ui/layouts';
 import { HealthCategoryScreen } from '@ui/layouts';
 import { WeatherScreen } from '@ui/layouts';
 import { WidgetPrototypeScreen } from '@ui/layouts';
-import { RoutePlannerScreen, SavedRoutesScreen } from '@ui/layouts';
+import { RoutePlannerScreen, SavedRoutesScreen, FinishSessionScreen } from '@ui/layouts';
 import { SettingsModal } from '@ui/components/modals/SettingsModal';
 import { APP_MODE } from '@config/app-mode';
 import '@features/training_log';
@@ -38,6 +38,7 @@ export function App() {
             <Route path="/dashboard" element={<DashboardScreen />} />
             <Route path="/log" element={<LogScreen />} />
             <Route path="/log/:sessionId" element={<LogScreen />} />
+            <Route path="/log/:sessionId/finish" element={<FinishSessionScreen />} />
             {APP_MODE !== 'github-pages' && (
               <>
                 <Route path="/schedule" element={<TrainingPlansScreen />} />

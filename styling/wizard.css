@@ -30,14 +30,6 @@
   flex-shrink: 0;
 }
 
-/* ── Leaflet map container (height must be explicit for Leaflet) ── */
-.plan-map {
-  width: 100%;
-  border-radius: var(--r-md);
-  overflow: hidden;
-  border: 1px solid var(--line);
-}
-
 .map-root .route-distance-pane {
   z-index: 7;
   pointer-events: none;
@@ -53,23 +45,6 @@
   display: none;
 }
 
-.route-help-control {
-  position: relative;
-}
-
-.route-help-tooltip {
-  position: absolute;
-  top: 0;
-  left: calc(100% + var(--s-2));
-  width: min(220px, calc(100vw - 96px));
-}
-
-.route-help-tooltip[hidden] {
-  display: none;
-}
-
-
-
 .route-map-wrap {
   position: relative;
 }
@@ -82,92 +57,11 @@
   z-index: 1;
 }
 
-.route-map-mobile-controls {
-  display: none;
-}
-
-.route-map-search-pill {
-  position: absolute;
-  top: var(--s-3);
-  left: 50%;
-  transform: translateX(-50%);
+/* ── Tools panel — floating panel for route planner (desktop) ── */
+.tools-panel {
   z-index: 1000;
-  width: min(520px, calc(100% - 140px));
-  pointer-events: auto;
 }
 
-.route-map-search-pill input {
-  flex: 1;
-  min-width: 0;
-}
-
-.route-map-search-hint {
-  position: absolute;
-  top: calc(var(--s-3) + 44px);
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
-  background: var(--surface-1);
-  border: 1px solid var(--line);
-  border-radius: var(--r-pill);
-  padding: 4px var(--s-3);
-  color: var(--ink-muted);
-  box-shadow: var(--box-shadow-sm);
-}
-
-.route-map-busy {
-  position: absolute;
-  top: calc(var(--s-3) + 44px);
-  right: var(--s-3);
-  z-index: 1000;
-  background: var(--surface-1);
-  border: 1px solid var(--line);
-  border-radius: var(--r-pill);
-  padding: 4px var(--s-3);
-  color: var(--ink-muted);
-  box-shadow: var(--box-shadow-sm);
-}
-
-.route-map-rail {
-  background-color: var(--surface-1);
-  border-radius: var(--s-2);
-  position: absolute;
-  z-index: 1000;
-  pointer-events: auto;
-}
-
-.route-map-rail--left {
-  top: var(--s-2);
-  left: var(--s-2);
-}
-
-.route-map-rail--right {
-  top: var(--s-2);
-  right: var(--s-2);
-}
-
-.route-map-rail--left-bottom {
-  left: var(--s-2);
-  bottom: var(--s-2);
-}
-
-.route-map-rail--bottom-right {
-  right: var(--s-2);
-  bottom: var(--s-2);
-}
-
-.route-map-popover {
-  position: absolute;
-  right: calc(100% + var(--s-2));
-  bottom: 0;
-  min-width: 160px;
-  z-index: 1001;
-}
-
-.route-map-rail--bottom-right .route-map-popover {
-  right: calc(100% + var(--s-2));
-  bottom: 0;
-}
 
 /* ── Waypoint markers ── */
 .route-anchor {
@@ -178,7 +72,7 @@
   width: 14px;
   height: 14px;
   border-radius: var(--r-pill);
-  background: #7eb8f7;
+  background: var(--accent);
   border: 2px solid #ffffff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
 }
@@ -208,25 +102,7 @@
   opacity: 0.75;
 }
 
-
-/* On small devices: move controls above/below map to avoid overlap */
-@media (max-width: 600px) {
-  .route-map-mobile-controls {
-    display: flex;
-  }
-
-  .route-map-search-pill,
-  .route-map-search-hint,
-  .route-map-busy,
-  .route-map-rail {
-    display: none;
-  }
-}
-
 /* ── Leaflet map controls themed to design system ── */
-.map {
-  width: 100%;
-}
 /* Isolate Leaflet's internal z-indexes so they don't escape the map container */
 .map-root {
   isolation: isolate;

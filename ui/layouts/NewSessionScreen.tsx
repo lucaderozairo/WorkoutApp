@@ -39,6 +39,7 @@ export function NewSessionScreen() {
   const [date, setDate] = useState(
     returned.callerState?.date ?? todayDateString()
   );
+  const [startTime, setStartTime] = useState('');
   const [waypoints] = useState<[number, number][]>(returned.waypoints ?? []);
   const [routeKm] = useState(returned.distanceKm ?? 0);
 
@@ -61,8 +62,10 @@ export function NewSessionScreen() {
     recordRecentSport(selected);
 
     if (selected === 'gym') {
-      await startSession({ type: 'StartSession', userId: USER_ID, name });
-      navigate('/log');
+      const result = await startSession({ type: 'StartSession', userId: USER_ID, name });
+      if (result.ok) {
+        navigate(`/log/${result.value!.sessionId}`);
+      }
       return;
     }
 
@@ -77,7 +80,7 @@ export function NewSessionScreen() {
       routeWaypoints: waypoints.length > 0 ? waypoints : undefined,
       distanceKm: routeKm > 0 ? routeKm : undefined,
     });
-    navigate(-1);
+    navigate('/');
   }
 
   function handleAddRoute() {
@@ -140,7 +143,14 @@ export function NewSessionScreen() {
           min={todayDateString()}
           onChange={e => setDate(e.target.value)}
         />
-      </div>
+      <label className="label" htmlFor="session-time">Time</label>
+        <input
+          id="session-time"
+          className="form-input"
+          type="time"
+          value={startTime}
+          onChange={e => setStartTime(e.target.value)}
+        /></div>
 
       {ROUTE_ACTIVITIES.has(selected) && (
         <div className="row compact">

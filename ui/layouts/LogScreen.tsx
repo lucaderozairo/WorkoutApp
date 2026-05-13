@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Navigate } from 'react-router-dom';
 import { useQuery, useCommand } from '@ui/bindings';
 import {
   handleAddBlock,
@@ -30,7 +30,6 @@ import { toDateKey } from '@ui/components/log/calendarUtils';
 import type { Id } from '@shared/types';
 import { cryptoIdGenerator } from '@core/id-generator';
 import {
-  FinishSessionModal,
   UndoToast,
   UndoToastProvider,
   useUndoToast,
@@ -50,6 +49,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import ChartContainer from '@ui/patterns/charts/charts';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -353,6 +353,30 @@ function MiniChart({ sets }: { sets?: UISet[] }) {
   );
 }
 
+// ─── SetsBarChart ──────────────────────────────────────────────────────────────
+
+function SetsBarChart({ sets }: { sets?: UISet[] }) {
+  if (!sets?.length) return null;
+  const loggedSets = sets.filter(s => s.w !== '—');
+  if (!loggedSets.length) return null;
+
+  let workingSet = 0;
+  const chartData = loggedSets.map(s => {
+    if (!s.warmup) workingSet += 1;
+    const weight = parseFloat(s.w) || 0;
+    const reps = parseFloat(s.r) || 0;
+    return {
+      x: s.warmup ? 'WU' : String(workingSet),
+      y: weight,
+      reps: Number.isInteger(reps) ? String(reps) : reps.toFixed(1),
+    };
+  });
+
+  return (
+      <ChartContainer data={chartData} chartType="sets-bar" color="var(--accent)" axisShow={{ x: true, y: true }} />
+  );
+}
+
 // ─── CommentLine ──────────────────────────────────────────────────────────────
 
 function CommentLine({ text, indent }: { text: string; indent?: boolean }) {
@@ -555,9 +579,7 @@ function ExerciseSection({
 
       {ex.comment && <CommentLine text={ex.comment} indent={Boolean(ex.label)} />}
       {ex.sets && (
-        <div>
-          <MiniChart sets={ex.sets} />
-        </div>
+          <SetsBarChart sets={ex.sets} />
       )}
       <div className="column compact">
         {ex.sets?.map((s, j) => {
@@ -799,9 +821,7 @@ function BlockCard({
         {ex.comment && <CommentLine text={ex.comment} />}
 
         {ex.sets?.some(s => s.w !== '—') && (
-          <div className="surface">
-            <MiniChart sets={ex.sets} />
-          </div>
+            <SetsBarChart sets={ex.sets} />
         )}
         <div className="column compact">
           {ex.sets?.map((s, j) => {
@@ -945,9 +965,9 @@ function V2SessionHeader({
   return (
     <div className="surface secondary header">
       <div className="row align-center space-between">
-        <button type="button" className="secondary sm">
+        {/* <button type="button" className="secondary sm">
           <ChevronDown size={14} />
-        </button>
+        </button> */}
         <div className="column compact grow">
           <span className="detail">{name}</span>
           <div className="row compact align-center">
@@ -1418,7 +1438,7 @@ function FinishedView({ session }: { session: ActiveSessionView }) {
               <>
                 <div className="row align-center space-between">
                   {b.type === 'single'
-                    ? <><span className="detail grow">{b.exercises[0].name}</span><MiniChart sets={b.exercises[0].sets} /></>
+                    ? <><span className="detail grow">{b.exercises[0].name}</span><SetsBarChart sets={b.exercises[0].sets} /></>
                     : <span className="pill">{b.label}</span>
                   }
                   <button type="button" className="ghost icon sm">
@@ -1433,7 +1453,7 @@ function FinishedView({ session }: { session: ActiveSessionView }) {
                           <LetterBadge letter={ex.label ?? String(i + 1)} />
                           <span className="detail">{ex.name}</span>
                         </div>
-                        <MiniChart sets={ex.sets} />
+                        <SetsBarChart sets={ex.sets} />
                       </div>
                     )}
                     <div className="column compact">
@@ -1631,25 +1651,26 @@ export function LogScreen() {
   const activeSession = useQuery<ActiveSessionView | null>('active_session');
   const conditions = (useQuery<UICondition[]>('active_conditions') ?? []) as UICondition[];
 
-  const editingSession = useMemo(() => {
-    if (!routeSessionId) return null;
-    const s = getEditingSession(routeSessionId as Id<'Session'>);
-    return s ? editingSessionToView(s) : null;
-  }, [routeSessionId]);
+  const editingState = useQuery<EditingSessionsView>('editing_session');
 
-  const session = editingSession ?? activeSession ?? null;
+  const editingSession = useMemo(() => {
+    if (!routeSessionId || !editingState) return null;
+    const s = editingState.sessions.find(s => s.id === routeSessionId);
+    return s ? editingSessionToView(s) : null;
+  }, [routeSessionId, editingState]);
+
+  const isActiveRoute = Boolean(routeSessionId && activeSession && routeSessionId === activeSession.id);
+  const session = isActiveRoute ? activeSession : (editingSession ?? activeSession ?? null);
   const isEditing = Boolean(editingSession);
   const hasSession = Boolean(session?.id);
 
   const [showPicker, setShowPicker] = useState(false);
   const [showAddMenu, setShowAddMenu] = useState(false);
-  const [showFinish, setShowFinish] = useState(false);
 
   const [sessionFilters, setSessionFilters] = useState<SessionFilters>(DEFAULT_FILTERS);
 
   const strengthHistory = (useQuery<SessionHistoryItem[]>('session_history') ?? []) as SessionHistoryItem[];
   const cardioView = (useQuery<RecentCardioView>('recent_cardio_sessions') ?? { sessions: [] }) as RecentCardioView;
-  const editingState = useQuery<EditingSessionsView>('editing_session');
   const sessionViews = (useQuery<Record<string, ActiveSessionView>>('session_views') ?? {}) as Record<string, ActiveSessionView>;
   const exerciseProgressions = useQuery<Record<string, unknown>>('exercise_progressions') ?? {};
 
@@ -1780,16 +1801,25 @@ export function LogScreen() {
     }
   };
 
-  if (!hasSession && !isEditing) {
+  if (!routeSessionId) {
     return (
       <UndoToastProvider>
         <div className="column">
           <div className="row space-between align-center compact">
-            <h2>Workout</h2>
+            <h2>My Sessions</h2>
             <button className="primary sm" onClick={() => navigate('/new-session')}>
               ＋ Add
             </button>
           </div>
+
+          {activeSession && (
+            <button className="surface row space-between align-center" onClick={() => navigate(`/log/${activeSession.id}`)}>
+              <div className="column compact align-left">
+                <span className="detail">{activeSession.name}</span>
+                <span className="caption">{activeSession.startedAt ? `${new Date(activeSession.startedAt).toLocaleDateString()} — tap to continue` : 'Not started — tap to continue'}</span>
+              </div>
+            </button>
+          )}
 
           <SessionFilterBar
             filters={sessionFilters}
@@ -1892,7 +1922,7 @@ export function LogScreen() {
     );
   }
 
-  if (isEditing && session) {
+  if (routeSessionId && isEditing && session && !isActiveRoute) {
     return (
       <UndoToastProvider>
         <FinishedView session={session} />
@@ -1914,18 +1944,19 @@ export function LogScreen() {
     );
   }
 
-  return (
-    <UndoToastProvider>
-      <WorkoutView
+  if (routeSessionId && session) {
+    return (
+      <UndoToastProvider>
+        <WorkoutView
         session={session}
         conditions={conditions}
-        isActive={hasSession && !isEditing}
+        isActive={hasSession && (!isEditing || isActiveRoute)}
         isPaused={timer.isPaused}
         timerDisplay={timer.display}
         onPause={timer.pause}
         onResume={timer.resume}
         onAddExercise={() => setShowPicker(true)}
-        onFinish={() => setShowFinish(true)}
+        onFinish={() => navigate(`/log/${session?.id}/finish`)}
         timerNotStarted={timerNotStarted}
         onStartTimer={() => {
           if (session?.id) {
@@ -1937,9 +1968,13 @@ export function LogScreen() {
           }
         }}
       />
-      {showFinish && session && (
-        <FinishSessionModal session={session} onClose={() => setShowFinish(false)} />
-      )}
     </UndoToastProvider>
   );
+  }
+
+  if (routeSessionId) {
+    return <Navigate to="/log" replace />;
+  }
+
+  return null;
 }

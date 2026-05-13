@@ -1,7 +1,8 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useRef } from 'react';
 import type { PlanType, DistanceMarker, SavedRoute } from '@features/planning';
 import { formatPace, parsePace, buildMarkers } from '@features/planning';
 import { RouteMap, totalDistanceKm } from './RouteMap';
+import type { MapCanvasHandle } from './RouteMap';
 import { useQuery } from '@ui/bindings';
 
 interface StepCardioProps {
@@ -25,9 +26,11 @@ export function StepCardio({
   onPaceChange,
   onRoutedKmChange,
 }: StepCardioProps) {
+  const mapRef = useRef<MapCanvasHandle>(null);
   const [routeTab, setRouteTab] = useState<'draw' | 'saved'>('draw');
   const [paceInput, setPaceInput] = useState(formatPace(paceSecPerKm));
   const [routedKm, setRoutedKm] = useState(0);
+  const [drawMode, setDrawMode] = useState<'add' | 'select' | 'split'>('add');
 
   const savedRoutes = useQuery<SavedRoute[]>('saved_routes') ?? [];
   const matchingRoutes = savedRoutes.filter(r =>
@@ -108,11 +111,23 @@ export function StepCardio({
 
       {routeTab === 'draw' ? (
         <div className="column compact">
+          <div className="surface tight row compact" style={{borderRadius:'var(--r-pill)', width:'fit-content'}}>
+            <button className={`ghost sm${drawMode === 'add' ? ' active' : ''}`} onClick={() => mapRef.current?.setMode('add')}>✏️</button>
+            <button className={`ghost sm${drawMode === 'select' ? ' active' : ''}`} onClick={() => mapRef.current?.setMode('select')}>✋</button>
+            <button className={`ghost sm${drawMode === 'split' ? ' active' : ''}`} onClick={() => mapRef.current?.setMode('split')}>✂️</button>
+            <button className="ghost sm" onClick={() => mapRef.current?.undo()}>↩️</button>
+            <button className="ghost sm" onClick={() => mapRef.current?.redo()}>↪️</button>
+            <button className="ghost sm danger" onClick={() => mapRef.current?.clearRoute()}>🧹</button>
+          </div>
           <RouteMap
+            ref={mapRef}
             waypoints={waypoints}
             onChange={onWaypointsChange}
             profile={planType === 'cycle' ? 'bike' : 'foot'}
             onRoutedDistanceChange={handleRoutedKm}
+            mode={drawMode}
+            onModeChange={setDrawMode}
+            onUndoRedoChange={() => {}}
           />
           <span className="caption muted">
             {waypoints.length < 2

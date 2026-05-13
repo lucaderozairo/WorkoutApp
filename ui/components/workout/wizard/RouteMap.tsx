@@ -1,10 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Crosshair, Eye, Layers, Minus, Plus, Redo2, Search, Trash2, Undo2, X } from 'lucide-react';
-import { FiScissors } from 'react-icons/fi';
-import { Cursor } from 'phosphor-react';
-import { MapPin } from 'iconoir-react';
 
 const TILE_ATTR = '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>';
 const DEFAULT_CENTER: L.LatLngTuple = [51.463955, -0.305095];  // London — replaced once user taps
@@ -81,11 +77,32 @@ function distanceMarkerPoints(path: [number, number][]): { latlng: [number, numb
   return markers;
 }
 
+export interface MapCanvasHandle {
+  zoomIn: () => void;
+  zoomOut: () => void;
+  fitRoute: () => void;
+  locate: () => void;
+  setMode: (mode: EditMode) => void;
+  undo: () => void;
+  redo: () => void;
+  clearRoute: () => void;
+  reverseRoute: () => void;
+  runSearch: (query: string) => Promise<'ok' | 'fail' | 'no_results' | 'coords'>;
+  cancelSearch: () => void;
+  switchBaseLayer: (id: BaseLayerId) => void;
+  toggleDistanceMarkers: (show: boolean) => void;
+}
+
 interface RouteMapProps {
   waypoints: [number, number][];
   onChange: (waypoints: [number, number][]) => void;
   profile?: 'foot' | 'bike';
   onRoutedDistanceChange?: (km: number) => void;
+  mode?: EditMode;
+  onModeChange?: (mode: EditMode) => void;
+  onUndoRedoChange?: (undo: number, redo: number) => void;
+  baseLayerId?: BaseLayerId;
+  showDistanceMarkers?: boolean;
 }
 
 type EditMode = 'select' | 'add' | 'split';
@@ -151,7 +168,12 @@ function distToSegmentSq(
   return dx * dx + dy * dy;
 }
 
-export function RouteMap({ waypoints, onChange, profile = 'foot', onRoutedDistanceChange }: RouteMapProps) {
+export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function RouteMap({
+  waypoints, onChange, profile = 'foot', onRoutedDistanceChange,
+  mode: modeProp = 'add', onModeChange, onUndoRedoChange,
+  baseLayerId: baseLayerIdProp = 'plain',
+  showDistanceMarkers: showDistanceMarkersProp = true,
+}, ref) {
   async function fetchRoute(
     anchors: [number, number][],
     signal?: AbortSignal,
@@ -191,9 +213,11 @@ export function RouteMap({ waypoints, onChange, profile = 'foot', onRoutedDistan
   const routePathRef = useRef<[number, number][]>([]);
   const distanceMarkersRef = useRef<L.LayerGroup | null>(null);
   const locateMarkerRef = useRef<L.Marker | null>(null);
-  const showDistanceMarkersRef = useRef(true);
   const baseLayerRef = useRef<L.TileLayer | null>(null);
-  const baseLayerIdRef = useRef<BaseLayerId>('plain');
+  const baseLayerIdRef = useRef<BaseLayerId>(baseLayerIdProp);
+  baseLayerIdRef.current = baseLayerIdProp;
+  const showDistanceMarkersRef = useRef(showDistanceMarkersProp);
+  showDistanceMarkersRef.current = showDistanceMarkersProp;
   const prevCountRef = useRef(0);
   // Latest-ref pattern: keep stable refs to callbacks so they never appear in effect deps
   const onChangeRef = useRef(onChange);
@@ -201,21 +225,15 @@ export function RouteMap({ waypoints, onChange, profile = 'foot', onRoutedDistan
   const onRoutedDistanceChangeRef = useRef(onRoutedDistanceChange);
   onRoutedDistanceChangeRef.current = onRoutedDistanceChange;
 
-  const [mode, setMode] = useState<EditMode>('add');
-  const modeRef = useRef<EditMode>(mode);
-  modeRef.current = mode;
+  const modeRef = useRef<EditMode>(modeProp);
+  modeRef.current = modeProp;
+  const onModeChangeRef = useRef(onModeChange);
+  onModeChangeRef.current = onModeChange;
+  const onUndoRedoChangeRef = useRef(onUndoRedoChange);
+  onUndoRedoChangeRef.current = onUndoRedoChange;
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchBusy, setSearchBusy] = useState(false);
-  const [searchError, setSearchError] = useState<string | null>(null);
   const searchAbortRef = useRef<AbortController | null>(null);
   const searchMarkerRef = useRef<L.Marker | null>(null);
-
-  const [layersOpen, setLayersOpen] = useState(false);
-  const [overlaysOpen, setOverlaysOpen] = useState(false);
-  const [baseLayerId, setBaseLayerId] = useState<BaseLayerId>('plain');
-  const [showDistanceMarkers, setShowDistanceMarkers] = useState(true);
-  showDistanceMarkersRef.current = showDistanceMarkers;
 
   const [selectedWaypointIdx, setSelectedWaypointIdx] = useState<number | null>(null);
   const selectedWaypointIdxRef = useRef<number | null>(null);
@@ -224,6 +242,10 @@ export function RouteMap({ waypoints, onChange, profile = 'foot', onRoutedDistan
   const internalChangeRef = useRef(false);
   const undoRef = useRef<[number, number][][]>([]);
   const redoRef = useRef<[number, number][][]>([]);
+
+  function notifyUndoRedo() {
+    onUndoRedoChangeRef.current?.(undoRef.current.length, redoRef.current.length);
+  }
 
   const baseLayers = useMemo(() => {
     return {
@@ -259,6 +281,7 @@ export function RouteMap({ waypoints, onChange, profile = 'foot', onRoutedDistan
     }
     internalChangeRef.current = true;
     onChangeRef.current(next);
+    notifyUndoRedo();
   }
 
   function deleteSelectedWaypoint() {
@@ -277,6 +300,11 @@ export function RouteMap({ waypoints, onChange, profile = 'foot', onRoutedDistan
     redoRef.current = [...redoRef.current, current];
     internalChangeRef.current = true;
     onChangeRef.current(prev);
+    notifyUndoRedo();
+  }
+
+  function reverseRoute() {
+    commitWaypoints([...waypointsRef.current].reverse());
   }
 
   function handleRedo() {
@@ -288,6 +316,11 @@ export function RouteMap({ waypoints, onChange, profile = 'foot', onRoutedDistan
     undoRef.current = [...undoRef.current, current];
     internalChangeRef.current = true;
     onChangeRef.current(next);
+    notifyUndoRedo();
+  }
+
+  function setMode(next: EditMode) {
+    onModeChangeRef.current?.(next);
   }
 
   useEffect(() => {
@@ -324,6 +357,7 @@ export function RouteMap({ waypoints, onChange, profile = 'foot', onRoutedDistan
     }
     undoRef.current = [];
     redoRef.current = [];
+    notifyUndoRedo();
   }, [waypoints]);
 
   // Map click behavior depends on mode.
@@ -362,28 +396,28 @@ export function RouteMap({ waypoints, onChange, profile = 'foot', onRoutedDistan
     return () => {
       map.off('click', handler);
     };
-  }, [mode]);
+  }, [modeProp]);
 
   // Keep map dragging aligned with mode.
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
-    if (mode === 'select') {
+    if (modeProp === 'select') {
       map.dragging.enable();
     } else {
       map.dragging.disable();
     }
-  }, [mode]);
+  }, [modeProp]);
 
   // Keep marker dragging aligned with mode.
   useEffect(() => {
-    const isSelect = mode === 'select';
+    const isSelect = modeProp === 'select';
     markersRef.current.forEach(m => {
       if (!m.dragging) return;
       if (isSelect) m.dragging.enable();
       else m.dragging.disable();
     });
-  }, [mode, waypoints]);
+  }, [modeProp, waypoints]);
 
   function fitToRoute() {
     const map = mapRef.current;
@@ -412,7 +446,6 @@ export function RouteMap({ waypoints, onChange, profile = 'foot', onRoutedDistan
       locateMarkerRef.current = L.marker(latlng, {
         interactive: false,
         icon: L.divIcon({
-          className: 'route-locate-icon',
           html: '<div class="route-locate-dot"></div>',
           iconSize: [14, 14],
           iconAnchor: [7, 7],
@@ -435,57 +468,40 @@ export function RouteMap({ waypoints, onChange, profile = 'foot', onRoutedDistan
     };
   }, []);
 
-  async function runSearch() {
+  async function runSearch(raw: string): Promise<'ok' | 'fail' | 'no_results' | 'coords'> {
     const map = mapRef.current;
-    if (!map) return;
-    const raw = searchQuery.trim();
-    setSearchError(null);
+    if (!map) return 'fail';
+    const trimmed = raw.trim();
+    if (!trimmed) return 'fail';
 
-    if (!raw) return;
-
-    const coords = parseLatLngQuery(raw);
+    const coords = parseLatLngQuery(trimmed);
     if (coords) {
       const ll = clampLatLng(coords);
       map.setView(ll, SEARCH_ZOOM);
-      return;
+      return 'coords';
     }
 
     searchAbortRef.current?.abort();
     const controller = new AbortController();
     searchAbortRef.current = controller;
-    setSearchBusy(true);
     try {
-      const params = new URLSearchParams({
-        format: 'json',
-        q: raw,
-        limit: '1',
-      });
+      const params = new URLSearchParams({ format: 'json', q: trimmed, limit: '1' });
       const res = await fetch(`https://nominatim.openstreetmap.org/search?${params.toString()}`, {
         signal: controller.signal,
       });
-      if (!res.ok) {
-        setSearchError('Search failed');
-        return;
-      }
+      if (!res.ok) return 'fail';
       const json = (await res.json()) as Array<{ lat: string; lon: string }>;
       const first = json[0];
-      if (!first) {
-        setSearchError('No results');
-        return;
-      }
+      if (!first) return 'no_results';
       const lat = Number(first.lat);
       const lon = Number(first.lon);
-      if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
-        setSearchError('No results');
-        return;
-      }
+      if (!Number.isFinite(lat) || !Number.isFinite(lon)) return 'no_results';
       const ll: [number, number] = clampLatLng([lat, lon]);
       map.setView(ll, SEARCH_ZOOM);
       searchMarkerRef.current?.remove();
       searchMarkerRef.current = L.marker(ll, {
         interactive: false,
         icon: L.divIcon({
-          className: 'route-search-icon',
           html: '<div class="route-search-dot"></div>',
           iconSize: [10, 10],
           iconAnchor: [5, 5],
@@ -495,18 +511,14 @@ export function RouteMap({ waypoints, onChange, profile = 'foot', onRoutedDistan
         searchMarkerRef.current?.remove();
         searchMarkerRef.current = null;
       }, 5000);
+      return 'ok';
     } catch (e) {
-      if ((e as { name?: string }).name !== 'AbortError') {
-        setSearchError('Search failed');
-      }
-    } finally {
-      setSearchBusy(false);
+      if ((e as { name?: string }).name !== 'AbortError') return 'fail';
+      return 'fail';
     }
   }
 
-  function clearSearch() {
-    setSearchQuery('');
-    setSearchError(null);
+  function cancelSearch() {
     searchAbortRef.current?.abort();
     searchMarkerRef.current?.remove();
     searchMarkerRef.current = null;
@@ -520,11 +532,10 @@ export function RouteMap({ waypoints, onChange, profile = 'foot', onRoutedDistan
     const config = baseLayers[next];
     baseLayerRef.current = L.tileLayer(config.url, { attribution: TILE_ATTR, maxZoom: 19 }).addTo(map);
     baseLayerIdRef.current = next;
-    setBaseLayerId(next);
   }
 
   function toggleDistanceMarkers(next: boolean) {
-    setShowDistanceMarkers(next);
+    showDistanceMarkersRef.current = next;
     const map = mapRef.current;
     const distanceMarkers = distanceMarkersRef.current;
     if (!map || !distanceMarkers) return;
@@ -670,355 +681,25 @@ export function RouteMap({ waypoints, onChange, profile = 'foot', onRoutedDistan
     };
   }, [waypoints, profile]);
 
+  useImperativeHandle(ref, () => ({
+    zoomIn: () => mapRef.current?.zoomIn(),
+    zoomOut: () => mapRef.current?.zoomOut(),
+    fitRoute: fitToRoute,
+    locate: handleLocate,
+    setMode,
+    undo: handleUndo,
+    redo: handleRedo,
+    clearRoute: () => commitWaypoints([]),
+    reverseRoute,
+    runSearch,
+    cancelSearch,
+    switchBaseLayer,
+    toggleDistanceMarkers,
+  }));
+
   return (
-    <div className="column grow compact">
-      <div className="route-map-mobile-controls column compact">
-        <div className="surface tight row compact align-center">
-          <span aria-hidden="true"><Search size={16} /></span>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                void runSearch();
-              }
-            }}
-            placeholder="Search place or coords"
-            aria-label="Search location"
-            className="grow"
-          />
-          {searchQuery && (
-            <button type="button" className="ghost icon sm" onClick={clearSearch} aria-label="Clear search">
-              <X size={16} />
-            </button>
-          )}
-        </div>
-
-        <div className="row compact">
-          <button type="button" className="ghost icon" onClick={() => mapRef.current?.zoomIn()} aria-label="Zoom in">
-            <Plus size={18} />
-          </button>
-          <button type="button" className="ghost icon" onClick={() => mapRef.current?.zoomOut()} aria-label="Zoom out">
-            <Minus size={18} />
-          </button>
-          <button type="button" className="ghost icon" onClick={fitToRoute} aria-label="Route overview">
-            <Crosshair size={18} />
-          </button>
-          <button type="button" className="ghost icon" onClick={handleLocate} aria-label="Locate me">
-            <MapPin width={18} height={18} />
-          </button>
-          <span className="grow" />
-          <button type="button" className="ghost icon" onClick={handleUndo} aria-label="Undo" disabled={undoRef.current.length === 0}>
-            <Undo2 size={18} />
-          </button>
-          <button type="button" className="ghost icon" onClick={handleRedo} aria-label="Redo" disabled={redoRef.current.length === 0}>
-            <Redo2 size={18} />
-          </button>
-          <button type="button" className="ghost icon danger" onClick={() => commitWaypoints([])} aria-label="Clear route" disabled={waypoints.length === 0}>
-            <Trash2 size={18} />
-          </button>
-        </div>
-
-        {searchError && <div className="caption muted">{searchError}</div>}
-        {searchBusy && <div className="caption muted">Searching…</div>}
-      </div>
-
-      <div ref={mapWrapRef} className="grow map-root media-md route-map-wrap">
+    <div ref={mapWrapRef} className="grow map-root route-map-wrap media-md">
       <div ref={containerRef} className="route-map-canvas" />
-
-      <div
-        className="row compact align-center route-map-search-pill surface tight"
-        role="search"
-        onMouseDown={e => e.stopPropagation()}
-        onClick={e => e.stopPropagation()}
-      >
-        <span className="route-map-search-icon" aria-hidden="true">
-          <Search size={16} />
-        </span>
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          onKeyDown={e => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              void runSearch();
-            }
-          }}
-          placeholder="Search place or coords"
-          aria-label="Search location"
-        />
-        {searchQuery && (
-          <button type="button" className="ghost icon sm" onClick={clearSearch} aria-label="Clear search">
-            <X size={16} />
-          </button>
-        )}
-      </div>
-
-      {searchError && (
-        <div
-          className="route-map-search-hint caption"
-          onMouseDown={e => e.stopPropagation()}
-          onClick={e => e.stopPropagation()}
-        >
-          {searchError}
-        </div>
-      )}
-
-      <div
-        className="column compact route-map-rail route-map-rail--left"
-        aria-label="Map controls"
-        onMouseDown={e => e.stopPropagation()}
-        onClick={e => e.stopPropagation()}
-      >
-        <button type="button" className="ghost icon" onClick={() => mapRef.current?.zoomIn()} aria-label="Zoom in">
-          <Plus size={18} />
-        </button>
-        <button type="button" className="ghost icon" onClick={() => mapRef.current?.zoomOut()} aria-label="Zoom out">
-          <Minus size={18} />
-        </button>
-        <button type="button" className="ghost icon" onClick={fitToRoute} aria-label="Route overview">
-          <Crosshair size={18} />
-        </button>
-        <button type="button" className="ghost icon" onClick={handleLocate} aria-label="Locate me">
-          <MapPin width={18} height={18} />
-        </button>
-      </div>
-
-      <div
-        className="column compact route-map-rail route-map-rail--left-bottom"
-        aria-label="Edit modes"
-        onMouseDown={e => e.stopPropagation()}
-        onClick={e => e.stopPropagation()}
-      >
-        <button
-          type="button"
-          className={`${mode === 'select' ? 'primary' : 'ghost'} icon`}
-          onClick={() => setMode('select')}
-          aria-label="Select / pan"
-          aria-pressed={mode === 'select'}
-        >
-          <Cursor size={18} />
-        </button>
-        <button
-          type="button"
-          className={`${mode === 'add' ? 'primary' : 'ghost'} icon`}
-          onClick={() => setMode('add')}
-          aria-label="Add waypoint"
-          aria-pressed={mode === 'add'}
-        >
-          <Plus size={18} />
-        </button>
-        <button
-          type="button"
-          className={`${mode === 'split' ? 'primary' : 'ghost'} icon`}
-          onClick={() => setMode('split')}
-          aria-label="Split route (insert waypoint)"
-          aria-pressed={mode === 'split'}
-        >
-          <FiScissors size={18} />
-        </button>
-      </div>
-
-      <div
-        className="column compact route-map-rail route-map-rail--right"
-        aria-label="Route history"
-        onMouseDown={e => e.stopPropagation()}
-        onClick={e => e.stopPropagation()}
-      >
-        <button
-          type="button"
-          className="ghost icon"
-          onClick={handleUndo}
-          aria-label="Undo"
-          disabled={undoRef.current.length === 0}
-        >
-          <Undo2 size={18} />
-        </button>
-        <button
-          type="button"
-          className="ghost icon"
-          onClick={handleRedo}
-          aria-label="Redo"
-          disabled={redoRef.current.length === 0}
-        >
-          <Redo2 size={18} />
-        </button>
-        <button
-          type="button"
-          className="ghost icon danger"
-          onClick={() => commitWaypoints([])}
-          aria-label="Clear route"
-          disabled={waypoints.length === 0}
-        >
-          <Trash2 size={18} />
-        </button>
-      </div>
-
-      <div
-        className="column compact route-map-rail route-map-rail--bottom-right"
-        aria-label="Visibility controls"
-        onMouseDown={e => e.stopPropagation()}
-        onClick={e => e.stopPropagation()}
-      >
-        <button
-          type="button"
-          className={`${layersOpen ? 'primary' : 'ghost'} icon`}
-          onClick={() => {
-            setLayersOpen(v => !v);
-            setOverlaysOpen(false);
-          }}
-          aria-label="Map layers"
-          aria-expanded={layersOpen}
-        >
-          <Layers size={18} />
-        </button>
-        <button
-          type="button"
-          className={`${overlaysOpen ? 'primary' : 'ghost'} icon`}
-          onClick={() => {
-            setOverlaysOpen(v => !v);
-            setLayersOpen(false);
-          }}
-          aria-label="Overlays"
-          aria-expanded={overlaysOpen}
-        >
-          <Eye size={18} />
-        </button>
-
-        {layersOpen && (
-          <div className="surface compact route-map-popover">
-            <div className="column compact">
-              {(Object.keys(baseLayers) as BaseLayerId[]).map(id => (
-                <button
-                  key={id}
-                  type="button"
-                  className={`${baseLayerId === id ? 'primary' : 'ghost'} sm`}
-                  onClick={() => switchBaseLayer(id)}
-                >
-                  {baseLayers[id].label}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {overlaysOpen && (
-          <div className="surface compact route-map-popover">
-            <div className="column compact">
-              <button
-                type="button"
-                className={`${showDistanceMarkers ? 'primary' : 'ghost'} sm`}
-                onClick={() => toggleDistanceMarkers(!showDistanceMarkers)}
-                aria-pressed={showDistanceMarkers}
-              >
-                Distance markers
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {searchBusy && (
-        <div
-          className="route-map-busy caption"
-          onMouseDown={e => e.stopPropagation()}
-          onClick={e => e.stopPropagation()}
-        >
-          Searching…
-        </div>
-      )}
-    </div>
-
-      <div className="route-map-mobile-controls column compact">
-        <div className="row compact">
-          <button
-            type="button"
-            className={`${mode === 'select' ? 'primary' : 'ghost'} icon`}
-            onClick={() => setMode('select')}
-            aria-label="Select / pan"
-            aria-pressed={mode === 'select'}
-          >
-            <Cursor size={18} />
-          </button>
-          <button
-            type="button"
-            className={`${mode === 'add' ? 'primary' : 'ghost'} icon`}
-            onClick={() => setMode('add')}
-            aria-label="Add waypoint"
-            aria-pressed={mode === 'add'}
-          >
-            <Plus size={18} />
-          </button>
-          <button
-            type="button"
-            className={`${mode === 'split' ? 'primary' : 'ghost'} icon`}
-            onClick={() => setMode('split')}
-            aria-label="Split route (insert waypoint)"
-            aria-pressed={mode === 'split'}
-          >
-            <FiScissors size={18} />
-          </button>
-          <span className="grow" />
-          <button
-            type="button"
-            className={`${layersOpen ? 'primary' : 'ghost'} icon`}
-            onClick={() => { setLayersOpen(v => !v); setOverlaysOpen(false); }}
-            aria-label="Map layers"
-            aria-expanded={layersOpen}
-          >
-            <Layers size={18} />
-          </button>
-          <button
-            type="button"
-            className={`${overlaysOpen ? 'primary' : 'ghost'} icon`}
-            onClick={() => { setOverlaysOpen(v => !v); setLayersOpen(false); }}
-            aria-label="Overlays"
-            aria-expanded={overlaysOpen}
-          >
-            <Eye size={18} />
-          </button>
-          <button
-            type="button"
-            className="ghost icon danger"
-            onClick={deleteSelectedWaypoint}
-            aria-label="Delete selected waypoint"
-            disabled={selectedWaypointIdx == null}
-          >
-            <Trash2 size={18} />
-          </button>
-        </div>
-        {layersOpen && (
-          <div className="row compact">
-            <span className="grow"></span>
-            {(Object.keys(baseLayers) as BaseLayerId[]).map(id => (
-              <button
-                key={id}
-                type="button"
-                className={`${baseLayerId === id ? 'primary' : 'ghost'} sm`}
-                onClick={() => switchBaseLayer(id)}
-              >
-                {baseLayers[id].label}
-              </button>
-            ))}
-          </div>
-        )}
-        {overlaysOpen && (
-          <div className="row compact">
-            <span className="grow"></span>
-            <button
-              type="button"
-              className={`${showDistanceMarkers ? 'primary' : 'ghost'} sm`}
-              onClick={() => toggleDistanceMarkers(!showDistanceMarkers)}
-              aria-pressed={showDistanceMarkers}
-            >
-              Distance markers
-            </button>
-          </div>
-        )}
-      </div>
     </div>
   );
-}
+});

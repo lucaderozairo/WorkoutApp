@@ -148,7 +148,10 @@
   flex-shrink: 0;
   width: auto;
 }
-
+.scroll.column, .scroll.grid {
+  gap: var(--s-1);
+  overflow-y: auto;
+}
 .grid-4 {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

@@ -16,3 +16,4 @@ export { WeatherScreen } from './WeatherScreen';
 export { WidgetPrototypeScreen } from './WidgetPrototypeScreen';
 export { RoutePlannerScreen } from './RoutePlannerScreen';
 export { SavedRoutesScreen } from './SavedRoutesScreen';
+export { FinishSessionScreen } from './FinishSessionScreen';
