@@ -97,7 +97,7 @@ export function NewSessionScreen() {
   return (
     <div className="column">
       <div className="row space-between align-center compact">
-        <button className="ghost" onClick={() => navigate(-1)}>← Back</button>
+        <button className="ghost" onClick={() => navigate(-1)}>Back</button>
         <h2>New Session</h2>
         <span />
       </div>

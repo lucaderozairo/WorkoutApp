@@ -1,19 +1,35 @@
 import { useRef, useState } from 'react';
 import { PERSISTED_KEYS } from '@data/sources/local/persistence';
 import { viewStore } from '@data/projections/views';
+import { importCsv, writeImportToStore } from '@shared/utils/importCsv';
 
 export function ImportDataWidget() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<'idle' | 'ok' | 'error'>('idle');
+  const [message, setMessage] = useState('');
 
-  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = () => {
+    const text = await file.text();
+
+    if (file.name.endsWith('.csv')) {
+      const result = importCsv(text);
+      const counts = writeImportToStore(result);
+      if (counts.sessionCount > 0 || counts.cardioCount > 0) {
+        setMessage(`Imported ${counts.sessionCount} strength + ${counts.cardioCount} cardio sessions.`);
+        setStatus('ok');
+      } else if (result.errors.length > 0) {
+        setMessage(result.errors[0]);
+        setStatus('error');
+      } else {
+        setMessage('No sessions found in CSV.');
+        setStatus('error');
+      }
+    } else {
       try {
-        const envelope = JSON.parse(reader.result as string) as { version: number; data: Record<string, unknown> };
+        const envelope = JSON.parse(text) as { version: number; data: Record<string, unknown> };
         if (!envelope?.data || typeof envelope.data !== 'object') throw new Error('Invalid format');
 
         const validKeys = new Set<string>(PERSISTED_KEYS);
@@ -22,24 +38,25 @@ export function ImportDataWidget() {
             viewStore.set(key, value);
           }
         }
+        setMessage('Data imported successfully.');
         setStatus('ok');
       } catch {
+        setMessage('Invalid file — please use an exported backup or CSV.');
         setStatus('error');
       }
-      // Reset input so the same file can be re-imported if needed
-      if (inputRef.current) inputRef.current.value = '';
-    };
-    reader.readAsText(file);
+    }
+
+    if (inputRef.current) inputRef.current.value = '';
   }
 
   return (
     <div className="surface column compact widget-1x1 space-between">
       <span className="label">Import Data</span>
-      <p className="detail">Restore from a previously exported backup file.</p>
-      <input ref={inputRef} type="file" accept=".json" onChange={handleFile} hidden />
+      <p className="detail">Restore from a JSON backup or CSV file.</p>
+      <input ref={inputRef} type="file" accept=".json,.csv" onChange={handleFile} hidden />
       <button className='chip sm' onClick={() => inputRef.current?.click()}>Choose file</button>
-      {status === 'ok' && <span className="caption value good">Data imported successfully.</span>}
-      {status === 'error' && <span className="caption value poor">Invalid file — please use an exported backup.</span>}
+      {status === 'ok' && <span className="caption value good">{message}</span>}
+      {status === 'error' && <span className="caption value poor">{message}</span>}
     </div>
   );
 }

@@ -9,6 +9,11 @@ import {
   type PersistedKey,
 } from '@data/sources/local/persistence';
 import type { Id } from '@shared/types';
+import { importCsv, writeImportToStore } from '@shared/utils/importCsv';
+import { exportAllSessionsCsv } from '@shared/utils/exportCsv';
+import { triggerDownload } from '@shared/utils/csv';
+import type { SessionHistoryItem } from '@features/training_log';
+import type { CardioSession } from '@features/cardio/domain/types';
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -57,12 +62,13 @@ export function SettingsContent() {
   const exportData = () => {
     const json = exportEnvelope();
     const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `workout-data-${new Date().toISOString().split('T')[0]}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+    triggerDownload(blob, `workout-data-${new Date().toISOString().split('T')[0]}.json`);
+  };
+
+  const exportDataCsv = () => {
+    const history = viewStore.get<SessionHistoryItem[]>('session_history') ?? [];
+    const cardioView = viewStore.get<{ sessions: CardioSession[] }>('recent_cardio_sessions') ?? { sessions: [] };
+    exportAllSessionsCsv(history, cardioView.sessions);
   };
 
   const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,19 +76,32 @@ export function SettingsContent() {
     if (!file) return;
     try {
       const text = await file.text();
-      const parsed = JSON.parse(text) as { version?: number; data?: Record<string, unknown> };
-      if (parsed.version !== 1 || !parsed.data || typeof parsed.data !== 'object') {
-        setImportStatus('Invalid file format.');
-        return;
+
+      if (file.name.endsWith('.csv')) {
+        const result = importCsv(text);
+        const counts = writeImportToStore(result);
+        if (counts.sessionCount > 0 || counts.cardioCount > 0) {
+          setImportStatus(`Imported ${counts.sessionCount} strength + ${counts.cardioCount} cardio sessions.`);
+        } else if (result.errors.length > 0) {
+          setImportStatus(result.errors[0]);
+        } else {
+          setImportStatus('No sessions found in CSV.');
+        }
+      } else {
+        const parsed = JSON.parse(text) as { version?: number; data?: Record<string, unknown> };
+        if (parsed.version !== 1 || !parsed.data || typeof parsed.data !== 'object') {
+          setImportStatus('Invalid file format.');
+          return;
+        }
+        for (const key of PERSISTED_KEYS) {
+          const value = parsed.data[key];
+          if (value !== undefined) viewStore.set(key as PersistedKey, value);
+        }
+        const sessionCount = Array.isArray(parsed.data.session_history)
+          ? parsed.data.session_history.length
+          : 0;
+        setImportStatus(`Imported — ${sessionCount} session${sessionCount !== 1 ? 's' : ''} loaded.`);
       }
-      for (const key of PERSISTED_KEYS) {
-        const value = parsed.data[key];
-        if (value !== undefined) viewStore.set(key as PersistedKey, value);
-      }
-      const sessionCount = Array.isArray(parsed.data.session_history)
-        ? parsed.data.session_history.length
-        : 0;
-      setImportStatus(`Imported — ${sessionCount} session${sessionCount !== 1 ? 's' : ''} loaded.`);
     } catch {
       setImportStatus('Could not read file.');
     }
@@ -144,7 +163,10 @@ export function SettingsContent() {
         <h3 className="caption">Data</h3>
         <div className="row space-between align-center">
           <span className="caption">Export history</span>
-          <button className="secondary sm" onClick={exportData}>Export JSON</button>
+          <div className="row compact">
+            <button className="secondary sm" onClick={exportData}>Export JSON</button>
+            <button className="secondary sm" onClick={exportDataCsv}>Export CSV</button>
+          </div>
         </div>
         <div className="row space-between align-center">
           <div className="column compact">
@@ -152,12 +174,12 @@ export function SettingsContent() {
             {importStatus && <span className="caption">{importStatus}</span>}
           </div>
           <button className="secondary sm" onClick={() => fileInputRef.current?.click()}>
-            Import JSON
+            Import
           </button>
           <input
             ref={fileInputRef}
             type="file"
-            accept=".json"
+            accept=".json,.csv"
             hidden
             onChange={handleImportFile}
           />

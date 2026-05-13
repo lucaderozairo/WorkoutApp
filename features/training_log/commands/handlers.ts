@@ -262,6 +262,8 @@ export async function handleFinishSession(cmd: FinishSession): Promise<Result<vo
     exerciseCount: session.blocks.length,
     hasPR: false,
     category: (dominantCategory === 'cardio' ? 'cardio' : dominantCategory === 'mobility' ? 'mobility' : 'strength') as 'strength' | 'cardio' | 'mobility',
+    media: session.media,
+    comments: session.comments,
   };
 
   const existing = viewStore.get<SessionHistoryItem[]>('session_history') ?? [];
@@ -563,8 +565,23 @@ export async function handleUpdateTrainingSession(cmd: {
       name:      cmd.name      ?? s.name,
       notes:     cmd.notes     ?? (s as unknown as { notes?: string }).notes,
       startedAt: cmd.startedAt ?? s.startedAt,
-      comments:  cmd.comments,
-      media:     cmd.media,
+      comments:  cmd.comments   ?? s.comments,
+      media:     cmd.media      ?? s.media,
     }
   ));
+
+  const views = viewStore.get<Record<string, ActiveSessionView>>('session_views');
+  if (views?.[cmd.sessionId]) {
+    viewStore.set('session_views', {
+      ...views,
+      [cmd.sessionId]: {
+        ...views[cmd.sessionId],
+        ...(cmd.name      !== undefined ? { name: cmd.name } : {}),
+        ...(cmd.notes     !== undefined ? { notes: cmd.notes } : {}),
+        ...(cmd.startedAt !== undefined ? { startedAt: cmd.startedAt } : {}),
+        ...(cmd.comments  !== undefined ? { comments: cmd.comments } : {}),
+        ...(cmd.media     !== undefined ? { media: cmd.media } : {}),
+      },
+    });
+  }
 }

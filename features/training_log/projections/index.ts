@@ -1,4 +1,5 @@
 import type { Id } from '@shared/types';
+import type { SessionComment } from '@features/cardio/domain/types';
 import type {
   TrainingLogEvent,
   TrainingLogState,
@@ -48,6 +49,8 @@ export interface ActiveSessionView {
     supersetGroupId?: Id<'SupersetGroup'>;
   }>;
   notes: string;
+  comments?: SessionComment[];
+  media?: string[];
 }
 
 type ActiveBlock = NonNullable<ActiveSessionView>['blocks'][number];
@@ -62,6 +65,9 @@ export interface SessionHistoryItem {
   exerciseCount: number;
   hasPR: boolean;
   category: ExerciseCategory;
+  notes?: string;
+  comments?: SessionComment[];
+  media?: string[];
 }
 
 /** `active_session` — the current in-progress session (null if none) */

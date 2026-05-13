@@ -8,7 +8,7 @@ export function SettingsScreen() {
       <header className="row space-between">
         <h2>Settings</h2>
         <button className="ghost sm" onClick={() => navigate(-1)}>
-          ← Back
+          Back
         </button>
       </header>
       <SettingsContent />

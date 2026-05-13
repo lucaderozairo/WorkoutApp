@@ -671,7 +671,7 @@ export function RouteMap({ waypoints, onChange, profile = 'foot', onRoutedDistan
   }, [waypoints, profile]);
 
   return (
-    <div className="column compact">
+    <div className="column grow compact">
       <div className="route-map-mobile-controls column compact">
         <div className="surface tight row compact align-center">
           <span aria-hidden="true"><Search size={16} /></span>
@@ -725,7 +725,7 @@ export function RouteMap({ waypoints, onChange, profile = 'foot', onRoutedDistan
         {searchBusy && <div className="caption muted">Searching…</div>}
       </div>
 
-      <div ref={mapWrapRef} className="plan-map map-root media-md route-map-wrap">
+      <div ref={mapWrapRef} className="grow map-root media-md route-map-wrap">
       <div ref={containerRef} className="route-map-canvas" />
 
       <div

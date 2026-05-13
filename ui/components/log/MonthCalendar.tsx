@@ -95,7 +95,7 @@ export function MonthCalendar({ sessions, typeFilter, renderFilter }: Props) {
         <div className="row space-between align-center compact surface flat">
           {selectedKey ? (
             <>
-              <button className="ghost sm" onClick={() => setSelectedKey(null)}>← Back</button>
+              <button className="ghost sm" onClick={() => setSelectedKey(null)}>Back</button>
               <span className="caption muted">
                 {new Date(selectedKey + 'T12:00:00').toLocaleDateString('en-GB', {
                   weekday: 'short', day: 'numeric', month: 'long',

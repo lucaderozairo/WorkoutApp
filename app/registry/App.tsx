@@ -44,6 +44,7 @@ export function App() {
                 <Route path="/progress" element={<ProgressScreen onOpenSettings={openSettings} />} />
                 <Route path="/social" element={<SocialScreen />} />
                 <Route path="/messages" element={<MessageScreen />} />
+            <Route path="/widgets" element={<WidgetPrototypeScreen />} />
               </>
             )}
             <Route path="/sessions/:sessionId" element={<SessionDetailScreen />} />
@@ -54,7 +55,6 @@ export function App() {
             <Route path="/profile/health/:category" element={<HealthCategoryScreen />} />
             <Route path="/settings" element={<SettingsScreen />} />
             <Route path="/notifications" element={<NotificationsScreen />} />
-            <Route path="/widgets" element={<WidgetPrototypeScreen />} />
             <Route path="/plan-route" element={<RoutePlannerScreen />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>

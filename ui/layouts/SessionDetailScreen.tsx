@@ -9,7 +9,8 @@ import { SessionDetail } from '@ui/components/session/SessionDetail';
 import { SessionEditModal } from '@ui/components/log/SessionEditModal';
 import type { CombinedSession } from '@ui/components/log/calendarUtils';
 import { exportSessionEnvelope } from '@data/sources/local/persistence';
-import { triggerDownload } from '@shared/utils/exportSession';
+import { triggerDownload } from '@shared/utils/csv';
+import { exportSessionCsv, exportCardioSessionCsv } from '@shared/utils/exportCsv';
 
 function isCardioSession(s: unknown): s is CardioSession {
   const obj = s as Record<string, unknown>;
@@ -59,7 +60,7 @@ export function SessionDetailScreen() {
     if (entry) setEditingEntry(entry);
   }
 
-  function handleShare() {
+  function handleExportJson() {
     if (isCardioSession(session)) {
       const blob = new Blob([JSON.stringify(session, null, 2)], { type: 'application/json' });
       triggerDownload(blob, `cardio-${session.id}.json`);
@@ -70,9 +71,17 @@ export function SessionDetailScreen() {
     }
   }
 
+  function handleExportCsv() {
+    if (isCardioSession(session)) {
+      exportCardioSessionCsv(session);
+    } else if (isSessionHistoryItem(session)) {
+      exportSessionCsv(session);
+    }
+  }
+
   return (
     <>
-      <SessionDetail session={session} asPage onEdit={handleEdit} onShare={handleShare} />
+      <SessionDetail session={session} asPage onEdit={handleEdit} onExportJson={handleExportJson} onExportCsv={handleExportCsv} />
       {editingEntry && (
         <SessionEditModal
           entry={editingEntry}

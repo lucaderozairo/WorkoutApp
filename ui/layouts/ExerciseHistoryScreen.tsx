@@ -74,7 +74,7 @@ export function ExerciseHistoryScreen() {
   if (!progression || progression.history.length === 0) {
     return (
       <div className="column">
-        <button type="button" className="ghost" onClick={() => navigate(-1)}>← Back</button>
+        <button type="button" className="ghost" onClick={() => navigate(-1)}>Back</button>
         <h2>{exerciseName}</h2>
         <section className="surface compact">
           <p className="caption">No history found for "{exerciseName}".</p>
@@ -97,7 +97,7 @@ export function ExerciseHistoryScreen() {
 
   return (
     <div className="column">
-      <button type="button" className="ghost" onClick={() => navigate(-1)}>← Back</button>
+      <button type="button" className="ghost" onClick={() => navigate(-1)}>Back</button>
 
       <div className="row align-center">
         <h2>{exerciseName}</h2>
@@ -172,35 +172,35 @@ export function ExerciseHistoryScreen() {
 
       <section className="surface compact column">
         <span className="caption">Session history</span>
-          <table className="center">
-            <thead>
-              <tr>
-                <th className="caption">Date</th>
-                {Array.from({ length: maxSets }, (_, i) => (
-                  <th key={i} className="caption">S{i + 1}</th>
-                ))}
-                <th className="caption">1RM</th>
-              </tr>
-            </thead>
-            <tbody>
-              {reversed.map((entry, i) => (
-                <tr key={i}>
-                  <td className="caption" style={{ whiteSpace: 'nowrap' }}>{formatDateFull(entry.date)}</td>
-                  {Array.from({ length: maxSets }, (_, s) => {
-                    const kg = entry.setWeights?.[s];
-                    const reps = entry.setReps?.[s];
-                    if (kg == null) return <td key={s}>—</td>;
-                    return (
-                      <td key={s}>
-                        {kg}<span className="caption"> ×{reps ?? '?'}</span>
-                      </td>
-                    );
-                  })}
-                  <td>{entry.oneRepMaxEstimate.toFixed(1)}</td>
-                </tr>
+        <table className="center">
+          <thead>
+            <tr>
+              <th className="caption">Date</th>
+              {Array.from({ length: maxSets }, (_, i) => (
+                <th key={i} className="caption">S{i + 1}</th>
               ))}
-            </tbody>
-          </table>
+              <th className="caption">1RM</th>
+            </tr>
+          </thead>
+          <tbody>
+            {reversed.map((entry, i) => (
+              <tr key={i}>
+                <td className="caption" style={{ whiteSpace: 'nowrap' }}>{formatDateFull(entry.date)}</td>
+                {Array.from({ length: maxSets }, (_, s) => {
+                  const kg = entry.setWeights?.[s];
+                  const reps = entry.setReps?.[s];
+                  if (kg == null) return <td key={s}>—</td>;
+                  return (
+                    <td key={s}>
+                      {kg}<span className="caption"> ×{reps ?? '?'}</span>
+                    </td>
+                  );
+                })}
+                <td>{entry.oneRepMaxEstimate.toFixed(1)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </section>
     </div>
   );

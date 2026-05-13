@@ -155,19 +155,21 @@ export async function handleUpdateCardioSessionFull(cmd: {
   comments?: import('../domain/types').SessionComment[];
   media?: string[];
 }): Promise<void> {
-  const sessions = viewStore.get<import('../domain/types').CardioSession[]>('recent_cardio_sessions') ?? [];
-  viewStore.set('recent_cardio_sessions', sessions.map(s =>
-    s.id !== cmd.sessionId ? s : {
-      ...s,
-      title:           cmd.title           ?? s.title,
-      notes:           cmd.notes           ?? s.notes,
-      distanceMeters:  cmd.distanceMeters  ?? s.distanceMeters,
-      durationSeconds: cmd.durationSeconds ?? s.durationSeconds,
-      startedAt:       cmd.startedAt       ?? s.startedAt,
-      comments:        cmd.comments,
-      media:           cmd.media,
-    }
-  ));
+  const view = viewStore.get<import('../projections').RecentCardioView>('recent_cardio_sessions') ?? { sessions: [] };
+  viewStore.set('recent_cardio_sessions', {
+    sessions: view.sessions.map(s =>
+      s.id !== cmd.sessionId ? s : {
+        ...s,
+        title:           cmd.title           ?? s.title,
+        notes:           cmd.notes           ?? s.notes,
+        distanceMeters:  cmd.distanceMeters  ?? s.distanceMeters,
+        durationSeconds: cmd.durationSeconds ?? s.durationSeconds,
+        startedAt:       cmd.startedAt       ?? s.startedAt,
+        comments:        cmd.comments        ?? s.comments,
+        media:           cmd.media           ?? s.media,
+      }
+    ),
+  });
 }
 
 export async function handleImportGpsTrack(

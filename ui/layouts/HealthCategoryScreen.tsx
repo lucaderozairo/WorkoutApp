@@ -21,25 +21,25 @@ import { SkinTemperatureView } from '../components/health/SkinTemperatureView'
 import { GoalsRecordsView } from '../components/health/GoalsRecordsView'
 
 const VIEW_MAP: Record<string, React.FC> = {
-  'activity-mobility':  ActivityMobilityView,
-  'body-measurements':  BodyMeasurementsView,
-  'injuries':           InjuriesView,
-  'routes':             RoutesView,
-  'cycle-tracking':     CycleTrackingView,
-  'heart':              HeartView,
-  'vitals':             VitalsView,
-  'sleep':              SleepView,
-  'nutrition':          NutritionView,
-  'mental-wellbeing':   MentalWellbeingView,
-  'symptoms':           SymptomsView,
-  'hearing':            HearingView,
-  'medications':        MedicationsView,
-  'health-records':     HealthRecordsView,
-  'readiness':          ReadinessView,
-  'body-battery':       BodyBatteryView,
-  'stress':             StressView,
-  'skin-temperature':   SkinTemperatureView,
-  'goals-records':      GoalsRecordsView,
+  'activity-mobility': ActivityMobilityView,
+  'body-measurements': BodyMeasurementsView,
+  'injuries': InjuriesView,
+  'routes': RoutesView,
+  'cycle-tracking': CycleTrackingView,
+  'heart': HeartView,
+  'vitals': VitalsView,
+  'sleep': SleepView,
+  'nutrition': NutritionView,
+  'mental-wellbeing': MentalWellbeingView,
+  'symptoms': SymptomsView,
+  'hearing': HearingView,
+  'medications': MedicationsView,
+  'health-records': HealthRecordsView,
+  'readiness': ReadinessView,
+  'body-battery': BodyBatteryView,
+  'stress': StressView,
+  'skin-temperature': SkinTemperatureView,
+  'goals-records': GoalsRecordsView,
 }
 
 export function HealthCategoryScreen() {
@@ -50,7 +50,7 @@ export function HealthCategoryScreen() {
   if (!cat) {
     return (
       <div className="stack">
-        <button className="ghost" onClick={() => navigate('/profile')}>← Back</button>
+        <button className="ghost" onClick={() => navigate('/profile')}>Back</button>
         <p className="muted">Category not found.</p>
       </div>
     )
@@ -60,7 +60,7 @@ export function HealthCategoryScreen() {
 
   return (
     <div className="stack">
-      <button className="ghost" onClick={() => navigate('/profile')}>← Back</button>
+      <button className="ghost" onClick={() => navigate('/profile')}>Back</button>
 
       <div className="surface ghost">
         <div className="row align-center">

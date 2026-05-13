@@ -68,27 +68,8 @@
   display: none;
 }
 
-/* ── Full-page route planner layout ── */
-.route-planner-screen {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-}
 
-/* Target the RouteMap's outer column wrapper so the map fills remaining height */
-.route-planner-screen > .column {
-  flex: 1;
-  min-height: 0;
-}
 
-.route-planner-screen .plan-map {
-  flex: 1;
-  min-height: 200px;
-  height: auto;
-}
-
-/* ── Route map controls (rails + search pill) ── */
 .route-map-wrap {
   position: relative;
 }

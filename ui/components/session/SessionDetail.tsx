@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import type { ActiveSessionView, SessionHistoryItem } from '@features/training_log';
 import type { CardioSession } from '@features/cardio';
 import { handleImportGpsTrack, handleUpdateCardioSession } from '@features/cardio';
@@ -9,6 +8,8 @@ import type { GpsTrack } from '@data/sources/files/gps';
 import { SessionGpsPreview } from './SessionGpsPreview';
 import { ImportModal } from '../modals/ImportModal';
 import { HROverTimeChart, PaceOverTimeChart, ElevationProfileChart, KmSplitsTable, CHART_H, TICK, TOOLTIP_STYLE } from '../shared/Charts';
+import ChartContainer from '@ui/patterns/charts/charts';
+
 
 interface SampleCardioSession {
   id: string;
@@ -28,6 +29,8 @@ interface SessionDetailProps {
   onClose?: () => void;
   onEdit?: () => void;
   onShare?: () => void;
+  onExportJson?: () => void;
+  onExportCsv?: () => void;
   asPage?: boolean;
 }
 
@@ -243,36 +246,7 @@ function SessionSetChart({ sets }: { sets: StrengthSet[] }) {
   return (
     <div className="row align-center">
       <span className="chart-ylabel">kg</span>
-      <ResponsiveContainer width="100%" height={CHART_H.sm}>
-        <BarChart data={data} margin={{ top: 20, right: 8, left: 0, bottom: 0 }}>
-          <XAxis
-            dataKey="x"
-            tick={TICK}
-            axisLine={false}
-            tickLine={false}
-          />
-          <YAxis
-            domain={[0, yMax]}
-            ticks={ticks}
-            tick={TICK}
-            axisLine={false}
-            tickLine={false}
-            width={28}
-          />
-          <Tooltip
-            contentStyle={TOOLTIP_STYLE}
-            formatter={(v: any) => [`${v} kg`, 'Weight']}
-            labelFormatter={(x: any) => `Set ${x}`}
-          />
-          <Bar
-            dataKey="y"
-            fill="var(--color-primary)"
-            radius={[3, 3, 0, 0]}
-            isAnimationActive={false}
-            label={{ content: renderLabel }}
-          />
-        </BarChart>
-      </ResponsiveContainer>
+      <ChartContainer data={data} chartType={"bar"} />
     </div>
   );
 }
@@ -301,36 +275,33 @@ function StrengthDetail({ session }: { session: ActiveSessionView }) {
             {block.sets.length > 0 && (
               <table className="center">
                 <tbody>
-                <tr className="">
-                  <th className="caption">#</th>
-                  <th className="caption">kg</th>
-                  <th className="caption">reps</th>
-                  <th className="caption">type</th>
-                  <th className="caption">RPE</th>
-                  <th className="caption">✕</th>
-                </tr>
-                {block.sets.map((set, i) => (
-                  <tr key={i} className="">
-                    <td className="caption">{i + 1}</td>
-                    {isStrengthSet(set) ? (
-                      <>
-                        <td>{set.weightKg}</td>
-                        <td>{set.reps}</td>
-                        <td className="caption">{set.setType ?? 'normal'}</td>
-                        <td>{set.rpe != null ? set.rpe : '—'}</td>
-                        <td className="caption">{set.failed ? '✕' : ''}</td>
-                      </>
-                    ) : (
-                      <>
-                        <td>{(set as any).distanceMeters ?? '—'}</td>
-                        <td>{(set as any).durationSeconds ?? '—'}</td>
-                        <td className="caption">cardio</td>
-                        <td>—</td>
-                        <td></td>
-                      </>
-                    )}
+                  <tr className="">
+                    <th className="caption">#</th>
+                    <th className="caption">kg</th>
+                    <th className="caption">reps</th>
+                    <th className="caption">type</th>
+                    <th className="caption">RPE</th>
                   </tr>
-                ))}
+                  {block.sets.map((set, i) => (
+                    <tr key={i} className="">
+                      <td className="caption">{i + 1}</td>
+                      {isStrengthSet(set) ? (
+                        <>
+                          <td>{set.weightKg}</td>
+                          <td>{set.reps}</td>
+                          <td className="caption">{set.setType ?? 'normal'}</td>
+                          <td>{set.rpe != null ? set.rpe : '—'}</td>
+                        </>
+                      ) : (
+                        <>
+                          <td>{(set as any).distanceMeters ?? '—'}</td>
+                          <td>{(set as any).durationSeconds ?? '—'}</td>
+                          <td className="caption">cardio</td>
+                          <td>—</td>
+                        </>
+                      )}
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             )}
@@ -338,6 +309,23 @@ function StrengthDetail({ session }: { session: ActiveSessionView }) {
           </section>
         );
       })}
+      {session.media && session.media.length > 0 && (
+        <div className="cluster compact">
+          {session.media.map((src, i) => (
+            <img key={i} src={src} alt="" className="avatar xl" />
+          ))}
+        </div>
+      )}
+      {session.comments && session.comments.length > 0 && (
+        <div className="column compact">
+          {session.comments.map((c, i) => (
+            <div key={i} className="surface flat compact column">
+              <span className="caption muted">{new Date(c.createdAt).toLocaleString('en-GB')}</span>
+              <p>{c.text}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -517,13 +505,30 @@ function HistoryDetail({ session }: { session: SessionHistoryItem }) {
           <span className="pill active">🏆 PR</span>
         </div>
       )}
+      {session.media && session.media.length > 0 && (
+        <div className="cluster compact">
+          {session.media.map((src, i) => (
+            <img key={i} src={src} alt="" className="avatar xl" />
+          ))}
+        </div>
+      )}
+      {session.comments && session.comments.length > 0 && (
+        <div className="column compact">
+          {session.comments.map((c, i) => (
+            <div key={i} className="surface flat compact column">
+              <span className="caption muted">{new Date(c.createdAt).toLocaleString('en-GB')}</span>
+              <p>{c.text}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
 
 /* ── Main Component ── */
 
-export function SessionDetail({ session, onClose, onEdit, onShare, asPage = false }: SessionDetailProps) {
+export function SessionDetail({ session, onClose, onEdit, onShare, onExportJson, onExportCsv, asPage = false }: SessionDetailProps) {
   const navigate = useNavigate();
   const isCardio = isCardioSession(session);
   const isSampleCardio = isSampleCardioSession(session);
@@ -601,9 +606,11 @@ export function SessionDetail({ session, onClose, onEdit, onShare, asPage = fals
     return (
       <div className="column">
         <div className="row space-between align-center">
-          <button type="button" className="ghost" onClick={handleClose}>← Back</button>
+          <button type="button" className="ghost" onClick={handleClose}>Back</button>
           <div className="row compact">
             {onEdit && <button type="button" className="ghost" onClick={onEdit}>✏️ Edit</button>}
+            {onExportJson && <button type="button" className="ghost" onClick={onExportJson}>📄 JSON</button>}
+            {onExportCsv && <button type="button" className="ghost" onClick={onExportCsv}>📄 CSV</button>}
             {onShare && <button type="button" className="ghost" onClick={onShare}>📤 Share</button>}
           </div>
         </div>

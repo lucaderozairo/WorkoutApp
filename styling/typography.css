@@ -79,7 +79,7 @@ h6 {
 .detail {
   font-size: var(--t-sm);
 }
-.capxion {
+.caption {
   font-size: var(--t-xs);
   color: var(--ink-muted);
 }
