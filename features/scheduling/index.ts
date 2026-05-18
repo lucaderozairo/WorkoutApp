@@ -24,3 +24,5 @@ export {
   handleJoinEvent,
   handleLeaveEvent,
 } from './commands/handlers';
+
+export type { MockCalendarEvent } from './domain/mock-types';

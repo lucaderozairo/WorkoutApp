@@ -1,6 +1,6 @@
 import { useQuery } from '@ui/bindings';
-import type { Sport } from '@data/mock/workouts';
-import type { MockCalendarEvent } from '@data/mock/calendar';
+import type { SportType } from '@features/training_log/domain/types';
+import type { MockCalendarEvent } from '@features/scheduling';
 
 const DAY_LABELS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'] as const;
 
@@ -10,7 +10,7 @@ export function CalendarGrid({ year, month }: { year: number; month: number }) {
     const todayDate = today.getDate();
     const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
 
-    const workoutCalendar = (useQuery<Record<number, Sport[]>>('workout_calendar') ?? {}) as Record<number, Sport[]>;
+    const workoutCalendar = (useQuery<Record<number, SportType[]>>('workout_calendar') ?? {}) as Record<number, SportType[]>;
 
     const startOffset = (new Date(year, month, 1).getDay() + 6) % 7;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -62,14 +62,7 @@ export function CalendarLarge() {
             <div className="column compact">
                 {upcoming.map(ev => (
                     <div key={ev.day} className="surface row align-center compact">
-                        <div style={{
-                            width: 42, height: 42,
-                            borderRadius: 'var(--r-md)',
-                            background: 'var(--accent-soft)',
-                            display: 'flex', flexDirection: 'column',
-                            alignItems: 'center', justifyContent: 'center',
-                            flexShrink: 0,
-                        }}>
+                        <div>
                             <span className="eyebrow" style={{ fontSize: 9 }}>{ev.month}</span>
                             <span style={{ fontSize: 'var(--t-lg)', lineHeight: 1 }}>{ev.day}</span>
                         </div>

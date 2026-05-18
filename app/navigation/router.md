@@ -5,10 +5,13 @@ Tab-based navigation with nested modal routes. The router holds no business logi
 ## Route table
 
 | Route | Layout | Tab |
-|---|---|---|
+|---|---|---|---|
 | `/dashboard` | `ui/layouts/dashboard_screen` | Dashboard |
-| `/log` | `ui/layouts/log_screen` | Log |
-| `/log/session/:id` | `ui/layouts/session_edit_screen` | Log |
+| `/sessions` | `ui/layouts/log_screen` | Log |
+| `/sessions/:sessionId` | `ui/layouts/log_screen` | Log |
+| `/sessions/:sessionId/summary` | `ui/layouts/finish_session_screen` | Log |
+| `/sessions/:sessionId/edit` | `ui/layouts/finish_session_screen` | Log |
+| `/sessions/new` | `ui/layouts/new_session_screen` | Log |
 | `/progress` | `ui/layouts/progress_screen` | Progress |
 | `/progress/session/:id` | `ui/layouts/session_detail_screen` | Progress |
 | `/analytics` | `ui/layouts/analytics_screen` | Analytics |

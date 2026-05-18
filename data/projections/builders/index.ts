@@ -29,6 +29,10 @@ export class ProjectionBuilder<State, Event extends DomainEvent<string, object>>
   getKey(): string {
     return this.key;
   }
+
+  setState(state: State): void {
+    this.state = state;
+  }
 }
 
 class ProjectionRegistry {

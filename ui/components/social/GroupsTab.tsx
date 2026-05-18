@@ -1,6 +1,6 @@
-import { useQuery } from '@ui/bindings';
-import type { MockSuggestedGroup } from '@data/mock/social';
-import { SPORT_MAP } from './socialConstants';
+﻿import { useQuery } from '@ui/bindings';
+import type { MockSuggestedGroup } from '@features/social';
+import { SPORT_MAP } from '@features/social/domain/constants';
 
 export function GroupsTab() {
   const mockGroups = (useQuery<MockSuggestedGroup[]>('social_groups_mock') ?? []) as MockSuggestedGroup[];

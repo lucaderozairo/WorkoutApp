@@ -1,6 +1,6 @@
-import { useQuery } from '@ui/bindings';
-import type { MockSocialEvent } from '@data/mock/social';
-import { SPORT_MAP } from './socialConstants';
+﻿import { useQuery } from '@ui/bindings';
+import type { MockSocialEvent } from '@features/social';
+import { SPORT_MAP } from '@features/social/domain/constants';
 
 export function EventsTab() {
   const mockEvents = (useQuery<MockSocialEvent[]>('social_events_mock') ?? []) as MockSocialEvent[];

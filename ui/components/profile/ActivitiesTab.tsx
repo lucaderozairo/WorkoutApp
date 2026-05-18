@@ -1,9 +1,9 @@
-// ui/components/profile/ActivitiesTab.tsx
+﻿// ui/components/profile/ActivitiesTab.tsx
 import { useQuery } from '@ui/bindings';
 import { useNavigate } from 'react-router-dom';
 import type { Post } from '@features/social';
 import type { Id } from '@shared/types';
-import { timeAgo } from '@ui/utils/timeAgo';
+import { timeAgo } from '@shared/utils/timeAgo';
 
 type SharedPost = Post & {
   sessionId?: Id<'Session'>;

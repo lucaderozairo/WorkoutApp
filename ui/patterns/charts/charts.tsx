@@ -141,7 +141,7 @@ function ChartSelector({ chartType, data, color, axisShow }: {
             const yMax = Math.max(step, Math.ceil(maxVal / step) * step);
             const ticks = Array.from({ length: Math.floor(yMax / step) + 1 }, (_, i) => i * step);
             return (
-                <BarChart data={xy} margin={{ top: 34, right: 5, bottom: 5, left: 0 }}>
+                <BarChart data={xy} margin={{ top: 34,left: 0 }}>
                     <CartesianGrid vertical={false} stroke="var(--line)" strokeDasharray="2 4" />
                     <Bar dataKey="y" fill={color} radius={[2, 2, 0, 0]} isAnimationActive={false}>
                         <LabelList
@@ -164,7 +164,7 @@ function ChartSelector({ chartType, data, color, axisShow }: {
                         />
                     </Bar>
                     {axisShow.x && <XAxis height={20} dataKey="x" tick={tick} tickLine={false} axisLine={false} />}
-                    {axisShow.y && <YAxis width={20} tick={tick} ticks={ticks} domain={[0, yMax]} />}
+                    {axisShow.y && <YAxis width={30} tick={tick} ticks={ticks} domain={[0, yMax]} />}
                     <Tooltip
                         contentStyle={{ background: 'var(--surface-1)', border: '1px solid var(--line-strong)', borderRadius: 'var(--r-sm)', fontSize: 'var(--t-xs)' }}
                         formatter={(value: any, _name: any, props: any) => [`${value} kg \u00d7 ${props.payload.reps} reps`]}

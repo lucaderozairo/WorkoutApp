@@ -59,14 +59,18 @@ CSS tokens first. Zero inline styles, zero BEM.
 - Spacing: `--space-1` through `--space-12` (4px scale)
 - Typography: `h3`, `p`, `span.caption`, `.value`, `.label`
 
-**See:** `styling/styleguide.css` for tokens and patterns.
+**See:** `styling/global.css` for tokens and patterns.
 
 ## Tab → Screen Map
 
 | Route        | Layout                        |
 | ------------ | ----------------------------- |
 | `/dashboard` | `ui/layouts/dashboard_screen` |
-| `/log`       | `ui/layouts/log_screen`       |
+| `/sessions`       | `ui/layouts/log_screen`       |
+| `/sessions/:sessionId` | `ui/layouts/log_screen`       |
+| `/sessions/:sessionId/summary` | `ui/layouts/finish_session_screen` |
+| `/sessions/:sessionId/edit`    | `ui/layouts/finish_session_screen` |
+| `/sessions/new`  | `ui/layouts/new_session_screen`  |
 | `/progress`  | `ui/layouts/progress_screen`  |
 | `/analytics` | `ui/layouts/analytics_screen` |
 | `/social`    | `ui/layouts/social_screen`    |

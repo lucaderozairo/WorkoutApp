@@ -1,1 +1,1 @@
-export { timeAgo } from './timeAgo';
+export { timeAgo } from '@shared/utils/timeAgo';

@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { TypeFilter } from './SessionFilterBar';
-import type { CombinedSession } from './calendarUtils';
-import { buildDateMap, getMonthGrid, toDateKey } from './calendarUtils';
+import type { CombinedSession } from '@features/training_log/queries/calendarUtils';
+import { buildDateMap, getMonthGrid, toDateKey } from '@features/training_log/queries/calendarUtils';
 import { StrengthSessionItem, CardioSessionItem } from './SessionListItem';
 
 interface Props {
@@ -53,7 +53,7 @@ export function MonthCalendar({ sessions, typeFilter, renderFilter }: Props) {
 
   return (
     <div className="column">
-      <div className="row space-between align-center surface compact">
+      <div className="row space-between align-center surface tight">
         <button className="secondary icon sm" onClick={prev}>‹</button>
         <strong>{monthLabel}</strong>
         <button className="secondary icon sm" onClick={next}>›</button>
@@ -82,7 +82,7 @@ export function MonthCalendar({ sessions, typeFilter, renderFilter }: Props) {
               {date.getDate()}
               {hasSessions
                 ? <span className={`dot sm${isToday ? '' : ' active'}`} />
-                : <span className="dot sm" style={{ opacity: 0 }} />
+                : <span className="dot sm invisible" />
               }
             </button>
           );

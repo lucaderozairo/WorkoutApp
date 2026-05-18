@@ -1,93 +1,54 @@
-import {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-  type ReactNode,
-} from 'react';
-import React from 'react';
+import { useState } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-export interface CarouselHandle {
-  scrollTo: (index: number) => void;
+type Slide = string | { src: string; caption?: string };
+
+interface CarouselProps {
+  slides: Slide[];
 }
 
-type Props = {
-  children: ReactNode;
-  onActiveChange?: (index: number) => void;
-};
+function normalise(slide: Slide): { src: string; caption?: string } {
+  return typeof slide === 'string' ? { src: slide } : slide;
+}
 
-export const Carousel = forwardRef<CarouselHandle, Props>(function Carousel(
-  { children, onActiveChange },
-  ref
-) {
-  const pages = React.Children.toArray(children);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const containerEl = useRef<HTMLDivElement | null>(null);
-  const itemEls = useRef<Map<number, HTMLElement>>(new Map());
-  const observerRef = useRef<IntersectionObserver | null>(null);
+export function Carousel({ slides }: CarouselProps) {
+  const [idx, setIdx] = useState(0);
+  const len = slides.length;
 
-  const scrollTo = useCallback((index: number) => {
-    itemEls.current
-      .get(index)
-      ?.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
-  }, []);
+  if (len === 0) return null;
 
-  useImperativeHandle(ref, () => ({ scrollTo }), [scrollTo]);
-
-  const registerItem = useCallback(
-    (index: number) => (node: HTMLDivElement | null) => {
-      if (node) {
-        itemEls.current.set(index, node);
-        observerRef.current?.observe(node);
-      }
-    },
-    []
-  );
-
-  useEffect(() => {
-    const root = containerEl.current;
-    if (!root) return;
-    const observer = new IntersectionObserver(
-      entries => {
-        let best: { idx: number; ratio: number } | null = null;
-        for (const entry of entries) {
-          const idxStr = (entry.target as HTMLElement).dataset.carouselIndex;
-          if (idxStr === undefined) continue;
-          const idx = Number(idxStr);
-          if (!best || entry.intersectionRatio > best.ratio) {
-            best = { idx, ratio: entry.intersectionRatio };
-          }
-        }
-        if (best && best.ratio > 0.5) setActiveIndex(best.idx);
-      },
-      { root, threshold: [0.25, 0.5, 0.75] }
-    );
-    observerRef.current = observer;
-    itemEls.current.forEach(el => observer.observe(el));
-    return () => {
-      observer.disconnect();
-      observerRef.current = null;
-    };
-  }, [pages.length]);
-
-  useEffect(() => {
-    onActiveChange?.(activeIndex);
-  }, [activeIndex, onActiveChange]);
+  const current = normalise(slides[idx]);
 
   return (
-    <div className="carousel-pager" ref={containerEl}>
-      {pages.map((child, i) => (
-        <div
-          key={i}
-          data-carousel-index={i}
-          ref={registerItem(i)}
-          className="carousel-page"
-        >
-          {child}
+    <div className='column compact'>
+      <div className="carousel relative clip">
+        <div className="row track" style={{ transform: `translateX(-${idx * 100}%)` }}>
+          {slides.map((slide, i) => {
+            const { src } = normalise(slide);
+            return <div className='surface flat bare' key={i}><img src={src} alt="" /></div>;
+          })}
         </div>
-      ))}
-    </div>
+        {current.caption && (
+          <div className="slide-caption row center">{current.caption}</div>
+        )}
+        {len > 1 && idx > 0 && (
+          <button className="icon sm ghost absolute bottom left" onClick={e => { e.stopPropagation(); setIdx(i => i - 1); }}>
+            <ChevronLeft size={14} strokeWidth={2.5} />
+          </button>
+        )}
+        {len > 1 && idx < len - 1 && (
+          <button className="icon sm ghost absolute bottom right" onClick={e => { e.stopPropagation(); setIdx(i => i + 1); }}>
+            <ChevronRight size={14} strokeWidth={2.5} />
+          </button>
+        )}
+      </div>
+      {len > 1 && (
+        <div className="row compact center">
+          {slides.map((_, i) => (
+            <span key={i} className={`dot sm ${i === idx ? ' active stretch' : ''} interactive`} onClick={e => { e.stopPropagation(); setIdx(i); }} />
+          ))}
+        </div>
+      )}
+    </ div>
   );
-});
+}

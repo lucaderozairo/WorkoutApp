@@ -70,7 +70,7 @@ export function useNewSession() {
     recordRecentSport(selected);
 
     if (selected === 'strength') {
-      const result = await startSession({ type: 'StartSession', userId: USER_ID, name });
+      const result = await startSession({ type: 'StartSession', userId: USER_ID, name, primarySport: selected });
       if (result.ok) {
         navigate(`/sessions/${result.value!.sessionId}`);
       }

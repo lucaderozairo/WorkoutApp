@@ -131,8 +131,7 @@ export function Map({ track, interactive, colourMode, className }: MapProps) {
   return (
     <div
       ref={containerRef}
-      className={`map-root${className ? ` ${className}` : ''}`}
-      style={{ width: '100%', height: '100%' }}
+      className={`map-root w-full h-full${className ? ` ${className}` : ''}`}
     />
   );
 }

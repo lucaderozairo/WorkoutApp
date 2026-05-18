@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import type { CombinedSession } from './calendarUtils';
+﻿import { useState, useRef } from 'react';
+import type { CombinedSession } from '@features/training_log/queries/calendarUtils';
 import type { SessionComment } from '@features/cardio/domain/types';
 
 interface Props {

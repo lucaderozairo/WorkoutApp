@@ -1,42 +1,32 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery, useCommand } from '@ui/bindings';
 import { useExpandable } from '@ui/interactions/useExpandable';
-import type { SessionHistoryItem, ActiveSessionView } from '@features/training_log';
-import type { CardioSession, CardioSport, RecentCardioView } from '@features/cardio';
-import type { Insight } from '@features/insights';
-import type { Id } from '@shared/types';
-import type { ProgressionState } from '@features/progression';
+import type { ActivityHistoryItem } from '@features/training_log';
+import type { CardioSession, CardioSport } from '@features/cardio';
 import { EmptyState } from '@ui/components/shared/EmptyState';
-import {
-  handleAddAnnotation,
-  handleDeleteAnnotation,
-  getAnnotations,
-} from '@features/progress_analysis';
 import { ShareModal } from '@ui/components/modals/ShareModal';
+import { useProgressScreen } from './useProgressScreen';
 
 import '@features/training_log';
 import '@features/cardio';
 import '@features/insights';
 import '@features/progress_analysis';
 
-type SportFilter = 'all' | 'lift' | CardioSport;
-
 const SPORT_META: Record<CardioSport, { label: string; icon: string; color: string }> = {
   run:       { label: 'RUNS',       icon: '🏃', color: 'run' },
   cycle:     { label: 'CYCLING',    icon: '🚴', color: 'cycle' },
   swim:      { label: 'SWIMMING',   icon: '🏊', color: 'swim' },
   row:       { label: 'ROWING',     icon: '🚣', color: 'rowing' },
-  hike:      { label: 'HIKING',     icon: '🥾', color: 'lift' },
-  ski:       { label: 'SKIING',     icon: '⛷️', color: 'lift' },
-  snowboard: { label: 'SNOWBOARD',  icon: '🏂', color: 'lift' },
-  climb:     { label: 'CLIMBING',   icon: '🧗', color: 'lift' },
-  surf:      { label: 'SURFING',    icon: '🏄', color: 'lift' },
-  kayak:     { label: 'KAYAKING',   icon: '🛶', color: 'lift' },
-  yoga:      { label: 'YOGA',       icon: '🧘', color: 'lift' },
-  boxing:    { label: 'BOXING',     icon: '🥊', color: 'lift' },
-  stretch:   { label: 'STRETCHING', icon: '🤸', color: 'lift' },
-  hiit:      { label: 'HIIT',       icon: '⚡', color: 'lift' },
+  hike:      { label: 'HIKING',     icon: '🥾', color: 'strength' },
+  ski:       { label: 'SKIING',     icon: '⛷️', color: 'strength' },
+  snowboard: { label: 'SNOWBOARD',  icon: '🏂', color: 'strength' },
+  climb:     { label: 'CLIMBING',   icon: '🧗', color: 'strength' },
+  surf:      { label: 'SURFING',    icon: '🏄', color: 'strength' },
+  kayak:     { label: 'KAYAKING',   icon: '🛶', color: 'strength' },
+  yoga:      { label: 'YOGA',       icon: '🧘', color: 'strength' },
+  boxing:    { label: 'BOXING',     icon: '🥊', color: 'strength' },
+  stretch:   { label: 'STRETCHING', icon: '🤸', color: 'strength' },
+  hiit:      { label: 'HIIT',       icon: '⚡', color: 'strength' },
 };
 
 const SPORT_SEGMENTS = 14;
@@ -78,7 +68,7 @@ function timeAgo(ts: number): string {
 
 /* ── Session Card (expandable) ── */
 
-function SessionCard({ session }: { session: SessionHistoryItem }) {
+function SessionCard({ session }: { session: ActivityHistoryItem }) {
   const navigate = useNavigate();
   const { expanded, toggle } = useExpandable();
   const [shareData, setShareData] = useState<{
@@ -87,17 +77,17 @@ function SessionCard({ session }: { session: SessionHistoryItem }) {
   } | null>(null);
 
   const icon = categoryIcon(session.category);
-  const accent = session.category === 'strength' ? 'lift' : 'run';
+  const accent = session.category === 'strength' ? 'strength' : 'run';
 
   return (
-    <section className={`surface compact${session.hasPR ? ' accent' : ''}${expanded ? ' expanded' : ''}`} onClick={!expanded ? toggle : undefined}>
+    <section className={`surface tight${session.hasPR ? ' accent' : ''}${expanded ? ' expanded' : ''}`} onClick={!expanded ? toggle : undefined}>
       <header className="row space-between">
         <div>
           <time className="caption">{new Date(session.startedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</time>
           <p>{session.name}</p>
           <div className="row">
             <span className={`pill ${accent}`}>{icon} {session.exerciseCount} exercises</span>
-            {session.hasPR && <span className="pill active">🏆 PR</span>}
+            {session.hasPR && <span className="pill active"><span className="dot" />🏆 PR</span>}
           </div>
         </div>
         <div className="row">
@@ -151,7 +141,7 @@ function sportColor(sport: string): string {
     case 'cycle': return 'cycle';
     case 'swim': return 'swim';
     case 'row': return 'rowing';
-    default: return 'lift';
+    default: return 'strength';
   }
 }
 
@@ -167,7 +157,7 @@ function CardioSessionCard({ session }: { session: CardioSession }) {
   const elevationGain = session.gpsTrack?.elevationGain;
 
   return (
-    <section className={`surface compact${expanded ? ' expanded' : ''}`} onClick={!expanded ? toggle : undefined}>
+    <section className={`surface tight${expanded ? ' expanded' : ''}`} onClick={!expanded ? toggle : undefined}>
       <header className="row space-between">
         <div>
           <time className="caption">{new Date(session.startedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</time>
@@ -182,8 +172,8 @@ function CardioSessionCard({ session }: { session: CardioSession }) {
         {pace > 0 && (
           <span className={`pill ${color}`}>{Math.floor(pace / 60)}:{String(Math.floor(pace % 60)).padStart(2, '0')}/km</span>
         )}
-        {heartRate != null && <span className="pill lift">♥ {Math.round(heartRate)}bpm</span>}
-        {elevationGain != null && elevationGain > 0 && <span className="pill">↑ {Math.round(elevationGain)}m</span>}
+        {heartRate != null && <span className="pill lift"><span className="dot" />♥ {Math.round(heartRate)}bpm</span>}
+        {elevationGain != null && elevationGain > 0 && <span className="pill"><span className="dot" />↑ {Math.round(elevationGain)}m</span>}
       </div>
       <div className="expandable column">
         <div className="row space-between">
@@ -229,73 +219,26 @@ function SparkBars({ values }: { values: number[] }) {
 /* ── Main Screen ── */
 
 export function ProgressScreen({ onOpenSettings }: { onOpenSettings?: () => void }) {
-  const [sportFilter, setSportFilter] = useState<SportFilter>('all');
-  const [annExercise, setAnnExercise] = useState('');
-  const [annDate, setAnnDate] = useState(new Date().toISOString().split('T')[0]);
-  const [annLabel, setAnnLabel] = useState('');
-  const [annColor, setAnnColor] = useState<'success' | 'warning' | 'info'>('info');
-  const [showAnnForm, setShowAnnForm] = useState(false);
-
-  const navigate = useNavigate();
-
-  const history = (useQuery<SessionHistoryItem[]>('session_history') ?? []) as SessionHistoryItem[];
-  const progressions = (useQuery<ProgressionState>('exercise_progressions') ?? {}) as ProgressionState;
-  const exerciseList = Object.values(progressions).sort((a, b) =>
-    a.exerciseName.localeCompare(b.exerciseName)
-  );
-
-  const sessionsByType = useMemo(() => {
-    const map = new Map<string, SessionHistoryItem[]>();
-    for (const s of history) {
-      map.set(s.name, [...(map.get(s.name) ?? []), s]);
-    }
-    return map;
-  }, [history]);
-
-  const insights = (useQuery<Insight[]>('insights') ?? []) as Insight[];
-
-  const allCardio = ((useQuery<RecentCardioView>('recent_cardio_sessions') ?? { sessions: [] }) as RecentCardioView).sessions;
-
-  const totalSets = history.reduce((acc, s) => acc + s.totalSets, 0);
-  const prCount = history.filter(s => s.hasPR).length;
-
-  const visibleCardioSports = Array.from(new Set(allCardio.map(s => s.sport))) as CardioSport[];
-
-  const cardioBySport = (sport: CardioSport) => allCardio.filter(s => s.sport === sport);
-
-  const { dispatch: dispatchAddAnnotation } = useCommand(handleAddAnnotation);
-  const { dispatch: dispatchDeleteAnnotation } = useCommand(handleDeleteAnnotation);
-
-  const handleAddAnn = async () => {
-    if (!annExercise.trim() || !annLabel.trim()) return;
-    await dispatchAddAnnotation({
-      type: 'AddAnnotation',
-      userId: 'user-001' as Id<'User'>,
-      exerciseName: annExercise.trim(),
-      dateIso: annDate,
-      label: annLabel.trim(),
-      color: annColor,
-    });
-    setAnnLabel('');
-    setShowAnnForm(false);
-  };
-
-  const handleDeleteAnn = async (annotationId: Id<'Annotation'>) => {
-    await dispatchDeleteAnnotation({ type: 'DeleteAnnotation', annotationId });
-  };
-
-  const allAnnotations = annExercise ? getAnnotations(annExercise) : [];
-
-  const sportsToShow: CardioSport[] = sportFilter === 'all' || sportFilter === 'lift'
-    ? visibleCardioSports
-    : (visibleCardioSports.includes(sportFilter as CardioSport) ? [sportFilter as CardioSport] : []);
+  const {
+    navigate,
+    sportFilter, setSportFilter,
+    history,
+    exerciseList,
+    sessionsByType,
+    insights,
+    totalSets,
+    prCount,
+    visibleCardioSports,
+    cardioBySport,
+    sportsToShow,
+  } = useProgressScreen();
 
   return (
     <div className="column">
       {/* Sport filter */}
       <div className="tabs">
         <button className={sportFilter === 'all' ? 'active tab' : 'tab'} onClick={() => setSportFilter('all')}>All</button>
-        <button className={sportFilter === 'lift' ? 'active tab' : 'tab'} onClick={() => setSportFilter('lift')}>🏋️</button>
+        <button className={sportFilter === 'strength' ? 'active tab' : 'tab'} onClick={() => setSportFilter('strength')}>🏋️</button>
         {visibleCardioSports.map(sport => (
           <button
             key={sport}
@@ -308,19 +251,19 @@ export function ProgressScreen({ onOpenSettings }: { onOpenSettings?: () => void
       </div>
 
       {/* Lift sessions */}
-      {(sportFilter === 'all' || sportFilter === 'lift') && (
+      {(sportFilter === 'all' || sportFilter === 'strength') && (
         <>
-          <section className="surface compact">
+          <section className="surface tight">
             <div className="row space-between">
-              <div className="stat column align-center">
+              <div className="column compact align-center">
                 <span className="detail">SESSIONS</span>
                 <p className="value lift">{history.length}</p>
               </div>
-              <div className="stat column align-center">
+              <div className="column compact align-center">
                 <span className="detail">TOTAL SETS</span>
                 <p className="value">{totalSets}</p>
               </div>
-              <div className="stat column align-center">
+              <div className="column compact align-center">
                 <span className="detail">PRS</span>
                 <p className="value">{prCount}</p>
               </div>
@@ -330,10 +273,10 @@ export function ProgressScreen({ onOpenSettings }: { onOpenSettings?: () => void
           {Array.from(sessionsByType.entries()).map(([typeName, sessions]) => {
             const values = sessions.slice(-5).map((s) => s.totalSets);
             return (
-              <section key={typeName} className="surface compact">
+              <section key={typeName} className="surface tight">
                 <div className="row space-between">
                   <strong>{typeName}</strong>
-                  <span className="pill plain active">{sessions.length}×</span>
+                  <span className="pill active">{sessions.length}×</span>
                 </div>
                 <SparkBars values={values} />
                 <p className="caption">Volume trend · last {values.length} session{values.length !== 1 ? "s" : ""}</p>
@@ -355,8 +298,8 @@ export function ProgressScreen({ onOpenSettings }: { onOpenSettings?: () => void
                     <div className="row space-between">
                       <strong>{exerciseName}</strong>
                       <div className="row">
-                        {plateauDetected && <span className="pill warn">⚠ Plateau</span>}
-                        <span className="pill plain active">{exHistory.length}×</span>
+                        {plateauDetected && <span className="pill warn"><span className="dot" />⚠ Plateau</span>}
+                        <span className="pill active">{exHistory.length}×</span>
                       </div>
                     </div>
                     <SparkBars values={values} />
@@ -396,10 +339,10 @@ export function ProgressScreen({ onOpenSettings }: { onOpenSettings?: () => void
           .map((s) => +(s.distanceMeters / 1000).toFixed(1));
         const totalKm = sessions.reduce((a, s) => a + s.distanceMeters / 1000, 0);
         return (
-          <section key={sport} className="surface compact">
+          <section key={sport} className="surface tight">
             <div className="row space-between">
               <strong>{meta.label}</strong>
-              <span className="pill plain">{sessions.length}×</span>
+              <span className="pill">{sessions.length}×</span>
             </div>
             <SparkBars values={values} />
             <p className="caption">

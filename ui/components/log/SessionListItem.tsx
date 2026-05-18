@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import type { SessionHistoryItem } from "@features/training_log";
+import type { ActivityHistoryItem } from "@features/training_log";
 import type { CardioSession } from "@features/cardio";
-import { Dumbbell, EllipsisVertical } from "lucide-react";
-import { PiQuestion } from "react-icons/pi";
-import { ACTIVITY_ICONS } from "@ui/icons/activityIcons";
+import { EllipsisVertical } from "lucide-react";
+import { ACTIVITY_ICONS, getActivityLabel } from "@ui/icons/activityIcons";
 import { Carousel } from "../shared";
 
 function formatDuration(seconds: number): string {
@@ -77,22 +76,23 @@ function ActionMenu({ onDelete }: ActionMenuProps) {
 }
 
 interface StrengthItemProps {
-  session: SessionHistoryItem;
+  session: ActivityHistoryItem;
   matchedExercise?: string;
   onDelete?: () => void;
 }
 
 export function StrengthSessionItem({ session, matchedExercise, onDelete }: StrengthItemProps) {
   const navigate = useNavigate();
+  const { Icon: StrengthIcon } = ACTIVITY_ICONS['strength'];
   return (
     <section
       className="surface compact">
       <header className="row space-between align-center surface bare interactive ghost"
         onClick={() => navigate(`/sessions/${session.id}`)}>
         <div className="align-center row grow">
-          <Dumbbell size={20} />
+          <StrengthIcon size={20} />
           <div className="column compact">
-            <span className="detail">Gym</span>
+            <span className="detail">{ACTIVITY_ICONS['strength'].label}</span>
           <time className="caption muted" dateTime={new Date(session.startedAt).toISOString()}>
             {formatRelativeTime(session.startedAt)} · {formatTime(session.startedAt)}
           </time>
@@ -145,11 +145,9 @@ export function CardioSessionItem({ session, onDelete }: CardioItemProps) {
   const navigate = useNavigate();
   const distKm = (session.distanceMeters / 1000).toFixed(1);
   const pace = formatPace(session.durationSeconds, session.distanceMeters);
-  const title =
-    session.title ||
-    session.sport.charAt(0).toUpperCase() + session.sport.slice(1);
-  const { Icon: SportIcon } = ACTIVITY_ICONS[session.sport] ?? { Icon: PiQuestion };
-  const sportLabel = session.sport.charAt(0).toUpperCase() + session.sport.slice(1);
+  const title = session.title || getActivityLabel(session.sport);
+  const { Icon: SportIcon } = ACTIVITY_ICONS[session.sport];
+  const sportLabel = getActivityLabel(session.sport);
 
   return (
     <section className="surface compact">

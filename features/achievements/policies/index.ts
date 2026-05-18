@@ -10,11 +10,21 @@ import type { SessionSnapshot, CardioSnapshot } from '../domain/types';
  */
 
 /** Local mirrors of view types — avoids importing from other features. */
-interface SessionHistoryItem {
-  category: string;
+interface SessionBlock {
+  exerciseCategory: string;
+  sets: Array<{ type: string; isPR?: boolean }>;
+}
+
+interface SessionView {
+  status: string;
   name: string;
-  hasPR: boolean;
-  startedAt: number;
+  startedAt: number | null;
+  blocks: SessionBlock[];
+}
+
+interface SessionsState {
+  byId: Record<string, SessionView>;
+  activeId: string | null;
 }
 
 interface CardioSessionView {
@@ -23,13 +33,15 @@ interface CardioSessionView {
 }
 
 function buildSnapshots(): { sessions: SessionSnapshot[]; cardio: CardioSnapshot[] } {
-  const sessionHistory = viewStore.get<SessionHistoryItem[]>('session_history') ?? [];
+  const sessionsState = viewStore.get<SessionsState>('sessions') ?? { byId: {}, activeId: null };
+  const sessionHistory = Object.values(sessionsState.byId)
+    .filter((s): s is SessionView & { startedAt: number } => s.status === 'finished' && s.startedAt != null);
   const cardioView = viewStore.get<{ sessions: CardioSessionView[] }>('recent_cardio_sessions');
 
   const sessions: SessionSnapshot[] = sessionHistory.map(s => ({
-    category: s.category,
+    category: s.blocks.some(b => b.exerciseCategory === 'cardio') ? 'cardio' : 'strength',
     name: s.name,
-    hasPR: s.hasPR,
+    hasPR: s.blocks.some(b => b.sets.some(set => set.type === 'strength' && set.isPR)),
     startedAt: s.startedAt,
   }));
 

@@ -1,7 +1,7 @@
 .row {
   display: flex;
   flex-direction: row;
-  gap: var(--s-1, var(--s-3));
+  gap: var(--s-3);
 }
 
 /* .stack is the canonical column container; .column is an alias */
@@ -22,7 +22,7 @@
 
 .row.compact,
 .stack.compact,
-.column.compact {
+.column.compact, .cluster.compact {
   gap: var(--s-1);
 }
 
@@ -42,12 +42,6 @@
 .stack.center,
 .column.center {
   justify-content: center;
-}
-
-.row.center .spread,
-.stack.center .spread,
-.column.center .spread {
-  flex: 1 1 0;
 }
 
 .row.align-center,
@@ -150,7 +144,7 @@
 }
 .scroll.column, .scroll.grid {
   gap: var(--s-1);
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 .grid-4 {
   display: grid;

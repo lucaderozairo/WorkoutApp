@@ -4,8 +4,8 @@
 .pill {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 3px 10px;
+  gap: var(--s-2);
+  padding: var(--s-1) var(--s-3);
   font-size: var(--t-xs);
   font-weight: 500;
   letter-spacing: 0.02em;
@@ -14,16 +14,12 @@
   border-radius: var(--r-pill);
   white-space: nowrap;
 }
-.pill::before {
-  content: "";
+.pill .dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: var(--pill-color, var(--ink-faint));
   flex-shrink: 0;
-}
-.pill.plain::before {
-  display: none;
 }
 .pill.active {
   outline: 1.5px solid currentColor;
@@ -80,13 +76,13 @@
   background: var(--accent);
   color: var(--accent-ink);
 }
-.pill.accent::before {
+.pill.accent .dot {
   background: var(--accent-ink);
 }
 
 @media (max-width: 360px) {
   .pill {
-    padding: 3px var(--s-2);
+    padding: var(--s-1) var(--s-2);
   }
 }
 
@@ -115,7 +111,7 @@
 }
 .chip.source {
   font-size: var(--t-xs);
-  padding: 3px var(--s-2);
+  padding: var(--s-1) var(--s-2);
 }
 .chip__dot {
   width: 8px;
@@ -126,14 +122,9 @@
 }
 
 /* ════════════════════════════════════════════
-   STAT — big number + label
+   METRIC — display number
    ════════════════════════════════════════════ */
-.stat {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.stat__num {
+.metric {
   font-family: var(--font-display);
   font-weight: 400;
   font-size: var(--t-2xl);
@@ -144,38 +135,12 @@
   align-items: baseline;
   gap: 6px;
 }
-.stat__unit {
-  font-family: var(--font-ui);
-  font-size: var(--t-md);
-  font-weight: 400;
-  color: var(--ink-muted);
-  letter-spacing: 0;
-}
-.stat__trend {
-  font-size: var(--t-sm);
-  color: var(--ink-muted);
-}
-.stat__trend--up {
-  color: var(--ok);
-}
-.stat__trend--down {
-  color: var(--bad);
-}
+.metric.lg { font-size: var(--t-4xl); }
+.metric.xl { font-size: var(--t-5xl); }
+.metric.sm { font-size: var(--t-xl); }
 
-.stat--hero .stat__num {
-  font-size: var(--t-4xl);
-}
-.stat--mega .stat__num {
-  font-size: var(--t-5xl);
-}
-.stat--inline {
-  flex-direction: row;
-  align-items: baseline;
-  gap: var(--s-2);
-}
-.stat--inline .stat__num {
-  font-size: var(--t-xl);
-}
+.positive { color: var(--ok); }
+.negative { color: var(--bad); }
 
 /* ════════════════════════════════════════════
    TAG — inline mono label with dot
@@ -318,12 +283,6 @@
 /* ════════════════════════════════════════════
    GLASS TRACKER — water intake
    ════════════════════════════════════════════ */
-/* .mini-chart {
-  aspect-ratio: 8;
-  width: 100%;
-  min-height: 100px;
-} */
-
 .glass-tracker {
   display: flex;
   gap: 6px;
@@ -392,6 +351,11 @@
 .dot.sm {
   width: var(--s-2);
   height: var(--s-2);
+}
+
+.dot.stretch {
+  width: var(--s-4);
+  border-radius: var(--s-2);
 }
 
 /* ════════════════════════════════════════════
@@ -502,9 +466,6 @@
 .skeleton.full {
   width: 100%;
 }
-.skeleton.half {
-  width: 50%;
-}
 .skeleton.media {
   border-radius: var(--r-sm);
   min-height: 100px;
@@ -600,6 +561,25 @@ button.skeleton {
   z-index: 201;
 }
 
+/* ─── Carousel ── */
+.carousel .track { gap: 0; transition: transform .28s var(--ease); }
+.carousel .track > * { min-width: 100%; flex-shrink: 0; height: 200px; position: relative; overflow: hidden;}
+.carousel .track img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.carousel button { background: rgba(0,0,0,.48); color: #fff; }
+.carousel button:hover { background: rgba(0,0,0,.7); }
+.slide-caption {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: var(--s-2);
+  background: linear-gradient(to top, rgba(0,0,0,.6) 0%, transparent 100%);
+  color: #fff;
+  font-size: var(--t-xs);
+  font-weight: 500;
+  z-index: 2;
+}
+.carousel.preview {
+
+}
 /* ════════════════════════════════════════════
    CHEVRON — animated expand/collapse indicator
    ════════════════════════════════════════════ */
@@ -611,10 +591,22 @@ button.skeleton {
 }
 
 /* ════════════════════════════════════════════
+   ACTIONS — small context menu anchored below trigger
+   ════════════════════════════════════════════ */
+.dropdown.actions {
+  top: 100%;
+  right: 0;
+  min-width: 120px;
+}
+.dropdown.actions button {
+  text-align: left;
+}
+
+/* ════════════════════════════════════════════
    FILTER PANEL — floating filter panel width
    ════════════════════════════════════════════ */
 .filter-panel {
-  min-width: 260px;
+  min-width: 280px;
 }
 .dropdown.filter-panel {
   right: 0;
@@ -626,26 +618,10 @@ button.skeleton {
 /* ════════════════════════════════════════════
    DROPDOWN — positioned below its trigger
    ════════════════════════════════════════════ */
-.fullscreen-overlay-dismiss {
-  position: fixed;
-  inset: 0;
-  z-index: 199;
-  background: transparent;
-  border: none;
-  padding: 0;
-  cursor: default;
-  border-radius: 0;
-}
-.fullscreen-overlay-dismiss:hover {
-  background: transparent;
-}
 .dropdown-wrap {
   position: relative;
 }
 .dropdown {
-  position: absolute;
-  top: calc(100% + var(--s-1));
-  left: 0;
   z-index: 200;
   min-width: 280px;
 }
@@ -725,4 +701,117 @@ button.skeleton {
 }
 .splits-table .elev-down {
   color: var(--c-cardio);
+}
+
+/* ════════════════════════════════════════════
+   EVENT CARD — planned workout block
+   ════════════════════════════════════════════ */
+.event-card {
+  background: var(--accent-soft);
+  border-radius: var(--r-sm);
+  padding: var(--s-3);
+  border-left: 3px solid var(--accent);
+}
+
+/* ════════════════════════════════════════════
+   DATE CIRCLE — compact date indicator badge
+   ════════════════════════════════════════════ */
+.date-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--r-md);
+  background: var(--accent-soft);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ════════════════════════════════════════════
+   PHOTO THUMB — fixed-size media thumbnail
+   ════════════════════════════════════════════ */
+.photo-thumb {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: var(--r-sm);
+}
+.photo-thumb > img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.photo-del {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: var(--surface-1);
+}
+
+/* ════════════════════════════════════════════
+   LIST DIVIDER — row with bottom border
+   ════════════════════════════════════════════ */
+.list-divider {
+  padding-block: var(--s-2);
+  border-bottom: 1px solid var(--line);
+}
+.list-divider:last-child {
+  border-bottom: none;
+}
+.list-divider-sm {
+  padding-block: var(--s-1);
+  border-bottom: 1px solid var(--line);
+}
+.list-divider-sm:last-child {
+  border-bottom: none;
+}
+
+/* ════════════════════════════════════════════
+   TREND ITEM — health trend list row
+   ════════════════════════════════════════════ */
+.trend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-5);
+  border-bottom: 1px solid var(--line);
+}
+.trend-item:last-child {
+  border-bottom: none;
+}
+.trend-item > :first-child {
+  flex: 1;
+}
+
+/* ════════════════════════════════════════════
+   PAIN SCALE — row of severity dots
+   ════════════════════════════════════════════ */
+.pain-scale {
+  display: flex;
+  gap: var(--s-1);
+  align-items: center;
+}
+.pain-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 1px solid var(--line-strong);
+}
+.pain-dot[data-active="true"] {
+  background: var(--bad);
+  border-color: var(--bad);
+}
+
+/* ════════════════════════════════════════════
+   BLOCK — segmented/stacked bar unit
+   ════════════════════════════════════════════ */
+.block {
+  flex: 1 1 0;
+  min-width: 20px;
+  min-height: var(--t-xs);
+  box-shadow: var(--box-shadow-sm);
 }

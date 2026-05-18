@@ -1,12 +1,14 @@
 import { useQuery } from '@ui/bindings';
 import { exportEnvelope } from '@data/sources/local/persistence';
 import { triggerDownload } from '@shared/utils/csv';
-import type { SessionHistoryItem } from '@features/training_log';
+import type { ActivitiesState } from '@features/training_log';
+import { getActivityHistory } from '@features/training_log';
 import type { CardioSession } from '@features/cardio/domain/types';
 import { exportAllSessionsCsv } from '@shared/utils/exportCsv';
 
 export function ExportDataWidget() {
-  const history = useQuery<SessionHistoryItem[]>('session_history') ?? [];
+  useQuery<ActivitiesState>('sessions');
+  const history = getActivityHistory();
   const cardioView = useQuery<{ sessions: CardioSession[] }>('recent_cardio_sessions') ?? { sessions: [] };
 
   function handleExportJson() {

@@ -3,8 +3,8 @@ import { useState, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Search } from 'lucide-react'
 import { ChartContainer } from '../../patterns/charts/charts'
-import { APP_MODE } from '@config/app-mode'
-import { CATEGORY_MOCK_CHARTS, type MiniChartDef } from '../../../data/mock/health-categories'
+import { useQuery } from '@ui/bindings'
+import type { HealthChartDef, HealthChartMap } from '@features/health'
 
 // ─── Types & Registry ───────────────────────────────────────────────────────
 
@@ -30,8 +30,8 @@ export const HEALTH_CATEGORIES: HealthCategory[] = [
   { slug: 'activity-mobility', icon: '👣', name: 'Activity & Mobility', subtitle: 'steps · distance · workouts · VO₂ · daylight', section: 'Physical & Activity' },
   { slug: 'body-measurements', icon: '⚖️', name: 'Body Measurements', subtitle: 'weight · BMI · body fat · lean mass · waist', section: 'Physical & Activity' },
   { slug: 'injuries', icon: '🩹', name: 'Injuries', subtitle: 'active · resolved · body part', section: 'Physical & Activity' },
-  // { slug: 'routes', icon: '🗺️', name: 'Routes', subtitle: 'saved · Strava import · map view', section: 'Physical & Activity' },
-  // { slug: 'cycle-tracking', icon: '🩸', name: 'Cycle Tracking', subtitle: 'period · BBT · ovulation · LH · fertility', section: 'Physical & Activity' },
+  { slug: 'routes', icon: '🗺️', name: 'Routes', subtitle: 'saved · Strava import · map view', section: 'Physical & Activity' },
+  { slug: 'cycle-tracking', icon: '🩸', name: 'Cycle Tracking', subtitle: 'period · BBT · ovulation · LH · fertility', section: 'Physical & Activity' },
   // Heart & Vitals
   { slug: 'heart', icon: '❤️', name: 'Heart', subtitle: 'HR · resting HR · HRV · ECG · AFib burden', section: 'Heart & Vitals' },
   { slug: 'vitals', icon: '🌡️', name: 'Vitals', subtitle: 'SpO₂ · blood pressure · glucose · resp. rate · wrist temp', section: 'Heart & Vitals' },
@@ -62,13 +62,13 @@ interface CategoryButtonProps {
   isPinned?: boolean
   onClick: () => void
   onLongPress: LongPressHandlers
-  charts?: MiniChartDef[]
+  charts?: HealthChartDef[]
 }
 
 function CategoryTile({ cat, isPinned = false, onClick, onLongPress, charts }: CategoryButtonProps) {
   return (
     <button
-      className={`surface compact${isPinned ? ' pinned' : ''}`}
+      className={`surface tight${isPinned ? ' pinned' : ''}`}
       onClick={onClick}
       onPointerDown={onLongPress.start}
       onPointerUp={onLongPress.cancel}
@@ -86,7 +86,7 @@ function CategoryTile({ cat, isPinned = false, onClick, onLongPress, charts }: C
 function CategoryRow({ cat, isPinned = false, onClick, onLongPress, charts }: CategoryButtonProps) {
   return (
     <button
-      className={`surface compact row align-center space-between${isPinned ? ' pinned' : ''}`}
+      className={`surface tight row align-center space-between${isPinned ? ' pinned' : ''}`}
       onClick={onClick}
       onPointerDown={onLongPress.start}
       onPointerUp={onLongPress.cancel}
@@ -100,7 +100,7 @@ function CategoryRow({ cat, isPinned = false, onClick, onLongPress, charts }: Ca
         </div>
       </div>
       <div className="row align-center">
-        {charts?.[0] && APP_MODE !== 'github-pages' && (
+        {charts?.[0] && (
           <div className="grow">
             <ChartContainer
               chartType={charts[0].chartType}
@@ -121,6 +121,7 @@ function CategoryRow({ cat, isPinned = false, onClick, onLongPress, charts }: Ca
 
 export function HealthOverviewTab() {
   const navigate = useNavigate()
+  const healthCharts = (useQuery<HealthChartMap>('health_charts') ?? {}) as HealthChartMap
 
   const [query, setQuery] = useState('')
   const [view, setView] = useState<'grid' | 'list'>('grid')
@@ -200,7 +201,7 @@ export function HealthOverviewTab() {
                   isPinned
                   onClick={() => navigate(`/profile/health/${cat.slug}`)}
                   onLongPress={{ start: () => startPress(cat.slug), cancel: cancelPress }}
-                  charts={CATEGORY_MOCK_CHARTS[cat.slug]}
+                  charts={healthCharts[cat.slug]}
                 />
               ))}
               <hr />
@@ -218,7 +219,7 @@ export function HealthOverviewTab() {
                     cat={cat}
                     onClick={() => navigate(`/profile/health/${cat.slug}`)}
                     onLongPress={{ start: () => startPress(cat.slug), cancel: cancelPress }}
-                    charts={CATEGORY_MOCK_CHARTS[cat.slug]}
+                    charts={healthCharts[cat.slug]}
                   />
                 ))}
               </div>
@@ -240,7 +241,7 @@ export function HealthOverviewTab() {
                     isPinned
                     onClick={() => navigate(`/profile/health/${cat.slug}`)}
                     onLongPress={{ start: () => startPress(cat.slug), cancel: cancelPress }}
-                    charts={CATEGORY_MOCK_CHARTS[cat.slug]}
+                    charts={healthCharts[cat.slug]}
                   />
                 ))}
               </div>
@@ -260,7 +261,7 @@ export function HealthOverviewTab() {
                       cat={cat}
                       onClick={() => navigate(`/profile/health/${cat.slug}`)}
                       onLongPress={{ start: () => startPress(cat.slug), cancel: cancelPress }}
-                      charts={CATEGORY_MOCK_CHARTS[cat.slug]}
+                      charts={healthCharts[cat.slug]}
                     />
                   ))}
                 </div>

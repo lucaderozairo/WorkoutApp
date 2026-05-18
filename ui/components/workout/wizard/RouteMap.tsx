@@ -6,7 +6,6 @@ const TILE_ATTR = '© <a href="https://www.openstreetmap.org/copyright">OpenStre
 const DEFAULT_CENTER: L.LatLngTuple = [51.463955, -0.305095];  // London — replaced once user taps
 const DEFAULT_ZOOM = 13;
 const SEARCH_ZOOM = 15;
-const DISTANCE_MARKER_PANE = 'route-distance-pane';
 const LONG_PRESS_MS = 650;
 
 export function haversineKm(a: [number, number], b: [number, number]): number {
@@ -86,6 +85,7 @@ export interface MapCanvasHandle {
   undo: () => void;
   redo: () => void;
   clearRoute: () => void;
+  wipeHistory: () => void;
   reverseRoute: () => void;
   runSearch: (query: string) => Promise<'ok' | 'fail' | 'no_results' | 'coords'>;
   cancelSearch: () => void;
@@ -105,7 +105,7 @@ interface RouteMapProps {
   showDistanceMarkers?: boolean;
 }
 
-type EditMode = 'select' | 'add' | 'split';
+export type EditMode = 'select' | 'add' | 'split' | 'delete';
 type BaseLayerId = 'plain' | 'dark' | 'topo' | 'sat';
 
 function parseLatLngQuery(inputRaw: string): [number, number] | null {
@@ -168,6 +168,19 @@ function distToSegmentSq(
   return dx * dx + dy * dy;
 }
 
+function closestPathIndex(path: [number, number][], target: [number, number]): number {
+  let bestIdx = 0;
+  let bestDist = Infinity;
+  for (let i = 0; i < path.length; i++) {
+    const d = haversineKm(path[i], target);
+    if (d < bestDist) {
+      bestDist = d;
+      bestIdx = i;
+    }
+  }
+  return bestIdx;
+}
+
 export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function RouteMap({
   waypoints, onChange, profile = 'foot', onRoutedDistanceChange,
   mode: modeProp = 'add', onModeChange, onUndoRedoChange,
@@ -209,7 +222,7 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.Marker[]>([]);
-  const polylineRef = useRef<L.Polyline | null>(null);
+  const polylineRef = useRef<L.LayerGroup | null>(null);
   const routePathRef = useRef<[number, number][]>([]);
   const distanceMarkersRef = useRef<L.LayerGroup | null>(null);
   const locateMarkerRef = useRef<L.Marker | null>(null);
@@ -303,6 +316,21 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
     notifyUndoRedo();
   }
 
+  function handleWipe() {
+    undoRef.current = [];
+    redoRef.current = [];
+    markersRef.current.forEach(m => m.remove());
+    markersRef.current = [];
+    polylineRef.current?.remove();
+    polylineRef.current = null;
+    routePathRef.current = [];
+    distanceMarkersRef.current?.remove();
+    distanceMarkersRef.current = null;
+    commitWaypoints([], { pushHistory: false });
+    setSelectedWaypointIdx(null);
+    notifyUndoRedo();
+  }
+
   function reverseRoute() {
     commitWaypoints([...waypointsRef.current].reverse());
   }
@@ -332,9 +360,6 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
       zoomControl: false,
     });
     mapRef.current = map;
-
-    const distanceMarkerPane = map.createPane(DISTANCE_MARKER_PANE);
-    distanceMarkerPane.classList.add('route-distance-pane');
 
     const initial = baseLayers[baseLayerIdRef.current];
     baseLayerRef.current = L.tileLayer(initial.url, { attribution: TILE_ATTR, maxZoom: 19 }).addTo(map);
@@ -390,6 +415,8 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
         commitWaypoints(next);
         return;
       }
+
+      if (currentMode === 'delete') return;
     };
 
     map.on('click', handler);
@@ -446,7 +473,7 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
       locateMarkerRef.current = L.marker(latlng, {
         interactive: false,
         icon: L.divIcon({
-          html: '<div class="route-locate-dot"></div>',
+          html: '<div class="route-anchor dot locate"></div>',
           iconSize: [14, 14],
           iconAnchor: [7, 7],
         }),
@@ -502,7 +529,7 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
       searchMarkerRef.current = L.marker(ll, {
         interactive: false,
         icon: L.divIcon({
-          html: '<div class="route-search-dot"></div>',
+          html: '<div class="route-anchor dot search"></div>',
           iconSize: [10, 10],
           iconAnchor: [5, 5],
         }),
@@ -550,14 +577,7 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
 
     const controller = new AbortController();
 
-    // Clear existing markers and polyline
-    markersRef.current.forEach(m => m.remove());
-    markersRef.current = [];
-    polylineRef.current?.remove();
-    polylineRef.current = null;
     routePathRef.current = [];
-    distanceMarkersRef.current?.remove();
-    distanceMarkersRef.current = null;
 
     if (waypoints.length === 0) {
       prevCountRef.current = 0;
@@ -580,10 +600,10 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
         longPressId = null;
       };
       const iconClass =
-        isFirst ? 'route-anchor route-anchor--start' : isLast ? 'route-anchor route-anchor--end' : 'route-anchor';
+        isFirst ? 'route-anchor start' : isLast ? 'route-anchor end' : 'route-anchor';
       const icon = L.divIcon({
         className: iconClass,
-        html: '<div class="route-anchor__dot"></div>',
+        html: '<div class="dot"></div>',
         iconSize: [18, 18],
         iconAnchor: [9, 9],
       });
@@ -608,7 +628,11 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
 
       m.on('click', (e: L.LeafletMouseEvent) => {
         L.DomEvent.stopPropagation(e);
-        setSelectedWaypointIdx(i);
+        if (modeRef.current === 'delete') {
+          removeWaypoint();
+        } else {
+          setSelectedWaypointIdx(i);
+        }
       });
 
       m.on('contextmenu', (e: L.LeafletMouseEvent) => {
@@ -621,7 +645,7 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
       });
       m.on('touchend touchcancel touchmove', clearLongPress);
       m.on('remove', clearLongPress);
-      m.bindTooltip('<span class="caption">Long-press to delete</span>', { direction: 'top' });
+      m.bindTooltip('<span class="caption">Right-click or delete tool to remove</span>', { direction: 'top' });
       markersRef.current.push(m);
     });
 
@@ -631,42 +655,85 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
     if (prevCount === 0 && waypoints.length > 0) {
       if (waypoints.length >= 2) {
         map.fitBounds(L.latLngBounds(waypoints), { padding: [24, 24] });
-      } else {
-        map.setView(waypoints[0], DEFAULT_ZOOM);
       }
     }
+
+    // Draw immediate fallback segments (straight dashed lines)
+    const segments = L.layerGroup().addTo(map);
+    let highlighted: L.Polyline | null = null;
+    for (let i = 0; i < waypoints.length - 1; i++) {
+      const segPath = [waypoints[i], waypoints[i + 1]];
+      const segKm = totalDistanceKm([waypoints[i], waypoints[i + 1]]);
+      const pl = L.polyline(segPath, {
+        color: '#7eb8f7',
+        weight: 5,
+        dashArray: '6 4',
+      });
+      pl.on('click', (e: L.LeafletMouseEvent) => {
+        if (highlighted && highlighted !== pl) {
+          highlighted.setStyle({ color: '#7eb8f7', weight: 5 });
+        }
+        pl.setStyle({ color: '#f59e0b', weight: 6 });
+        highlighted = pl;
+        L.popup()
+          .setLatLng(e.latlng)
+          .setContent(`${segKm.toFixed(2)} km`)
+          .openOn(map);
+      });
+      segments.addLayer(pl);
+    }
+    polylineRef.current = segments;
 
     // Debounce Valhalla — wait 400ms after last waypoint change before fetching
     const debounceId = setTimeout(() => {
       fetchRoute(waypoints, controller.signal).then(result => {
         if (controller.signal.aborted) return;
+        if (!result) {
+          routePathRef.current = waypoints;
+          onRoutedDistanceChangeRef.current?.(totalDistanceKm(waypoints));
+          return;
+        }
 
-        const pathToUse = result ? result.path : waypoints;
-        routePathRef.current = pathToUse;
-        const km = result ? result.km : totalDistanceKm(waypoints);
-        onRoutedDistanceChangeRef.current?.(km);
-        polylineRef.current = L.polyline(pathToUse, {
-          color: '#7eb8f7',
-          weight: 3,
-          dashArray: result ? undefined : '6 4',
-        }).addTo(map);
+        routePathRef.current = result.path;
+        onRoutedDistanceChangeRef.current?.(result.km);
+
+        segments.clearLayers();
+        const segIndices = waypoints.map(wp => closestPathIndex(result.path, wp));
+        let highlighted: L.Polyline | null = null;
+        for (let i = 0; i < segIndices.length - 1; i++) {
+          const a = Math.min(segIndices[i], segIndices[i + 1]);
+          const b = Math.max(segIndices[i], segIndices[i + 1]);
+          if (b - a < 1) continue;
+          const segPath = result.path.slice(a, b + 1);
+          const segKm = totalDistanceKm([waypoints[i], waypoints[i + 1]]);
+          const pl = L.polyline(segPath, {
+            color: '#7eb8f7',
+            weight: 5,
+          });
+          pl.on('click', (e: L.LeafletMouseEvent) => {
+            if (highlighted && highlighted !== pl) {
+              highlighted.setStyle({ color: '#7eb8f7', weight: 5 });
+            }
+            pl.setStyle({ color: '#f59e0b', weight: 6 });
+            highlighted = pl;
+            L.popup()
+              .setLatLng(e.latlng)
+              .setContent(`${segKm.toFixed(2)} km`)
+              .openOn(map);
+          });
+          segments.addLayer(pl);
+        }
+        polylineRef.current = segments;
 
         const distanceMarkers = L.layerGroup();
-        distanceMarkerPoints(pathToUse).forEach(({ latlng, km }) => {
-          L.circleMarker(latlng, {
-            pane: DISTANCE_MARKER_PANE,
-            radius: 0,
-            stroke: false,
-            fillOpacity: 0,
-            interactive: false,
-          })
-            .bindTooltip(`<span class="pill plain active">${km} km</span>`, {
-              permanent: true,
-              direction: 'center',
-              className: 'route-distance-tooltip',
-              opacity: 1,
-            })
-            .addTo(distanceMarkers);
+        distanceMarkerPoints(result.path).forEach(({ latlng, km }) => {
+          const icon = L.divIcon({
+            className: 'distance-marker',
+            html: `<span class="distance-marker-label">${km} km</span><div class="distance-marker-line"></div>`,
+            iconSize: [60, 26],
+            iconAnchor: [30, 26],
+          });
+          L.marker(latlng, { icon, interactive: false }).addTo(distanceMarkers);
         });
         distanceMarkersRef.current = distanceMarkers;
         if (showDistanceMarkersRef.current) {
@@ -678,6 +745,12 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
     return () => {
       clearTimeout(debounceId);
       controller.abort();
+      markersRef.current.forEach(m => m.remove());
+      markersRef.current = [];
+      polylineRef.current?.remove();
+      polylineRef.current = null;
+      distanceMarkersRef.current?.remove();
+      distanceMarkersRef.current = null;
     };
   }, [waypoints, profile]);
 
@@ -690,6 +763,7 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
     undo: handleUndo,
     redo: handleRedo,
     clearRoute: () => commitWaypoints([]),
+    wipeHistory: handleWipe,
     reverseRoute,
     runSearch,
     cancelSearch,
@@ -698,7 +772,7 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
   }));
 
   return (
-    <div ref={mapWrapRef} className="grow map-root route-map-wrap media-md">
+    <div ref={mapWrapRef} className="grow map-root relative media-md">
       <div ref={containerRef} className="route-map-canvas" />
     </div>
   );

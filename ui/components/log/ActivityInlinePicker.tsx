@@ -1,6 +1,6 @@
-import {
+﻿import {
   ActivityKey, OUTDOOR_SPORTS, ACTIVITY_META, DEFAULT_RECENT_SPORTS,
-} from './activityConfig';
+} from '@shared/constants/activities';
 
 interface Props {
   recentSports: ActivityKey[];
@@ -28,7 +28,7 @@ export function ActivityInlinePicker({
           return (
             <button
               key={key}
-              className={`surface compact column${selectedActivity === key ? ' active' : ''}`}
+              className={`surface tight column${selectedActivity === key ? ' active' : ''}`}
               onClick={() => onSelectActivity(key)}
             >
               <h2>{emoji}</h2>
@@ -36,7 +36,7 @@ export function ActivityInlinePicker({
             </button>
           );
         })}
-        <button className="surface compact column" onClick={onOpenOverlay}>
+        <button className="surface tight column" onClick={onOpenOverlay}>
           <h2>⊕</h2>
           <span className="caption">Other</span>
         </button>

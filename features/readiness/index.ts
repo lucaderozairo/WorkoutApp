@@ -54,4 +54,7 @@ export {
   getRestingHRHistory,
   getSubjectiveRPEHistory,
   getTodaySubjectiveRPE,
+  sleepEntryToSession,
 } from './queries';
+
+export type { SleepSession } from './domain/mock-types';

@@ -1,8 +1,7 @@
 export const PERSISTED_KEYS = [
-  'session_history',
+  'sessions',
   'recent_cardio_sessions',
   'exercise_progressions',
-  'editing_session',
   'planned_sessions',
   'saved_routes',
   'wapp_recent_sports',

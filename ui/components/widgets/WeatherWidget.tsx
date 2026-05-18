@@ -123,19 +123,19 @@ export function AirQualityPanel() {
                 </div>
             </div>
             <div className="grid-4">
-                <div className="surface stat">
+                <div className="surface centered">
                     <span className="caption">PM2.5</span>
                     <p>{pm25}</p>
                 </div>
-                <div className="surface stat">
+                <div className="surface centered">
                     <span className="caption">PM10</span>
                     <p>{pm10}</p>
                 </div>
-                <div className="surface stat">
+                <div className="surface centered">
                     <span className="caption">NO₂</span>
                     <p>{no2}</p>
                 </div>
-                <div className="surface stat">
+                <div className="surface centered">
                     <span className="caption">O₃</span>
                     <p>{o3}</p>
                 </div>

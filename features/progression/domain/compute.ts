@@ -1,4 +1,4 @@
-import type { StrengthSet } from '@features/training_log/domain/types';
+import type { SetEntry } from '@features/training_log/domain/types';
 import type { VolumeEntry } from './types';
 import type { Id } from '@shared/types';
 
@@ -12,21 +12,21 @@ export function epleyOneRepMax(weight: number, reps: number): number {
 /** Derives a VolumeEntry from a session's strength sets for one exercise. */
 export function computeVolumeEntry(
   date: string,
-  sets: StrengthSet[],
+  sets: SetEntry[],
   sessionId: Id<'Session'>,
 ): VolumeEntry {
   const workingSets = sets.filter(s => !s.isWarmup);
 
   const warmupSets = sets.filter(s => s.isWarmup);
   if (workingSets.length === 0) {
-    return { date, sessionId, sets: 0, totalReps: 0, maxWeightKg: 0, volume: 0, oneRepMaxEstimate: 0, setWeights: [], setReps: [], warmupWeights: warmupSets.map(s => s.weightKg) };
+    return { date, sessionId, sets: 0, totalReps: 0, maxWeightKg: 0, volume: 0, oneRepMaxEstimate: 0, setWeights: [], setReps: [], warmupWeights: warmupSets.map(s => s.weightKg ?? 0) };
   }
 
-  const volume = workingSets.reduce((sum, s) => sum + s.weightKg * s.reps, 0);
-  const totalReps = workingSets.reduce((sum, s) => sum + s.reps, 0);
-  const maxWeightKg = Math.max(...workingSets.map(s => s.weightKg));
+  const volume = workingSets.reduce((sum, s) => sum + (s.weightKg ?? 0) * (s.reps ?? 0), 0);
+  const totalReps = workingSets.reduce((sum, s) => sum + (s.reps ?? 0), 0);
+  const maxWeightKg = Math.max(...workingSets.map(s => s.weightKg ?? 0));
   const oneRepMaxEstimate = Math.max(
-    ...workingSets.map(s => epleyOneRepMax(s.weightKg, s.reps)),
+    ...workingSets.map(s => epleyOneRepMax(s.weightKg ?? 0, s.reps ?? 0)),
   );
 
   return {
@@ -37,9 +37,9 @@ export function computeVolumeEntry(
     maxWeightKg,
     volume,
     oneRepMaxEstimate,
-    setWeights: workingSets.map(s => s.weightKg),
-    setReps: workingSets.map(s => s.reps),
-    warmupWeights: warmupSets.map(s => s.weightKg),
+    setWeights: workingSets.map(s => s.weightKg ?? 0),
+    setReps: workingSets.map(s => s.reps ?? 0),
+    warmupWeights: warmupSets.map(s => s.weightKg ?? 0),
   };
 }
 

@@ -4,6 +4,7 @@ import { APP_MODE } from '@config/app-mode';
 import type { Icon as PhosphorIcon } from 'phosphor-react';
 import { Bell, CalendarBlank, ChartLine, Chat, Compass, File, Gear, House, ToggleLeft, ToggleRight, UserCircle } from 'phosphor-react';
 import logo  from '/logo.png';
+import { Menu } from 'lucide-react';
 function useTheme(): 'light' | 'dark' {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const t = document.documentElement.getAttribute('data-theme');
@@ -35,21 +36,21 @@ function ThemeToggle({ size = 20 }: { size?: number }) {
   );
 }
 
-const GITHUB_PAGES_PATHS = new Set(['/dashboard', '/log', '/profile']);
+  const GITHUB_PAGES_PATHS = new Set(['/home', '/sessions', '/profile']);
 
 const allDesktopTabs: { label: string; path: string; Icon: PhosphorIcon }[] = [
-  { label: 'Home', path: '/dashboard', Icon: House },
-  { label: 'Workout', path: '/log', Icon: File },
-  { label: 'Schedule', path: '/schedule', Icon: CalendarBlank },
-  { label: 'Progress', path: '/progress', Icon: ChartLine },
+  { label: 'Home', path: '/home', Icon: House },
+  { label: 'Workout', path: '/sessions', Icon: File },
+  // { label: 'Schedule', path: '/schedule', Icon: CalendarBlank },
+  // { label: 'Progress', path: '/progress', Icon: ChartLine },
   { label: 'Social', path: '/social', Icon: Compass },
   { label: 'Messages', path: '/messages', Icon: Chat },
   { label: 'Profile', path: '/profile', Icon: UserCircle },
 ];
 
 const allMobileTabs: { label: string; path: string; Icon: PhosphorIcon }[] = [
-  { label: 'Home', path: '/dashboard', Icon: House },
-  { label: 'Workout', path: '/log', Icon: File },
+  { label: 'Home', path: '/home', Icon: House },
+  { label: 'Workout', path: '/sessions', Icon: File },
   { label: 'Messages', path: '/messages', Icon: Chat },
   { label: 'Social', path: '/social', Icon: Compass },
   { label: 'Profile', path: '/profile', Icon: UserCircle },
@@ -72,7 +73,7 @@ export function TabNavigation({ onOpenSettings }: TabNavigationProps) {
     <>
       {/* Desktop rail — visible >780px */}
       <aside className="app-rail">
-        <div className="surface compact ghost">
+        <div className="surface ghost">
           <NavLink to={"/"}>
             <span className='icon'>
               <img src={logo} alt="Fittrack logo" width="18" height="18" />
@@ -134,8 +135,8 @@ export function TabNavigation({ onOpenSettings }: TabNavigationProps) {
       </header>
 
       {/* Mobile bottom tabbar — visible ≤780px */}
-      <nav className="app-tabbar">
-        <div className="app-tabbar__list">
+      <nav className="app-tabbar center">
+        <div className="surface tight row space-around ">
           {mobileTabs.map(({ label, path, Icon }) => (
             <NavLink key={path} to={path}>
               {({ isActive }) => (

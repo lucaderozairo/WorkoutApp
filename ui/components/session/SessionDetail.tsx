@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import type { ActiveSessionView, SessionHistoryItem } from '@features/training_log';
+import type { ActivityView, ActivityHistoryItem } from '@features/training_log';
 import type { CardioSession } from '@features/cardio';
 import { handleImportGpsTrack, handleUpdateCardioSession } from '@features/cardio';
 import type { SetEntry, StrengthSet } from '@features/training_log/domain/types';
@@ -9,6 +9,10 @@ import { SessionGpsPreview } from './SessionGpsPreview';
 import { ImportModal } from '../modals/ImportModal';
 import { HROverTimeChart, PaceOverTimeChart, ElevationProfileChart, KmSplitsTable, CHART_H, TICK, TOOLTIP_STYLE } from '../shared/Charts';
 import ChartContainer from '@ui/patterns/charts/charts';
+import { ChevronLeft, Pencil, Share2, Image, MapPin, HeartPulse, TrendingUp, Mountain, Timer, Trophy, Heart, MessageCircle } from 'lucide-react';
+import { ACTIVITY_ICONS, getActivityLabel } from '@ui/icons/activityIcons';
+import type { SportType } from '@features/training_log/domain/types';
+import { Carousel } from '@ui/components/shared/Carousel';
 
 
 interface SampleCardioSession {
@@ -25,7 +29,7 @@ interface SampleCardioSession {
 }
 
 interface SessionDetailProps {
-  session: ActiveSessionView | SessionHistoryItem | CardioSession | SampleCardioSession;
+  session: ActivityView | ActivityHistoryItem | CardioSession | SampleCardioSession;
   onClose?: () => void;
   onEdit?: () => void;
   onShare?: () => void;
@@ -48,20 +52,15 @@ function formatPace(secondsPerKm: number): string {
   return `${m}:${String(s).padStart(2, '0')}/km`;
 }
 
-function sportIcon(sport: string): string {
-  const icons: Record<string, string> = {
-    run: '🏃', cycle: '🚴', swim: '🏊', row: '🚣', hike: '🥾', ski: '⛷️',
-  };
-  return icons[sport] ?? '🏋️';
+function SportIcon({ sport, size }: { sport: string; size?: number }) {
+  const def = ACTIVITY_ICONS[sport as SportType] ?? ACTIVITY_ICONS['other'];
+  return <def.Icon size={size} />;
 }
 
-function categoryIcon(category: string): string {
-  switch (category) {
-    case 'strength': return '🏋️';
-    case 'cardio': return '🏃';
-    case 'mobility': return '🧘';
-    default: return '💪';
-  }
+function CategoryIcon({ category, size }: { category: string; size?: number }) {
+  const sport: SportType = category === 'cardio' ? 'run' : category === 'mobility' ? 'mobility' : 'strength';
+  const { Icon } = ACTIVITY_ICONS[sport];
+  return <Icon size={size} />;
 }
 
 function sportColor(sport: string): string {
@@ -74,8 +73,8 @@ function sportColor(sport: string): string {
   }
 }
 
-function isSessionHistoryItem(s: unknown): s is SessionHistoryItem {
-  return typeof (s as SessionHistoryItem).totalSets === 'number';
+function isActivityHistoryItem(s: unknown): s is ActivityHistoryItem {
+  return typeof (s as ActivityHistoryItem).totalSets === 'number';
 }
 
 function isCardioSession(s: unknown): s is CardioSession {
@@ -88,12 +87,12 @@ function isSampleCardioSession(s: unknown): s is SampleCardioSession {
   return typeof obj.sport === 'string' && 'distanceMeters' in obj && 'createdAt' in obj;
 }
 
-function isActiveSessionView(s: unknown): s is ActiveSessionView {
-  return Array.isArray((s as ActiveSessionView).blocks);
+function isActivityView(s: unknown): s is ActivityView {
+  return Array.isArray((s as ActivityView).segments);
 }
 
 function isStrengthSet(s: SetEntry): s is StrengthSet {
-  return s.type === 'strength';
+  return s.weightKg !== undefined || s.reps !== undefined;
 }
 
 /* ── Inline editable title ── */
@@ -102,10 +101,12 @@ function EditableTitle({
   value,
   onSave,
   placeholder,
+  level = 'h2',
 }: {
   value: string;
   onSave: (v: string) => void;
   placeholder: string;
+  level?: 'h1' | 'h2';
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value);
@@ -136,10 +137,11 @@ function EditableTitle({
     );
   }
 
+  const Tag = level;
   return (
-    <h2 className="interactive" onClick={startEdit} title="Click to edit">
+    <Tag className="interactive" onClick={startEdit} title="Click to edit">
       {value || <span className="faint">{placeholder}</span>}
-    </h2>
+    </Tag>
   );
 }
 
@@ -178,7 +180,7 @@ function SocialBar({ session }: { session: CardioSession }) {
           + Ran with
         </button>
         {ranWith.map(name => (
-          <span key={name} className="pill plain">
+          <span key={name} className="pill">
             {name}
             <button type="button" className="ghost icon" onClick={() => removeRanWith(name)}>×</button>
           </span>
@@ -201,9 +203,9 @@ function SocialBar({ session }: { session: CardioSession }) {
           className={`ghost${liked ? ' active' : ''}`}
           onClick={() => setLiked(l => !l)}
         >
-          ♥ {liked ? 1 : 0}
+          <Heart size={14} /> {liked ? 1 : 0}
         </button>
-        <button type="button" className="ghost">💬 0</button>
+        <button type="button" className="ghost"><MessageCircle size={14} /> 0</button>
       </div>
     </div>
   );
@@ -211,12 +213,12 @@ function SocialBar({ session }: { session: CardioSession }) {
 
 /* ── Per-session set weight chart ── */
 
-function SessionSetChart({ sets }: { sets: StrengthSet[] }) {
+function SessionSetChart({ sets }: { sets: SetEntry[] }) {
   if (sets.length < 1) return null;
   const data = sets.map((s, i) => ({
     x: i + 1,
-    y: s.weightKg,
-    reps: s.reps,
+    y: s.weightKg ?? 0,
+    reps: s.reps ?? 0,
   }));
   return (
     <div className="row align-center">
@@ -228,16 +230,16 @@ function SessionSetChart({ sets }: { sets: StrengthSet[] }) {
 
 /* ── Strength Session Detail ── */
 
-function StrengthDetail({ session }: { session: ActiveSessionView }) {
+function StrengthDetail({ session }: { session: ActivityView }) {
   return (
     <div className="column">
-      {session.blocks.map(block => {
+      {session.segments.map(block => {
         const strengthSets = block.sets.filter(isStrengthSet);
         return (
           <section key={block.id} className="surface">
             <header className="row space-between align-center">
               <div className="row align-center">
-                <span>{categoryIcon(block.exerciseCategory)}</span>
+                <CategoryIcon category={block.exerciseCategory} size={14} />
                 <Link to={`/exercise/${encodeURIComponent(block.exerciseName)}`} className="link">
                   {block.exerciseName}
                 </Link>
@@ -284,12 +286,24 @@ function StrengthDetail({ session }: { session: ActiveSessionView }) {
           </section>
         );
       })}
-      {session.media && session.media.length > 0 && (
-        <div className="cluster compact">
-          {session.media.map((src, i) => (
-            <img key={i} src={src} alt="" className="avatar xl" />
+      {(session.rpe != null || (session.tags?.length ?? 0) > 0) && (
+        <section className="surface tight row compact wrap align-center">
+          {session.rpe != null && (
+            <span className="pill primary">RPE {session.rpe}</span>
+          )}
+          {session.tags?.map(t => (
+            <span key={t} className="pill"><span className="dot" />{t}</span>
           ))}
-        </div>
+        </section>
+      )}
+      {session.notes && (
+        <section className="surface tight">
+          <span className="caption">Notes</span>
+          <p className="detail">{session.notes}</p>
+        </section>
+      )}
+      {session.media && session.media.length > 0 && (
+        <Carousel slides={session.media} />
       )}
       {session.comments && session.comments.length > 0 && (
         <div className="column compact">
@@ -307,7 +321,7 @@ function StrengthDetail({ session }: { session: ActiveSessionView }) {
 
 /* ── Cardio Session Detail ── */
 
-function CardioDetail({ session }: { session: CardioSession }) {
+function CardioDetail({ session, fullPage }: { session: CardioSession; fullPage?: boolean }) {
   const [showImport, setShowImport] = useState(false);
   const distKm = session.distanceMeters / 1000;
   const pace =
@@ -320,6 +334,16 @@ function CardioDetail({ session }: { session: CardioSession }) {
     track.avgHeartRate != null || track.maxHeartRate != null ||
     track.calories != null || track.avgPower != null
   );
+  const defaultTitle = getActivityLabel(session.sport as SportType);
+  const displayTitle = session.title || defaultTitle;
+
+  function saveTitle(v: string) {
+    handleUpdateCardioSession({
+      type: 'UpdateCardioSession',
+      sessionId: session.id,
+      title: v || undefined,
+    });
+  }
 
   async function handleAttach(importedTrack: GpsTrack) {
     await handleImportGpsTrack({
@@ -330,162 +354,282 @@ function CardioDetail({ session }: { session: CardioSession }) {
     setShowImport(false);
   }
 
+  const statsGrid = (
+    <div className="surface tight grid ghost">
+      {session.distanceMeters > 0 && (
+        <div className="column compact">
+          <p className="eyebrow">Distance</p>
+          <h3 className={` ${color}`}>
+            {distKm.toFixed(1)}<span className="caption muted">km</span>
+          </h3>
+        </div>
+      )}
+      <div className="column compact">
+        <p className="eyebrow">Duration</p>
+        <h3>{formatDuration(session.durationSeconds)}</h3>
+      </div>
+      {pace > 0 && (
+        <div className="column compact">
+          <p className="eyebrow">Avg Pace</p>
+          <h3>{formatPace(pace)}</h3>
+        </div>
+      )}
+      {track?.elevationGain != null && (
+        <div className="column compact">
+          <p className="eyebrow">Elevation</p>
+          <h3>
+            +{Math.round(track.elevationGain)}<span className="caption muted">m</span>
+          </h3>
+        </div>
+      )}
+    </div>
+  );
+
+  const charts = track && (track.points?.length ?? 0) > 0 && (
+    <>
+      <section className="surface">
+        <div className="row compact align-center">
+          <TrendingUp size={14} className="faint" />
+          <p className="eyebrow">Pace Over Distance</p>
+        </div>
+        <PaceOverTimeChart points={track.points} />
+      </section>
+      {track.points.some(p => p.heartRate != null) && (
+        <section className="surface">
+          <div className="row compact align-center">
+            <HeartPulse size={14} className="faint" />
+            <p className="eyebrow">Heart Rate</p>
+          </div>
+          <HROverTimeChart points={track.points} />
+        </section>
+      )}
+      {track.points.some(p => p.elevation != null) && (
+        <section className="surface">
+          <div className="row compact align-center">
+            <Mountain size={14} className="faint" />
+            <p className="eyebrow">Elevation</p>
+          </div>
+          <ElevationProfileChart points={track.points} />
+        </section>
+      )}
+      <section className="surface">
+        <div className="row compact align-center">
+          <Timer size={14} className="faint" />
+          <p className="eyebrow">Km Splits</p>
+        </div>
+        <KmSplitsTable points={track.points} />
+      </section>
+    </>
+  );
+
+  const importModal = showImport && (
+    <ImportModal
+      context="enrich-session"
+      existingSession={{
+        id: session.id,
+        durationSeconds: session.durationSeconds,
+        distanceMeters: session.distanceMeters,
+        sport: session.sport,
+        notes: session.notes,
+      }}
+      onComplete={handleAttach}
+      onClose={() => setShowImport(false)}
+    />
+  );
+
+  if (fullPage) {
+    const d = new Date(session.startedAt);
+    const date = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+    const time = d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+    return (
+      <div className="column">
+        {/* Hero */}
+        <section className="surface">
+          <div className="row compact align-center">
+            <SportIcon sport={session.sport} size={16} />
+            <h3 >{defaultTitle}</h3>
+            <span className="caption muted">·</span>
+            <span className="caption muted">{date} · {time}</span>
+          </div>
+          <EditableTitle value={displayTitle} onSave={saveTitle} placeholder={defaultTitle} level="h1" />
+          
+          
+        </section>
+        <section className="ghost surface">
+          <SocialBar session={session} />
+        </section>
+        <section className='surface'>
+          {statsGrid}
+        </section>
+        {/* Photos */}
+        {session.media && session.media.length > 0 && (
+          <section className="surface bare">
+            <div className="row compact align-center surface tight ghost">
+              <Image size={14} className="faint" />
+              <p className="eyebrow">Photos · {session.media.length}</p>
+            </div>
+            <Carousel slides={session.media} />
+          </section>
+        )}
+
+        {/* Route */}
+        <section className="surface">
+          <div className="row compact align-center">
+            <MapPin size={14} className="faint" />
+            <p className="eyebrow">Route</p>
+          </div>
+          {track && (track.points?.length ?? 0) >= 2 ? (
+            <SessionGpsPreview track={track} sessionId={session.id} />
+          ) : (
+            <button type="button" className="ghost" onClick={() => setShowImport(true)}>
+              + Attach GPS file
+            </button>
+          )}
+        </section>
+
+        {/* Performance */}
+        {(hasSecondary || session.rpe != null) && (
+          <section className="surface">
+            <div className="row compact align-center">
+              <HeartPulse size={14} className="faint" />
+              <p className="eyebrow">Performance</p>
+            </div>
+            <div className="cluster">
+              {track?.avgHeartRate != null && (
+                <span className="pill">AVG HR <strong>{track.avgHeartRate} bpm</strong></span>
+              )}
+              {track?.maxHeartRate != null && (
+                <span className="pill">MAX HR <strong>{track.maxHeartRate} bpm</strong></span>
+              )}
+              {track?.calories != null && (
+                <span className="pill">{track.calories} kcal</span>
+              )}
+              {track?.avgPower != null && (
+                <span className="pill">{track.avgPower} W</span>
+              )}
+              {session.rpe != null && (
+                <span className={`pill ${color}`}><span className="dot" />RPE {session.rpe} / 10</span>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Notes */}
+        {session.notes && (
+          <section className="surface">
+            <p className="eyebrow">Notes</p>
+            <p>{session.notes}</p>
+          </section>
+        )}
+
+        {charts}
+        {importModal}
+      </div>
+    );
+  }
+
+  /* Modal / compact path */
   return (
     <div className="column">
-      {/* Primary stats */}
       <section className="surface row space-between">
-        <div className="stat column align-center">
-          <span className="caption">DISTANCE</span>
-          <p className={`detail ${color}`}>{distKm.toFixed(2)} <span className="caption">km</span></p>
-        </div>
-        <div className="stat column align-center">
+        {session.distanceMeters > 0 && (
+          <div className="column compact align-center">
+            <span className="caption">DISTANCE</span>
+            <p className={`detail ${color}`}>{distKm.toFixed(2)} <span className="caption">km</span></p>
+          </div>
+        )}
+        <div className="column compact align-center">
           <span className="caption">DURATION</span>
           <p className="detail">{formatDuration(session.durationSeconds)}</p>
         </div>
-        <div className="stat column align-center">
-          <span className="caption">PACE</span>
-          <p className="detail">{formatPace(pace)}</p>
-        </div>
+        {pace > 0 && (
+          <div className="column compact align-center">
+            <span className="caption">PACE</span>
+            <p className="detail">{formatPace(pace)}</p>
+          </div>
+        )}
         {track?.elevationGain != null && (
-          <div className="stat column align-center">
+          <div className="column compact align-center">
             <span className="caption">ELEVATION</span>
             <p className="detail">+{Math.round(track.elevationGain)} <span className="caption">m</span></p>
           </div>
         )}
       </section>
-      {/* Map */}
       {track && (track.points?.length ?? 0) >= 2 ? (
-        <section className='surface compact' >
+        <section className="surface tight">
           <SessionGpsPreview track={track} sessionId={session.id} />
         </section>
-
       ) : (
-        <section className="surface compact">
-          <button type="button" className="ghost" onClick={() => setShowImport(true)}>
-            + Attach GPS file
-          </button>
+        <section className="surface tight">
+          <button type="button" className="ghost" onClick={() => setShowImport(true)}>+ Attach GPS file</button>
         </section>
       )}
-
-
-
-      {/* Secondary stats */}
       {hasSecondary && (
-        <section className="surface compact">
+        <section className="surface tight">
           <div className="cluster">
-            {track.avgHeartRate != null && (
-              <span className="pill plain">AVG HR <strong>{track.avgHeartRate} bpm</strong></span>
-            )}
-            {track.maxHeartRate != null && (
-              <span className="pill plain">MAX HR <strong>{track.maxHeartRate}</strong></span>
-            )}
-            {track.calories != null && (
-              <span className="pill plain">CALORIES <strong>{track.calories} kcal</strong></span>
-            )}
-            {track.avgPower != null && (
-              <span className="pill plain">POWER <strong>{track.avgPower} W</strong></span>
-            )}
+            {track.avgHeartRate != null && <span className="pill">AVG HR <strong>{track.avgHeartRate} bpm</strong></span>}
+            {track.maxHeartRate != null && <span className="pill">MAX HR <strong>{track.maxHeartRate}</strong></span>}
+            {track.calories != null && <span className="pill">CALORIES <strong>{track.calories} kcal</strong></span>}
+            {track.avgPower != null && <span className="pill">POWER <strong>{track.avgPower} W</strong></span>}
           </div>
         </section>
       )}
-
-      {/* Private notes */}
       {session.notes && (
-        <section className="surface compact">
+        <section className="surface tight">
           <span className="caption">Private notes</span>
           <p className="detail">{session.notes}</p>
         </section>
       )}
-
-      {(session as any).media?.length > 0 && (
-        <div className="cluster compact">
-          {(session as any).media.map((src: string, i: number) => (
-            <img key={i} src={src} alt="" className="avatar xl" />
-          ))}
-        </div>
-      )}
-
-      {(session as any).comments?.length > 0 && (
-        <div className="column compact">
-          {(session as any).comments.map((c: { text: string; createdAt: number }, i: number) => (
-            <div key={i} className="surface flat compact column">
-              <span className="caption muted">{new Date(c.createdAt).toLocaleString('en-GB')}</span>
-              <p>{c.text}</p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Charts */}
-      {track && (track.points?.length ?? 0) > 0 && (
-        <>
-          <section className="surface compact column">
-            <span className="caption">Pace</span>
-            <PaceOverTimeChart points={track.points} />
-          </section>
-          <section className="surface compact column">
-            <span className="caption">Heart rate</span>
-            <HROverTimeChart points={track.points} />
-          </section>
-          <section className="surface compact column">
-            <span className="caption">Elevation</span>
-            <ElevationProfileChart points={track.points} />
-          </section>
-          <section className="surface compact column">
-            <span className="caption">Splits</span>
-            <KmSplitsTable points={track.points} />
-          </section>
-        </>
-      )}
-
-      {showImport && (
-        <ImportModal
-          context="enrich-session"
-          existingSession={{
-            id: session.id,
-            durationSeconds: session.durationSeconds,
-            distanceMeters: session.distanceMeters,
-            sport: session.sport,
-            notes: session.notes,
-          }}
-          onComplete={handleAttach}
-          onClose={() => setShowImport(false)}
-        />
-      )}
+      {(session as any).media?.length > 0 && <Carousel slides={(session as any).media} />}
+      {charts}
+      {importModal}
     </div>
   );
 }
 
 /* ── Session History Detail (summary) ── */
 
-function HistoryDetail({ session }: { session: SessionHistoryItem }) {
+function HistoryDetail({ session }: { session: ActivityHistoryItem }) {
   return (
-    <section className="surface compact">
+    <section className="surface tight">
       <div className="row space-between align-center">
-        <div className="stat">
+        <div className="column compact">
           <span className="caption">DURATION</span>
           <p className="detail">{formatDuration(session.durationSeconds)}</p>
         </div>
-        <div className="stat">
+        <div className="column compact">
           <span className="caption">SETS</span>
           <p className="detail">{session.totalSets}</p>
         </div>
-        <div className="stat">
+        <div className="column compact">
           <span className="caption">EXERCISES</span>
           <p className="detail">{session.exerciseCount}</p>
         </div>
       </div>
       {session.hasPR && (
         <div className="row">
-          <span className="pill active">🏆 PR</span>
+          <span className="pill active"><Trophy size={11} /> PR</span>
+        </div>
+      )}
+      {(session.rpe != null || (session.tags?.length ?? 0) > 0) && (
+        <div className="row compact wrap align-center">
+          {session.rpe != null && (
+            <span className="pill primary">RPE {session.rpe}</span>
+          )}
+          {session.tags?.map(t => (
+            <span key={t} className="pill"><span className="dot" />{t}</span>
+          ))}
+        </div>
+      )}
+      {session.notes && (
+        <div className="column compact">
+          <span className="caption">Notes</span>
+          <p className="detail">{session.notes}</p>
         </div>
       )}
       {session.media && session.media.length > 0 && (
-        <div className="cluster compact">
-          {session.media.map((src, i) => (
-            <img key={i} src={src} alt="" className="avatar xl" />
-          ))}
-        </div>
+        <Carousel slides={session.media} />
       )}
       {session.comments && session.comments.length > 0 && (
         <div className="column compact">
@@ -507,37 +651,37 @@ export function SessionDetail({ session, onClose, onEdit, onShare, onExportJson,
   const navigate = useNavigate();
   const isCardio = isCardioSession(session);
   const isSampleCardio = isSampleCardioSession(session);
-  const isStrength = isActiveSessionView(session);
-  const isHistory = isSessionHistoryItem(session);
+  const isStrength = isActivityView(session);
+  const isHistory = isActivityHistoryItem(session);
 
   // Derive display fields
   let defaultTitle = '';
   let date = '';
   let time = '';
-  let icon = '';
+  let icon: React.ReactNode = null;
   let location: string | undefined;
   let description: string | undefined;
 
   if (isSampleCardio) {
-    defaultTitle = session.sport.charAt(0).toUpperCase() + session.sport.slice(1);
+    defaultTitle = getActivityLabel(session.sport as SportType);
     date = new Date(session.createdAt).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
-    icon = sportIcon(session.sport);
+    icon = <SportIcon sport={session.sport} size={20} />;
   } else if (isCardio) {
-    defaultTitle = session.sport.charAt(0).toUpperCase() + session.sport.slice(1);
+    defaultTitle = getActivityLabel(session.sport as SportType);
     const d = new Date(session.startedAt);
     date = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
     time = d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-    icon = sportIcon(session.sport);
+    icon = <SportIcon sport={session.sport} size={20} />;
     location = session.location;
-    description = undefined; // public description not yet in domain
+    description = undefined;
   } else if (isHistory) {
     defaultTitle = session.name;
     date = new Date(session.startedAt).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
-    icon = categoryIcon(session.category);
+    icon = <CategoryIcon category={session.category} size={20} />;
   } else if (isStrength) {
     defaultTitle = session.name;
     date = new Date(session.startedAt ?? 0).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
-    icon = categoryIcon('strength');
+    icon = <CategoryIcon category="strength" size={20} />;
   }
 
   const currentTitle = isCardio ? (session.title || defaultTitle) : defaultTitle;
@@ -567,7 +711,7 @@ export function SessionDetail({ session, onClose, onEdit, onShare, onExportJson,
           ) : (
             <h2>{currentTitle}</h2>
           )}
-          {location && <p className="caption">📍 {location}</p>}
+          {location && <p className="caption"><MapPin size={11} /> {location}</p>}
           <time className="caption">{date}{time ? ` · ${time}` : ''}</time>
           {description && <p className="detail muted">{description}</p>}
         </div>
@@ -580,19 +724,19 @@ export function SessionDetail({ session, onClose, onEdit, onShare, onExportJson,
   if (asPage) {
     return (
       <div className="column">
-        <div className="row space-between align-center">
-          <button type="button" className="ghost" onClick={handleClose}>Back</button>
+        <div className="row center align-center">
+          <button type="button" className="ghost icon sm" onClick={handleClose}>
+            <ChevronLeft size={14} />
+          </button>
+          <h3 className="grow truncate">{currentTitle}</h3>
           <div className="row compact">
-            {onEdit && <button type="button" className="ghost" onClick={onEdit}>✏️ Edit</button>}
-            {onExportJson && <button type="button" className="ghost" onClick={onExportJson}>📄 JSON</button>}
-            {onExportCsv && <button type="button" className="ghost" onClick={onExportCsv}>📄 CSV</button>}
-            {onShare && <button type="button" className="ghost" onClick={onShare}>📤 Share</button>}
+            {onEdit && <button type="button" className="ghost icon sm" onClick={onEdit}><Pencil size={13} /></button>}
+            {onShare && <button type="button" className="ghost icon sm" onClick={onShare}><Share2 size={13} /></button>}
           </div>
         </div>
-        {header}
-        {/* {socialRow} */}
+        {!isCardio && !isSampleCardio && header}
+        {(isCardio || isSampleCardio) && <CardioDetail session={session as CardioSession} fullPage />}
         {isStrength && <StrengthDetail session={session} />}
-        {(isCardio || isSampleCardio) && <CardioDetail session={session as any} />}
         {isHistory && <HistoryDetail session={session} />}
       </div>
     );
@@ -612,7 +756,7 @@ export function SessionDetail({ session, onClose, onEdit, onShare, onExportJson,
         {isHistory && <HistoryDetail session={session} />}
 
         <footer className="row space-between align-center">
-          <button type="button" className="ghost icon">📤 Share</button>
+          <button type="button" className="ghost"><Share2 size={14} /> Share</button>
         </footer>
       </section>
     </div>

@@ -62,3 +62,5 @@ export {
 } from './projections/body';
 
 export { registerEquipmentMileagePolicy } from './policies/equipment';
+
+export type { MockAchievement, MockGoal, MockSharedSession, MockLoggedHealth, MockProfileNutrition } from './domain/mock-types';

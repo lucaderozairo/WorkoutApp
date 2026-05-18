@@ -1,12 +1,29 @@
 export type {
+  // New types
+  Activity,
+  ActivityStatus,
+  ActivityPartner,
+  ActivityComment,
+  ActivityLogState,
+  SportType,
+  SetEntry,
+  SetMeasure,
+  Segment,
+  StrengthSegment,
+  CompositeSegment,
+  CardioSegment,
+  TransitionSegment,
+  SourceContribution,
+  DataProvider,
+  DataSourceId,
+  ActivityMetrics,
+  MetricKey,
   ExerciseCategory,
   Exercise,
   StrengthSet,
   CardioSet,
-  SetEntry,
   Block,
   TrainingSession,
-  TrainingLogState,
   TrainingLogEvent,
   TrainingLogCommand,
   StartSession,
@@ -32,14 +49,18 @@ export type {
   AddToSuperset,
   LeaveSuperset,
   RemoveBlock,
+  UpdateSessionDetails,
 } from './domain/types';
 
 export type {
-  ActiveSessionView,
-  SessionHistoryItem,
-  EditingSessionsView,
+  ActivityView,
+  ActivitiesState,
+  ActivityHistoryItem,
+  SegmentView,
   RecentExercise,
 } from './projections';
+
+export { applyAll as replayTrainingLogEvents } from './commands/handlers';
 
 export {
   handleStartSession,
@@ -65,19 +86,45 @@ export {
   handleAddToSuperset,
   handleLeaveSuperset,
   handleRemoveBlock,
-  handleUpdateTrainingSession,
+  handleUpdateSessionDetails,
 } from './commands/handlers';
 
 export {
   getActiveSession,
-  getSessionHistory,
-  getEditingSession,
+  getActivity,
+  getActivityHistory,
   getRecentExercises,
 } from './queries';
 
 export {
-  activeSessionProjection,
-  sessionHistoryProjection,
-  editingSessionProjection,
+  sessionProjection,
   recentExercisesProjection,
 } from './projections';
+
+export type {
+  UISet,
+  UICardioSet,
+  UIExercise,
+  UIBlock,
+  UIBlockType,
+  UICondition,
+  DeleteTarget,
+} from './projections/viewTypes';
+export { EXERCISE_GROUPS, BT_OPTIONS } from './projections/viewTypes';
+
+export {
+  domainBlocksToUIBlocks,
+  sessionDateLabel,
+  getWarnings,
+  worstSev,
+  worstActiveCondition,
+} from './projections/mappers';
+
+export type { CombinedSession, TypeFilter } from './queries/calendarUtils';
+export {
+  toDateKey,
+  buildDateMap,
+  getWeekStart,
+  formatWeekRange,
+  getMonthGrid,
+} from './queries/calendarUtils';

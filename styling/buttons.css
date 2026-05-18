@@ -14,7 +14,7 @@ input[type="reset"],
   color: var(--ink);
   background: var(--surface-1);
   border: 1px solid var(--line-strong);
-  border-radius: var(--s-4);
+  border-radius: var(--s-2);
   box-shadow: none;
   cursor: pointer;
   white-space: nowrap;
@@ -25,11 +25,15 @@ input[type="reset"],
     transform 0.12s var(--ease);
 }
 
-button:hover,
-input[type="button"]:hover,
-input[type="submit"]:hover,
-input[type="reset"]:hover,
-.custom-file-upload:hover {
+:disabled {
+  cursor:default ;
+}
+
+button:not(:disabled):hover,
+input[type="button"]:not(:disabled):hover,
+input[type="submit"]:not(:disabled):hover,
+input[type="reset"]:not(:disabled):hover,
+.custom-file-upload:not(:disabled):hover {
   background: var(--surface-2);
   color: var(--ink);
   box-shadow: none;
@@ -56,9 +60,9 @@ input[type="submit"].primary,
   border-color: transparent;
   font-weight: 600;
 }
-button.primary:hover,
-input[type="submit"].primary:hover,
-.primary:hover {
+button.primary:not(:disabled):hover,
+input[type="submit"].primary:not(:disabled):hover,
+.primary:not(:disabled):hover {
   filter: brightness(0.95);
   background: var(--accent);
 }
@@ -83,14 +87,19 @@ button.ghost {
   box-shadow: none;
   color: var(--ink);
 }
-button.ghost:hover {
+button.ghost:not(:disabled):hover {
   background: var(--surface-2);
 }
 button.ghost.flush {
   padding-inline: 0;
 }
-button.ghost.flush:hover {
+button.ghost.flush:not(:disabled):hover {
   background: transparent;
+}
+button.ghost.active {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
 }
 
 /* ── Icon ── */
@@ -142,7 +151,7 @@ input[type="reset"] {
   border-color: var(--line-strong);
   background: transparent;
 }
-input[type="reset"]:hover {
+input[type="reset"]:not(:disabled):hover {
   background: var(--surface-2);
 }
 

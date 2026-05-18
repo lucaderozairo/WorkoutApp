@@ -1,3 +1,13 @@
+## CSS Rules
+
+**IMPORTANT: Before adding or modifying any CSS or className attributes, read the full conventions file:**
+
+`C:\Users\Deroz01\.claude\projects\c--Users-Deroz01-Documents-Coding-Projects-Workout-App-workoutApp\memory\feedback_css_conventions.md`
+
+This covers: compose-first, no inline styles, no BEM, gap not margins, surface variants, stat/row composition patterns, and the full existing utility map. Violations will be corrected.
+
+---
+
 ## graphify
 
 This project has a graphify knowledge graph at graphify-out/.
@@ -30,8 +40,8 @@ Fall back to Grep/Glob/Read **only** when the graph doesn't cover what you need.
 
 | Tool | Use when |
 |------|----------|
-| `detect_changes` | Reviewing code changes — gives risk-scored analysis |
-| `get_review_context` | Need source snippets for review — token-efficient |
+| `detect_changes` | Reviewing code changes ï¿½ gives risk-scored analysis |
+| `get_review_context` | Need source snippets for review ï¿½ token-efficient |
 | `get_impact_radius` | Understanding blast radius of a change |
 | `get_affected_flows` | Finding which execution paths are impacted |
 | `query_graph` | Tracing callers, callees, imports, tests, dependencies |

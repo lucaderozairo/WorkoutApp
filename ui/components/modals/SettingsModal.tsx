@@ -12,7 +12,7 @@ import type { Id } from '@shared/types';
 import { importCsv, writeImportToStore } from '@shared/utils/importCsv';
 import { exportAllSessionsCsv } from '@shared/utils/exportCsv';
 import { triggerDownload } from '@shared/utils/csv';
-import type { SessionHistoryItem } from '@features/training_log';
+import { getActivityHistory } from '@features/training_log';
 import type { CardioSession } from '@features/cardio/domain/types';
 
 interface SettingsModalProps {
@@ -66,7 +66,7 @@ export function SettingsContent() {
   };
 
   const exportDataCsv = () => {
-    const history = viewStore.get<SessionHistoryItem[]>('session_history') ?? [];
+    const history = getActivityHistory();
     const cardioView = viewStore.get<{ sessions: CardioSession[] }>('recent_cardio_sessions') ?? { sessions: [] };
     exportAllSessionsCsv(history, cardioView.sessions);
   };
@@ -97,9 +97,8 @@ export function SettingsContent() {
           const value = parsed.data[key];
           if (value !== undefined) viewStore.set(key as PersistedKey, value);
         }
-        const sessionCount = Array.isArray(parsed.data.session_history)
-          ? parsed.data.session_history.length
-          : 0;
+        const sessionsData = parsed.data.sessions as { byId?: Record<string, unknown> } | undefined;
+        const sessionCount = sessionsData?.byId ? Object.keys(sessionsData.byId).length : 0;
         setImportStatus(`Imported — ${sessionCount} session${sessionCount !== 1 ? 's' : ''} loaded.`);
       }
     } catch {

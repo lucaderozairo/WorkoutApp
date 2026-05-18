@@ -13,6 +13,7 @@ export type DomainEvent<TType extends string = string, TPayload = unknown> = {
 
 export type ExerciseCategory = 'strength' | 'cardio' | 'mobility';
 
+
 export interface Result<T, E = string> {
   ok: boolean;
   value?: T;

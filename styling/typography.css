@@ -50,7 +50,6 @@ h6 {
 /* Eyebrow: small uppercase label above a heading */
 .eyebrow,
 .field__label,
-.stat__eyebrow,
 .splits-table th,
 .app-tabbar a {
   font-size: var(--t-xs);
@@ -61,22 +60,20 @@ h6 {
 }
 
 /* Text utilities */
+.bold {
+  font-weight: 600;
+}
 .muted {
   color: var(--ink-muted);
 }
 .faint {
   color: var(--ink-faint);
 }
-.text-center {
-  text-align: center;
-}
-.text-right {
-  text-align: right;
-}
-
-.uppercase,
 .mono {
   font-family: var(--font-mono);
+}
+.uppercase {
+  text-transform: uppercase;
 }
 
 /* Legacy size classes kepx for backward compat */

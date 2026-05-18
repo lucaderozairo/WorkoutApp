@@ -33,7 +33,7 @@ export function HealthTab() {
             {latestBw?.weightKg ?? '—'}<span className="faint">kg</span>
           </span>
           {bwDelta !== null && (
-            <span className={`stat__trend ${bwDelta <= 0 ? 'stat__trend--down' : 'stat__trend--up'} mono`}>
+            <span className={`detail muted ${bwDelta <= 0 ? 'negative' : 'positive'} mono`}>
               {bwDelta <= 0 ? '↓' : '↑'} {Math.abs(bwDelta).toFixed(1)} since last
             </span>
           )}

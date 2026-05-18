@@ -125,7 +125,7 @@ export function ReadinessWidget({ size }: { size: WidgetSize }) {
   const ringSize  = size === '2x2' ? 96 : 72;
 
   if (size === '1x1') return (
-    <div className="surface compact column center align-center h-full">
+    <div className="surface tight column center align-center h-full">
       <span className="eyebrow">Readiness</span>
       <MiniRing value={score} color={ringColor} size={72} />
     </div>
@@ -139,7 +139,7 @@ export function ReadinessWidget({ size }: { size: WidgetSize }) {
   ];
 
   return (
-    <div className="surface compact column h-full">
+    <div className="surface tight column h-full">
       <div className="row space-between align-center">
         <span className="eyebrow">Readiness</span>
         <span className={`badge ${badge.cls}`}>{badge.label}</span>
@@ -172,9 +172,9 @@ export function ReadinessWidget({ size }: { size: WidgetSize }) {
 
 export function SleepBreakdownWidget({ size }: { size: WidgetSize }) {
   return (
-    <div className="surface compact column h-full">
+    <div className="surface tight column h-full">
       <span className="eyebrow">Sleep Stages</span>
-      <div className="grow" style={{ minHeight: 0 }}>
+      <div className="grow">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={MOCK.sleepHistory} barSize={10} margin={{ top: 4, right: 4, left: -28, bottom: 0 }}>
             <XAxis dataKey="date" tick={TICK} axisLine={false} tickLine={false} />
@@ -194,9 +194,9 @@ export function SleepBreakdownWidget({ size }: { size: WidgetSize }) {
 
 export function HRVWidget({ size }: { size: WidgetSize }) {
   return (
-    <div className="surface compact column h-full">
+    <div className="surface tight column h-full">
       <span className="eyebrow">HRV Trend</span>
-      <div className="grow" style={{ minHeight: 0 }}>
+      <div className="grow">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={MOCK.healthMetrics} margin={{ top: 4, right: 4, left: -28, bottom: 0 }}>
             <XAxis dataKey="date" tick={TICK} axisLine={false} tickLine={false} />
@@ -215,14 +215,14 @@ export function HRVWidget({ size }: { size: WidgetSize }) {
 export function RestingHRWidget({ size }: { size: WidgetSize }) {
   const current = MOCK.healthMetrics[6].restingHr;
   return (
-    <div className="surface compact column h-full">
+    <div className="surface tight column h-full">
       <span className="eyebrow">Resting HR</span>
       <div className="row align-center">
         <h3 className="mono">{current}</h3>
         <span className="caption faint">&nbsp;bpm</span>
       </div>
       {size === '2x1' && (
-        <div className="grow" style={{ minHeight: 0 }}>
+        <div className="grow">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={MOCK.healthMetrics} margin={{ top: 4, right: 4, left: -40, bottom: 0 }}>
               <XAxis dataKey="date" tick={TICK} axisLine={false} tickLine={false} />
@@ -247,7 +247,7 @@ export function BodyBatteryWidget({ size: _ }: { size: WidgetSize }) {
     { value: 100 - val, fill: 'var(--surface-3)' },
   ];
   return (
-    <div className="surface compact column center align-center h-full">
+    <div className="surface tight column center align-center h-full">
       <span className="eyebrow">Body Battery</span>
       <PieChart width={100} height={56}>
         <Pie
@@ -277,14 +277,14 @@ export function PlanAdherenceWidget({ size }: { size: WidgetSize }) {
   const ringColor = pct >= 80 ? 'var(--ok)' : pct >= 60 ? 'var(--warn)' : 'var(--bad)';
 
   if (size === '1x1') return (
-    <div className="surface compact column center align-center h-full">
+    <div className="surface tight column center align-center h-full">
       <span className="eyebrow">Adherence</span>
       <MiniRing value={pct} color={ringColor} size={72} />
     </div>
   );
 
   return (
-    <div className="surface compact column h-full">
+    <div className="surface tight column h-full">
       <div className="row space-between align-center">
         <span className="eyebrow">Plan Adherence</span>
         <span className={`badge ${badge.cls}`}>{badge.label}</span>
@@ -306,9 +306,9 @@ export function PlanAdherenceWidget({ size }: { size: WidgetSize }) {
 
 export function WeeklyVolumeWidget({ size }: { size: WidgetSize }) {
   return (
-    <div className="surface compact column h-full">
+    <div className="surface tight column h-full">
       <span className="eyebrow">Weekly Volume</span>
-      <div className="grow" style={{ minHeight: 0 }}>
+      <div className="grow">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={MOCK.weeklyVolume} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
             <XAxis dataKey="day" tick={TICK} axisLine={false} tickLine={false} />
@@ -327,14 +327,14 @@ export function WeeklyVolumeWidget({ size }: { size: WidgetSize }) {
 export function ActivityFeedWidget({ size }: { size: WidgetSize }) {
   const items = size === '2x2' ? MOCK.activityFeed : MOCK.activityFeed.slice(0, 3);
   return (
-    <div className="surface compact column h-full">
+    <div className="surface tight column h-full">
       <span className="eyebrow">Recent Sessions</span>
-      <div className="column compact" style={{ overflowY: 'auto', minHeight: 0, flex: 1 }}>
+      <div className="column compact grow scroll-y">
         {items.map((item, i) => (
-          <div key={i} className="row align-center compact" style={{ paddingBlock: 'var(--s-2)', borderBottom: i < items.length - 1 ? '1px solid var(--line)' : 'none' }}>
+          <div key={i} className="row align-center compact list-divider">
             <span className={`pill ${item.type} plain`}>{item.type}</span>
-            <div className="column compact grow" style={{ minWidth: 0 }}>
-              <span className="detail" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.title}</span>
+            <div className="column compact grow">
+              <span className="detail truncate">{item.title}</span>
               <span className="caption faint">{item.date}</span>
             </div>
             <span className="mono caption">{item.metric}</span>
@@ -350,9 +350,9 @@ export function ActivityFeedWidget({ size }: { size: WidgetSize }) {
 export function ActiveGoalsWidget({ size }: { size: WidgetSize }) {
   const goals = size === '2x2' ? MOCK.activeGoals : MOCK.activeGoals.slice(0, 2);
   return (
-    <div className="surface compact column h-full">
+    <div className="surface tight column h-full">
       <span className="eyebrow">Active Goals</span>
-      <div className="column compact grow" style={{ minHeight: 0, overflowY: 'auto' }}>
+      <div className="column compact grow scroll-y">
         {goals.map((g) => {
           const pct = Math.min(100, 'inverted' in g && g.inverted
             ? Math.round((g.target / g.current) * 100)
@@ -385,7 +385,7 @@ export function MacrosWidget({ size }: { size: WidgetSize }) {
   const pieSize = size === '2x1' ? 90 : 110;
 
   return (
-    <div className="surface compact column h-full">
+    <div className="surface tight column h-full">
       <span className="eyebrow">Macros</span>
       <div className="row align-center">
         <PieChart width={pieSize} height={pieSize}>
@@ -422,7 +422,7 @@ export function CaloriesWidget({ size: _ }: { size: WidgetSize }) {
   const { kcal, target } = MOCK.nutrition;
   const pct = Math.round((kcal / target) * 100);
   return (
-    <div className="surface compact column h-full">
+    <div className="surface tight column h-full">
       <span className="eyebrow">Calories</span>
       <div className="row align-center">
         <h3 className="mono">{kcal}</h3>
@@ -442,7 +442,7 @@ export function HabitsWidget({ size }: { size: WidgetSize }) {
 
   if (size === '1x1') {
     return (
-      <div className="surface compact column center align-center h-full">
+      <div className="surface tight column center align-center h-full">
         <span className="eyebrow">Habits</span>
         <h3 className="mono">{done}/{habits.length}</h3>
         <span className="caption faint">done today</span>
@@ -451,14 +451,14 @@ export function HabitsWidget({ size }: { size: WidgetSize }) {
   }
 
   return (
-    <div className="surface compact column h-full">
+    <div className="surface tight column h-full">
       <div className="row space-between align-center">
         <span className="eyebrow">Today's Habits</span>
         <span className="caption faint">{done}/{habits.length}</span>
       </div>
-      <div className="column compact grow" style={{ minHeight: 0, overflowY: 'auto' }}>
+      <div className="column compact grow scroll-y">
         {habits.map((h, i) => (
-          <div key={i} className="row align-center compact" style={{ paddingBlock: 'var(--s-1)', borderBottom: i < habits.length - 1 ? '1px solid var(--line)' : 'none' }}>
+          <div key={i} className="row align-center compact list-divider-sm">
             <span className={`badge ${h.done ? 'green' : ''}`}>{h.done ? '✓' : '·'}</span>
             <span className="detail grow">{h.name}</span>
             {h.streak > 0 && <span className="mono caption">{h.streak}🔥</span>}
@@ -473,15 +473,19 @@ export function HabitsWidget({ size }: { size: WidgetSize }) {
 
 export function MonthlyDistanceWidget({ size }: { size: WidgetSize }) {
   return (
-    <div className="surface compact column h-full">
+    <div className="surface tight column h-full">
       <span className="eyebrow">Monthly Distance</span>
-      <div className="row compact">
-        <div className="dot run" />
-        <span className="caption">Run</span>
-        <div className="dot cycle" style={{ marginLeft: 'var(--s-3)' }} />
-        <span className="caption">Cycle</span>
+      <div className="row">
+        <div className="row compact align-center">
+          <div className="dot run" />
+          <span className="caption">Run</span>
+        </div>
+        <div className="row compact align-center">
+          <div className="dot cycle" />
+          <span className="caption">Cycle</span>
+        </div>
       </div>
-      <div className="grow" style={{ minHeight: 0 }}>
+      <div className="grow">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={MOCK.monthlyProgression} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
             <XAxis dataKey="month" tick={TICK} axisLine={false} tickLine={false} />
@@ -503,11 +507,11 @@ const SEVERITY_BADGE: Record<string, string> = { ok: 'green', warn: 'amber', inf
 export function InsightsWidget({ size }: { size: WidgetSize }) {
   const items = size === '2x2' ? MOCK.insights : MOCK.insights.slice(0, 2);
   return (
-    <div className="surface compact column h-full">
+    <div className="surface tight column h-full">
       <span className="eyebrow">Insights</span>
-      <div className="column compact grow" style={{ minHeight: 0, overflowY: 'auto' }}>
+      <div className="column compact grow scroll-y">
         {items.map((ins, i) => (
-          <div key={i} className="row compact" style={{ padding: 'var(--s-3)', background: 'var(--surface-2)', borderRadius: 'var(--r-sm)' }}>
+          <div key={i} className="row compact alert">
             <span className={`badge ${SEVERITY_BADGE[ins.severity] ?? ''}`}>{ins.severity}</span>
             <span className="detail grow">{ins.message}</span>
           </div>

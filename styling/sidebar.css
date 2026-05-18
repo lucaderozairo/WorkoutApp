@@ -1,0 +1,177 @@
+/* Collapsible side panel — generic primitive.
+   Apply to <aside class="side"> or to .app-rail.
+   .side is expanded by default; add .collapsed for icon-rail mode. */
+.side {
+  flex: 0 0 260px;
+  background: var(--surface-1);
+  border-right: 1px solid var(--line);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+  transition: flex-basis var(--duration-medium, 0.25s) var(--ease),
+              width var(--duration-medium, 0.25s) var(--ease);
+}
+.side.collapsed {
+  flex-basis: auto;
+  max-width: fit-content;
+  overflow: hidden;
+}
+
+/* ── Sticky sidebar header ── */
+.side-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--surface-1);
+  border-bottom: 1px solid var(--line);
+  padding: var(--s-4) var(--s-4) var(--s-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+/* ── Section block: eyebrow + content, divided by bottom border ── */
+.side-block {
+  padding: var(--s-3) var(--s-4);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+
+/* ── Activity selector chips ── */
+.activity-chip {
+  flex: 1;
+  min-width: 0;
+  padding: var(--s-3) var(--s-1);
+  border-radius: var(--r-sm);
+  border: 1.5px solid var(--line);
+  background: var(--surface-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-1);
+  cursor: pointer;
+  transition: border-color 0.12s var(--ease), background 0.12s var(--ease);
+}
+.activity-chip.active {
+  background: var(--surface-1);
+}
+.activity-chip[data-id="run"].active  { border-color: var(--c-cardio); }
+.activity-chip[data-id="hike"].active { border-color: var(--warn); }
+.activity-chip[data-id="ride"].active { border-color: var(--c-nutrition); }
+.activity-chip[data-id="walk"].active { border-color: var(--c-recovery); }
+
+.activity-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  opacity: 0.45;
+  transition: opacity 0.12s var(--ease);
+}
+.activity-chip.active .activity-dot { opacity: 1; }
+.activity-dot[data-id="run"]  { background: var(--c-cardio); }
+.activity-dot[data-id="hike"] { background: var(--warn); }
+.activity-dot[data-id="ride"] { background: var(--c-nutrition); }
+.activity-dot[data-id="walk"] { background: var(--c-recovery); }
+
+/* ── Waypoint badge ── */
+.waypoint-badge {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--r-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.waypoint-badge.start  { background: var(--accent); color: var(--accent-ink); }
+.waypoint-badge.finish { background: var(--ink); color: var(--surface-1); }
+.waypoint-badge.mid    { background: var(--surface-2); color: var(--ink-muted); border: 1px solid var(--line); }
+
+
+/* Bottom sheet — generic mobile primitive driven by data-snap */
+.bottom-sheet {
+  position: relative;
+  background: var(--surface-1);
+  border-top: 1px solid var(--line);
+  border-top-left-radius: var(--r-lg);
+  border-top-right-radius: var(--r-lg);
+  box-shadow: var(--box-shadow-lg, 0 -8px 24px rgba(14,19,32,0.08));
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: height var(--duration-medium, 0.25s) var(--ease);
+}
+.bottom-sheet[data-snap="peek"] { height: 56px; }
+.bottom-sheet[data-snap="mid"]  { height: 240px; }
+.bottom-sheet[data-snap="full"] { height: 65vh; }
+.bottom-sheet .handle {
+  display: flex; justify-content: center; padding: var(--s-2) 0;
+  flex-shrink: 0; border: none; background: none; cursor: pointer;
+  width: 100%;
+}
+.bottom-sheet .handle::before {
+  content: ""; width: 38px; height: 4px; border-radius: var(--r-xs);
+  background: var(--surface-3); display: block;
+}
+.bottom-sheet .body {
+  flex: 1; overflow-y: auto;
+  display: flex; flex-direction: column; gap: var(--s-3);
+  padding: 0 var(--s-4) var(--s-4);
+}
+
+@media (max-width: 780px) {
+  .side { display: none; }
+}
+@media (min-width: 781px) {
+  .bottom-sheet { display: none; }
+}
+
+/* ── Mobile header overlay ── */
+[data-mobile-header] {
+  background: linear-gradient(180deg, rgba(14,19,32,0.85) 0%, transparent 100%);
+  padding: var(--s-2) var(--s-3);
+  pointer-events: none;
+}
+[data-mobile-header] > * { pointer-events: auto; }
+[data-mobile-header] .ghost { color: #fff; }
+
+/* ── Map control groups ── */
+[data-map-group] {
+  padding: 0;
+  overflow: hidden;
+}
+[data-map-btn] {
+  border-radius: 0;
+}
+[data-map-btn]:not(:last-child) {
+  border-bottom: 1px solid var(--line);
+}
+
+/* ── Elevation panel ── */
+[data-elevation-panel] {
+  border-top: 1px solid var(--line);
+  min-height: 96px;
+}
+
+/* ── Desktop elevation chart ── */
+[data-chart] { height: 60px; }
+[data-chart] svg { width: 100%; height: 100%; }
+
+/* ── Bottom-sheet mini chart ── */
+[data-mini-chart] { height: 40px; }
+[data-mini-chart] svg { width: 100%; height: 100%; }

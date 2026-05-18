@@ -17,50 +17,13 @@
   grid-template-columns: repeat(2, 1fr);
   gap: var(--s-3);
 }
-.surface.compact {
-  min-height: unset;
-  padding: var(--s-3);
-}
-.surface.stat {
-  min-height: unset;
+.surface.centered {
   text-align: center;
   align-items: center;
 }
 .surface.plain {
   border-color: transparent;
   box-shadow: none;
-}
-
-.trend-item {
-  display: flex;
-  align-items: center;
-  gap: var(--s-3);
-  padding: var(--s-3) var(--s-5);
-  border-bottom: 1px solid var(--line);
-}
-.trend-item:last-child {
-  border-bottom: none;
-}
-.trend-item > :first-child {
-  flex: 1;
-}
-
-/* ── Pain scale ── */
-.pain-scale {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-}
-.pain-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--surface-2);
-  border: 1px solid var(--line-strong);
-}
-.pain-dot[data-active="true"] {
-  background: var(--bad);
-  border-color: var(--bad);
 }
 
 /* ── Surface variants ── */
@@ -93,26 +56,13 @@
   padding: 0;
   overflow: hidden;
 }
-
-/* ── Divider ── */
-hr {
-  height: 1px;
-  background: var(--line);
-  border: 0;
-  margin: 0;
+.surface.card {
+  width: auto;
 }
 
 /* ── Selected state ── */
 .surface.selected {
   border-color: var(--accent);
-}
-
-/* ── Block (segmented bar unit) ── */
-.block {
-  flex: 1 1 0;
-  min-width: 20px;
-  min-height: var(--t-xs);
-  box-shadow: var(--box-shadow-sm);
 }
 
 /* ── Narrow viewport overrides ── */

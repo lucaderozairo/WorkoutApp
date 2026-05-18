@@ -5,6 +5,7 @@ import {
   PINNED_ACTIVITIES, MORE_CATEGORIES, ROUTE_ACTIVITIES,
   todayDateString, useNewSession,
 } from './useNewSession';
+import { Plus, X } from 'lucide-react';
 
 function ActivityButton({ sport, selected, onSelect }: {
   sport: SportType;
@@ -14,7 +15,7 @@ function ActivityButton({ sport, selected, onSelect }: {
   const { label, Icon } = ACTIVITY_ICONS[sport];
   return (
     <button
-      className={`surface tight column align-center grow${selected === sport ? ' active' : ''}`}
+      className={`column align-center surface card${selected === sport ? ' active' : ''}`}
       onClick={() => onSelect(sport)}
     >
       <Icon size={22} />
@@ -51,18 +52,18 @@ export function NewSessionScreen() {
           <ActivityButton key={sport} sport={sport} selected={selected} onSelect={setSelected} />
         ))}
         <button
-          className={`surface tight column align-center${showMore ? ' active' : ''}`}
+          className={`column  compact align-center${showMore ? ' active' : ''}`}
           onClick={() => setShowMore(v => !v)}
           aria-expanded={showMore}
         >
-          <h2>{showMore ? '✕' : '⊕'}</h2>
+          <h2>{showMore ? <X /> : <Plus />}</h2>
           <span className="caption">More</span>
         </button>
       </div>
 
       {/* Expandable "More" grid */}
       {showMore && (
-        <div className="column compact card surface inset">
+        <div className="column compact">
           {MORE_CATEGORIES.map(cat => (
             <div key={cat.label} className="column compact">
               <p className="eyebrow">{cat.label}</p>

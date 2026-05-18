@@ -1,13 +1,13 @@
-export type Sport = 'lift' | 'run' | 'cycle' | 'swim' | 'rowing';
+import type { SportType } from '@features/training_log/domain/types';
 
-export const MOCK_WORKOUTS: Record<number, Sport[]> = {
-    6:  ['lift'],
+export const MOCK_WORKOUTS: Record<number, SportType[]> = {
+    6:  ['strength'],
     8:  ['run'],
     10: ['cycle'],
-    13: ['lift'],
+    13: ['strength'],
     15: ['swim', 'run'],
     17: ['run'],
-    18: ['lift', 'cycle', 'run', 'swim'],
-    20: ['lift'],
-    24: ['cycle', 'lift'],
+    18: ['strength', 'cycle', 'run', 'swim'],
+    20: ['strength'],
+    24: ['cycle', 'strength'],
 };

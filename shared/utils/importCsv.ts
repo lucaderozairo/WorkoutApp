@@ -1,6 +1,7 @@
 import { parseCsv } from './csv';
 import { viewStore } from '@data/projections/views';
-import type { SessionHistoryItem } from '@features/training_log';
+import type { ActivityView, ActivitiesState, SegmentView } from '@features/training_log';
+import type { SetEntry } from '@features/training_log/domain/types';
 import type { CardioSession } from '@features/cardio/domain/types';
 import type { Id } from '@shared/types';
 
@@ -33,7 +34,7 @@ function safeNum(row: string[], i: number): number {
 }
 
 export interface CsvImportResult {
-  sessions: SessionHistoryItem[];
+  sessions: ActivityView[];
   cardioSessions: CardioSession[];
   errors: string[];
 }
@@ -64,7 +65,6 @@ export function importCsv(text: string): CsvImportResult {
 }
 
 function parseExportFormat(headers: string[], rows: string[][]): CsvImportResult {
-  const sessions: SessionHistoryItem[] = [];
   const cardioSessions: CardioSession[] = [];
   const errors: string[] = [];
 
@@ -73,29 +73,44 @@ function parseExportFormat(headers: string[], rows: string[][]): CsvImportResult
   const nameIdx = headerIndex(headers, 'Name');
   const dateIdx = headerIndex(headers, 'Date');
   const catIdx = headerIndex(headers, 'Category/Sport');
+  const exerciseIdx = headerIndex(headers, 'Exercise');
+  const setIdx = headerIndex(headers, 'Set #');
+  const weightIdx = headerIndex(headers, 'Weight (kg)');
+  const repsIdx = headerIndex(headers, 'Reps');
+  const distanceIdx = headerIndex(headers, 'Distance (m)');
+  const durationIdx = headerIndex(headers, 'Duration (s)');
+  const warmupIdx = headerIndex(headers, 'Is Warmup');
+  const isPRIdx = headerIndex(headers, 'Is PR');
+  const rpeIdx = headerIndex(headers, 'RPE');
   const notesIdx = headerIndex(headers, 'Notes');
 
-  const seenIds = new Set<string>();
-
+  // First pass: group rows by session ID
+  const sessionGroups = new Map<string, string[][]>();
   for (const row of rows) {
-    try {
-      const type = safeStr(row, typeIdx);
-      const id = safeStr(row, idIdx) || `imported-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-      const name = safeStr(row, nameIdx) || 'Imported Session';
-      const dateStr = safeStr(row, dateIdx);
-      const startedAt = dateStr ? new Date(dateStr).getTime() : Date.now();
-      const notes = safeStr(row, notesIdx);
+    const id = safeStr(row, idIdx) || `imported-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const g = sessionGroups.get(id);
+    if (g) g.push(row);
+    else sessionGroups.set(id, [row]);
+  }
 
-      if (seenIds.has(id)) continue;
-      seenIds.add(id);
+  const sessions: ActivityView[] = [];
+
+  for (const [sessionId, groupRows] of sessionGroups) {
+    try {
+      const firstRow = groupRows[0];
+      const type = safeStr(firstRow, typeIdx);
+      const name = safeStr(firstRow, nameIdx) || 'Imported Session';
+      const dateStr = safeStr(firstRow, dateIdx);
+      const startedAt = dateStr ? new Date(dateStr).getTime() : Date.now();
+      const notes = safeStr(firstRow, notesIdx);
 
       if (type.toLowerCase() === 'cardio') {
-        const sport = safeStr(row, catIdx) || 'other';
-        const distanceMeters = safeNum(row, headerIndex(headers, 'Distance (m)'));
-        const durationSeconds = safeNum(row, headerIndex(headers, 'Duration (s)'));
+        const sport = safeStr(firstRow, catIdx) || 'other';
+        const distanceMeters = safeNum(firstRow, distanceIdx);
+        const durationSeconds = safeNum(firstRow, durationIdx);
 
         cardioSessions.push({
-          id: id as Id<'CardioSession'>,
+          id: sessionId as Id<'CardioSession'>,
           userId: 'imported' as Id<'User'>,
           sport: sport as CardioSession['sport'],
           title: name,
@@ -109,24 +124,76 @@ function parseExportFormat(headers: string[], rows: string[][]): CsvImportResult
           routeId: null,
         } as CardioSession);
       } else {
-        const category = safeStr(row, catIdx) || 'strength';
+        // Second pass within session: group rows by exercise name
+        const exerciseGroups = new Map<string, string[][]>();
+        for (const row of groupRows) {
+          const exName = safeStr(row, exerciseIdx);
+          const g = exerciseGroups.get(exName);
+          if (g) g.push(row);
+          else exerciseGroups.set(exName, [row]);
+        }
+
+        const segments: SegmentView[] = [];
+        let order = 0;
+        for (const [exName, exRows] of exerciseGroups) {
+          const sets: SetEntry[] = [];
+          for (const row of exRows) {
+            const setNumber = safeNum(row, setIdx);
+            const isWarmup = safeStr(row, warmupIdx).toLowerCase() === 'true';
+            const isPR = safeStr(row, isPRIdx).toLowerCase() === 'true';
+            const weightKg = safeNum(row, weightIdx);
+            const reps = safeNum(row, repsIdx);
+            const distanceMeters = safeNum(row, distanceIdx);
+            const durationSeconds = safeNum(row, durationIdx);
+            const rpeVal = safeNum(row, rpeIdx);
+            const setNotes = safeStr(row, notesIdx);
+
+            if (distanceMeters > 0 || durationSeconds > 0) {
+              sets.push({
+                setNumber,
+                distanceMeters,
+                durationSeconds,
+                completedAt: startedAt,
+              });
+            } else {
+              sets.push({
+                setNumber,
+                weightKg,
+                reps,
+                isWarmup,
+                isPR,
+                completedAt: startedAt,
+                rpe: rpeVal || null,
+                comment: setNotes || undefined,
+              });
+            }
+          }
+
+          segments.push({
+            id: `imported-block-${sessionId}-${order}` as Id<'Segment'>,
+            exerciseName: exName,
+            exerciseCategory: 'strength',
+            sets,
+            notes: '',
+            order,
+          });
+          order++;
+        }
+
         sessions.push({
-          id: id as Id<'Session'>,
+          id: sessionId as Id<'Activity'>,
           name,
-          startedAt: dateStr ? new Date(dateStr).getTime() : Date.now(),
-          finishedAt: dateStr ? new Date(dateStr).getTime() + 3600000 : Date.now(),
-          durationSeconds: 3600,
-          totalSets: 0,
-          exerciseCount: 0,
-          hasPR: false,
-          category: (category === 'cardio' ? 'cardio' : category === 'mobility' ? 'mobility' : 'strength') as 'strength' | 'cardio' | 'mobility',
+          primarySport: 'strength',
+          status: 'finished',
+          startedAt,
+          finishedAt: startedAt + 3600000,
+          segments,
           notes,
-          comments: [],
-          media: [],
+          sources: [],
         });
       }
     } catch (e) {
-      errors.push(`Row ${rows.indexOf(row) + 2}: ${e instanceof Error ? e.message : 'Parse error'}`);
+      errors.push(`Session ${sessionId}: ${e instanceof Error ? e.message : 'Parse error'}`);
     }
   }
 
@@ -134,7 +201,6 @@ function parseExportFormat(headers: string[], rows: string[][]): CsvImportResult
 }
 
 function parseSimpleFormat(headers: string[], rows: string[][]): CsvImportResult {
-  const sessions: SessionHistoryItem[] = [];
   const errors: string[] = [];
 
   const dateIdx = headerIndex(headers, 'Date');
@@ -144,34 +210,68 @@ function parseSimpleFormat(headers: string[], rows: string[][]): CsvImportResult
   const weightIdx = headerIndex(headers, 'Weight');
   const notesIdx = headers.includes('Notes') ? headers.indexOf('Notes') : -1;
 
+  // Group rows by date
+  const dateGroups = new Map<string, string[][]>();
   for (const row of rows) {
-    try {
-      const dateStr = safeStr(row, dateIdx);
-      const exercise = safeStr(row, exerciseIdx);
-      const setCount = parseInt(row[setsIdx]) || 1;
-      const reps = parseInt(row[repsIdx]) || 10;
-      const weightKg = parseFloat(row[weightIdx]) || 0;
-      const notes = notesIdx >= 0 ? safeStr(row, notesIdx) : '';
+    const dateStr = safeStr(row, dateIdx);
+    const g = dateGroups.get(dateStr);
+    if (g) g.push(row);
+    else dateGroups.set(dateStr, [row]);
+  }
 
+  const sessions: ActivityView[] = [];
+
+  for (const [dateStr, groupRows] of dateGroups) {
+    try {
       const startedAt = dateStr ? new Date(dateStr).getTime() : Date.now();
       const id = `imported-${startedAt}-${Math.random().toString(36).slice(2, 6)}` as Id<'Session'>;
 
+      const segments: SegmentView[] = [];
+      let order = 0;
+
+      for (const row of groupRows) {
+        const exercise = safeStr(row, exerciseIdx);
+        const setCount = parseInt(row[setsIdx]) || 1;
+        const reps = parseInt(row[repsIdx]) || 10;
+        const weightKg = parseFloat(row[weightIdx]) || 0;
+        const rowNotes = notesIdx >= 0 ? safeStr(row, notesIdx) : '';
+
+        const sets: SetEntry[] = [];
+        for (let s = 1; s <= setCount; s++) {
+          sets.push({
+            setNumber: s,
+            weightKg,
+            reps,
+            isWarmup: false,
+            isPR: false,
+            completedAt: startedAt,
+          });
+        }
+
+        segments.push({
+          id: `imported-block-${id}-${order}` as Id<'Segment'>,
+          exerciseName: exercise,
+          exerciseCategory: 'strength',
+          sets,
+          notes: rowNotes,
+          order,
+        });
+        order++;
+      }
+
       sessions.push({
         id,
-        name: exercise,
+        name: 'Imported Workout',
+        primarySport: 'strength',
+        status: 'finished',
         startedAt,
         finishedAt: startedAt + 3600000,
-        durationSeconds: 3600,
-        totalSets: setCount,
-        exerciseCount: 1,
-        hasPR: false,
-        category: 'strength',
-        notes: `${setCount}×${reps} @ ${weightKg}kg ${notes ? '· ' + notes : ''}`,
-        comments: [],
-        media: [],
+        segments,
+        notes: '',
+        sources: [],
       });
     } catch (e) {
-      errors.push(`Row ${rows.indexOf(row) + 2}: ${e instanceof Error ? e.message : 'Parse error'}`);
+      errors.push(`Date ${dateStr}: ${e instanceof Error ? e.message : 'Parse error'}`);
     }
   }
 
@@ -180,8 +280,12 @@ function parseSimpleFormat(headers: string[], rows: string[][]): CsvImportResult
 
 export function writeImportToStore(result: CsvImportResult): { sessionCount: number; cardioCount: number; errorCount: number } {
   if (result.sessions.length > 0) {
-    const existing = viewStore.get<SessionHistoryItem[]>('session_history') ?? [];
-    viewStore.set('session_history', [...result.sessions, ...existing]);
+    const existing = viewStore.get<ActivitiesState>('sessions') ?? { byId: {}, activeId: null };
+    const importedById: ActivitiesState['byId'] = {};
+    for (const session of result.sessions) {
+      importedById[session.id] = session;
+    }
+    viewStore.set('sessions', { ...existing, byId: { ...importedById, ...existing.byId } });
   }
 
   if (result.cardioSessions.length > 0) {

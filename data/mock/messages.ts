@@ -1,21 +1,4 @@
-export interface MockUpcomingCall {
-  id: string;
-  initials: string;
-  name: string;
-  date: string;
-  time: string;
-  durationMin: number;
-  type: 'video' | 'audio';
-}
-
-export interface MockRecentMessage {
-  id: string;
-  initials: string;
-  name: string;
-  preview: string;
-  timeAgo: string;
-  unread: boolean;
-}
+import type { MockUpcomingCall, MockRecentMessage } from '@features/messaging';
 
 export const MOCK_UPCOMING_CALLS: MockUpcomingCall[] = [
   { id: 'call-1', initials: 'JS', name: 'Jane S', date: 'Sat 9 May', time: '10:00am', durationMin: 30, type: 'video' },

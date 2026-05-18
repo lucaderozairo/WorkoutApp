@@ -1,5 +1,5 @@
 import { SparklineArea } from '../shared/Charts';
-import type { RestingHREntry, HRVEntry } from '@data/mock/health';
+import type { RestingHREntry, HRVEntry } from '@features/health';
 
 export function RestingHRWidget({ history }: { history: RestingHREntry[] }) {
   if (history.length === 0) return null;

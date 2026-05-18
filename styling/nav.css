@@ -9,12 +9,12 @@
   grid-template-columns: var(--nav-width) 1fr;
   grid-template-rows: 1fr;
   grid-template-areas: "rail main";
-  min-height: 100dvh;
+  height: 100dvh;
+  overflow: hidden;
 }
 
 main {
   grid-area: main;
-  padding: var(--s-5) var(--s-6);
   overflow-y: auto;
   min-height: 0;
   background: var(--surface-0);
@@ -39,11 +39,13 @@ main {
   flex: 1;
 }
 
-.app-rail div, .app-rail nav {
-  gap: var(--s-1)
+.app-rail div,
+.app-rail nav {
+  gap: var(--s-1);
 }
 
-.app-rail a, .app-rail button.ghost {
+.app-rail a,
+.app-rail button.ghost {
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -59,7 +61,8 @@ main {
   line-height: 1;
 }
 
-.app-rail a:hover, .app-rail button.ghost:hover {
+.app-rail a:hover,
+.app-rail button.ghost:hover {
   background: var(--surface-2);
   color: var(--ink);
 }
@@ -110,13 +113,9 @@ main {
   background: var(--surface-1);
   border-top: 1px solid var(--line);
   padding-bottom: env(safe-area-inset-bottom, 0);
-}
-
-.app-tabbar__list {
-  display: flex;
-  justify-content: space-around;
   height: var(--nav-height);
 }
+
 
 .app-tabbar a {
   display: flex;
@@ -167,8 +166,8 @@ main {
 
   /* Push content above the fixed tabbar */
   main {
-    padding: var(--s-4) var(--s-4)
-      calc(var(--nav-height) + var(--s-4) + env(safe-area-inset-bottom, 0));
+    padding: var(--s-3) var(--s-3)
+      calc(var(--nav-height) + var(--s-3) + env(safe-area-inset-bottom, 0));
     overflow-y: auto;
   }
 }

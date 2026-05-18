@@ -34,6 +34,18 @@ select,
   line-height: 1.6;
 }
 
+input:disabled,
+textarea:disabled {
+  border-color: transparent;
+  background-color: transparent;
+}
+
+input.ghost {
+  background: transparent;
+  border-color: transparent;
+  padding: var(--s-1);
+}
+
 input:hover,
 textarea:hover,
 select:hover,
@@ -88,14 +100,6 @@ progress {
 }
 ::-moz-progress-bar {
   background: var(--accent);
-}
-
-/* ── Narrow count/weight inputs ── */
-.input-count {
-  width: 44px;
-}
-.input-weight {
-  width: 56px;
 }
 
 /* ── Error text ── */

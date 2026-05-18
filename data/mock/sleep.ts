@@ -1,14 +1,4 @@
-export type SleepSession = {
-    start: Date;
-    end: Date;
-    score: number;
-    stages: {
-        deep: number;
-        light: number;
-        rem: number;
-        awake: number;
-    };
-};
+import type { SleepSession } from '@features/readiness';
 
 function makeSleepSession(
     daysAgo: number,

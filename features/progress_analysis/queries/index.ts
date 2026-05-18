@@ -1,4 +1,5 @@
 import { viewStore } from '@data/projections/views';
+import { getActivityHistory } from '@features/training_log';
 import type { PersonalRecord, ChartAnnotation } from '../domain/types';
 
 export interface StatsSummary {
@@ -25,17 +26,7 @@ export function getPersonalRecords(): PersonalRecord[] {
 }
 
 export function getStatsSummary(): StatsSummary {
-  const sessions = viewStore.get<Array<{
-    id: string;
-    name: string;
-    startedAt: number;
-    finishedAt: number;
-    durationSeconds: number;
-    totalSets: number;
-    exerciseCount: number;
-    hasPR: boolean;
-    category: string;
-  }>>('session_history') ?? [];
+  const sessions = getActivityHistory();
 
   const stats: StatsSummary = {
     totalSessions: sessions.length,
@@ -62,17 +53,7 @@ export function getStatsSummary(): StatsSummary {
 }
 
 export function getActivityFeed(): ActivityFeedEntry[] {
-  const sessions = viewStore.get<Array<{
-    id: string;
-    name: string;
-    startedAt: number;
-    finishedAt: number;
-    durationSeconds: number;
-    totalSets: number;
-    exerciseCount: number;
-    hasPR: boolean;
-    category: string;
-  }>>('session_history') ?? [];
+  const sessions = getActivityHistory();
 
   return sessions.map(s => {
     const date = new Date(s.startedAt).toLocaleDateString();

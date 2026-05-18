@@ -1,7 +1,7 @@
 import { eventBus } from '@core/events/bus';
 import { viewStore } from '@data/projections/views';
 import type { DomainEvent } from '@shared/types';
-import type { SessionFinishedPayload, StrengthSet } from '@features/training_log/domain/types';
+import type { SessionFinishedPayload, SetEntry } from '@features/training_log/domain/types';
 import type { Goal, GoalMetric } from '../domain/types';
 import { handleUpdateGoalProgress } from '../commands/handlers';
 
@@ -10,8 +10,8 @@ function goalsForMetric(metric: GoalMetric): Goal[] {
   return goals.filter((goal) => goal.metric === metric && !goal.completed);
 }
 
-function estimateOneRepMax(set: StrengthSet): number {
-  return set.weightKg * (1 + set.reps / 30);
+function estimateOneRepMax(set: SetEntry): number {
+  return (set.weightKg ?? 0) * (1 + (set.reps ?? 0) / 30);
 }
 
 let registered = false;
@@ -28,7 +28,7 @@ export function registerGoalUpdatePolicy(): void {
     }
 
     const totalVolume = summaries.reduce(
-      (sum, exercise) => sum + exercise.sets.reduce((inner, set) => inner + (set.isWarmup ? 0 : set.weightKg * set.reps), 0),
+      (sum, exercise) => sum + exercise.sets.reduce((inner, set) => inner + (set.isWarmup ? 0 : (set.weightKg ?? 0) * (set.reps ?? 0)), 0),
       0,
     );
     if (totalVolume > 0) {

@@ -1,12 +1,4 @@
-import type { ChartType } from '../../ui/patterns/charts/charts'
-
-export type MiniChartDef = {
-  label: string
-  chartType: ChartType
-  data: { x: string; y: number }[]
-  color?: string
-  currentValue?: string
-}
+import type { HealthChartMap } from '@features/health'
 
 const D = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
 const W = ['W1', 'W2', 'W3', 'W4']
@@ -14,7 +6,7 @@ const W = ['W1', 'W2', 'W3', 'W4']
 const d = (ys: number[]) => D.map((x, i) => ({ x, y: ys[i] }))
 const w = (ys: number[]) => W.map((x, i) => ({ x, y: ys[i] }))
 
-export const CATEGORY_MOCK_CHARTS: Record<string, MiniChartDef[]> = {
+export const CATEGORY_MOCK_CHARTS: HealthChartMap = {
   'activity-mobility': [
     { label: 'Steps',    chartType: 'line', data: d([8200, 10500, 6800, 11200, 7400, 9800, 12000]), currentValue: '12,000 steps' },
     { label: 'Distance', chartType: 'line', data: d([6.2, 8.1, 5.0, 9.3, 5.5, 7.8, 10.2]),         currentValue: '10.2 km' },

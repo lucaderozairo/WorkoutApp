@@ -5,7 +5,7 @@ import {
 } from 'recharts';
 
 import { ScoreRing, fmtMin, TOOLTIP_STYLE, TICK } from '../shared/Charts';
-import type { SleepSession } from '@data/mock/sleep';
+import type { SleepSession } from '@features/readiness';
 
 type WidgetSize = '1x1' | '2x1' | '2x2';
 
@@ -118,7 +118,7 @@ export function SleepReviewWidget({
 
   if (size === '1x1') {
     return (
-      <div className="surface compact column center align-center h-full">
+      <div className="surface tight column center align-center h-full">
         <span className="eyebrow">Sleep</span>
         <h2 className="mono">{session.score}</h2>
         <span className="caption faint">{duration}</span>
@@ -175,7 +175,7 @@ export function SleepReviewWidget({
 
   if (size === '2x1') {
     return (
-      <div className="surface compact column h-full">
+      <div className="surface tight column h-full">
         <div className="row space-between align-center">
           <span className="eyebrow">Sleep</span>
           <span className={`badge ${badge.cls}`}>{badge.label}</span>
@@ -199,7 +199,7 @@ export function SleepReviewWidget({
   const labelInterval = Math.max(1, Math.floor(sleepBar.length / 6));
 
   return (
-    <div className="surface compact column h-full">
+    <div className="surface tight column h-full">
       <div className="row space-between align-center">
         <span className="eyebrow">Sleep Review</span>
         <span className={`badge ${badge.cls}`}>{badge.label}</span>

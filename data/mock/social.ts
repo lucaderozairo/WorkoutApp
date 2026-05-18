@@ -1,7 +1,5 @@
 import type { Id } from '@shared/types';
-import type { Post } from '@features/social';
-
-export type PostWithMeta = Post & { sport?: string; group?: string; sessionName?: string };
+import type { PostWithMeta, MockSuggestedGroup, MockSocialEvent } from '@features/social';
 
 export const MOCK_POSTS: PostWithMeta[] = [
   {
@@ -48,30 +46,12 @@ export const MOCK_POSTS: PostWithMeta[] = [
   },
 ];
 
-export interface MockSuggestedGroup {
-  id: string;
-  initials: string;
-  sport: 'lift' | 'run' | 'cycle' | 'swim';
-  name: string;
-  members: number;
-  activity: string;
-}
-
 export const MOCK_SUGGESTED_GROUPS: MockSuggestedGroup[] = [
   { id: 'g1', initials: 'KB', sport: 'lift', name: 'Kingston Barbell Club', members: 142, activity: '12 posts/week' },
   { id: 'g2', initials: 'TP', sport: 'run', name: 'Thames Path Run Club', members: 89, activity: '8 posts/week' },
   { id: 'g3', initials: 'HR', sport: 'cycle', name: 'Hampton Road Cyclists', members: 67, activity: '5 posts/week' },
   { id: 'g4', initials: 'RW', sport: 'swim', name: 'River Swim Squad', members: 34, activity: '3 posts/week' },
 ];
-
-export interface MockSocialEvent {
-  id: string;
-  sport: 'run' | 'lift' | 'cycle';
-  name: string;
-  date: string;
-  location: string;
-  time: string;
-}
 
 export const MOCK_UPCOMING_EVENTS: MockSocialEvent[] = [
   { id: 'e1', sport: 'run', name: 'Park Run 5K', date: '12 Apr', location: 'Victoria Park', time: '08:00' },

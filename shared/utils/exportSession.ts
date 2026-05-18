@@ -1,5 +1,4 @@
-import type { ActiveSessionView } from '@features/training_log/projections';
-import type { StrengthSet, CardioSet } from '@features/training_log/domain/types';
+import type { ActivityView } from '@features/training_log/projections';
 
 const CSV_HEADERS = [
   'Session Name', 'Date', 'Exercise', 'Block Type',
@@ -7,36 +6,34 @@ const CSV_HEADERS = [
   'RPE', 'Comment', 'Distance (m)', 'Duration (s)', 'Avg Power (W)', 'Resistance',
 ];
 
-export function exportSessionCsv(session: ActiveSessionView): void {
+export function exportSessionCsv(session: ActivityView): void {
   const date = session.startedAt
     ? new Date(session.startedAt).toISOString().split('T')[0]
     : new Date().toISOString().split('T')[0];
 
   const rows: string[] = [CSV_HEADERS.join(',')];
 
-  for (const block of session.blocks) {
+  for (const block of session.segments) {
     const blockType = block.blockType ?? 'straight';
     for (const set of block.sets) {
-      if (set.type === 'strength') {
-        const s = set as StrengthSet;
-        rows.push(csvRow([
-          session.name, date, block.exerciseName, blockType,
-          String(s.setNumber), String(s.weightKg), String(s.reps),
-          s.isWarmup ? 'true' : 'false',
-          s.isPR ? 'true' : 'false',
-          s.rpe != null ? String(s.rpe) : '',
-          s.comment ?? '',
-          '', '', '',
-        ]));
-      } else {
-        const s = set as CardioSet;
+      if (set.distanceMeters !== undefined || set.durationSeconds !== undefined) {
         rows.push(csvRow([
           session.name, date, block.exerciseName, 'cardio',
-          String(s.setNumber), '', '', '', '',
+          String(set.setNumber), '', '', '', '',
           '', '',
-          String(s.distanceMeters), String(s.durationSeconds),
-          s.avgPowerWatts != null ? String(s.avgPowerWatts) : '',
-          s.resistance != null ? String(s.resistance) : '',
+          String(set.distanceMeters ?? 0), String(set.durationSeconds ?? 0),
+          set.avgPowerWatts != null ? String(set.avgPowerWatts) : '',
+          set.resistance != null ? String(set.resistance) : '',
+        ]));
+      } else {
+        rows.push(csvRow([
+          session.name, date, block.exerciseName, blockType,
+          String(set.setNumber), String(set.weightKg ?? 0), String(set.reps ?? 0),
+          set.isWarmup ? 'true' : 'false',
+          set.isPR ? 'true' : 'false',
+          set.rpe != null ? String(set.rpe) : '',
+          set.comment ?? '',
+          '', '', '',
         ]));
       }
     }

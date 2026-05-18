@@ -1,9 +1,9 @@
-import type { CardioSport } from "@features/cardio";
+import type { TypeFilter } from '@features/training_log/queries/calendarUtils';
+export type { TypeFilter };
 
 export type ViewMode = 'list' | 'month' | 'week';
 export type TimeRange = '7d' | '30d' | 'all';
 export type SortOrder = 'newest' | 'oldest';
-export type TypeFilter = "all" | "strength" | CardioSport;
 
 export interface SessionFilters {
   view: ViewMode;

@@ -9,7 +9,7 @@ type Props = {
 
 export function EmptyState({ icon, title, message, action }: Props) {
   return (
-    <div className="surface stat column">
+    <div className="surface centered">
       <h1 aria-hidden>{icon}</h1>
       <h3>{title}</h3>
       {message && <p className="caption">{message}</p>}

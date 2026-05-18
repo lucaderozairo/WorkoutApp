@@ -1,7 +1,7 @@
 // ui/components/log/ScheduleStrip.tsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { SessionHistoryItem } from "@features/training_log";
+import type { ActivityHistoryItem } from "@features/training_log";
 import type { CardioSession } from "@features/cardio";
 
 function isoDate(d: Date): string {
@@ -23,7 +23,7 @@ function buildWeekDays(weekOffset: number): Date[] {
 const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 interface ScheduleStripProps {
-  strengthSessions: SessionHistoryItem[];
+  strengthSessions: ActivityHistoryItem[];
   cardioSessions: CardioSession[];
 }
 

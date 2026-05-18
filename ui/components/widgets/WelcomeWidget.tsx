@@ -27,7 +27,7 @@ export function WelcomeWidget({ workoutsThisWeek, scoreClass }: WelcomeWidgetPro
   }
 
   return (
-    <div className="surface compact ghost">
+    <div className="surface tight ghost">
       <span className="caption">{day} · {date}</span>
       <div className="row align-center compact">
         <h2>{ greeting }, {displayName}.</h2>

@@ -112,7 +112,7 @@ export function ImportModal({ context, existingSession, onComplete, onClose }: I
                     </button>
                     <div className="row center">
                       {['GPX', 'TCX', 'FIT'].map(fmt => (
-                        <span key={fmt} className="pill">{fmt}</span>
+                        <span key={fmt} className="pill"><span className="dot" />{fmt}</span>
                       ))}
                     </div>
                   </div>
@@ -132,22 +132,22 @@ export function ImportModal({ context, existingSession, onComplete, onClose }: I
         {/* Step 2: preview */}
         {step === 2 && track && (
           <div className="column">
-            <section className="surface compact">
+            <section className="surface tight">
               <div className="stats-row">
-                <div className="stat">
+                <div className="column compact">
                   <span className="label">DISTANCE</span>
                   <p className="value">{(track.totalDistance / 1000).toFixed(2)} km</p>
                 </div>
-                <div className="stat">
+                <div className="column compact">
                   <span className="label">DURATION</span>
                   <p className="value">{formatDuration(track.duration)}</p>
                 </div>
-                <div className="stat">
+                <div className="column compact">
                   <span className="label">ELEVATION</span>
                   <p className="value">{Math.round(track.elevationGain)} m</p>
                 </div>
                 {track.avgHeartRate && (
-                  <div className="stat">
+                  <div className="column compact">
                     <span className="label">AVG HR</span>
                     <p className="value">{Math.round(track.avgHeartRate)} bpm</p>
                   </div>
@@ -157,7 +157,7 @@ export function ImportModal({ context, existingSession, onComplete, onClose }: I
 
             {/* Diff for enrich-session */}
             {context === 'enrich-session' && existingSession && (
-              <section className="surface compact">
+              <section className="surface tight">
                 <p className="caption">Existing session will be updated:</p>
                 <div className="column">
                   {existingSession.durationSeconds !== track.duration && (

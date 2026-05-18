@@ -4,7 +4,7 @@ import type { SessionFilters, TypeFilter, ViewMode } from '@ui/components/log/Se
 
 const DATE_OPTIONS: { key: SessionFilters['dateRange']; label: string }[] = [
   { key: 'all', label: 'All time' },
-  { key: '7d',  label: 'Past 7 days' },
+  { key: '7d', label: 'Past 7 days' },
   { key: '30d', label: 'Past 30 days' },
 ];
 
@@ -15,22 +15,22 @@ const DATE_LABEL: Record<SessionFilters['dateRange'], string> = {
 };
 
 const TYPE_OPTIONS: { key: TypeFilter; label: string }[] = [
-  { key: 'all',       label: 'All' },
-  { key: 'strength',  label: 'Gym' },
-  { key: 'run',       label: 'Run' },
-  { key: 'cycle',     label: 'Cycle' },
-  { key: 'hike',      label: 'Hike' },
-  { key: 'swim',      label: 'Swim' },
-  { key: 'row',       label: 'Row' },
-  { key: 'ski',       label: 'Ski' },
+  { key: 'all', label: 'All' },
+  { key: 'strength', label: 'Gym' },
+  { key: 'run', label: 'Run' },
+  { key: 'cycle', label: 'Cycle' },
+  { key: 'hike', label: 'Hike' },
+  { key: 'swim', label: 'Swim' },
+  { key: 'row', label: 'Row' },
+  { key: 'ski', label: 'Ski' },
   { key: 'snowboard', label: 'Snowboard' },
-  { key: 'climb',     label: 'Climb' },
-  { key: 'surf',      label: 'Surf' },
-  { key: 'kayak',     label: 'Kayak' },
-  { key: 'yoga',      label: 'Yoga' },
-  { key: 'boxing',    label: 'Boxing' },
-  { key: 'stretch',   label: 'Stretch' },
-  { key: 'hiit',      label: 'HIIT' },
+  { key: 'climb', label: 'Climb' },
+  { key: 'surf', label: 'Surf' },
+  { key: 'kayak', label: 'Kayak' },
+  { key: 'yoga', label: 'Yoga' },
+  { key: 'boxing', label: 'Boxing' },
+  { key: 'stretch', label: 'Stretch' },
+  { key: 'hiit', label: 'HIIT' },
 ];
 
 const TYPE_LABEL: Record<string, string> = Object.fromEntries(
@@ -45,12 +45,12 @@ interface WorkoutFilterBarProps {
 }
 
 export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: WorkoutFilterBarProps) {
-  const [filtersOpen,        setFiltersOpen]        = useState(false);
-  const [dateExpanded,       setDateExpanded]       = useState(true);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [dateExpanded, setDateExpanded] = useState(true);
   const [datePickerExpanded, setDatePickerExpanded] = useState(false);
-  const [typeExpanded,       setTypeExpanded]       = useState(true);
-  const [exerciseSearch,     setExerciseSearch]     = useState('');
-  const [exerciseFocused,    setExerciseFocused]    = useState(false);
+  const [typeExpanded, setTypeExpanded] = useState(true);
+  const [exerciseSearch, setExerciseSearch] = useState('');
+  const [exerciseFocused, setExerciseFocused] = useState(false);
 
   const activeCount = [
     filters.type !== 'all',
@@ -59,7 +59,7 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
     filters.dateFrom !== '',
   ].filter(Boolean).length;
 
-  const hasActiveChips = activeCount > 0 || filters.sessionName !== '' || filters.sort !== 'newest';
+  const hasActivechips = activeCount > 0 || filters.sessionName !== '' || filters.sort !== 'newest';
 
   const matchingExercises = exerciseOptions.filter(n =>
     n.toLowerCase().includes(exerciseSearch.toLowerCase())
@@ -77,10 +77,6 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
 
   return (
     <div className="column compact">
-      {filtersOpen && (
-        <button className="fullscreen-overlay-dismiss" onClick={() => setFiltersOpen(false)} />
-      )}
-
       <div className="row compact align-center">
         {/* ── Session name search ── */}
         <div className="row compact align-center grow">
@@ -98,9 +94,9 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
           )}
         </div>
 
-        {/* ── Sort chip ── */}
+        {/* ── Sort chip sm ── */}
         <button
-          className={`chip${filters.sort !== 'newest' ? ' active' : ''}`}
+          className={`chip sm${filters.sort !== 'newest' ? ' active' : ''}`}
           onClick={() => onChange({ ...filters, sort: filters.sort === 'newest' ? 'oldest' : 'newest' })}
         >
           {filters.sort === 'newest' ? '↓ Newest' : '↑ Oldest'}
@@ -109,17 +105,17 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
         {/* ── Filters button + panel ── */}
         <div className="dropdown-wrap">
           <button
-            className={activeCount > 0 ? 'primary' : `chip${filtersBtnOpen ? ' active' : ''}`}
+            className={activeCount > 0 ? 'primary' : `chip sm${filtersBtnOpen ? ' active' : ''}`}
             onClick={() => setFiltersOpen(o => !o)}
           >
             <SlidersHorizontal size={14} />
             Filters
-            {activeCount > 0 && <span className="pill plain">{activeCount}</span>}
+            {activeCount > 0 && <span className="pill">{activeCount}</span>}
           </button>
 
           {filtersOpen && (
-            <div className="dropdown filter-panel">
-              <div className="surface">
+            <div className="absolute right filter-panel">
+              <div className="surface column compact">
                 {/* Header */}
                 <div className="row compact space-between align-center">
                   <span className="caption">Filters</span>
@@ -127,7 +123,7 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
                     <button className="ghost sm" onClick={clearAll}>Clear all</button>
                   )}
                 </div>
-                <hr />
+                
 
                 {/* Date range — list view only */}
                 {view === 'list' && (
@@ -140,19 +136,19 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
                       <ChevronDown size={12} className={`chevron${dateExpanded ? ' open' : ''}`} />
                     </button>
                     {dateExpanded && (
-                        <div className="cluster compact">
-                          {DATE_OPTIONS.map(opt => (
-                            <button
-                              key={opt.key}
-                              className={`chip${filters.dateRange === opt.key ? ' active' : ''}`}
-                              onClick={() => onChange({ ...filters, dateRange: opt.key, dateFrom: '', dateTo: '' })}
+                      <div className="cluster compact">
+                        {DATE_OPTIONS.map(opt => (
+                          <button
+                            key={opt.key}
+                            className={`chip sm${filters.dateRange === opt.key ? ' active' : ''}`}
+                            onClick={() => onChange({ ...filters, dateRange: opt.key, dateFrom: '', dateTo: '' })}
                           >
                             {opt.label}
                           </button>
                         ))}
                       </div>
                     )}
-                    <hr />
+                    
                   </>
                 )}
 
@@ -165,7 +161,7 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
                   <ChevronDown size={12} className={`chevron${datePickerExpanded ? ' open' : ''}`} />
                 </button>
                 {datePickerExpanded && (
-                  <div className=" column">
+                  <div className=" column compact">
                     <div className="column compact">
                       <span className="caption muted">From</span>
                       <input
@@ -191,14 +187,14 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
                         onClick={() => onChange({ ...filters, dateFrom: '', dateTo: '' })}
                       >
                         <div className="row space-between align-center">
-                        <span>Clear dates </span>
-                        <X size={12} />
+                          <span>Clear dates </span>
+                          <X size={12} />
                         </div>
                       </button>
                     )}
                   </div>
                 )}
-                <hr />
+                
 
                 {/* Workout type */}
                 <button
@@ -209,20 +205,20 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
                   <ChevronDown size={12} className={`chevron${typeExpanded ? ' open' : ''}`} />
                 </button>
                 {typeExpanded && (
-                    <div className="cluster compact">
-                      {TYPE_OPTIONS.map(opt => (
+                  <div className="cluster compact">
+                    {TYPE_OPTIONS.map(opt => (
                       <button
                         key={opt.key}
-                        className={`chip${filters.type === opt.key ? ' active' : ''}`}
+                        className={`chip sm${filters.type === opt.key ? ' active' : ''}`}
                         onClick={() => onChange({ ...filters, type: opt.key })}
                       >
                         {opt.label}
                       </button>
                     ))}
-                    </div>
-                    
+                  </div>
+
                 )}
-                <hr />
+                
 
                 {/* Exercise search */}
                 <span className="caption muted">Exercise</span>
@@ -239,7 +235,7 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
                   </div>
                   {exerciseFocused && exerciseSearch && matchingExercises.length > 0 && (
                     <div className="dropdown">
-                      <div className="surface compact">
+                      <div className="surface tight">
                         {matchingExercises.slice(0, 6).map(name => (
                           <button
                             key={name}
@@ -267,7 +263,7 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
                 </div>
                 {filters.exercise && (
                   <button
-                    className="chip active"
+                    className="chip sm active"
                     onClick={() => onChange({ ...filters, exercise: '' })}
                   >
                     {filters.exercise} <X size={9} />
@@ -279,36 +275,36 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
         </div>
       </div>
 
-      {/* ── Active filter chips ── */}
-      {hasActiveChips && (
+      {/* ── Active filter chip sms ── */}
+      {hasActivechips && (
         <div className="cluster compact">
           {filters.sessionName && (
-            <button className="chip active" onClick={() => onChange({ ...filters, sessionName: '' })}>
+            <button className="chip sm active" onClick={() => onChange({ ...filters, sessionName: '' })}>
               "{filters.sessionName}" <X size={9} />
             </button>
           )}
           {filters.type !== 'all' && (
-            <button className="chip active" onClick={() => onChange({ ...filters, type: 'all' })}>
+            <button className="chip sm active" onClick={() => onChange({ ...filters, type: 'all' })}>
               {TYPE_LABEL[filters.type]} <X size={9} />
             </button>
           )}
           {filters.exercise && (
-            <button className="chip active" onClick={() => onChange({ ...filters, exercise: '' })}>
+            <button className="chip sm active" onClick={() => onChange({ ...filters, exercise: '' })}>
               {filters.exercise} <X size={9} />
             </button>
           )}
           {filters.dateFrom ? (
-            <button className="chip active" onClick={() => onChange({ ...filters, dateFrom: '', dateTo: '' })}>
+            <button className="chip sm active" onClick={() => onChange({ ...filters, dateFrom: '', dateTo: '' })}>
               {filters.dateFrom}{filters.dateTo && filters.dateTo !== filters.dateFrom ? ` – ${filters.dateTo}` : ''}
               {' '}<X size={9} />
             </button>
           ) : filters.dateRange !== 'all' && (
-            <button className="chip active" onClick={() => onChange({ ...filters, dateRange: 'all' })}>
+            <button className="chip sm active" onClick={() => onChange({ ...filters, dateRange: 'all' })}>
               {DATE_LABEL[filters.dateRange]} <X size={9} />
             </button>
           )}
           {filters.sort !== 'newest' && (
-            <button className="chip active" onClick={() => onChange({ ...filters, sort: 'newest' })}>
+            <button className="chip sm active" onClick={() => onChange({ ...filters, sort: 'newest' })}>
               ↑ Oldest <X size={9} />
             </button>
           )}

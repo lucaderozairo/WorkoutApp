@@ -1,9 +1,30 @@
 import type { Id, DomainEvent, ExerciseCategory } from '@shared/types';
-import type { SessionComment } from '@features/cardio/domain/types';
+import type { GpsTrack } from '@data/sources/files/gps';
 
-// ─── Value Types ─────────────────────────────────────────────
-
+// ─── Re-export ────────────────────────────────────────────────
 export type { ExerciseCategory };
+
+// ─── Sport Types ─────────────────────────────────────────────
+
+export type SportType =
+  // Outdoor endurance
+  | 'run' | 'cycle' | 'swim' | 'row' | 'hike' | 'ski' | 'snowboard'
+  | 'kayak' | 'surf' | 'climb'
+  // Gym cardio machines — continuous effort (use StrengthSegment + sets for intervals)
+  | 'ski_erg' | 'assault_bike' | 'air_bike' | 'concept2_rower'
+  | 'treadmill' | 'stair_climber' | 'elliptical'
+  // Gym / structured
+  | 'strength' | 'hiit' | 'yoga' | 'stretch' | 'mobility' | 'boxing'
+  // Named multi-sport events
+  | 'triathlon' | 'duathlon' | 'hyrox' | 'obstacle_course'
+  // Generic multi-sport — combining two or more sports without a named event format
+  | 'multi'
+  // Internal / structural
+  | 'transition'
+  // Catch-all — pair with Activity.customSport for the label
+  | 'other';
+
+// ─── Exercise ────────────────────────────────────────────────
 
 export interface Exercise {
   id: Id<'Exercise'>;
@@ -11,68 +32,186 @@ export interface Exercise {
   category: ExerciseCategory;
 }
 
-export interface StrengthSet {
-  type: 'strength';
+// ─── SetEntry ────────────────────────────────────────────────
+// Flexible single-type for all set measurements.
+// measure is a UI hint per set — does not restrict which fields are populated.
+
+export type SetMeasure = 'weight_reps' | 'reps' | 'duration' | 'distance';
+
+export interface SetEntry {
+  id?: string;
   setNumber: number;
-  weightKg: number;
-  reps: number;
-  isWarmup: boolean;
-  isPR: boolean;
   completedAt: number;
   done?: boolean;
-  setType?: 'normal' | 'dropset' | 'giant' | 'emom' | 'amrap';
+  isWarmup?: boolean;
+  isPR?: boolean;
   rpe?: number | null;
   failed?: boolean;
   comment?: string;
-}
-
-export interface CardioSet {
-  type: 'cardio';
-  setNumber: number;
-  distanceMeters: number;
-  durationSeconds: number;
-  completedAt: number;
+  setType?: 'normal' | 'dropset' | 'emom' | 'amrap';
+  measure?: SetMeasure;
+  weightKg?: number;
+  reps?: number;
+  durationSeconds?: number;
+  distanceMeters?: number;
   avgPowerWatts?: number;
   resistance?: number;
 }
 
-export type SetEntry = StrengthSet | CardioSet;
+// ─── Segments ────────────────────────────────────────────────
 
-export interface Block {
-  id: Id<'Block'>;
+export interface BaseSegment {
+  id: Id<'Segment'>;
+  order: number;
+  label?: string;
+}
+
+export interface StrengthSegment extends BaseSegment {
+  sport: 'strength';
+  exercise: { id: Id<'Exercise'>; name: string; category: ExerciseCategory };
+  sets: SetEntry[];
+  notes?: string;
+}
+
+// CompositeSegment must be an interface (not type) to allow self-referencing children: Segment[]
+export interface CompositeSegment extends BaseSegment {
+  sport: 'composite';
+  kind: 'superset' | 'circuit' | 'emom' | 'amrap';
+  rounds?: number;
+  restSeconds?: number;
+  children: Segment[];
+}
+
+export interface CardioSegment extends BaseSegment {
+  sport: Exclude<SportType, 'strength' | 'composite' | 'transition'>;
+  routeId?: Id<'Route'>;
+}
+
+export interface TransitionSegment extends BaseSegment {
+  sport: 'transition';
+}
+
+export type Segment = StrengthSegment | CompositeSegment | CardioSegment | TransitionSegment;
+
+// ─── Source Contributions ─────────────────────────────────────
+
+export type DataProvider =
+  | 'app'
+  | 'garmin'
+  | 'polar'
+  | 'whoop'
+  | 'apple_health'
+  | 'strava'
+  | 'manual';
+
+export type DataSourceId = string;
+
+export interface ActivityMetrics {
+  durationSeconds?: number;
+  distanceMeters?: number;
+  elevationMeters?: number;
+  avgHr?: number;
+  maxHr?: number;
+  calories?: number;
+  avgCadence?: number;
+  avgPowerWatts?: number;
+  hrStream?: number[];
+  gpsTrack?: GpsTrack;
+}
+
+export type MetricKey = keyof ActivityMetrics;
+
+export interface SourceContribution {
+  sourceId: DataSourceId;
+  provider: DataProvider;
+  deviceLabel?: string;
+  importedAt: number;
+  metrics: Partial<ActivityMetrics>;
+  segmentMetrics?: {
+    segmentId: Id<'Segment'>;
+    metrics: Partial<ActivityMetrics>;
+  }[];
+}
+
+// ─── Activity ────────────────────────────────────────────────
+
+export type ActivityStatus = 'active' | 'finished';
+
+export interface ActivityPartner {
+  name: string;
+  userId?: Id<'User'>;
+}
+
+export interface ActivityComment {
+  text: string;
+  createdAt: number;
+}
+
+export interface Activity {
+  id: Id<'Activity'>;
+  userId: Id<'User'>;
+  primarySport: SportType;
+  customSport?: string;
+  status: ActivityStatus;
+  startedAt: number | null;
+  finishedAt: number | null;
+  title?: string;
+  notes: string;
+  tags?: string[];
+  rpe?: number;
+  with?: ActivityPartner[];
+  comments?: ActivityComment[];
+  media?: string[];
+  segments: Segment[];
+  sources: SourceContribution[];
+  preferredSources?: Partial<Record<MetricKey, DataSourceId>>;
+}
+
+export interface ActivityLogState {
+  activities: Activity[];
+}
+
+// ─── Internal Reducer Types ───────────────────────────────────
+// Used exclusively inside reducers.ts — not for general use.
+// Property shapes differ from the canonical Segment/Activity types.
+
+export type StrengthSet = SetEntry & {
+  type: 'strength';
+  weightKg: number;
+  reps: number;
+  isWarmup: boolean;
+  isPR: boolean;
+};
+
+export type CardioSet = SetEntry & {
+  type: 'cardio';
+  distanceMeters: number;
+  durationSeconds: number;
+};
+
+export type Block = StrengthSegment & {
   sessionId: Id<'Session'>;
   exerciseId: Id<'Exercise'>;
   exerciseName: string;
   exerciseCategory: ExerciseCategory;
-  sets: SetEntry[];
-  notes: string;
-  order: number;
   blockType?: 'straight' | 'superset' | 'circuit' | 'emom' | 'amrap';
   rounds?: number;
   restSeconds?: number;
   supersetGroupId?: Id<'SupersetGroup'>;
-}
+};
 
-export type SessionStatus = 'active' | 'finished';
-
-export interface TrainingSession {
-  id: Id<'Session'>;
-  userId: Id<'User'>;
+export type TrainingSession = Activity & {
   name: string;
-  startedAt: number | null;
-  finishedAt: number | null;
-  status: SessionStatus;
   blocks: Block[];
-  notes: string;
-  comments?: SessionComment[];
-  media?: string[];
-}
-
-export interface TrainingLogState {
-  sessions: TrainingSession[];
-}
+};
 
 // ─── Events ──────────────────────────────────────────────────
+
+export interface ExerciseSummary {
+  exerciseName: string;
+  exerciseCategory: ExerciseCategory;
+  sets: SetEntry[];
+}
 
 export type TrainingLogEvent =
   | DomainEvent<'SessionStarted', SessionStartedPayload>
@@ -97,17 +236,19 @@ export type TrainingLogEvent =
   | DomainEvent<'BlocksReordered', BlocksReorderedPayload>
   | DomainEvent<'BlockAddedToSuperset', BlockAddedToSupersetPayload>
   | DomainEvent<'BlockLeftSuperset', BlockLeftSupersetPayload>
-  | DomainEvent<'BlockRemoved', BlockRemovedPayload>;
+  | DomainEvent<'BlockRemoved', BlockRemovedPayload>
+  | DomainEvent<'SessionUpdated', SessionUpdatedPayload>;
 
 export interface SessionStartedPayload {
-  sessionId: Id<'Session'>;
+  sessionId: Id<'Activity'>;
   userId: Id<'User'>;
   name: string;
+  primarySport?: SportType;
 }
 
 export interface BlockAddedPayload {
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   exerciseId: Id<'Exercise'>;
   exerciseName: string;
   exerciseCategory: ExerciseCategory;
@@ -115,90 +256,82 @@ export interface BlockAddedPayload {
 }
 
 export interface SetLoggedPayload {
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   set: SetEntry;
 }
 
 export interface BlockNoteUpdatedPayload {
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   notes: string;
 }
 
 export interface SessionNoteUpdatedPayload {
-  sessionId: Id<'Session'>;
+  sessionId: Id<'Activity'>;
   notes: string;
 }
 
-// ─── Exercise Summary (enriched payload for downstream consumers) ──
-
-export interface ExerciseSummary {
-  exerciseName: string;
-  exerciseCategory: ExerciseCategory;
-  sets: StrengthSet[];  // only strength sets; cardio sets excluded from progression
-}
-
 export interface SessionFinishedPayload {
-  sessionId: Id<'Session'>;
+  sessionId: Id<'Activity'>;
   finishedAt: number;
-  sessionRpe?: number;   // 1–10 overall session feeling
-  tags?: string[];       // e.g. ["deload", "legs", "heavy"]
+  sessionRpe?: number;
+  tags?: string[];
   exerciseSummaries: ExerciseSummary[];
 }
 
 export interface SessionDeletedPayload {
-  sessionId: Id<'Session'>;
+  sessionId: Id<'Activity'>;
 }
 
 export interface PRFlaggedPayload {
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   setNumber: number;
 }
 
 export interface SetTypeChangedPayload {
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   setNumber: number;
-  setType: NonNullable<StrengthSet['setType']>;
+  setType: NonNullable<SetEntry['setType']>;
 }
 
 export interface RPELoggedPayload {
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   setNumber: number;
   rpe: number;
 }
 
 export interface SetFailedPayload {
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   setNumber: number;
   failed: boolean;
 }
 
 export interface BlockTypeSetPayload {
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
-  blockType: NonNullable<Block['blockType']>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
+  blockType: 'straight' | 'superset' | 'circuit' | 'emom' | 'amrap';
 }
 
 export interface BlockRoundsSetPayload {
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   rounds: number;
 }
 
 export interface SetRemovedPayload {
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   setNumber: number;
 }
 
 export interface SetUpdatedPayload {
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   setNumber: number;
   weightKg?: number;
   reps?: number;
@@ -211,47 +344,55 @@ export interface SetUpdatedPayload {
 }
 
 export interface SetCommentUpdatedPayload {
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   setNumber: number;
   comment: string;
 }
 
 export interface BlockRestSetPayload {
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   restSeconds: number;
 }
 
 export interface SessionRenamedPayload {
-  sessionId: Id<'Session'>;
+  sessionId: Id<'Activity'>;
   name: string;
 }
 
 export interface SessionStartTimeUpdatedPayload {
-  sessionId: Id<'Session'>;
+  sessionId: Id<'Activity'>;
   startedAt: number;
 }
 
 export interface BlocksReorderedPayload {
-  sessionId: Id<'Session'>;
-  blockIds: Id<'Block'>[];
+  sessionId: Id<'Activity'>;
+  blockIds: Id<'Segment'>[];
 }
 
 export interface BlockAddedToSupersetPayload {
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   groupId: Id<'SupersetGroup'>;
 }
 
 export interface BlockLeftSupersetPayload {
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
 }
 
 export interface BlockRemovedPayload {
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
+}
+
+export interface SessionUpdatedPayload {
+  sessionId: Id<'Activity'>;
+  finishedAt?: number;
+  rpe?: number | null;
+  tags?: string[];
+  media?: string[];
 }
 
 // ─── Commands ────────────────────────────────────────────────
@@ -260,20 +401,21 @@ export interface StartSession {
   type: 'StartSession';
   userId: Id<'User'>;
   name: string;
+  primarySport?: SportType;
 }
 
 export interface AddBlock {
   type: 'AddBlock';
-  sessionId: Id<'Session'>;
+  sessionId: Id<'Activity'>;
   exerciseName: string;
   exerciseCategory: ExerciseCategory;
-  blockId?: Id<'Block'>;
+  blockId?: Id<'Segment'>;
 }
 
 export interface LogStrengthSet {
   type: 'LogStrengthSet';
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   weightKg: number;
   reps: number;
   isWarmup: boolean;
@@ -281,8 +423,8 @@ export interface LogStrengthSet {
 
 export interface LogCardioSet {
   type: 'LogCardioSet';
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   distanceMeters: number;
   durationSeconds: number;
   avgPowerWatts?: number;
@@ -291,72 +433,73 @@ export interface LogCardioSet {
 
 export interface FinishSession {
   type: 'FinishSession';
-  sessionId: Id<'Session'>;
+  sessionId: Id<'Activity'>;
+  finishedAt?: number;
   sessionRpe?: number;
   tags?: string[];
 }
 
 export interface DeleteSession {
   type: 'DeleteSession';
-  sessionId: Id<'Session'>;
+  sessionId: Id<'Activity'>;
 }
 
 export interface UpdateBlockNote {
   type: 'UpdateBlockNote';
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   notes: string;
 }
 
 export interface ChangeSetType {
   type: 'ChangeSetType';
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   setNumber: number;
-  setType: NonNullable<StrengthSet['setType']>;
+  setType: NonNullable<SetEntry['setType']>;
 }
 
 export interface LogRPE {
   type: 'LogRPE';
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   setNumber: number;
   rpe: number;
 }
 
 export interface ToggleSetFailed {
   type: 'ToggleSetFailed';
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   setNumber: number;
   failed: boolean;
 }
 
 export interface SetBlockType {
   type: 'SetBlockType';
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
-  blockType: NonNullable<Block['blockType']>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
+  blockType: 'straight' | 'superset' | 'circuit' | 'emom' | 'amrap';
 }
 
 export interface SetBlockRounds {
   type: 'SetBlockRounds';
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   rounds: number;
 }
 
 export interface RemoveSet {
   type: 'RemoveSet';
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   setNumber: number;
 }
 
 export interface UpdateSet {
   type: 'UpdateSet';
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   setNumber: number;
   weightKg?: number;
   reps?: number;
@@ -370,60 +513,69 @@ export interface UpdateSet {
 
 export interface UpdateSetComment {
   type: 'UpdateSetComment';
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   setNumber: number;
   comment: string;
 }
 
 export interface SetBlockRest {
   type: 'SetBlockRest';
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   restSeconds: number;
 }
 
 export interface RenameSession {
   type: 'RenameSession';
-  sessionId: Id<'Session'>;
+  sessionId: Id<'Activity'>;
   name: string;
 }
 
 export interface UpdateSessionStartTime {
   type: 'UpdateSessionStartTime';
-  sessionId: Id<'Session'>;
+  sessionId: Id<'Activity'>;
   startedAt: number;
 }
 
 export interface ReorderBlocks {
   type: 'ReorderBlocks';
-  sessionId: Id<'Session'>;
-  blockIds: Id<'Block'>[];
+  sessionId: Id<'Activity'>;
+  blockIds: Id<'Segment'>[];
 }
 
 export interface AddToSuperset {
   type: 'AddToSuperset';
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
   groupId: Id<'SupersetGroup'>;
 }
 
 export interface LeaveSuperset {
   type: 'LeaveSuperset';
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
 }
 
 export interface RemoveBlock {
   type: 'RemoveBlock';
-  sessionId: Id<'Session'>;
-  blockId: Id<'Block'>;
+  sessionId: Id<'Activity'>;
+  blockId: Id<'Segment'>;
 }
 
 export interface UpdateSessionNote {
   type: 'UpdateSessionNote';
-  sessionId: Id<'Session'>;
+  sessionId: Id<'Activity'>;
   notes: string;
+}
+
+export interface UpdateSessionDetails {
+  type: 'UpdateSessionDetails';
+  sessionId: Id<'Activity'>;
+  finishedAt?: number;
+  rpe?: number | null;
+  tags?: string[];
+  media?: string[];
 }
 
 export type TrainingLogCommand =
@@ -449,4 +601,5 @@ export type TrainingLogCommand =
   | ReorderBlocks
   | AddToSuperset
   | LeaveSuperset
-  | RemoveBlock;
+  | RemoveBlock
+  | UpdateSessionDetails;

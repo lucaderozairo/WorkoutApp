@@ -1,4 +1,4 @@
-import type { SessionHistoryItem } from '@features/training_log';
+import type { ActivityHistoryItem } from '@features/training_log';
 import type { CardioSession } from '@features/cardio/domain/types';
 import { csvRow, triggerDownload } from './csv';
 
@@ -10,7 +10,7 @@ const EXPORT_HEADERS = [
 ];
 
 export function exportSessionCsv(
-  session: SessionHistoryItem,
+  session: ActivityHistoryItem,
   blocks?: Array<{ exerciseName: string; blockType?: string; sets: Array<{ setNumber: number; weightKg?: number; reps?: number; isWarmup?: boolean; isPR?: boolean; rpe?: number | null; distanceMeters?: number; durationSeconds?: number; avgPowerWatts?: number; resistance?: number; comment?: string }> }>,
 ): void {
   const date = new Date(session.startedAt).toISOString().split('T')[0];
@@ -83,7 +83,7 @@ export function exportCardioSessionCsv(session: CardioSession): void {
 }
 
 export function exportAllSessionsCsv(
-  history: SessionHistoryItem[],
+  history: ActivityHistoryItem[],
   cardio: CardioSession[],
 ): void {
   const rows = [EXPORT_HEADERS.join(',')];

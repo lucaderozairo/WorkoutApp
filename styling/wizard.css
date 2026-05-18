@@ -1,52 +1,32 @@
 /* styling/wizard.css */
 
-/* ── Wizard overlay — full-screen, above nav (no existing equivalent) ── */
-.fullscreen-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 300;
-  background: var(--surface-0);
-  display: flex;
+.leaflet-marker-icon.distance-marker {
+  background: none !important;
+  border: 0 !important;
+  display: flex !important;
   flex-direction: column;
-  overflow: hidden;
+  align-items: center;
+  justify-content: flex-end;
+  text-align: center;
 }
 
-/* ── Wizard chrome — style child elements directly, no extra classes ── */
-.fullscreen-overlay > header {
-  padding: var(--s-4) var(--s-5);
-  border-bottom: 1px solid var(--line);
+.distance-marker .distance-marker-label {
+  font-size: var(--t-xs);
+  background-color: var(--accent);
+  color: var(--surface-2);
+  white-space: nowrap;
+  line-height: 1;
+  padding: var(--s-1);
+  border-radius: var(--s-1);
+  box-shadow: var(--box-shadow-sm);
+}
+
+.distance-marker .distance-marker-line {
+  width: 2px;
+  height: 10px;
+  background: var(--ink);
+  margin: 0px auto 0;
   flex-shrink: 0;
-}
-
-.fullscreen-overlay > div {
-  flex: 1;
-  overflow-y: auto;
-  padding: var(--s-5);
-}
-
-.fullscreen-overlay > footer {
-  padding: var(--s-4) var(--s-5);
-  border-top: 1px solid var(--line);
-  flex-shrink: 0;
-}
-
-.map-root .route-distance-pane {
-  z-index: 7;
-  pointer-events: none;
-}
-
-.route-distance-tooltip {
-  padding: 0;
-  border: 0;
-  box-shadow: none;
-}
-
-.route-distance-tooltip::before {
-  display: none;
-}
-
-.route-map-wrap {
-  position: relative;
 }
 
 .route-map-canvas {
@@ -54,21 +34,16 @@
   height: 100%;
   position: absolute;
   inset: 0;
-  z-index: 1;
 }
-
-/* ── Tools panel — floating panel for route planner (desktop) ── */
-.tools-panel {
-  z-index: 1000;
-}
-
 
 /* ── Waypoint markers ── */
 .route-anchor {
   background: transparent;
 }
 
-.route-anchor__dot {
+.route-anchor .dot,
+.route-anchor.dot {
+  opacity: 1;
   width: 14px;
   height: 14px;
   border-radius: var(--r-pill);
@@ -77,56 +52,18 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
 }
 
-.route-anchor--start .route-anchor__dot {
+.route-anchor.start .dot {
   background: #22c55e;
 }
 
-.route-anchor--end .route-anchor__dot {
+.route-anchor.end .dot {
   background: #ef4444;
 }
 
-.route-locate-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: var(--r-pill);
-  background: var(--accent);
-  border: 2px solid #ffffff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
-}
-
-.route-search-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: var(--r-pill);
-  background: var(--ink);
-  opacity: 0.75;
-}
-
 /* ── Leaflet map controls themed to design system ── */
-/* Isolate Leaflet's internal z-indexes so they don't escape the map container */
+/* isolation: isolate keeps Leaflet's internal z-indexes scoped to the map container */
 .map-root {
   isolation: isolate;
-}
-.map-root .leaflet-tile-pane {
-  z-index: 2;
-}
-.map-root .leaflet-overlay-pane {
-  z-index: 4;
-}
-.map-root .leaflet-shadow-pane {
-  z-index: 5;
-}
-.map-root .leaflet-marker-pane {
-  z-index: 6;
-}
-.map-root .leaflet-tooltip-pane {
-  z-index: 7;
-}
-.map-root .leaflet-popup-pane {
-  z-index: 8;
-}
-.map-root .leaflet-control-container {
-  z-index: 9;
 }
 
 .leaflet-bar {

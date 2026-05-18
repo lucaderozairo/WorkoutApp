@@ -47,3 +47,7 @@ legacy/
 .code-review-graph/
 .worktrees/
 .superpowers/
+
+
+docs/
+plans/

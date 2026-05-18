@@ -1,5 +1,5 @@
 import { ScoreRing, SleepStagesBar, SparklineArea, fmtMin } from '../shared/Charts';
-import type { SleepSession } from '@data/mock/sleep';
+import type { SleepSession } from '@features/readiness';
 import type { HealthMetricsView } from '@features/readiness';
 import type { Appointment } from '@features/scheduling';
 
@@ -59,9 +59,7 @@ export function SleepWidget({
     return (
       <div className="surface column compact h-full">
         <span className="caption">Sleep</span>
-        <div className="stat stat--hero">
-          <span className="stat__num">{session.score}</span>
-        </div>
+        <span className="metric lg">{session.score}</span>
       </div>
     );
   }
@@ -74,9 +72,7 @@ export function SleepWidget({
           <span className={`badge ${badge.cls}`}>{badge.label}</span>
         </div>
         <div className="row align-center">
-          <div className="stat">
-            <span className="stat__num">{session.score}<span className="stat__unit">/ 100</span></span>
-          </div>
+          <span className="metric">{session.score}<span className="muted">/ 100</span></span>
           <span className="grow" />
           <span className="detail">{duration}</span>
         </div>
@@ -134,9 +130,7 @@ export function WeatherDashWidget({ size }: { size: WidgetSize }) {
     return (
       <div className="surface column compact h-full center align-center">
         <span className="emoji-sm">⛅</span>
-        <div className="stat">
-          <span className="stat__num">18<span className="stat__unit">°C</span></span>
-        </div>
+        <span className="metric">18<span className="muted">°C</span></span>
         <span className="caption faint">Kingston</span>
       </div>
     );
@@ -152,9 +146,7 @@ export function WeatherDashWidget({ size }: { size: WidgetSize }) {
         <div className="row align-center">
           <span className="emoji-md">⛅</span>
           <div className="column compact grow">
-            <div className="stat--inline">
-              <span className="stat__num">18<span className="stat__unit">°</span></span>
-            </div>
+            <span className="metric sm">18<span className="muted">°</span></span>
             <span className="caption faint">Partly Cloudy · Feels 16°</span>
           </div>
         </div>
@@ -182,9 +174,7 @@ export function WeatherDashWidget({ size }: { size: WidgetSize }) {
         <div className="row align-center">
           <span className="emoji-lg">⛅</span>
           <div className="column compact">
-            <div className="stat--inline">
-              <span className="stat__num">18<span className="stat__unit">°C</span></span>
-            </div>
+            <span className="metric sm">18<span className="muted">°C</span></span>
             <span className="caption faint">Partly Cloudy</span>
           </div>
         </div>
@@ -253,7 +243,7 @@ export function CalendarDashWidget({ size, appointments }: { size: WidgetSize; a
   if (size === '1x1') {
     return (
       <div className="surface column compact h-full center align-center">
-        <span className="stat stat--hero"><span className="stat__num">{today}</span></span>
+        <span className="metric lg">{today}</span>
         <span className="caption faint">{monthName}</span>
         {appointments.length > 0 && (
           <span className={`badge ${appointments.length > 0 ? 'blue' : ''}`}>{appointments.length} event{appointments.length !== 1 ? 's' : ''}</span>
@@ -325,9 +315,7 @@ export function ReadinessRecoveryWidget({ size, score, scoreClass }: { size: Wid
     return (
       <div className="surface column compact h-full">
         <span className="caption">Readiness</span>
-        <div className="stat stat--hero">
-          <span className="stat__num">{score}</span>
-        </div>
+        <span className="metric lg">{score}</span>
         <span className={`badge ${BADGE_CLASS[scoreClass]}`}>{RECOVERY_LABEL[scoreClass]}</span>
       </div>
     );
@@ -341,9 +329,7 @@ export function ReadinessRecoveryWidget({ size, score, scoreClass }: { size: Wid
           <span className={`badge ${BADGE_CLASS[scoreClass]}`}>{RECOVERY_LABEL[scoreClass]}</span>
         </div>
         <div className="row align-center">
-          <div className="stat stat--hero grow">
-            <span className="stat__num">{score}</span>
-          </div>
+          <span className="metric lg grow">{score}</span>
           <p className="detail faint">{RECOVERY_DETAIL[scoreClass]}</p>
         </div>
       </div>
@@ -388,11 +374,11 @@ export function HeartStatsWidget({ size, bpm, hrv, history }: { size: WidgetSize
         <span className="caption">Heart</span>
         <div className="row space-between align-center">
           <div className="column compact">
-            <span className="stat__num">{bpm ?? '—'}<span className="stat__unit">bpm</span></span>
+            <span className="metric">{bpm ?? '—'}<span className="muted">bpm</span></span>
             <span className="caption faint">HR</span>
           </div>
           <div className="column compact align-right">
-            <span className="stat__num">{hrv ?? '—'}<span className="stat__unit">ms</span></span>
+            <span className="metric">{hrv ?? '—'}<span className="muted">ms</span></span>
             <span className="caption faint">HRV</span>
           </div>
         </div>
@@ -406,14 +392,14 @@ export function HeartStatsWidget({ size, bpm, hrv, history }: { size: WidgetSize
         <span className="caption">Heart</span>
         <div className="row space-between align-center">
           <div className="column compact">
-            <div className="stat">
-              <span className="stat__num">{bpm ?? '—'}<span className="stat__unit">bpm</span></span>
+            <div className="column compact">
+              <span className="metric">{bpm ?? '—'}<span className="muted">bpm</span></span>
             </div>
             <span className="caption faint">Resting HR</span>
           </div>
           <div className="column compact align-right">
-            <div className="stat">
-              <span className="stat__num">{hrv ?? '—'}<span className="stat__unit">ms</span></span>
+            <div className="column compact">
+              <span className="metric">{hrv ?? '—'}<span className="muted">ms</span></span>
             </div>
             <span className="caption faint">HRV</span>
           </div>
@@ -427,14 +413,14 @@ export function HeartStatsWidget({ size, bpm, hrv, history }: { size: WidgetSize
       <span className="caption">Heart</span>
       <div className="row space-between align-center">
         <div className="column compact">
-          <div className="stat">
-            <span className="stat__num">{bpm ?? '—'}<span className="stat__unit">bpm</span></span>
+          <div className="column compact">
+            <span className="metric">{bpm ?? '—'}<span className="muted">bpm</span></span>
           </div>
           <span className="caption faint">Resting HR</span>
         </div>
         <div className="column compact align-right">
-          <div className="stat">
-            <span className="stat__num">{hrv ?? '—'}<span className="stat__unit">ms</span></span>
+          <div className="column compact">
+            <span className="metric">{hrv ?? '—'}<span className="muted">ms</span></span>
           </div>
           <span className="caption faint">HRV</span>
         </div>

@@ -12,9 +12,11 @@ import { eventBus } from "@core/events/bus";
 import { inMemoryEventStore } from "@data/store";
 import { projectionRegistry } from "@data/projections/builders";
 import { viewStore } from "@data/projections/views";
+import { loadFromStorage } from "@data/sources/local/persistence";
 import {
   recentCardioProjection,
   monthlyCardioProjection,
+  type RecentCardioView,
 } from "../projections";
 import {
   registerGoalProjections,
@@ -39,6 +41,14 @@ registerBodyProjections();
 registerEquipmentMileagePolicy();
 
 function applyAndStore(events: CardioEvent[]): void {
+  // Sync projection from the live state before applying. viewStore is preferred
+  // (most up-to-date), but falls back to localStorage in case viewStore was
+  // reset by HMR or hasn't been populated yet (e.g. seed bypassed the projection).
+  const liveCardio =
+    viewStore.get<RecentCardioView>("recent_cardio_sessions") ??
+    loadFromStorage<RecentCardioView>("recent_cardio_sessions");
+  if (liveCardio) recentCardioProjection.setState(liveCardio);
+
   events.forEach((e) => {
     recentCardioProjection.apply(e);
     monthlyCardioProjection.apply(e);

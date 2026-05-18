@@ -1,10 +1,10 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useExpandable } from '@ui/interactions/useExpandable';
 import { useCommand } from '@ui/bindings';
 import { handleLikePost, handleCommentOnPost } from '@features/social';
 import type { Post } from '@features/social';
-import { timeAgo } from '@ui/utils/timeAgo';
-import { USER_ID, USER_NAME, SPORT_MAP } from './socialConstants';
+import { timeAgo } from '@shared/utils/timeAgo';
+import { USER_ID, USER_NAME, SPORT_MAP } from '@features/social/domain/constants';
 
 export function PostCard({ post }: { post: Post & { sport?: string; group?: string; sessionName?: string } }) {
   const { expanded, toggle } = useExpandable();

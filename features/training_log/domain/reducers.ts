@@ -1,15 +1,13 @@
 import type {
-  TrainingLogState,
+  ActivityLogState,
   TrainingLogEvent,
   Block,
   TrainingSession,
-  StrengthSet,
-  CardioSet,
   SetEntry,
 } from './types';
 
-export const initialTrainingLogState: TrainingLogState = {
-  sessions: [],
+export const initialActivityLogState: ActivityLogState = {
+  activities: [],
 };
 
 // ─── helpers ─────────────────────────────────────────────────
@@ -19,22 +17,22 @@ type BlockMutator = (block: Block) => Block;
 type SetMutator = (set: SetEntry) => SetEntry;
 
 function mapSession(
-  state: TrainingLogState,
+  state: ActivityLogState,
   sessionId: string,
   fn: SessionMutator
-): TrainingLogState {
+): ActivityLogState {
   return {
     ...state,
-    sessions: state.sessions.map(s => (s.id === sessionId ? fn(s) : s)),
+    activities: state.activities.map(s => (s.id === sessionId ? fn(s as TrainingSession) : s)),
   };
 }
 
 function mapBlock(
-  state: TrainingLogState,
+  state: ActivityLogState,
   sessionId: string,
   blockId: string,
   fn: BlockMutator
-): TrainingLogState {
+): ActivityLogState {
   return mapSession(state, sessionId, session => ({
     ...session,
     blocks: session.blocks.map(b => (b.id === blockId ? fn(b) : b)),
@@ -42,12 +40,12 @@ function mapBlock(
 }
 
 function mapSet(
-  state: TrainingLogState,
+  state: ActivityLogState,
   sessionId: string,
   blockId: string,
   setNumber: number,
   fn: SetMutator
-): TrainingLogState {
+): ActivityLogState {
   return mapBlock(state, sessionId, blockId, block => ({
     ...block,
     sets: block.sets.map(s => (s.setNumber === setNumber ? fn(s) : s)),
@@ -56,22 +54,22 @@ function mapSet(
 
 function recomputePR(sets: SetEntry[]): SetEntry[] {
   // Reset all PR flags; highest weight*reps among non-warmup strength sets gets PR.
-  const cleared = sets.map(s => (s.type === 'strength' ? { ...s, isPR: false } : s));
+  const cleared = sets.map(s => ({ ...s, isPR: false }));
   let topScore = 0;
   let topIndex = -1;
   cleared.forEach((s, i) => {
-    if (s.type !== 'strength' || s.isWarmup) return;
-    const score = s.weightKg * s.reps;
+    if (s.isWarmup) return;
+    const w = s.weightKg ?? 0;
+    const r = s.reps ?? 0;
+    if (w === 0 && r === 0) return;
+    const score = w > 0 ? w * r : r;
     if (score > topScore) {
       topScore = score;
       topIndex = i;
     }
   });
   if (topIndex >= 0) {
-    const pr = cleared[topIndex];
-    if (pr.type === 'strength') {
-      cleared[topIndex] = { ...pr, isPR: true };
-    }
+    cleared[topIndex] = { ...cleared[topIndex], isPR: true };
   }
   return cleared;
 }
@@ -80,7 +78,7 @@ function recomputePR(sets: SetEntry[]): SetEntry[] {
 
 export const trainingLogReducers: Record<
   string,
-  (state: TrainingLogState, event: TrainingLogEvent) => TrainingLogState
+  (state: ActivityLogState, event: TrainingLogEvent) => ActivityLogState
 > = {
   SessionStarted: (state, event) => {
     if (event.type !== 'SessionStarted') return state;
@@ -88,13 +86,16 @@ export const trainingLogReducers: Record<
       id: event.payload.sessionId,
       userId: event.payload.userId,
       name: event.payload.name,
+      primarySport: event.payload.primarySport ?? 'strength',
       startedAt: event.timestamp,
       finishedAt: null,
       status: 'active',
       blocks: [],
+      segments: [],
+      sources: [],
       notes: '',
     };
-    return { ...state, sessions: [...state.sessions, session] };
+    return { ...state, activities: [...state.activities, session] };
   },
 
   BlockAdded: (state, event) => {
@@ -110,6 +111,8 @@ export const trainingLogReducers: Record<
       sets: [],
       notes: '',
       order,
+      sport: 'strength',
+      exercise: { id: exerciseId, name: exerciseName, category: exerciseCategory },
     };
     return mapSession(state, sessionId, s => ({ ...s, blocks: [...s.blocks, block] }));
   },
@@ -127,7 +130,7 @@ export const trainingLogReducers: Record<
     if (event.type !== 'PRFlagged') return state;
     const { sessionId, blockId, setNumber } = event.payload;
     return mapSet(state, sessionId, blockId, setNumber, set =>
-      set.type === 'strength' ? { ...set, isPR: true } : set
+      ({ ...set, isPR: true })
     );
   },
 
@@ -153,7 +156,7 @@ export const trainingLogReducers: Record<
     if (event.type !== 'SessionDeleted') return state;
     return {
       ...state,
-      sessions: state.sessions.filter(s => s.id !== event.payload.sessionId),
+      activities: state.activities.filter(s => s.id !== event.payload.sessionId),
     };
   },
 
@@ -161,7 +164,7 @@ export const trainingLogReducers: Record<
     if (event.type !== 'SetTypeChanged') return state;
     const { sessionId, blockId, setNumber, setType } = event.payload;
     return mapSet(state, sessionId, blockId, setNumber, set =>
-      set.type === 'strength' ? { ...set, setType } : set
+      ({ ...set, setType })
     );
   },
 
@@ -169,7 +172,7 @@ export const trainingLogReducers: Record<
     if (event.type !== 'RPELogged') return state;
     const { sessionId, blockId, setNumber, rpe } = event.payload;
     return mapSet(state, sessionId, blockId, setNumber, set =>
-      set.type === 'strength' ? { ...set, rpe } : set
+      ({ ...set, rpe })
     );
   },
 
@@ -177,7 +180,7 @@ export const trainingLogReducers: Record<
     if (event.type !== 'SetFailed') return state;
     const { sessionId, blockId, setNumber, failed } = event.payload;
     return mapSet(state, sessionId, blockId, setNumber, set =>
-      set.type === 'strength' ? { ...set, failed } : set
+      ({ ...set, failed })
     );
   },
 
@@ -212,24 +215,15 @@ export const trainingLogReducers: Record<
     return mapBlock(state, sessionId, blockId, block => {
       const merged = block.sets.map(s => {
         if (s.setNumber !== setNumber) return s;
-        if (s.type === 'strength') {
-          const next: StrengthSet = { ...s };
-          if (event.payload.weightKg !== undefined) next.weightKg = event.payload.weightKg;
-          if (event.payload.reps !== undefined) next.reps = event.payload.reps;
-          if (event.payload.isWarmup !== undefined) next.isWarmup = event.payload.isWarmup;
-          if (event.payload.done !== undefined) next.done = event.payload.done;
-          return next;
-        }
-        // cardio
-        const next = { ...s };
-        if (event.payload.distanceMeters !== undefined)
-          next.distanceMeters = event.payload.distanceMeters;
-        if (event.payload.durationSeconds !== undefined)
-          next.durationSeconds = event.payload.durationSeconds;
-        if (event.payload.avgPowerWatts !== undefined)
-          (next as CardioSet).avgPowerWatts = event.payload.avgPowerWatts;
-        if (event.payload.resistance !== undefined)
-          (next as CardioSet).resistance = event.payload.resistance;
+        const next: SetEntry = { ...s };
+        if (event.payload.weightKg !== undefined) next.weightKg = event.payload.weightKg;
+        if (event.payload.reps !== undefined) next.reps = event.payload.reps;
+        if (event.payload.isWarmup !== undefined) next.isWarmup = event.payload.isWarmup;
+        if (event.payload.done !== undefined) next.done = event.payload.done;
+        if (event.payload.distanceMeters !== undefined) next.distanceMeters = event.payload.distanceMeters;
+        if (event.payload.durationSeconds !== undefined) next.durationSeconds = event.payload.durationSeconds;
+        if (event.payload.avgPowerWatts !== undefined) next.avgPowerWatts = event.payload.avgPowerWatts;
+        if (event.payload.resistance !== undefined) next.resistance = event.payload.resistance;
         return next;
       });
       return { ...block, sets: recomputePR(merged) };
@@ -240,7 +234,7 @@ export const trainingLogReducers: Record<
     if (event.type !== 'SetCommentUpdated') return state;
     const { sessionId, blockId, setNumber, comment } = event.payload;
     return mapSet(state, sessionId, blockId, setNumber, set =>
-      set.type === 'strength' ? { ...set, comment } : set
+      ({ ...set, comment })
     );
   },
 
@@ -313,6 +307,16 @@ export const trainingLogReducers: Record<
       blocks: session.blocks
         .filter(b => b.id !== blockId)
         .map((b, i) => ({ ...b, order: i })),
+    }));
+  },
+
+  SessionUpdated: (state, event) => {
+    if (event.type !== 'SessionUpdated') return state;
+    const p = event.payload;
+    return mapSession(state, p.sessionId, s => ({
+      ...s,
+      ...(p.finishedAt !== undefined ? { finishedAt: p.finishedAt } : {}),
+      ...(p.media !== undefined ? { media: p.media } : {}),
     }));
   },
 };

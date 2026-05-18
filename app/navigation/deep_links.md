@@ -14,7 +14,7 @@ External URL → internal route mapping.
 | `/share/run/:id` | `/progress/session/:id?type=run` |
 | `/event/:id` | `/social/event/:id` |
 | `/invite/:token` | `/social/accept-invite?token=:token` |
-| `/blueprint/:id` | `/log?blueprint=:id` |
+| `/blueprint/:id` | `/sessions?blueprint=:id` |
 
 ## Resolution
 1. Platform shell receives URL.

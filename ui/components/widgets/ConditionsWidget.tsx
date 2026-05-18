@@ -10,7 +10,7 @@ interface ConditionsWidgetProps {
 export function ConditionsWidget({ conditions, suitability }: ConditionsWidgetProps) {
   if (!conditions) {
     return (
-      <section className="surface compact">
+      <section className="surface tight">
         <h3>Conditions</h3>
         <p>Loading…</p>
       </section>

@@ -6,3 +6,5 @@ export const constants = {
   APP_NAME: 'Workout App',
   VERSION: '0.1.0',
 } as const;
+
+export { timeAgo } from './timeAgo';

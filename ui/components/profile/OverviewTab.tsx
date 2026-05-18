@@ -1,6 +1,6 @@
 import { useQuery } from '@ui/bindings';
 import type { PersonalRecord } from '@features/progress_analysis';
-import type { MockAchievement, MockGoal } from '@data/mock/profile';
+import type { MockAchievement, MockGoal } from '@features/profile';
 
 export function OverviewTab() {
   const achievements = (useQuery<MockAchievement[]>('profile_achievements') ?? []) as MockAchievement[];
@@ -11,7 +11,7 @@ export function OverviewTab() {
       <h2 className="eyebrow">Achievements</h2>
       <div className="scroll-row">
         {achievements.map((a, i) => (
-          <div key={i} className={`surface compact${a.unlocked ? '' : ' inset'}`}>
+          <div key={i} className={`surface tight${a.unlocked ? '' : ' inset'}`}>
             <span>{a.emoji}</span>
             <span className="eyebrow">{a.name}</span>
             <span className="muted">{a.desc}</span>

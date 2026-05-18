@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import type { Id } from '@shared/types';
-import type { ActiveSessionView } from '@features/training_log/projections';
-import type { SessionHistoryItem } from '@features/training_log';
-import { handleFinishSession, handleUpdateSessionNote } from '@features/training_log';
+import type { ActivityView } from '@features/training_log/projections';
+import { handleFinishSession, handleUpdateSessionNote, getActivityHistory } from '@features/training_log';
 import { useCommand } from '@ui/bindings';
-import { viewStore } from '@data/projections/views';
 import { exportSessionEnvelope } from '@data/sources/local/persistence';
 import { exportSessionCsv, triggerDownload } from '@shared/utils/exportSession';
 
@@ -12,7 +10,7 @@ const RPE_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const SUGGESTED_TAGS = ['push', 'pull', 'legs', 'upper', 'lower', 'full-body', 'heavy', 'light', 'deload'];
 
 type Props = {
-  session: ActiveSessionView;
+  session: ActivityView;
   onClose: () => void;
   onFinished?: () => void;
   onJumpToBlock?: (blockId: Id<'Block'>) => void;
@@ -26,7 +24,7 @@ export function FinishSessionModal({ session, onClose, onFinished, onJumpToBlock
   const { dispatch: finish } = useCommand(handleFinishSession);
   const { dispatch: updateNote } = useCommand(handleUpdateSessionNote);
 
-  const totalSets = session.blocks.reduce((acc, b) => acc + b.sets.length, 0);
+  const totalSets = session.segments.reduce((acc, b) => acc + b.sets.length, 0);
 
   const toggleTag = (t: string) => {
     setTags(prev => (prev.includes(t) ? prev.filter(x => x !== t) : [...prev, t]));
@@ -47,8 +45,7 @@ export function FinishSessionModal({ session, onClose, onFinished, onJumpToBlock
   };
 
   const handleExportJson = () => {
-    const history = viewStore.get<SessionHistoryItem[]>('session_history') ?? [];
-    const item = history.find(s => s.id === session.id);
+    const item = getActivityHistory().find(s => s.id === session.id);
     const sessions = item ? [item] : [];
     const json = exportSessionEnvelope(sessions);
     const blob = new Blob([json], { type: 'application/json' });
@@ -68,12 +65,12 @@ export function FinishSessionModal({ session, onClose, onFinished, onJumpToBlock
       </header>
 
       <p className="caption">
-        {session.blocks.length} exercises · {totalSets} sets
+        {session.segments.length} exercises · {totalSets} sets
       </p>
 
       <div className="column compact">
         <span className="caption">Review</span>
-        {session.blocks.map(b => (
+        {session.segments.map(b => (
           <button
             key={b.id}
             type="button"

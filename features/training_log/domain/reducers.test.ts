@@ -1,9 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { trainingLogReducers, initialTrainingLogState } from './reducers';
+import { trainingLogReducers, initialActivityLogState } from './reducers';
 import type {
   TrainingLogEvent,
-  TrainingLogState,
-  StrengthSet,
+  ActivityLogState,
+  TrainingSession,
+  SetEntry,
 } from './types';
 import type { Id } from '@shared/types';
 
@@ -15,13 +16,13 @@ const EX_ID = 'e-1' as Id<'Exercise'>;
 const EX_ID_2 = 'e-2' as Id<'Exercise'>;
 const GROUP_ID = 'g-1' as Id<'SupersetGroup'>;
 
-function reduce(state: TrainingLogState, event: TrainingLogEvent): TrainingLogState {
+function reduce(state: ActivityLogState, event: TrainingLogEvent): ActivityLogState {
   const reducer = trainingLogReducers[event.type];
   return reducer ? reducer(state, event) : state;
 }
 
-function fold(events: TrainingLogEvent[]): TrainingLogState {
-  return events.reduce(reduce, initialTrainingLogState);
+function fold(events: TrainingLogEvent[]): ActivityLogState {
+  return events.reduce(reduce, initialActivityLogState);
 }
 
 function sessionStarted(ts = 1000): TrainingLogEvent {
@@ -75,7 +76,6 @@ function strengthSetLogged(
       sessionId: SESSION_ID,
       blockId: opts.blockId ?? BLOCK_ID,
       set: {
-        type: 'strength',
         setNumber,
         weightKg,
         reps,
@@ -87,9 +87,9 @@ function strengthSetLogged(
   };
 }
 
-function strengthSets(state: TrainingLogState): StrengthSet[] {
-  return (state.sessions[0]?.blocks[0]?.sets ?? []).filter(
-    (s): s is StrengthSet => s.type === 'strength'
+function strengthSets(state: ActivityLogState): SetEntry[] {
+  return ((state.activities[0] as TrainingSession | undefined)?.blocks[0]?.sets ?? []).filter(
+    (s): s is SetEntry => s.weightKg !== undefined || s.reps !== undefined
   );
 }
 
@@ -195,8 +195,8 @@ describe('trainingLogReducers — SessionRenamed / StartTimeUpdated', () => {
         payload: { sessionId: SESSION_ID, startedAt: 500 },
       },
     ]);
-    expect(state.sessions[0].name).toBe('Leg Day');
-    expect(state.sessions[0].startedAt).toBe(500);
+    expect((state.activities[0] as TrainingSession).name).toBe('Leg Day');
+    expect(state.activities[0].startedAt).toBe(500);
   });
 });
 
@@ -215,7 +215,7 @@ describe('trainingLogReducers — BlocksReordered', () => {
         payload: { sessionId: SESSION_ID, blockIds: [BLOCK_ID_2, BLOCK_ID] },
       },
     ]);
-    const blocks = state.sessions[0].blocks;
+    const blocks = (state.activities[0] as TrainingSession).blocks;
     expect(blocks.map(b => b.id)).toEqual([BLOCK_ID_2, BLOCK_ID]);
     expect(blocks.map(b => b.order)).toEqual([0, 1]);
   });
@@ -252,7 +252,7 @@ describe('trainingLogReducers — superset auto-ungroup', () => {
         payload: { sessionId: SESSION_ID, blockId: BLOCK_ID },
       },
     ]);
-    const blocks = state.sessions[0].blocks;
+    const blocks = (state.activities[0] as TrainingSession).blocks;
     expect(blocks.every(b => b.supersetGroupId === undefined)).toBe(true);
   });
 });
@@ -284,7 +284,7 @@ describe('trainingLogReducers — post-finish editability', () => {
         payload: { sessionId: SESSION_ID, name: 'Renamed after finish' },
       },
     ]);
-    expect(state.sessions[0].status).toBe('finished');
-    expect(state.sessions[0].name).toBe('Renamed after finish');
+    expect(state.activities[0].status).toBe('finished');
+    expect((state.activities[0] as TrainingSession).name).toBe('Renamed after finish');
   });
 });

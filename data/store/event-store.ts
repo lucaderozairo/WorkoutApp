@@ -1,6 +1,7 @@
 import type { Id, DomainEvent } from '@shared/types';
 import type { EventStore } from '@shared/contracts';
 import { eventBus } from '@core/events';
+import { persistEvent, loadAllEvents } from '@data/sources/local/event-db';
 
 /**
  * Hybrid event store: IndexedDB backend with in-memory fallback.
@@ -22,6 +23,14 @@ class HybridEventStore implements EventStore {
     const stream = this.streams.get(event.aggregateId) ?? [];
     stream.push(event);
     this.streams.set(event.aggregateId, stream);
+
+    if (this.useIndexedDB) {
+      try {
+        await persistEvent(event);
+      } catch {
+        // non-fatal: in-memory + localStorage snapshot still intact
+      }
+    }
 
     const subs = this.subscribers.get(event.aggregateId);
     if (subs) {
@@ -46,7 +55,32 @@ class HybridEventStore implements EventStore {
   }
 
   async hydrate(): Promise<void> {
-    // No-op for in-memory store
+    if (!this.useIndexedDB) return;
+    try {
+      const events = await loadAllEvents();
+      for (const event of events) {
+        const stream = this.streams.get(event.aggregateId) ?? [];
+        stream.push(event);
+        this.streams.set(event.aggregateId, stream);
+      }
+    } catch {
+      // IndexedDB unavailable — proceed with empty streams
+    }
+  }
+
+  hasAnyEvents(): boolean {
+    for (const stream of this.streams.values()) {
+      if (stream.length > 0) return true;
+    }
+    return false;
+  }
+
+  getAllEventsFlat(): DomainEvent<string, object>[] {
+    const all: DomainEvent<string, object>[] = [];
+    for (const stream of this.streams.values()) {
+      all.push(...stream);
+    }
+    return all.sort((a, b) => a.timestamp - b.timestamp);
   }
 }
 

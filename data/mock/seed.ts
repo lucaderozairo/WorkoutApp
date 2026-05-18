@@ -1,7 +1,6 @@
 import { viewStore } from '@data/projections/views';
-import { MOCK_SESSION_HISTORY, MOCK_EXERCISE_SETS } from './sessions';
+import { MOCK_SESSIONS_STATE, MOCK_EXERCISE_SETS } from './sessions';
 import { MOCK_CARDIO_SESSIONS } from './cardio';
-import { MOCK_SESSION_VIEWS_MAP } from './session_views';
 import { MOCK_SLEEP_WEEK } from './sleep';
 import { MOCK_POSTS, MOCK_SUGGESTED_GROUPS, MOCK_UPCOMING_EVENTS } from './social';
 import { MOCK_NUTRITION_ENTRIES } from './nutrition';
@@ -10,9 +9,12 @@ import { MOCK_CALENDAR_UPCOMING } from './calendar';
 import { MOCK_WORKOUTS } from './workouts';
 import { MOCK_UPCOMING_CALLS, MOCK_RECENT_MESSAGES } from './messages';
 import { MOCK_INJURIES } from './injuries';
+import { CATEGORY_MOCK_CHARTS } from './health-categories';
+import { handleSeedHealthCharts } from '@features/health';
+import type { HealthChartMap } from '@features/health';
 import type { ProgressionState, VolumeEntry } from '@features/progression';
 import type { RecentCardioView } from '@features/cardio';
-import type { SessionHistoryItem } from '@features/training_log';
+import type { ActivitiesState } from '@features/training_log';
 import type { SleepEntryView } from '@features/readiness';
 import type { Id } from '@shared/types';
 
@@ -83,9 +85,9 @@ function buildSleepHistory(): SleepEntryView[] {
 
 export function seedMockDataIfEmpty(): void {
   // ── Workouts ────────────────────────────────────────────────────────────────
-  const sessions = viewStore.get<SessionHistoryItem[]>('session_history') ?? [];
-  if (sessions.length === 0) {
-    viewStore.set('session_history', MOCK_SESSION_HISTORY);
+  const existingSessions = viewStore.get<ActivitiesState>('sessions');
+  if (!existingSessions || Object.keys(existingSessions.byId).length === 0) {
+    viewStore.set('sessions', MOCK_SESSIONS_STATE);
   }
 
   const cardio = viewStore.get<RecentCardioView>('recent_cardio_sessions');
@@ -102,9 +104,6 @@ export function seedMockDataIfEmpty(): void {
   if (progressionsStale) {
     viewStore.set('exercise_progressions', buildProgressions());
   }
-
-  // session_views is never persisted — always seed from mock
-  viewStore.set('session_views', MOCK_SESSION_VIEWS_MAP);
 
   // ── Sleep ───────────────────────────────────────────────────────────────────
   const sleepHistory = viewStore.get<SleepEntryView[]>('sleep_history') ?? [];
@@ -164,5 +163,11 @@ export function seedMockDataIfEmpty(): void {
   // ── Injuries ─────────────────────────────────────────────────────────────────
   if (!viewStore.get('workout_injuries')) {
     viewStore.set('workout_injuries', MOCK_INJURIES);
+  }
+
+  // ── Health charts ───────────────────────────────────────────────────────────
+  const existingHealthCharts = viewStore.get<HealthChartMap>('health_charts');
+  if (!existingHealthCharts || Object.keys(existingHealthCharts).length === 0) {
+    void handleSeedHealthCharts({ type: 'SeedHealthCharts', charts: CATEGORY_MOCK_CHARTS });
   }
 }

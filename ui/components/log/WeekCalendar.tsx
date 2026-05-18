@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { TypeFilter } from './SessionFilterBar';
-import type { CombinedSession } from './calendarUtils';
-import { buildDateMap, getWeekStart, formatWeekRange, toDateKey } from './calendarUtils';
+import type { CombinedSession } from '@features/training_log/queries/calendarUtils';
+import { buildDateMap, getWeekStart, formatWeekRange, toDateKey } from '@features/training_log/queries/calendarUtils';
 import { StrengthSessionItem, CardioSessionItem } from './SessionListItem';
 
 interface Props {
@@ -61,13 +61,13 @@ export function WeekCalendar({ sessions, typeFilter, renderFilter }: Props) {
 
   return (
     <div className="column">
-      <div className="row space-between align-center surface compact">
+      <div className="row space-between align-center surface tight">
         <button className="secondary icon sm" onClick={prev}>‹</button>
         <span className="caption text-center">{formatWeekRange(weekStart)}</span>
         <button className="secondary icon sm" onClick={next}>›</button>
       </div>
 
-      <div className="row surface compact">
+      <div className="row surface tight">
         {days.map((date, i) => {
           const key = toDateKey(date.getTime());
           const isToday = key === todayKey;
@@ -86,7 +86,7 @@ export function WeekCalendar({ sessions, typeFilter, renderFilter }: Props) {
               <strong>{date.getDate()}</strong>
               {hasSessions
                 ? <span className="dot sm active" />
-                : <span className="dot sm" style={{ opacity: 0 }} />
+                : <span className="dot sm invisible" />
               }
             </button>
           );

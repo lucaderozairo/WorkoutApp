@@ -24,23 +24,22 @@ import type {
   AddToSuperset,
   LeaveSuperset,
   RemoveBlock,
+  UpdateSessionDetails,
   TrainingLogEvent,
   ExerciseSummary,
-  StrengthSet,
+  SetEntry,
   SessionFinishedPayload,
 } from '../domain/types';
-import type { ActiveSessionView, SessionHistoryItem } from '../projections';
+import type { ActivityView, ActivitiesState } from '../projections';
 import { cryptoIdGenerator } from '@core/id-generator';
 import { systemClock } from '@core/clock';
 import { eventBus } from '@core/events/bus';
 import { AggregateRepository } from '@data/repositories';
 import { projectionRegistry } from '@data/projections/builders';
 import { viewStore } from '@data/projections/views';
-import { trainingLogReducers, initialTrainingLogState } from '../domain/reducers';
+import { trainingLogReducers, initialActivityLogState } from '../domain/reducers';
 import {
-  activeSessionProjection,
-  sessionHistoryProjection,
-  editingSessionProjection,
+  sessionProjection,
   recentExercisesProjection,
 } from '../projections';
 import { registerProgressionPolicy } from '@features/progression';
@@ -65,24 +64,20 @@ registerBodyProjections();
 registerEquipmentMileagePolicy();
 
 // Register projections
-projectionRegistry.register('active_session', activeSessionProjection);
-projectionRegistry.register('session_history', sessionHistoryProjection);
-projectionRegistry.register('editing_session', editingSessionProjection);
+projectionRegistry.register('sessions', sessionProjection);
 projectionRegistry.register('recent_exercises', recentExercisesProjection);
 
 const repository = new AggregateRepository(
-  initialTrainingLogState,
+  initialActivityLogState,
   trainingLogReducers
 );
 
-function applyAll(events: TrainingLogEvent[]): void {
+export function applyAll(events: TrainingLogEvent[]): void {
   events.forEach(e => {
-    activeSessionProjection.apply(e);
-    editingSessionProjection.apply(e);
+    sessionProjection.apply(e);
     recentExercisesProjection.apply(e);
   });
-  viewStore.set('active_session', activeSessionProjection.getState());
-  viewStore.set('editing_session', editingSessionProjection.getState());
+  viewStore.set('sessions', sessionProjection.getState());
   viewStore.set('recent_exercises', recentExercisesProjection.getState());
 }
 
@@ -103,6 +98,7 @@ export async function handleStartSession(cmd: StartSession): Promise<Result<{ se
       sessionId,
       userId: cmd.userId,
       name: cmd.name.trim(),
+      primarySport: cmd.primarySport,
     },
   }];
 
@@ -114,8 +110,8 @@ export async function handleStartSession(cmd: StartSession): Promise<Result<{ se
 export async function handleAddBlock(cmd: AddBlock): Promise<Result<void, string>> {
   if (!cmd.exerciseName.trim()) return err('Exercise name is required');
 
-  const current = viewStore.get<{ blocks: Array<{ id: string }> }>('active_session');
-  const order = current?.blocks.length ?? 0;
+  const sessionsState = viewStore.get<ActivitiesState>('sessions');
+  const order = sessionsState?.byId[cmd.sessionId]?.segments.length ?? 0;
 
   const blockId = cmd.blockId ?? cryptoIdGenerator.next<'Block'>();
   const exerciseId = cryptoIdGenerator.next<'Exercise'>();
@@ -145,9 +141,9 @@ export async function handleLogStrengthSet(cmd: LogStrengthSet): Promise<Result<
   if (cmd.weightKg < 0) return err('Weight must be non-negative');
   if (cmd.reps < 1) return err('Reps must be at least 1');
 
-  const current = viewStore.get<{ blocks: Array<{ id: string; sets: unknown[] }> }>('active_session');
-  const block = current?.blocks.find(b => b.id === cmd.blockId);
-  const setNumber = (block?.sets.length ?? 0) + 1;
+  const sessionsStrength = viewStore.get<ActivitiesState>('sessions');
+  const blockStrength = sessionsStrength?.byId[cmd.sessionId]?.segments.find(s => s.id === cmd.blockId);
+  const setNumber = (blockStrength?.sets.length ?? 0) + 1;
 
   const events: TrainingLogEvent[] = [{
     type: 'SetLogged',
@@ -159,8 +155,8 @@ export async function handleLogStrengthSet(cmd: LogStrengthSet): Promise<Result<
       sessionId: cmd.sessionId,
       blockId: cmd.blockId,
       set: {
-        type: 'strength',
         setNumber,
+        measure: 'weight_reps',
         weightKg: cmd.weightKg,
         reps: cmd.reps,
         isWarmup: cmd.isWarmup,
@@ -179,9 +175,9 @@ export async function handleLogCardioSet(cmd: LogCardioSet): Promise<Result<void
   if (cmd.distanceMeters < 0) return err('Distance must be non-negative');
   if (cmd.durationSeconds < 0) return err('Duration must be non-negative');
 
-  const current = viewStore.get<{ blocks: Array<{ id: string; sets: unknown[] }> }>('active_session');
-  const block = current?.blocks.find(b => b.id === cmd.blockId);
-  const setNumber = (block?.sets.length ?? 0) + 1;
+  const sessionsCardio = viewStore.get<ActivitiesState>('sessions');
+  const blockCardio = sessionsCardio?.byId[cmd.sessionId]?.segments.find(s => s.id === cmd.blockId);
+  const setNumber = (blockCardio?.sets.length ?? 0) + 1;
 
   const events: TrainingLogEvent[] = [{
     type: 'SetLogged',
@@ -193,8 +189,8 @@ export async function handleLogCardioSet(cmd: LogCardioSet): Promise<Result<void
       sessionId: cmd.sessionId,
       blockId: cmd.blockId,
       set: {
-        type: 'cardio',
         setNumber,
+        measure: 'distance',
         distanceMeters: cmd.distanceMeters,
         durationSeconds: cmd.durationSeconds,
         completedAt: systemClock.now(),
@@ -210,19 +206,20 @@ export async function handleLogCardioSet(cmd: LogCardioSet): Promise<Result<void
 }
 
 export async function handleFinishSession(cmd: FinishSession): Promise<Result<void, string>> {
-  const session = viewStore.get<ActiveSessionView>('active_session');
+  const sessionsState = viewStore.get<ActivitiesState>('sessions');
+  const session = sessionsState?.byId[cmd.sessionId];
 
-  if (!session || !session.id || session.id !== cmd.sessionId) return err('No active session found');
+  if (!session || session.status !== 'active') return err('No active session found');
 
-  const finishedAt = systemClock.now();
+  const finishedAt = cmd.finishedAt ?? systemClock.now();
 
   // Build exercise summaries for downstream consumers (progression, coaching)
-  const exerciseSummaries: ExerciseSummary[] = session.blocks
-    .filter(b => b.exerciseCategory === 'strength')
-    .map(b => ({
-      exerciseName: b.exerciseName,
-      exerciseCategory: b.exerciseCategory,
-      sets: b.sets.filter((s): s is StrengthSet => s.type === 'strength'),
+  const exerciseSummaries: ExerciseSummary[] = session.segments
+    .filter(seg => seg.exerciseCategory === 'strength')
+    .map(seg => ({
+      exerciseName: seg.exerciseName,
+      exerciseCategory: seg.exerciseCategory,
+      sets: seg.sets.filter((s): s is SetEntry => !s.isWarmup),
     }))
     .filter(s => s.sets.length > 0);
 
@@ -244,31 +241,8 @@ export async function handleFinishSession(cmd: FinishSession): Promise<Result<vo
   }];
 
   await repository.save(events);
-
-  // Build history item and push to session_history view
-  const totalSets = session.blocks.reduce((acc, b) => acc + b.sets.length, 0);
-  const durationSeconds = session.startedAt
-    ? Math.floor((finishedAt - session.startedAt) / 1000)
-    : 0;
-  const dominantCategory = session.blocks[0]?.exerciseCategory ?? 'strength';
-
-  const historyItem: SessionHistoryItem = {
-    id: cmd.sessionId,
-    name: session.name,
-    startedAt: session.startedAt ?? finishedAt,
-    finishedAt,
-    durationSeconds,
-    totalSets,
-    exerciseCount: session.blocks.length,
-    hasPR: false,
-    category: (dominantCategory === 'cardio' ? 'cardio' : dominantCategory === 'mobility' ? 'mobility' : 'strength') as 'strength' | 'cardio' | 'mobility',
-    media: session.media,
-    comments: session.comments,
-  };
-
-  const existing = viewStore.get<SessionHistoryItem[]>('session_history') ?? [];
-  viewStore.set('session_history', [historyItem, ...existing]);
-
+  // sessionProjection.SessionFinished marks status='finished', sets finishedAt, rpe, tags
+  // session_history is derived at query time from sessions.byId — no manual push needed
   applyAll(events);
 
   // Notify other features via event bus with enriched payload
@@ -295,11 +269,8 @@ export async function handleDeleteSession(cmd: DeleteSession): Promise<Result<vo
   }];
 
   await repository.save(events);
+  // sessionProjection.SessionDeleted removes from byId — getSessionHistory() auto-excludes it
   applyAll(events);
-
-  const existing = viewStore.get<SessionHistoryItem[]>('session_history') ?? [];
-  viewStore.set('session_history', existing.filter(s => s.id !== cmd.sessionId));
-
   return ok(undefined);
 }
 
@@ -550,38 +521,19 @@ export async function handleUpdateSessionNote(cmd: UpdateSessionNote): Promise<R
   }]);
 }
 
-export async function handleUpdateTrainingSession(cmd: {
-  sessionId: string;
-  name?: string;
-  notes?: string;
-  startedAt?: number;
-  comments?: import('@features/cardio/domain/types').SessionComment[];
-  media?: string[];
-}): Promise<void> {
-  const history = viewStore.get<SessionHistoryItem[]>('session_history') ?? [];
-  viewStore.set('session_history', history.map(s =>
-    s.id !== cmd.sessionId ? s : {
-      ...s,
-      name:      cmd.name      ?? s.name,
-      notes:     cmd.notes     ?? (s as unknown as { notes?: string }).notes,
-      startedAt: cmd.startedAt ?? s.startedAt,
-      comments:  cmd.comments   ?? s.comments,
-      media:     cmd.media      ?? s.media,
-    }
-  ));
-
-  const views = viewStore.get<Record<string, ActiveSessionView>>('session_views');
-  if (views?.[cmd.sessionId]) {
-    viewStore.set('session_views', {
-      ...views,
-      [cmd.sessionId]: {
-        ...views[cmd.sessionId],
-        ...(cmd.name      !== undefined ? { name: cmd.name } : {}),
-        ...(cmd.notes     !== undefined ? { notes: cmd.notes } : {}),
-        ...(cmd.startedAt !== undefined ? { startedAt: cmd.startedAt } : {}),
-        ...(cmd.comments  !== undefined ? { comments: cmd.comments } : {}),
-        ...(cmd.media     !== undefined ? { media: cmd.media } : {}),
-      },
-    });
-  }
+export async function handleUpdateSessionDetails(cmd: UpdateSessionDetails): Promise<Result<void, string>> {
+  return commit([{
+    type: 'SessionUpdated',
+    aggregateId: cmd.sessionId,
+    aggregateType: 'Session',
+    timestamp: systemClock.now(),
+    version: 1,
+    payload: {
+      sessionId: cmd.sessionId,
+      ...(cmd.finishedAt !== undefined ? { finishedAt: cmd.finishedAt } : {}),
+      ...(cmd.rpe !== undefined ? { rpe: cmd.rpe } : {}),
+      ...(cmd.tags !== undefined ? { tags: cmd.tags } : {}),
+      ...(cmd.media !== undefined ? { media: cmd.media } : {}),
+    },
+  }]);
 }

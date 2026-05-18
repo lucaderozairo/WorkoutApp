@@ -1,63 +1,79 @@
 import type { Id } from '@shared/types';
-import type { SessionComment } from '@features/cardio/domain/types';
+import type { ActivityComment } from '../domain/types';
 import type {
   TrainingLogEvent,
-  TrainingLogState,
-  TrainingSession,
-  SetEntry,
   ExerciseCategory,
-  StrengthSet,
+  SetEntry,
+  SourceContribution,
+  ActivityPartner,
+  SportType,
+  ActivityStatus,
 } from '../domain/types';
 import { ProjectionBuilder } from '@data/projections/builders';
-import { trainingLogReducers, initialTrainingLogState } from '../domain/reducers';
+
+// ─── PR computation ───────────────────────────────────────────
 
 function recomputePR(sets: SetEntry[]): SetEntry[] {
-  const cleared = sets.map(s => (s.type === 'strength' ? { ...s, isPR: false } : s));
+  const cleared = sets.map(s => ({ ...s, isPR: false }));
   let topScore = 0;
   let topIndex = -1;
   cleared.forEach((s, i) => {
-    if (s.type !== 'strength' || s.isWarmup) return;
-    const score = s.weightKg * s.reps;
-    if (score > topScore) {
-      topScore = score;
-      topIndex = i;
-    }
+    if (s.isWarmup) return;
+    const w = s.weightKg ?? 0;
+    const r = s.reps ?? 0;
+    if (w === 0 && r === 0) return;
+    const score = w > 0 ? w * r : r;
+    if (score > topScore) { topScore = score; topIndex = i; }
   });
   if (topIndex >= 0) {
-    const pr = cleared[topIndex];
-    if (pr.type === 'strength') cleared[topIndex] = { ...pr, isPR: true };
+    cleared[topIndex] = { ...cleared[topIndex], isPR: true };
   }
   return cleared;
 }
 
-// ─── View Types ──────────────────────────────────────────────
+// ─── Activity read model ──────────────────────────────────────
 
-export interface ActiveSessionView {
-  id: Id<'Session'>;
-  name: string;
-  startedAt: number | null;
-  blocks: Array<{
-    id: Id<'Block'>;
-    exerciseName: string;
-    exerciseCategory: ExerciseCategory;
-    sets: SetEntry[];
-    notes: string;
-    order: number;
-    blockType?: 'straight' | 'superset' | 'circuit' | 'emom' | 'amrap';
-    rounds?: number;
-    restSeconds?: number;
-    supersetGroupId?: Id<'SupersetGroup'>;
-  }>;
+export interface SegmentView {
+  id: Id<'Segment'>;
+  exerciseName: string;
+  exerciseCategory: ExerciseCategory;
+  sets: SetEntry[];
   notes: string;
-  comments?: SessionComment[];
-  media?: string[];
+  order: number;
+  blockType?: 'straight' | 'superset' | 'circuit' | 'emom' | 'amrap';
+  rounds?: number;
+  restSeconds?: number;
+  supersetGroupId?: Id<'SupersetGroup'>;
 }
 
-type ActiveBlock = NonNullable<ActiveSessionView>['blocks'][number];
-
-export interface SessionHistoryItem {
-  id: Id<'Session'>;
+export interface ActivityView {
+  id: Id<'Activity'>;
   name: string;
+  primarySport: SportType;
+  status: ActivityStatus;
+  startedAt: number | null;
+  finishedAt: number | null;
+  segments: SegmentView[];
+  notes: string;
+  rpe?: number;
+  tags?: string[];
+  comments?: ActivityComment[];
+  media?: string[];
+  sources: SourceContribution[];
+  with?: ActivityPartner[];
+}
+
+export interface ActivitiesState {
+  byId: Record<string, ActivityView>;
+  activeId: string | null;
+}
+
+// ─── Derived summary (computed at query time) ─────────────────
+
+export interface ActivityHistoryItem {
+  id: Id<'Activity'>;
+  name: string;
+  primarySport: SportType;
   startedAt: number;
   finishedAt: number;
   durationSeconds: number;
@@ -65,362 +81,300 @@ export interface SessionHistoryItem {
   exerciseCount: number;
   hasPR: boolean;
   category: ExerciseCategory;
+  rpe?: number;
+  tags?: string[];
   notes?: string;
-  comments?: SessionComment[];
+  comments?: ActivityComment[];
   media?: string[];
 }
 
-/** `active_session` — the current in-progress session (null if none) */
-export const activeSessionProjection = new ProjectionBuilder<
-  ActiveSessionView | null,
-  TrainingLogEvent
->(
-  'active_session',
-  null,
+
+// ─── Helpers ─────────────────────────────────────────────────
+
+function updateActivity(
+  state: ActivitiesState,
+  sessionId: string,
+  updater: (a: ActivityView) => ActivityView,
+): ActivitiesState {
+  const activity = state.byId[sessionId];
+  if (!activity) return state;
+  return { ...state, byId: { ...state.byId, [sessionId]: updater(activity) } };
+}
+
+function updateSegment(
+  state: ActivitiesState,
+  sessionId: string,
+  blockId: string,
+  updater: (s: SegmentView) => SegmentView,
+): ActivitiesState {
+  return updateActivity(state, sessionId, a => ({
+    ...a,
+    segments: a.segments.map(s => (s.id === blockId ? updater(s) : s)),
+  }));
+}
+
+// ─── Projection ───────────────────────────────────────────────
+
+const initialState: ActivitiesState = { byId: {}, activeId: null };
+
+export const sessionProjection = new ProjectionBuilder<ActivitiesState, TrainingLogEvent>(
+  'sessions',
+  initialState,
   {
-    SessionStarted: (_state, event) => {
-      if (event.type !== 'SessionStarted') return _state;
+    SessionStarted: (state, event) => {
+      if (event.type !== 'SessionStarted') return state;
+      const { sessionId, name, primarySport } = event.payload;
       return {
-        id: event.payload.sessionId,
-        name: event.payload.name,
-        startedAt: null,
-        blocks: [],
-        notes: '',
-      };
-    },
-    BlockAdded: (state, event) => {
-      if (!state || event.type !== 'BlockAdded') return state;
-      if (state.id !== event.payload.sessionId) return state;
-      return {
-        ...state,
-        blocks: [
-          ...state.blocks,
-          {
-            id: event.payload.blockId,
-            exerciseName: event.payload.exerciseName,
-            exerciseCategory: event.payload.exerciseCategory,
-            sets: [],
+        byId: {
+          ...state.byId,
+          [sessionId]: {
+            id: sessionId,
+            name,
+            primarySport: primarySport ?? 'strength',
+            status: 'active',
+            startedAt: null,
+            finishedAt: null,
+            segments: [],
             notes: '',
-            order: event.payload.order,
+            sources: [],
           },
-        ],
+        },
+        activeId: sessionId,
       };
     },
-    SetLogged: (state, event) => {
-      if (!state || event.type !== 'SetLogged') return state;
-      if (state.id !== event.payload.sessionId) return state;
-      return {
-        ...state,
-        blocks: state.blocks.map(b =>
-          b.id === event.payload.blockId
-            ? { ...b, sets: recomputePR([...b.sets, event.payload.set]) }
-            : b
-        ),
-      };
-    },
-    PRFlagged: (state, event) => {
-      if (!state || event.type !== 'PRFlagged') return state;
-      if (state.id !== event.payload.sessionId) return state;
-      return {
-        ...state,
-        blocks: state.blocks.map(b =>
-          b.id === event.payload.blockId
-            ? {
-                ...b,
-                sets: b.sets.map(s =>
-                  s.type === 'strength' && s.setNumber === event.payload.setNumber
-                    ? { ...s, isPR: true }
-                    : s
-                ),
-              }
-            : b
-        ),
-      };
-    },
-    BlockNoteUpdated: (state, event) => {
-      if (!state || event.type !== 'BlockNoteUpdated') return state;
-      if (state.id !== event.payload.sessionId) return state;
-      return {
-        ...state,
-        blocks: state.blocks.map(b =>
-          b.id === event.payload.blockId ? { ...b, notes: event.payload.notes } : b
-        ),
-      };
-    },
-    SessionNoteUpdated: (state, event) => {
-      if (!state || event.type !== 'SessionNoteUpdated') return state;
-      if (state.id !== event.payload.sessionId) return state;
-      return { ...state, notes: event.payload.notes };
-    },
+
     SessionFinished: (state, event) => {
-      if (!state || event.type !== 'SessionFinished') return state;
-      if (state.id !== event.payload.sessionId) return state;
-      return null;
+      if (event.type !== 'SessionFinished') return state;
+      const { sessionId } = event.payload;
+      return updateActivity(state, sessionId, a => ({
+        ...a,
+        status: 'finished',
+        finishedAt: event.timestamp,
+        rpe: event.payload.sessionRpe,
+        tags: event.payload.tags,
+      }));
     },
+
     SessionDeleted: (state, event) => {
-      if (!state || event.type !== 'SessionDeleted') return state;
-      if (state.id !== event.payload.sessionId) return state;
-      return null;
+      if (event.type !== 'SessionDeleted') return state;
+      const { sessionId } = event.payload;
+      const { [sessionId]: _, ...rest } = state.byId;
+      return {
+        byId: rest,
+        activeId: state.activeId === sessionId ? null : state.activeId,
+      };
     },
+
+    BlockAdded: (state, event) => {
+      if (event.type !== 'BlockAdded') return state;
+      const { sessionId, blockId, exerciseName, exerciseCategory, order } = event.payload;
+      return updateActivity(state, sessionId, a => ({
+        ...a,
+        segments: [
+          ...a.segments,
+          { id: blockId, exerciseName, exerciseCategory, sets: [], notes: '', order },
+        ],
+      }));
+    },
+
+    SetLogged: (state, event) => {
+      if (event.type !== 'SetLogged') return state;
+      const { sessionId, blockId } = event.payload;
+      return updateSegment(state, sessionId, blockId, s => ({
+        ...s,
+        sets: recomputePR([...s.sets, event.payload.set]),
+      }));
+    },
+
+    PRFlagged: (state, event) => {
+      if (event.type !== 'PRFlagged') return state;
+      const { sessionId, blockId, setNumber } = event.payload;
+      return updateSegment(state, sessionId, blockId, s => ({
+        ...s,
+        sets: s.sets.map(set => set.setNumber === setNumber ? { ...set, isPR: true } : set),
+      }));
+    },
+
+    BlockNoteUpdated: (state, event) => {
+      if (event.type !== 'BlockNoteUpdated') return state;
+      return updateSegment(state, event.payload.sessionId, event.payload.blockId, s => ({
+        ...s, notes: event.payload.notes,
+      }));
+    },
+
+    SessionNoteUpdated: (state, event) => {
+      if (event.type !== 'SessionNoteUpdated') return state;
+      return updateActivity(state, event.payload.sessionId, a => ({
+        ...a, notes: event.payload.notes,
+      }));
+    },
+
     SetTypeChanged: (state, event) => {
-      if (!state || event.type !== 'SetTypeChanged') return state;
-      if (state.id !== event.payload.sessionId) return state;
-      return {
-        ...state,
-        blocks: state.blocks.map(b =>
-          b.id === event.payload.blockId
-            ? {
-                ...b,
-                sets: b.sets.map(s =>
-                  s.type === 'strength' && s.setNumber === event.payload.setNumber
-                    ? { ...s, setType: event.payload.setType }
-                    : s
-                ),
-              }
-            : b
-        ),
-      };
+      if (event.type !== 'SetTypeChanged') return state;
+      const { sessionId, blockId, setNumber, setType } = event.payload;
+      return updateSegment(state, sessionId, blockId, s => ({
+        ...s,
+        sets: s.sets.map(set => set.setNumber === setNumber ? { ...set, setType } : set),
+      }));
     },
+
     RPELogged: (state, event) => {
-      if (!state || event.type !== 'RPELogged') return state;
-      if (state.id !== event.payload.sessionId) return state;
-      return {
-        ...state,
-        blocks: state.blocks.map(b =>
-          b.id === event.payload.blockId
-            ? {
-                ...b,
-                sets: b.sets.map(s =>
-                  s.type === 'strength' && s.setNumber === event.payload.setNumber
-                    ? { ...s, rpe: event.payload.rpe }
-                    : s
-                ),
-              }
-            : b
-        ),
-      };
+      if (event.type !== 'RPELogged') return state;
+      const { sessionId, blockId, setNumber, rpe } = event.payload;
+      return updateSegment(state, sessionId, blockId, s => ({
+        ...s,
+        sets: s.sets.map(set => set.setNumber === setNumber ? { ...set, rpe } : set),
+      }));
     },
+
     SetFailed: (state, event) => {
-      if (!state || event.type !== 'SetFailed') return state;
-      if (state.id !== event.payload.sessionId) return state;
-      return {
-        ...state,
-        blocks: state.blocks.map(b =>
-          b.id === event.payload.blockId
-            ? {
-                ...b,
-                sets: b.sets.map(s =>
-                  s.type === 'strength' && s.setNumber === event.payload.setNumber
-                    ? { ...s, failed: event.payload.failed }
-                    : s
-                ),
-              }
-            : b
-        ),
-      };
+      if (event.type !== 'SetFailed') return state;
+      const { sessionId, blockId, setNumber, failed } = event.payload;
+      return updateSegment(state, sessionId, blockId, s => ({
+        ...s,
+        sets: s.sets.map(set => set.setNumber === setNumber ? { ...set, failed } : set),
+      }));
     },
+
     BlockTypeSet: (state, event) => {
-      if (!state || event.type !== 'BlockTypeSet') return state;
-      if (state.id !== event.payload.sessionId) return state;
-      return {
-        ...state,
-        blocks: state.blocks.map(b =>
-          b.id === event.payload.blockId ? { ...b, blockType: event.payload.blockType } : b
-        ),
-      };
+      if (event.type !== 'BlockTypeSet') return state;
+      return updateSegment(state, event.payload.sessionId, event.payload.blockId, s => ({
+        ...s, blockType: event.payload.blockType,
+      }));
     },
+
     BlockRoundsSet: (state, event) => {
-      if (!state || event.type !== 'BlockRoundsSet') return state;
-      if (state.id !== event.payload.sessionId) return state;
-      return {
-        ...state,
-        blocks: state.blocks.map(b =>
-          b.id === event.payload.blockId ? { ...b, rounds: event.payload.rounds } : b
-        ),
-      };
+      if (event.type !== 'BlockRoundsSet') return state;
+      return updateSegment(state, event.payload.sessionId, event.payload.blockId, s => ({
+        ...s, rounds: event.payload.rounds,
+      }));
     },
+
     SetRemoved: (state, event) => {
-      if (!state || event.type !== 'SetRemoved') return state;
-      if (state.id !== event.payload.sessionId) return state;
-      const { blockId, setNumber } = event.payload;
-      return {
-        ...state,
-        blocks: state.blocks.map(b => {
-          if (b.id !== blockId) return b;
-          const remaining = b.sets
-            .filter(s => s.setNumber !== setNumber)
-            .map(s => (s.setNumber > setNumber ? { ...s, setNumber: s.setNumber - 1 } : s));
-          return { ...b, sets: recomputePR(remaining) };
-        }),
-      };
+      if (event.type !== 'SetRemoved') return state;
+      const { sessionId, blockId, setNumber } = event.payload;
+      return updateSegment(state, sessionId, blockId, s => {
+        const remaining = s.sets
+          .filter(set => set.setNumber !== setNumber)
+          .map(set => set.setNumber > setNumber ? { ...set, setNumber: set.setNumber - 1 } : set);
+        return { ...s, sets: recomputePR(remaining) };
+      });
     },
+
     SetUpdated: (state, event) => {
-      if (!state || event.type !== 'SetUpdated') return state;
-      if (state.id !== event.payload.sessionId) return state;
+      if (event.type !== 'SetUpdated') return state;
       const p = event.payload;
-      return {
-        ...state,
-        blocks: state.blocks.map(b => {
-          if (b.id !== p.blockId) return b;
-          const merged = b.sets.map(s => {
-            if (s.setNumber !== p.setNumber) return s;
-            if (s.type === 'strength') {
-              const next: StrengthSet = { ...s };
-              if (p.weightKg !== undefined) next.weightKg = p.weightKg;
-              if (p.reps !== undefined) next.reps = p.reps;
-              if (p.isWarmup !== undefined) next.isWarmup = p.isWarmup;
-              if (p.done !== undefined) next.done = p.done;
-              return next;
-            }
-            const next = { ...s } as import('../domain/types').CardioSet;
-            if (p.distanceMeters !== undefined) next.distanceMeters = p.distanceMeters;
-            if (p.durationSeconds !== undefined) next.durationSeconds = p.durationSeconds;
-            if (p.avgPowerWatts !== undefined) next.avgPowerWatts = p.avgPowerWatts;
-            if (p.resistance !== undefined) next.resistance = p.resistance;
-            return next;
-          });
-          return { ...b, sets: recomputePR(merged) };
-        }),
-      };
+      return updateSegment(state, p.sessionId, p.blockId, s => {
+        const merged = s.sets.map(set => {
+          if (set.setNumber !== p.setNumber) return set;
+          const next = { ...set };
+          if (p.weightKg        !== undefined) next.weightKg        = p.weightKg;
+          if (p.reps            !== undefined) next.reps            = p.reps;
+          if (p.distanceMeters  !== undefined) next.distanceMeters  = p.distanceMeters;
+          if (p.durationSeconds !== undefined) next.durationSeconds = p.durationSeconds;
+          if (p.avgPowerWatts   !== undefined) next.avgPowerWatts   = p.avgPowerWatts;
+          if (p.resistance      !== undefined) next.resistance      = p.resistance;
+          if (p.isWarmup        !== undefined) next.isWarmup        = p.isWarmup;
+          if (p.done            !== undefined) next.done            = p.done;
+          return next;
+        });
+        return { ...s, sets: recomputePR(merged) };
+      });
     },
+
     SetCommentUpdated: (state, event) => {
-      if (!state || event.type !== 'SetCommentUpdated') return state;
-      if (state.id !== event.payload.sessionId) return state;
-      const { blockId, setNumber, comment } = event.payload;
-      return {
-        ...state,
-        blocks: state.blocks.map(b =>
-          b.id === blockId
-            ? {
-                ...b,
-                sets: b.sets.map(s =>
-                  s.type === 'strength' && s.setNumber === setNumber
-                    ? { ...s, comment }
-                    : s
-                ),
-              }
-            : b
-        ),
-      };
+      if (event.type !== 'SetCommentUpdated') return state;
+      const { sessionId, blockId, setNumber, comment } = event.payload;
+      return updateSegment(state, sessionId, blockId, s => ({
+        ...s,
+        sets: s.sets.map(set => set.setNumber === setNumber ? { ...set, comment } : set),
+      }));
     },
+
     BlockRestSet: (state, event) => {
-      if (!state || event.type !== 'BlockRestSet') return state;
-      if (state.id !== event.payload.sessionId) return state;
-      return {
-        ...state,
-        blocks: state.blocks.map(b =>
-          b.id === event.payload.blockId ? { ...b, restSeconds: event.payload.restSeconds } : b
-        ),
-      };
+      if (event.type !== 'BlockRestSet') return state;
+      return updateSegment(state, event.payload.sessionId, event.payload.blockId, s => ({
+        ...s, restSeconds: event.payload.restSeconds,
+      }));
     },
+
     SessionRenamed: (state, event) => {
-      if (!state || event.type !== 'SessionRenamed') return state;
-      if (state.id !== event.payload.sessionId) return state;
-      return { ...state, name: event.payload.name };
+      if (event.type !== 'SessionRenamed') return state;
+      return updateActivity(state, event.payload.sessionId, a => ({
+        ...a, name: event.payload.name,
+      }));
     },
+
     SessionStartTimeUpdated: (state, event) => {
-      if (!state || event.type !== 'SessionStartTimeUpdated') return state;
-      if (state.id !== event.payload.sessionId) return state;
-      return { ...state, startedAt: event.payload.startedAt };
+      if (event.type !== 'SessionStartTimeUpdated') return state;
+      return updateActivity(state, event.payload.sessionId, a => ({
+        ...a, startedAt: event.payload.startedAt,
+      }));
     },
+
     BlocksReordered: (state, event) => {
-      if (!state || event.type !== 'BlocksReordered') return state;
-      if (state.id !== event.payload.sessionId) return state;
-      const byId = new Map(state.blocks.map(b => [b.id, b]));
-      const reordered = event.payload.blockIds
-        .map((id, index) => {
-          const b = byId.get(id);
-          return b ? { ...b, order: index } : null;
-        })
-        .filter((b): b is ActiveBlock => b !== null);
-      return { ...state, blocks: reordered };
+      if (event.type !== 'BlocksReordered') return state;
+      const { sessionId, blockIds } = event.payload;
+      return updateActivity(state, sessionId, a => {
+        const byId = new Map(a.segments.map(s => [s.id, s]));
+        const reordered = blockIds
+          .map((id, index) => { const s = byId.get(id); return s ? { ...s, order: index } : null; })
+          .filter((s): s is SegmentView => s !== null);
+        return { ...a, segments: reordered };
+      });
     },
+
     BlockAddedToSuperset: (state, event) => {
-      if (!state || event.type !== 'BlockAddedToSuperset') return state;
-      if (state.id !== event.payload.sessionId) return state;
-      return {
-        ...state,
-        blocks: state.blocks.map(b =>
-          b.id === event.payload.blockId ? { ...b, supersetGroupId: event.payload.groupId } : b
-        ),
-      };
+      if (event.type !== 'BlockAddedToSuperset') return state;
+      return updateSegment(state, event.payload.sessionId, event.payload.blockId, s => ({
+        ...s, supersetGroupId: event.payload.groupId,
+      }));
     },
+
     BlockLeftSuperset: (state, event) => {
-      if (!state || event.type !== 'BlockLeftSuperset') return state;
-      if (state.id !== event.payload.sessionId) return state;
-      const leaving = state.blocks.find(b => b.id === event.payload.blockId);
-      const groupId = leaving?.supersetGroupId;
-      const stripGroup = (b: ActiveBlock): ActiveBlock => {
-        const { supersetGroupId: _, ...rest } = b;
-        return rest;
-      };
-      const afterLeave = state.blocks.map(b => (b.id === event.payload.blockId ? stripGroup(b) : b));
-      if (!groupId) return { ...state, blocks: afterLeave };
-      const stillInGroup = afterLeave.filter(b => b.supersetGroupId === groupId);
-      if (stillInGroup.length >= 2) return { ...state, blocks: afterLeave };
-      return {
-        ...state,
-        blocks: afterLeave.map(b => (b.supersetGroupId === groupId ? stripGroup(b) : b)),
-      };
+      if (event.type !== 'BlockLeftSuperset') return state;
+      const { sessionId, blockId } = event.payload;
+      return updateActivity(state, sessionId, a => {
+        const leaving = a.segments.find(s => s.id === blockId);
+        const groupId = leaving?.supersetGroupId;
+        const strip = (s: SegmentView): SegmentView => {
+          const { supersetGroupId: _, ...rest } = s;
+          return rest;
+        };
+        const afterLeave = a.segments.map(s => s.id === blockId ? strip(s) : s);
+        if (!groupId) return { ...a, segments: afterLeave };
+        const stillInGroup = afterLeave.filter(s => s.supersetGroupId === groupId);
+        if (stillInGroup.length >= 2) return { ...a, segments: afterLeave };
+        return { ...a, segments: afterLeave.map(s => s.supersetGroupId === groupId ? strip(s) : s) };
+      });
     },
 
     BlockRemoved: (state, event) => {
-      if (!state || event.type !== 'BlockRemoved') return state;
-      if (state.id !== event.payload.sessionId) return state;
-      return {
-        ...state,
-        blocks: state.blocks
-          .filter(b => b.id !== event.payload.blockId)
-          .map((b, i) => ({ ...b, order: i })),
-      };
+      if (event.type !== 'BlockRemoved') return state;
+      const { sessionId, blockId } = event.payload;
+      return updateActivity(state, sessionId, a => ({
+        ...a,
+        segments: a.segments
+          .filter(s => s.id !== blockId)
+          .map((s, i) => ({ ...s, order: i })),
+      }));
+    },
+
+    SessionUpdated: (state, event) => {
+      if (event.type !== 'SessionUpdated') return state;
+      const p = event.payload;
+      return updateActivity(state, p.sessionId, a => ({
+        ...a,
+        ...(p.finishedAt !== undefined ? { finishedAt: p.finishedAt } : {}),
+        ...(p.rpe !== undefined ? { rpe: p.rpe ?? undefined } : {}),
+        ...(p.tags !== undefined ? { tags: p.tags } : {}),
+        ...(p.media !== undefined ? { media: p.media } : {}),
+      }));
     },
   }
 );
 
-/** `session_history` — list of completed sessions, newest first */
-export const sessionHistoryProjection = new ProjectionBuilder<
-  SessionHistoryItem[],
-  TrainingLogEvent
->(
-  'session_history',
-  [],
-  {
-    SessionDeleted: (state, event) => {
-      if (event.type !== 'SessionDeleted') return state;
-      return state.filter(s => s.id !== event.payload.sessionId);
-    },
-  }
-);
-
-// ─── editing_session ──────────────────────────────────────────
-// Full domain state keyed by sessionId. Unlike active_session, this
-// survives SessionFinished — the log page can edit finished sessions.
-
-export type EditingSessionsView = TrainingLogState;
-
-function delegateReducers(): {
-  [K in TrainingLogEvent['type']]: (state: TrainingLogState, event: TrainingLogEvent) => TrainingLogState;
-} {
-  const map = {} as Record<string, (state: TrainingLogState, event: TrainingLogEvent) => TrainingLogState>;
-  for (const type of Object.keys(trainingLogReducers)) {
-    map[type] = (state, event) => trainingLogReducers[type](state, event);
-  }
-  return map as never;
-}
-
-export const editingSessionProjection = new ProjectionBuilder<
-  EditingSessionsView,
-  TrainingLogEvent
->('editing_session', initialTrainingLogState, delegateReducers());
-
-export function findEditingSession(
-  state: EditingSessionsView,
-  sessionId: Id<'Session'>
-): TrainingSession | undefined {
-  return state.sessions.find(s => s.id === sessionId);
-}
-
-// ─── recent_exercises ─────────────────────────────────────────
+// ─── Recent exercises ─────────────────────────────────────────
 
 export interface RecentExercise {
   name: string;

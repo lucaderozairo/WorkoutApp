@@ -1,7 +1,7 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import {
   ActivityKey, ACTIVITY_META, ACTIVITY_CATEGORIES,
-} from './activityConfig';
+} from '@shared/constants/activities';
 
 interface Props {
   recentSports: ActivityKey[];
@@ -75,7 +75,7 @@ function ActivityGrid({ keys, onSelect, highlighted }: {
         return (
           <button
             key={k}
-            className={`surface compact column align-center interactive${highlighted ? ' surface selected' : ''}`}
+            className={`surface tight column align-center interactive${highlighted ? ' surface selected' : ''}`}
             onClick={() => onSelect(k)}
           >
             <h2>{emoji}</h2>

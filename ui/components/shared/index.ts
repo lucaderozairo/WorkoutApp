@@ -1,5 +1,4 @@
 export { Carousel } from './Carousel';
-export type { CarouselHandle } from './Carousel';
 export { EmptyState } from './EmptyState';
 export { Map } from './Map';
 export {

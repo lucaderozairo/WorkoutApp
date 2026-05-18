@@ -1,5 +1,15 @@
-import type { SessionHistoryItem } from '@features/training_log';
+import type { ActivityView, ActivitiesState, ActivityHistoryItem } from '@features/training_log';
 import type { Id } from '@shared/types';
+import {
+  SCENE_SUNRISE_RACK,
+  SCENE_NIGHT_SPOTLIGHT,
+  SCENE_DEADLIFT_PLATFORM,
+  SCENE_BENCH_PRESS,
+  SCENE_CHALK,
+  SCENE_DUMBBELL_RACK,
+  SCENE_POST_SESSION,
+  SCENE_PREDAWN,
+} from './workout-scenes';
 
 export interface ExerciseSetEntry {
   date: number;
@@ -7,39 +17,6 @@ export interface ExerciseSetEntry {
 }
 
 const d = (iso: string) => new Date(iso).getTime();
-
-function session(
-  id: string, name: string, dateIso: string,
-  durationMin: number, totalSets: number, exerciseCount: number, hasPR: boolean,
-): SessionHistoryItem {
-  const startedAt = d(dateIso + 'T09:00:00');
-  return {
-    id: id as Id<'Session'>,
-    name,
-    startedAt,
-    finishedAt: startedAt + durationMin * 60 * 1000,
-    durationSeconds: durationMin * 60,
-    totalSets,
-    exerciseCount,
-    hasPR,
-    category: 'strength',
-  };
-}
-
-export const MOCK_SESSION_HISTORY: SessionHistoryItem[] = [
-  session('sess-01', 'Upper A', '2026-01-06', 75,  18, 4, false),
-  session('sess-02', 'Lower A', '2026-01-13', 70,  16, 4, true),
-  session('sess-03', 'Upper B', '2026-01-20', 80,  20, 5, false),
-  session('sess-04', 'Lower B', '2026-01-27', 65,  14, 4, false),
-  session('sess-05', 'Upper A', '2026-02-03', 75,  18, 4, true),
-  session('sess-06', 'Lower A', '2026-02-10', 68,  16, 4, false),
-  session('sess-07', 'Upper B', '2026-02-17', 82,  22, 5, true),
-  session('sess-08', 'Lower B', '2026-02-24', 67,  15, 4, false),
-  session('sess-09', 'Upper A', '2026-03-03', 78,  20, 4, false),
-  session('sess-10', 'Lower A', '2026-03-10', 72,  18, 4, true),
-  session('sess-11', 'Upper B', '2026-03-17', 85,  24, 5, false),
-  session('sess-12', 'Lower B', '2026-03-24', 70,  16, 4, false),
-];
 
 function s(
   dateIso: string,
@@ -115,3 +92,106 @@ export const MOCK_EXERCISE_SETS: Record<string, ExerciseSetEntry[]> = {
     s('2026-03-24', 40, [[75,5],  [77.5,5],[80,2]]),
   ],
 };
+
+function toStrengthSets(entry: ExerciseSetEntry): import('@features/training_log/domain/types').SetEntry[] {
+  const working = entry.sets.filter(s => !s.isWarmup);
+  const bestScore = Math.max(...working.map(s => s.weightKg * s.reps));
+  return entry.sets.map((s, i) => ({
+    setNumber: i + 1,
+    measure: 'weight_reps' as const,
+    weightKg: s.weightKg,
+    reps: s.reps,
+    isWarmup: s.isWarmup,
+    isPR: !s.isWarmup && s.weightKg * s.reps === bestScore,
+    failed: s.failed ?? false,
+    completedAt: entry.date + i * 180_000,
+    done: true,
+  }));
+}
+
+const PLAN: Record<string, string[]> = {
+  'Upper A': ['Bench Press', 'Overhead Press'],
+  'Upper B': ['Bench Press', 'Overhead Press'],
+  'Lower A': ['Squat', 'Deadlift'],
+  'Lower B': ['Squat', 'Deadlift'],
+};
+
+const SESSIONS_META: Array<{ id: string; name: string; dateIso: string; durationMin: number }> = [
+  { id: 'sess-01', name: 'Upper A', dateIso: '2026-01-06', durationMin: 75 },
+  { id: 'sess-02', name: 'Lower A', dateIso: '2026-01-13', durationMin: 70 },
+  { id: 'sess-03', name: 'Upper B', dateIso: '2026-01-20', durationMin: 80 },
+  { id: 'sess-04', name: 'Lower B', dateIso: '2026-01-27', durationMin: 65 },
+  { id: 'sess-05', name: 'Upper A', dateIso: '2026-02-03', durationMin: 75 },
+  { id: 'sess-06', name: 'Lower A', dateIso: '2026-02-10', durationMin: 68 },
+  { id: 'sess-07', name: 'Upper B', dateIso: '2026-02-17', durationMin: 82 },
+  { id: 'sess-08', name: 'Lower B', dateIso: '2026-02-24', durationMin: 67 },
+  { id: 'sess-09', name: 'Upper A', dateIso: '2026-03-03', durationMin: 78 },
+  { id: 'sess-10', name: 'Lower A', dateIso: '2026-03-10', durationMin: 72 },
+  { id: 'sess-11', name: 'Upper B', dateIso: '2026-03-17', durationMin: 85 },
+  { id: 'sess-12', name: 'Lower B', dateIso: '2026-03-24', durationMin: 70 },
+];
+
+function buildActivityView(meta: typeof SESSIONS_META[number], sessionIndex: number): ActivityView {
+  const startedAt = d(meta.dateIso + 'T09:00:00');
+  const finishedAt = startedAt + meta.durationMin * 60_000;
+  const exercises = PLAN[meta.name] ?? PLAN['Lower A'];
+  const segments: ActivityView['segments'] = exercises.map((ex, i) => {
+    const allEntries = MOCK_EXERCISE_SETS[ex] ?? [];
+    const entry = allEntries[sessionIndex] ?? allEntries[0];
+    return {
+      id: `blk-${meta.id}-${i}` as Id<'Segment'>,
+      exerciseName: ex,
+      exerciseCategory: 'strength',
+      sets: toStrengthSets(entry),
+      notes: '',
+      order: i,
+    };
+  });
+
+  const MEDIA_GROUPS: Record<string, string[]> = {
+    'sess-09': [SCENE_SUNRISE_RACK, SCENE_BENCH_PRESS, SCENE_POST_SESSION],
+    'sess-10': [SCENE_DEADLIFT_PLATFORM, SCENE_NIGHT_SPOTLIGHT],
+    'sess-11': [SCENE_CHALK],
+    'sess-12': [SCENE_NIGHT_SPOTLIGHT, SCENE_DUMBBELL_RACK, SCENE_PREDAWN, SCENE_POST_SESSION],
+  };
+
+  return {
+    id: meta.id as Id<'Activity'>,
+    name: meta.name,
+    primarySport: 'strength',
+    status: 'finished',
+    startedAt,
+    finishedAt,
+    segments,
+    notes: '',
+    sources: [],
+    media: MEDIA_GROUPS[meta.id],
+  };
+}
+
+const MOCK_SESSIONS: ActivityView[] = SESSIONS_META.map((meta, i) => buildActivityView(meta, i));
+
+export const MOCK_SESSIONS_STATE: ActivitiesState = {
+  activeId: null,
+  byId: Object.fromEntries(MOCK_SESSIONS.map(s => [s.id, s])),
+};
+
+export const MOCK_SESSION_HISTORY: ActivityHistoryItem[] = MOCK_SESSIONS.map(s => {
+  const allSets = s.segments.flatMap(seg => seg.sets ?? []);
+  const workingSets = allSets.filter(set => !set.isWarmup && (set.weightKg !== undefined || set.reps !== undefined));
+  return {
+    id: s.id,
+    name: s.name,
+    primarySport: s.primarySport,
+    startedAt: s.startedAt!,
+    finishedAt: s.finishedAt ?? s.startedAt!,
+    durationSeconds: s.finishedAt && s.startedAt
+      ? Math.round((s.finishedAt - s.startedAt) / 1000)
+      : 0,
+    totalSets: workingSets.length,
+    exerciseCount: new Set(s.segments.map(seg => seg.exerciseName)).size,
+    hasPR: allSets.some(set => set.isPR),
+    category: 'strength' as const,
+    media: s.media,
+  };
+}).sort((a, b) => a.startedAt - b.startedAt);

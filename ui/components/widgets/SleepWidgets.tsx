@@ -1,6 +1,6 @@
 import { ScoreRing, SleepStagesBar, fmtMin, PositiveNegativeChart, SparklineArea } from '../shared/Charts';
 import type { PositiveNegativeEntry } from '../shared/Charts';
-import type { SleepSession } from '@data/mock/sleep';
+import type { SleepSession } from '@features/readiness';
 
 function scoreBadge(score: number): { label: string; color: string } {
     if (score >= 85) return { label: 'Good', color: 'green' };
