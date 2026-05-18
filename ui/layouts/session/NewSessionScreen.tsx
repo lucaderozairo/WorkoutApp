@@ -1,15 +1,27 @@
-﻿import { ACTIVITY_ICONS } from '@ui/icons/activityIcons';
+import { useState } from 'react';
+import { ACTIVITY_ICONS } from '@ui/icons/activityIcons';
 import type { SportType } from '@features/training_log/domain/types';
-import type { PlanType } from '@features/planning';
-import { SESSION_ACTIVITIES, ROUTE_ACTIVITIES, todayDateString, useNewSession } from './useNewSession';
+import {
+  PINNED_ACTIVITIES, MORE_CATEGORIES, ROUTE_ACTIVITIES,
+  todayDateString, useNewSession,
+} from './useNewSession';
 
-const PLAN_TO_SPORT: Record<PlanType, SportType> = {
-  gym:   'strength',
-  run:   'run',
-  cycle: 'cycle',
-  swim:  'swim',
-  hike:  'hike',
-};
+function ActivityButton({ sport, selected, onSelect }: {
+  sport: SportType;
+  selected: SportType;
+  onSelect: (s: SportType) => void;
+}) {
+  const { label, Icon } = ACTIVITY_ICONS[sport];
+  return (
+    <button
+      className={`surface tight column align-center grow${selected === sport ? ' active' : ''}`}
+      onClick={() => onSelect(sport)}
+    >
+      <Icon size={22} />
+      <span className="caption">{label}</span>
+    </button>
+  );
+}
 
 export function NewSessionScreen() {
   const {
@@ -24,6 +36,8 @@ export function NewSessionScreen() {
     handleSavedRoutes,
   } = useNewSession();
 
+  const [showMore, setShowMore] = useState(false);
+
   return (
     <div className="column">
       <div className="row space-between align-center compact">
@@ -31,22 +45,36 @@ export function NewSessionScreen() {
         <h2>New Session</h2>
         <span />
       </div>
-
+      {/* Pinned quick-select row */}
       <div className="row compact">
-        {SESSION_ACTIVITIES.map(key => {
-          const { label, Icon } = ACTIVITY_ICONS[PLAN_TO_SPORT[key]];
-          return (
-            <button
-              key={key}
-              className={`surface tight column align-center grow${selected === key ? ' active' : ''}`}
-              onClick={() => setSelected(key)}
-            >
-              <Icon size={24} />
-              <span className="caption">{label}</span>
-            </button>
-          );
-        })}
+        {PINNED_ACTIVITIES.map(sport => (
+          <ActivityButton key={sport} sport={sport} selected={selected} onSelect={setSelected} />
+        ))}
+        <button
+          className={`surface tight column align-center${showMore ? ' active' : ''}`}
+          onClick={() => setShowMore(v => !v)}
+          aria-expanded={showMore}
+        >
+          <h2>{showMore ? '✕' : '⊕'}</h2>
+          <span className="caption">More</span>
+        </button>
       </div>
+
+      {/* Expandable "More" grid */}
+      {showMore && (
+        <div className="column compact card surface inset">
+          {MORE_CATEGORIES.map(cat => (
+            <div key={cat.label} className="column compact">
+              <p className="eyebrow">{cat.label}</p>
+              <div className="cluster compact">
+                {cat.sports.map(sport => (
+                  <ActivityButton key={sport} sport={sport} selected={selected} onSelect={sport => { setSelected(sport); setShowMore(false); }} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="column compact">
         <label className="label" htmlFor="session-name">Name</label>

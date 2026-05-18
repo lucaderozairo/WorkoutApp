@@ -115,7 +115,7 @@ export function PlannedSessionDetail({ planId, onClose, onStartNow }: PlannedSes
         <button type="button" className="ghost" onClick={onClose}>✕</button>
       </div>
 
-      {plan.type === 'gym' && <GymDetail plan={plan} />}
+      {plan.type === 'strength' && <GymDetail plan={plan} />}
       {(plan.type === 'run' || plan.type === 'cycle') && <CardioDetail plan={plan} />}
       {plan.type === 'swim' && <SwimDetail plan={plan} />}
 

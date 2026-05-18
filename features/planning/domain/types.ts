@@ -1,6 +1,7 @@
 import type { Id, DomainEvent } from '@shared/types';
+import type { SportType } from '@features/training_log/domain/types';
 
-export type PlanType = 'gym' | 'run' | 'cycle' | 'swim' | 'hike';
+export type PlanType = SportType;
 
 export interface PlannedExercise {
   name: string;
