@@ -7,7 +7,10 @@ export type DomainEvent<TType extends string = string, TPayload = unknown> = {
   aggregateId: Id;
   aggregateType: string;
   timestamp: number;
+  /** Aggregate stream version for optimistic concurrency. */
   version: number;
+  /** Payload schema version. Absent on legacy events (treat as 1). Used by upcasters during replay. */
+  schemaVersion?: number;
   payload: TPayload;
 };
 

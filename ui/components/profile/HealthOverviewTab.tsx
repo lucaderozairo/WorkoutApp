@@ -2,7 +2,7 @@
 import { useState, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Search } from 'lucide-react'
-import { ChartContainer } from '../../patterns/charts/charts'
+import { ChartContainer } from '@ui/patterns/charts/charts'
 import { useQuery } from '@ui/bindings'
 import type { HealthChartDef, HealthChartMap } from '@features/health'
 

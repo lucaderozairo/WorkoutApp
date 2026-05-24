@@ -65,6 +65,13 @@
   border-color: var(--accent);
 }
 
+/* ── Status variants ── */
+.surface.warning {
+  background: color-mix(in srgb, var(--warn) 12%, var(--surface-1));
+  border-color: var(--warn);
+  color: var(--color-warning-text);
+}
+
 /* ── Narrow viewport overrides ── */
 @media (max-width: 360px) {
   .surface {

@@ -1,7 +1,8 @@
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine,
 } from 'recharts';
-import { CHART_H, TICK, TOOLTIP_STYLE } from '@ui/components/shared/Charts';
+import { CHART_H, TICK, TOOLTIP_STYLE } from '@ui/patterns/charts/domain-charts';
+import { ScreenHeader } from '@ui/components/shared';
 import { formatDate, formatDateFull, useExerciseHistory } from './useExerciseHistory';
 
 export function ExerciseHistoryScreen() {
@@ -22,8 +23,7 @@ export function ExerciseHistoryScreen() {
   if (notFound) {
     return (
       <div className="column">
-        <button type="button" className="ghost" onClick={() => navigate(-1)}>Back</button>
-        <h2>{exerciseName}</h2>
+        <ScreenHeader title={exerciseName} back={() => navigate(-1)} />
         <section className="surface tight">
           <p className="caption">No history found for "{exerciseName}".</p>
         </section>
@@ -33,14 +33,11 @@ export function ExerciseHistoryScreen() {
 
   return (
     <div className="column">
-      <button type="button" className="ghost" onClick={() => navigate(-1)}>Back</button>
-
-      <div className="row align-center">
-        <h2>{exerciseName}</h2>
-        {progression!.plateauDetected && (
-          <span className="pill warn">⚠ Plateau</span>
-        )}
-      </div>
+      <ScreenHeader
+        title={exerciseName}
+        back={() => navigate(-1)}
+        primary={progression?.plateauDetected ? <span className="pill warn">⚠ Plateau</span> : undefined}
+      />
 
       {points.length >= 1 && (
         <section className="surface tight column">

@@ -12,64 +12,11 @@ import {
     ResponsiveContainer, XAxis, YAxis,
 } from 'recharts';
 
-// #region Sample data
-const chartData = [
-    { name: 'Page A', uv: 4000, pv: 2400, amt: 2400 },
-    { name: 'Page B', uv: 3000, pv: 1398, amt: 2210 },
-    { name: 'Page C', uv: 2000, pv: 9800, amt: 2290 },
-    { name: 'Page D', uv: 2780, pv: 3908, amt: 2000 },
-    { name: 'Page E', uv: 1890, pv: 4800, amt: 2181 },
-    { name: 'Page F', uv: 2390, pv: 3800, amt: 2500 },
-    { name: 'Page G', uv: 3490, pv: 4300, amt: 2100 },
-];
-
-const defaultData = chartData.map(d => ({ x: d.name, y: d.uv }));
-const bandedData = chartData.map(d => ({ x: d.name, y: d.uv, lower: Math.round(d.uv * 0.75), delta: Math.round(d.uv * 0.5) }));
-const stackedData = chartData.map(d => ({ x: d.name, a: d.uv, b: d.pv, c: d.amt }));
-const pieData = chartData.map(d => ({ name: d.name, value: d.uv }));
-const scatterData = chartData.map(d => ({ x: d.uv, y: d.pv, z: d.amt }));
-const radarData = chartData.map(d => ({ subject: d.name, value: d.uv }));
-const radialData = chartData.map((d, i) => ({ name: d.name, value: d.uv, fill: `hsl(${i * 40}, 60%, 55%)` }));
-const posNegData = [
-    { x: 'Mon', y: 1200 }, { x: 'Tue', y: -800 }, { x: 'Wed', y: 600 },
-    { x: 'Thu', y: -400 }, { x: 'Fri', y: 900 }, { x: 'Sat', y: -200 },
-    { x: 'Sun', y: 1500 },
-];
 type TimelineOutcome = 'success' | 'error' | 'pending';
 type TimelineItem = { name: string; outcome: TimelineOutcome; firstCycle: [number, number]; secondCycle: [number, number] };
 
-const timelineData: TimelineItem[] = [
-    { name: 'TEST 1', outcome: 'success', firstCycle: [0, 3], secondCycle: [4.11, 14.11] },
-    { name: 'TEST 2', outcome: 'error', firstCycle: [0, 1.5], secondCycle: [9.11, 12.11] },
-    { name: 'TEST 3', outcome: 'success', firstCycle: [3, 5.37], secondCycle: [8.74, 14.48] },
-    { name: 'TEST 4', outcome: 'error', firstCycle: [5.37, 7.87], secondCycle: [9.61, 16.98] },
-    { name: 'TEST 5', outcome: 'success', firstCycle: [4.87, 8.24], secondCycle: [10.74, 17.35] },
-    { name: 'TEST 6', outcome: 'success', firstCycle: [3.24, 5.74], secondCycle: [8.61, 17.85] },
-    { name: 'TEST 7', outcome: 'success', firstCycle: [2.74, 9.11], secondCycle: [9.74, 18.22] },
-    { name: 'TEST 8', outcome: 'pending', firstCycle: [9.11, 10.61], secondCycle: [12.11, 19.72] },
-];
-
 const timelineColor = (outcome: TimelineOutcome) =>
     outcome === 'success' ? 'hsl(160,60%,50%)' : outcome === 'error' ? 'hsl(0,65%,55%)' : 'hsl(220,15%,55%)';
-
-function buildWaterfallData(items: { name: string; value: number }[]) {
-    let running = 0;
-    return items.map(item => {
-        const base = item.value >= 0 ? running : running + item.value;
-        const abs = Math.abs(item.value);
-        running += item.value;
-        return { name: item.name, base, value: abs, raw: item.value };
-    });
-}
-const waterfallData = buildWaterfallData([
-    { name: 'Start', value: 1000 },
-    { name: 'Sales', value: 500 },
-    { name: 'Refund', value: -200 },
-    { name: 'Expense', value: -300 },
-    { name: 'Bonus', value: 150 },
-    { name: 'Total', value: 0 },
-]);
-// #endregion
 
 export type ChartType =
     | 'bar' | 'line' | 'area' | 'composed'
@@ -116,15 +63,13 @@ function ChartSelector({ chartType, data, color, axisShow }: {
     color: string;
     axisShow: { x: boolean; y: boolean };
 }) {
-    const xy = data ?? defaultData;
+    const xy = data ?? [];
     const tick = { fontSize: 'var(--t-xs)' };
     const margin = (axisShow.x || axisShow.y)
         ? { top: 5, right: 5, bottom: 5, left: 0 }
         : { top: 2, right: 2, bottom: 2, left: 0 };
 
     switch (chartType) {
-
-        // ── existing ────────────────────────────────────────────────────────
 
         case 'bar':
             return (
@@ -141,7 +86,7 @@ function ChartSelector({ chartType, data, color, axisShow }: {
             const yMax = Math.max(step, Math.ceil(maxVal / step) * step);
             const ticks = Array.from({ length: Math.floor(yMax / step) + 1 }, (_, i) => i * step);
             return (
-                <BarChart data={xy} margin={{ top: 34,left: 0 }}>
+                <BarChart data={xy} margin={{ top: 34, left: 0 }}>
                     <CartesianGrid vertical={false} stroke="var(--line)" strokeDasharray="2 4" />
                     <Bar dataKey="y" fill={color} radius={[2, 2, 0, 0]} isAnimationActive={false}>
                         <LabelList
@@ -156,9 +101,9 @@ function ChartSelector({ chartType, data, color, axisShow }: {
                                         {entry.y} kg
                                     </text>
                                     <text x={props.x + props.width / 2} y={props.y - 1} textAnchor="middle" fontSize="var(--t-xs)" fill="var(--ink-faint)">
-                                        x  {entry.reps}
+                                        x {entry.reps}
                                     </text>
-                                    </>
+                                </>
                                 );
                             }}
                         />
@@ -167,7 +112,7 @@ function ChartSelector({ chartType, data, color, axisShow }: {
                     {axisShow.y && <YAxis width={30} tick={tick} ticks={ticks} domain={[0, yMax]} />}
                     <Tooltip
                         contentStyle={{ background: 'var(--surface-1)', border: '1px solid var(--line-strong)', borderRadius: 'var(--r-sm)', fontSize: 'var(--t-xs)' }}
-                        formatter={(value: any, _name: any, props: any) => [`${value} kg \u00d7 ${props.payload.reps} reps`]}
+                        formatter={(value: any, _name: any, props: any) => [`${value} kg × ${props.payload.reps} reps`]}
                     />
                 </BarChart>
             );
@@ -203,7 +148,7 @@ function ChartSelector({ chartType, data, color, axisShow }: {
             );
 
         case 'pie': {
-            const pd = (data ?? pieData).map((d, i) => ({ ...d, fill: `hsl(${i * 40}, 60%, 55%)` }));
+            const pd = (data ?? []).map((d, i) => ({ ...d, fill: `hsl(${i * 40}, 60%, 55%)` }));
             return (
                 <PieChart margin={margin}>
                     <Pie data={pd} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius="80%" />
@@ -213,7 +158,7 @@ function ChartSelector({ chartType, data, color, axisShow }: {
 
         case 'radar':
             return (
-                <RadarChart data={data ?? radarData} cx="50%" cy="50%" outerRadius="70%" margin={margin}>
+                <RadarChart data={data ?? []} cx="50%" cy="50%" outerRadius="70%" margin={margin}>
                     <PolarGrid />
                     <PolarAngleAxis dataKey="subject" />
                     <Radar dataKey="value" stroke={color} fill={color} fillOpacity={0.3} />
@@ -222,7 +167,7 @@ function ChartSelector({ chartType, data, color, axisShow }: {
 
         case 'radialbar':
             return (
-                <RadialBarChart data={data ?? radialData} cx="50%" cy="50%" innerRadius="20%" outerRadius="90%" margin={margin}>
+                <RadialBarChart data={data ?? []} cx="50%" cy="50%" innerRadius="20%" outerRadius="90%" margin={margin}>
                     <RadialBar dataKey="value" />
                 </RadialBarChart>
             );
@@ -233,15 +178,13 @@ function ChartSelector({ chartType, data, color, axisShow }: {
                     <XAxis dataKey="x" type="number" tick={tick} />
                     <YAxis width={40} dataKey="y" type="number" tick={tick} tickCount={5} />
                     <ZAxis dataKey="z" range={[40, 200]} />
-                    <Scatter data={data ?? scatterData} fill={color} />
+                    <Scatter data={data ?? []} fill={color} />
                 </ScatterChart>
             );
 
-        // ── new ─────────────────────────────────────────────────────────────
-
         case 'stacked-bar':
             return (
-                <BarChart data={data ?? stackedData} margin={margin}>
+                <BarChart data={data ?? []} margin={margin}>
                     <Bar dataKey="a" stackId="s" fill="hsl(220,60%,55%)" />
                     <Bar dataKey="b" stackId="s" fill="hsl(160,60%,50%)" />
                     <Bar dataKey="c" stackId="s" fill="hsl(40,70%,55%)" />
@@ -252,7 +195,7 @@ function ChartSelector({ chartType, data, color, axisShow }: {
 
         case 'percent-area':
             return (
-                <AreaChart data={data ?? stackedData} stackOffset="expand" margin={margin}>
+                <AreaChart data={data ?? []} stackOffset="expand" margin={margin}>
                     <Area type="monotone" dataKey="a" stackId="s" stroke="hsl(220,60%,55%)" fill="hsl(220,60%,55%)" />
                     <Area type="monotone" dataKey="b" stackId="s" stroke="hsl(160,60%,50%)" fill="hsl(160,60%,50%)" />
                     <Area type="monotone" dataKey="c" stackId="s" stroke="hsl(40,70%,55%)" fill="hsl(40,70%,55%)" />
@@ -265,7 +208,7 @@ function ChartSelector({ chartType, data, color, axisShow }: {
             const good = 'hsl(160,60%,50%)';
             const bad = 'hsl(0,65%,55%)';
             return (
-                <AreaChart data={data ?? posNegData} margin={margin}>
+                <AreaChart data={data ?? []} margin={margin}>
                     <defs>
                         <linearGradient id="fillByValue" x1="0" y1="0" x2="0" y2="1">
                             <stop offset="0%" stopColor={good} stopOpacity={0.4} />
@@ -288,7 +231,7 @@ function ChartSelector({ chartType, data, color, axisShow }: {
 
         case 'positive-negative':
             return (
-                <BarChart data={data ?? posNegData} margin={margin}>
+                <BarChart data={data ?? []} margin={margin}>
                     <ReferenceLine y={0} stroke="var(--line-strong)" />
                     <Bar dataKey="y" shape={(props: any) => {
                         const { x, y, width, height, value } = props;
@@ -312,7 +255,7 @@ function ChartSelector({ chartType, data, color, axisShow }: {
             );
 
         case 'timeline': {
-            const td = (data ?? timelineData) as TimelineItem[];
+            const td = (data ?? []) as TimelineItem[];
             const GanttBar = (props: any) => <Rectangle {...props} fill={timelineColor(props.outcome)} radius={4} />;
             const GanttBarActive = (props: any) => <Rectangle {...props} fill={timelineColor(props.outcome)} radius={4} stroke="var(--accent)" strokeWidth={2} />;
             return (
@@ -328,7 +271,7 @@ function ChartSelector({ chartType, data, color, axisShow }: {
         }
 
         case 'waterfall': {
-            const wf = data ?? waterfallData;
+            const wf = data ?? [];
             return (
                 <BarChart data={wf} margin={margin}>
                     <Bar dataKey="base" stackId="w" fill="transparent" />
@@ -346,7 +289,7 @@ function ChartSelector({ chartType, data, color, axisShow }: {
 
         case 'banded':
             return (
-                <ComposedChart data={data ?? bandedData} margin={margin}>
+                <ComposedChart data={data ?? []} margin={margin}>
                     <Area type="monotone" dataKey="lower" stackId="b" stroke="none" fill="transparent" legendType="none" />
                     <Area type="monotone" dataKey="delta" stackId="b" stroke="none" fill={color} fillOpacity={0.15} legendType="none" />
                     <Line type="monotone" dataKey="y" stroke={color} strokeWidth={2} dot={false} />

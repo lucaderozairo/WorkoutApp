@@ -1,5 +1,5 @@
 import { ExpandableCard } from '@ui/components/shared/ExpandableCard';
-import { ScoreRing } from '@ui/components/shared/Charts';
+import { ScoreRing } from '@ui/patterns/charts/domain-charts';
 import { SubjectiveAndHRInputs } from './SubjectiveAndHRInputs';
 import { RING_COLORS } from './dashboardUtils';
 import type { TodayReadinessView } from '@features/readiness';
@@ -41,7 +41,7 @@ export function SleepCard({ score, scoreClass, readiness }: SleepCardProps) {
                 ].map(factor => (
                   <div key={factor.label} className="row space-between">
                     <span className="caption">{factor.label}</span>
-                    <progress value={factor.value} max={10} />
+                    <div className="bar"><div className="fill" style={{ '--fill': `${(factor.value / 10) * 100}%` } as React.CSSProperties} /></div>
                   </div>
                 ))}
               </div>

@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Trash2 } from 'lucide-react';
 import { SessionFilterBar } from '@ui/components/log/SessionFilterBar';
@@ -10,6 +11,7 @@ import { WorkoutView } from '@ui/components/session/WorkoutView';
 import { FinishedView } from '@ui/components/session/FinishedView';
 import { SessionDetail } from '@ui/components/session/SessionDetail';
 import { ExercisePicker } from '@ui/components/log/ExercisePicker';
+import { ScreenHeader } from '@ui/components/shared';
 import { useLogScreen } from './useLogScreen';
 
 export function LogScreen() {
@@ -36,16 +38,31 @@ export function LogScreen() {
     handleConfirmDelete,
   } = useLogScreen();
 
+  const sessionsByYear = useMemo(() => {
+    if (sessionFilters.view !== 'list' || filteredSessions.length === 0) return [];
+    const groups = new Map<number, typeof filteredSessions>();
+    for (const entry of filteredSessions) {
+      const yr = new Date(entry.session.startedAt).getFullYear();
+      groups.set(yr, [...(groups.get(yr) ?? []), entry]);
+    }
+    const years = Array.from(groups.keys()).sort((a, b) =>
+      sessionFilters.sort === 'oldest' ? a - b : b - a
+    );
+    return years.map(yr => ({ year: yr, entries: groups.get(yr)! }));
+  }, [filteredSessions, sessionFilters.view, sessionFilters.sort]);
+
   if (!routeSessionId) {
     return (
       <UndoToastProvider>
         <div className="column">
-          <div className="row space-between align-center compact">
-            <h2>My Sessions</h2>
-            <button className="primary sm" onClick={() => navigate('/sessions/new')}>
-              ＋ Add
-            </button>
-          </div>
+          <ScreenHeader
+            title="My Sessions"
+            primary={
+              <button className="primary sm" onClick={() => navigate('/sessions/new')}>
+                ＋ Add
+              </button>
+            }
+          />
 
           {activeSession && (
             <button className="surface row space-between align-center" onClick={() => navigate(`/sessions/${activeSession.id}`)}>
@@ -96,46 +113,29 @@ export function LogScreen() {
             />
           )}
 
-          <button className="surface tight" onClick={() => navigate('/sessions/new')}>
-            ＋ Add
-          </button>
-
-          {sessionFilters.view === 'list' && (() => {
-            if (filteredSessions.length === 0) {
-              return <p className="caption">No sessions found</p>;
-            }
-            const groups = new Map<number, typeof filteredSessions>();
-            for (const entry of filteredSessions) {
-              const yr = new Date(entry.session.startedAt).getFullYear();
-              groups.set(yr, [...(groups.get(yr) ?? []), entry]);
-            }
-            const years = Array.from(groups.keys()).sort((a, b) =>
-              sessionFilters.sort === 'oldest' ? a - b : b - a
-            );
-            return (
-              <div className="column">
-                {years.map(yr => (
-                  <div key={yr} className="column">
-                    <p className="eyebrow compact">{yr}</p>
-                    {groups.get(yr)!.map((entry, i) =>
+          {sessionFilters.view === 'list' && (
+            filteredSessions.length === 0
+              ? <p className="caption">No sessions found</p>
+              : sessionsByYear.map(({ year, entries }) => (
+                  <div key={year} className="column compact">
+                    <p className="eyebrow compact">{year}</p>
+                    {entries.map(entry =>
                       entry.kind === 'strength'
                         ? <StrengthSessionItem
-                          key={i}
-                          session={entry.session}
-                          matchedExercise={entry.matchedExercise}
-                          onDelete={() => setDeleteConfirm({ kind: 'strength', id: entry.session.id })}
-                        />
+                            key={entry.session.id}
+                            session={entry.session}
+                            matchedExercise={entry.matchedExercise}
+                            onDelete={() => setDeleteConfirm({ kind: 'strength', id: entry.session.id })}
+                          />
                         : <CardioSessionItem
-                          key={i}
-                          session={entry.session}
-                          onDelete={() => setDeleteConfirm({ kind: 'cardio', id: entry.session.id })}
-                        />
+                            key={entry.session.id}
+                            session={entry.session}
+                            onDelete={() => setDeleteConfirm({ kind: 'cardio', id: entry.session.id })}
+                          />
                     )}
                   </div>
-                ))}
-              </div>
-            );
-          })()}
+                ))
+          )}
         </div>
 
         {deleteConfirm && (

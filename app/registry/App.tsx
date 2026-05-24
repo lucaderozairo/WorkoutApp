@@ -1,27 +1,36 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { ErrorBoundaryRoot } from '@core/errors';
-import { TabNavigation } from '@ui/layouts';
-import { HomeScreen } from '@ui/layouts';
-import { LogScreen } from '@ui/layouts';
-// import { ProgressScreen } from '@ui/layouts';
-import { ExerciseHistoryScreen } from '@ui/layouts';
-import { SocialScreen } from '@ui/layouts';
-import { MessageScreen } from '@ui/layouts';
-import { ProfileScreen } from '@ui/layouts';
-// import { TrainingPlansScreen } from '@ui/layouts';
-import { SettingsScreen } from '@ui/layouts';
-import { NotificationsScreen } from '@ui/layouts';
-import { NewSessionScreen } from '@ui/layouts';
-import { HealthCategoryScreen } from '@ui/layouts';
-import { WeatherScreen } from '@ui/layouts';
-import { WidgetPrototypeScreen } from '@ui/layouts';
-import { RoutePlannerScreen, SavedRoutesScreen, FinishSessionScreen, EditSessionScreen } from '@ui/layouts';
+import { TabNavigation } from '@ui/layouts/TabNavigation';
 import { SettingsModal } from '@ui/components/modals/SettingsModal';
+import { StorageWarningBanner } from '@ui/components/ux/StorageWarningBanner';
 import { APP_MODE } from '@config/app-mode';
 import '@features/training_log';
 import '@features/planning';
 import '@features/health';
+
+// Direct imports let Vite split each screen into its own chunk.
+// Heavy libraries (Leaflet, Recharts, Garmin FIT SDK) only load when their route is visited.
+const HomeScreen            = lazy(() => import('@ui/layouts/home/HomeScreen').then(m => ({ default: m.HomeScreen })));
+const LogScreen             = lazy(() => import('@ui/layouts/session/LogScreen').then(m => ({ default: m.LogScreen })));
+const NewSessionScreen      = lazy(() => import('@ui/layouts/session/NewSessionScreen').then(m => ({ default: m.NewSessionScreen })));
+const FinishSessionScreen   = lazy(() => import('@ui/layouts/session/FinishSessionScreen').then(m => ({ default: m.FinishSessionScreen })));
+const EditSessionScreen     = lazy(() => import('@ui/layouts/session/EditSessionScreen').then(m => ({ default: m.EditSessionScreen })));
+const ExerciseHistoryScreen = lazy(() => import('@ui/layouts/progress/ExerciseHistoryScreen').then(m => ({ default: m.ExerciseHistoryScreen })));
+const SocialScreen          = lazy(() => import('@ui/layouts/social/SocialScreen').then(m => ({ default: m.SocialScreen })));
+const MessageScreen         = lazy(() => import('@ui/layouts/social/MessageScreen').then(m => ({ default: m.MessageScreen })));
+const ProfileScreen         = lazy(() => import('@ui/layouts/profile/ProfileScreen').then(m => ({ default: m.ProfileScreen })));
+const SettingsScreen        = lazy(() => import('@ui/layouts/settings/SettingsScreen').then(m => ({ default: m.SettingsScreen })));
+const NotificationsScreen   = lazy(() => import('@ui/layouts/health/NotificationsScreen').then(m => ({ default: m.NotificationsScreen })));
+const HealthCategoryScreen  = lazy(() => import('@ui/layouts/health/HealthCategoryScreen').then(m => ({ default: m.HealthCategoryScreen })));
+const WeatherScreen         = lazy(() => import('@ui/layouts/health/WeatherScreen').then(m => ({ default: m.WeatherScreen })));
+const WidgetPrototypeScreen = lazy(() => import('@ui/layouts/_proto/WidgetPrototypeScreen').then(m => ({ default: m.WidgetPrototypeScreen })));
+const RoutePlannerScreen    = lazy(() => import('@ui/layouts/cardio/RoutePlannerScreen').then(m => ({ default: m.RoutePlannerScreen })));
+const SavedRoutesScreen     = lazy(() => import('@ui/layouts/cardio/SavedRoutesScreen').then(m => ({ default: m.SavedRoutesScreen })));
+
+function ScreenFallback() {
+  return <div className="surface centered caption" aria-busy="true">Loading…</div>;
+}
 
 export function App() {
   const [showSettings, setShowSettings] = useState(false);
@@ -32,38 +41,41 @@ export function App() {
       <div className="app-shell">
         <TabNavigation onOpenSettings={openSettings} />
         <main>
+          <StorageWarningBanner />
           {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
-          <Routes>
-            <Route path="/" element={<Navigate to="/home" replace />} />
-            <Route path="/home" element={<HomeScreen />} />
-            <Route path="/dashboard" element={<Navigate to="/home" replace />} />
-            <Route path="/sessions" element={<LogScreen />} />
-            <Route path="/sessions/:sessionId" element={<LogScreen />} />
-            <Route path="/sessions/:sessionId/summary" element={<FinishSessionScreen />} />
-            <Route path="/sessions/:sessionId/edit" element={<EditSessionScreen />} />
-            <Route path="/sessions/new" element={<NewSessionScreen />} />
-            <Route path="/log" element={<Navigate to="/sessions" replace />} />
-            <Route path="/log/:sessionId" element={<Navigate to="/sessions/:sessionId" replace />} />
-            <Route path="/new-session" element={<Navigate to="/sessions/new" replace />} />
-            {APP_MODE !== 'github-pages' && (
-              <>
-                {/* <Route path="/schedule" element={<TrainingPlansScreen />} /> */}
-                {/* <Route path="/progress" element={<ProgressScreen onOpenSettings={openSettings} />} /> */}
-                <Route path="/social" element={<SocialScreen />} />
-                <Route path="/messages" element={<MessageScreen />} />
-            <Route path="/widgets" element={<WidgetPrototypeScreen />} />
-              </>
-            )}
-            <Route path="/exercise/:exerciseName" element={<ExerciseHistoryScreen />} />
-            <Route path="/weather" element={<WeatherScreen />} />
-            <Route path="/profile" element={<ProfileScreen />} />
-            <Route path="/profile/health/:category" element={<HealthCategoryScreen />} />
-            <Route path="/settings" element={<SettingsScreen />} />
-            <Route path="/notifications" element={<NotificationsScreen />} />
-            <Route path="/plan-route" element={<RoutePlannerScreen />} />
-            <Route path="/saved-routes" element={<SavedRoutesScreen />} />
-            <Route path="*" element={<Navigate to="/home" replace />} />
-          </Routes>
+          <Suspense fallback={<ScreenFallback />}>
+            <Routes>
+              <Route path="/" element={<Navigate to="/home" replace />} />
+              <Route path="/home" element={<HomeScreen />} />
+              <Route path="/dashboard" element={<Navigate to="/home" replace />} />
+              <Route path="/sessions" element={<LogScreen />} />
+              <Route path="/sessions/:sessionId" element={<LogScreen />} />
+              <Route path="/sessions/:sessionId/summary" element={<FinishSessionScreen />} />
+              <Route path="/sessions/:sessionId/edit" element={<EditSessionScreen />} />
+              <Route path="/sessions/new" element={<NewSessionScreen />} />
+              <Route path="/log" element={<Navigate to="/sessions" replace />} />
+              <Route path="/log/:sessionId" element={<Navigate to="/sessions/:sessionId" replace />} />
+              <Route path="/new-session" element={<Navigate to="/sessions/new" replace />} />
+              {APP_MODE !== 'github-pages' && (
+                <>
+                  {/* <Route path="/schedule" element={<TrainingPlansScreen />} /> */}
+                  {/* <Route path="/progress" element={<ProgressScreen onOpenSettings={openSettings} />} /> */}
+                  <Route path="/social" element={<SocialScreen />} />
+                  <Route path="/messages" element={<MessageScreen />} />
+                  <Route path="/widgets" element={<WidgetPrototypeScreen />} />
+                </>
+              )}
+              <Route path="/exercise/:exerciseName" element={<ExerciseHistoryScreen />} />
+              <Route path="/weather" element={<WeatherScreen />} />
+              <Route path="/profile" element={<ProfileScreen />} />
+              <Route path="/profile/health/:category" element={<HealthCategoryScreen />} />
+              <Route path="/settings" element={<SettingsScreen />} />
+              <Route path="/notifications" element={<NotificationsScreen />} />
+              <Route path="/plan-route" element={<RoutePlannerScreen />} />
+              <Route path="/saved-routes" element={<SavedRoutesScreen />} />
+              <Route path="*" element={<Navigate to="/home" replace />} />
+            </Routes>
+          </Suspense>
         </main>
       </div>
     </ErrorBoundaryRoot>

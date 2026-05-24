@@ -1,3 +1,5 @@
+> **Status (2026-05-23):** Substantially completed. SettingsScreen, TabNavigation, `/notifications` route, and the unified HealthOverviewTab (commit 3eca1d5) are all live. Outstanding: SessionListItem / ScheduleStrip components and any residual filter-bar polish.
+
 # Nav Restructure & Session Log Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.

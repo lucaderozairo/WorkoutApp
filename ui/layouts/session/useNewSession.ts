@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useCommand } from '@ui/bindings';
-import { handleStartSession } from '@features/training_log';
-import { handlePlanSession } from '@features/planning';
+import { useCommand, useQuery } from '@ui/bindings';
+import { handleStartSession, handleAddBlock } from '@features/training_log';
+import type { SavedTemplate } from '@features/planning';
+
 import { defaultSessionName } from '@features/planning/domain/utils';
 import type { SportType } from '@features/training_log/domain/types';
 import type { Id } from '@shared/types';
@@ -52,13 +53,17 @@ export function useNewSession() {
   const [waypoints] = useState<[number, number][]>(returned.waypoints ?? []);
   const [routeKm] = useState(returned.distanceKm ?? 0);
   const [nameTouched, setNameTouched] = useState(!!returned.callerState?.name);
+  const [pendingTemplate, setPendingTemplate] = useState<SavedTemplate | null>(null);
+
+  const savedTemplates = (useQuery<SavedTemplate[]>('saved_templates') ?? []) as SavedTemplate[];
 
   useEffect(() => {
     if (!nameTouched) setName(defaultSessionName(selected));
   }, [selected, nameTouched]);
 
   const { dispatch: startSession } = useCommand(handleStartSession);
-  const { dispatch: planSession } = useCommand(handlePlanSession);
+  const { dispatch: addBlock } = useCommand(handleAddBlock);
+
 
   function recordRecentSport(sport: SportType) {
     const current = (viewStore.get<SportType[]>('wapp_recent_sports') ?? [])
@@ -66,29 +71,43 @@ export function useNewSession() {
     viewStore.set('wapp_recent_sports', [sport, ...current].slice(0, 10));
   }
 
+  function handleLoadTemplate(template: SavedTemplate) {
+    setSelected(template.primarySport);
+    setName(template.name);
+    setNameTouched(true);
+    setPendingTemplate(template);
+  }
+
   async function handleNewSession() {
     recordRecentSport(selected);
 
-    if (selected === 'strength') {
-      const result = await startSession({ type: 'StartSession', userId: USER_ID, name, primarySport: selected });
-      if (result.ok) {
-        navigate(`/sessions/${result.value!.sessionId}`);
+    const result = await startSession({ type: 'StartSession', userId: USER_ID, name, primarySport: selected });
+    if (!result.ok) return;
+
+    const sessionId = result.value!.sessionId as Id<'Session'>;
+
+    if (pendingTemplate) {
+      for (const ex of pendingTemplate.exercises) {
+        await addBlock({
+          type: 'AddBlock',
+          sessionId,
+          exerciseName: ex.name,
+          exerciseCategory: 'strength',
+        });
       }
-      return;
+    } else if (selected !== 'strength') {
+      const category = selected === 'mobility' || selected === 'yoga' || selected === 'stretch'
+        ? 'mobility' as const
+        : 'cardio' as const;
+      await addBlock({
+        type: 'AddBlock',
+        sessionId,
+        exerciseName: name,
+        exerciseCategory: category,
+      });
     }
 
-    const scheduledAt = new Date(`${date}T18:00:00`).getTime();
-    await planSession({
-      type: 'PlanSession',
-      userId: USER_ID,
-      planType: selected,
-      name,
-      scheduledAt,
-      notes: '',
-      routeWaypoints: waypoints.length > 0 ? waypoints : undefined,
-      distanceKm: routeKm > 0 ? routeKm : undefined,
-    });
-    navigate('/');
+    navigate(`/sessions/${sessionId}`);
   }
 
   function handleAddRoute() {
@@ -120,6 +139,9 @@ export function useNewSession() {
     startTime, setStartTime,
     routeKm,
     routeLabel,
+    savedTemplates,
+    pendingTemplate,
+    handleLoadTemplate,
     handleNewSession,
     handleAddRoute,
     handleSavedRoutes,

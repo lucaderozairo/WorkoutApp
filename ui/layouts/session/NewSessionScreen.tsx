@@ -6,6 +6,7 @@ import {
   todayDateString, useNewSession,
 } from './useNewSession';
 import { Plus, X } from 'lucide-react';
+import { ScreenHeader } from '@ui/components/shared';
 
 function ActivityButton({ sport, selected, onSelect }: {
   sport: SportType;
@@ -32,27 +33,27 @@ export function NewSessionScreen() {
     date, setDate,
     startTime, setStartTime,
     routeLabel,
+    savedTemplates,
+    pendingTemplate,
+    handleLoadTemplate,
     handleNewSession,
     handleAddRoute,
     handleSavedRoutes,
   } = useNewSession();
 
   const [showMore, setShowMore] = useState(false);
+  const [showTemplates, setShowTemplates] = useState(false);
 
   return (
     <div className="column">
-      <div className="row space-between align-center compact">
-        <button className="ghost" onClick={() => navigate(-1)}>Back</button>
-        <h2>New Session</h2>
-        <span />
-      </div>
+      <ScreenHeader title="New Session" back={() => navigate(-1)} />
       {/* Pinned quick-select row */}
       <div className="row compact">
         {PINNED_ACTIVITIES.map(sport => (
           <ActivityButton key={sport} sport={sport} selected={selected} onSelect={setSelected} />
         ))}
         <button
-          className={`column  compact align-center${showMore ? ' active' : ''}`}
+          className={`column surface card compact align-center${showMore ? ' active' : ''}`}
           onClick={() => setShowMore(v => !v)}
           aria-expanded={showMore}
         >
@@ -107,6 +108,35 @@ export function NewSessionScreen() {
           onChange={e => setStartTime(e.target.value)}
         />
       </div>
+
+      {savedTemplates.length > 0 && (
+        <div className="column compact">
+          <button
+            type="button"
+            className="ghost sm"
+            onClick={() => setShowTemplates(v => !v)}
+          >
+            {pendingTemplate
+              ? `Template: ${pendingTemplate.name} ✓`
+              : showTemplates ? 'Hide templates' : 'Load template'}
+          </button>
+          {showTemplates && (
+            <div className="column compact">
+              {savedTemplates.map(t => (
+                <button
+                  key={t.id}
+                  type="button"
+                  className={`surface tight row space-between align-center${pendingTemplate?.id === t.id ? ' active' : ''}`}
+                  onClick={() => { handleLoadTemplate(t); setShowTemplates(false); }}
+                >
+                  <span className="detail">{t.name}</span>
+                  <span className="caption">{t.exercises.length} exercises</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {ROUTE_ACTIVITIES.has(selected) && (
         <div className="row compact">

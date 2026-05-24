@@ -1,42 +1,9 @@
-import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { APP_MODE } from '@config/app-mode';
 import type { Icon as PhosphorIcon } from 'phosphor-react';
-import { Bell, CalendarBlank, ChartLine, Chat, Compass, File, Gear, House, ToggleLeft, ToggleRight, UserCircle } from 'phosphor-react';
-import logo  from '/logo.png';
-import { Menu } from 'lucide-react';
-function useTheme(): 'light' | 'dark' {
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    const t = document.documentElement.getAttribute('data-theme');
-    return t === 'dark' ? 'dark' : 'light';
-  });
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      const t = document.documentElement.getAttribute('data-theme');
-      setTheme(t === 'dark' ? 'dark' : 'light');
-    });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-    return () => observer.disconnect();
-  }, []);
-  return theme;
-}
+import { Bell, CalendarBlank, ChartLine, Chat, Compass, File, Gear, House, UserCircle } from 'phosphor-react';
 
-function ThemeToggle({ size = 20 }: { size?: number }) {
-  const theme = useTheme();
-  const toggle = () => {
-    document.documentElement.setAttribute('data-theme', theme === 'light' ? 'dark' : 'light');
-  };
-  return (
-    <button className='ghost' onClick={toggle} title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}>
-      {theme === 'light'
-        ? <ToggleLeft size={size} weight="regular" />
-        : <ToggleRight size={size} weight="fill" />}
-      Theme
-    </button>
-  );
-}
-
-  const GITHUB_PAGES_PATHS = new Set(['/home', '/sessions', '/profile']);
+const GITHUB_PAGES_PATHS = new Set(['/home', '/sessions', '/profile']);
 
 const allDesktopTabs: { label: string; path: string; Icon: PhosphorIcon }[] = [
   { label: 'Home', path: '/home', Icon: House },
@@ -73,15 +40,6 @@ export function TabNavigation({ onOpenSettings }: TabNavigationProps) {
     <>
       {/* Desktop rail — visible >780px */}
       <aside className="app-rail">
-        <div className="surface ghost">
-          <NavLink to={"/"}>
-            <span className='icon'>
-              <img src={logo} alt="Fittrack logo" width="18" height="18" />
-            </span>
-            <span className="detail">Fittrack</span>
-          </NavLink>
-        </div>
-        <hr />
         <nav className="surface ghost">
           {desktopTabs.map(({ label, path, Icon }) => (
             <NavLink key={path} to={path}>
@@ -104,34 +62,19 @@ export function TabNavigation({ onOpenSettings }: TabNavigationProps) {
               </>
             )}
           </NavLink>
-          {/* <a className="ghost icon" title="Notifications">
-            <Bell size={18} />
-            <span className="detail">Notifications</span>
-          </a> */}
-
-          <ThemeToggle size={18} />
         </div>
       </aside>
 
       {/* Mobile topbar — visible ≤780px */}
-      <header className="app-topbar row align-center space-between">
-        <NavLink key={"/"} to={"/"}>
-          <span className='icon'>
-            <img src={logo} alt="Fittrack logo" width="24" height="24" />
-          </span>
-          <h2>Fittrack</h2>
-        </NavLink>
-        <div className="row">
-          <ThemeToggle size={20} />
-          {/* <button className="ghost icon" title="Notifications">
-            <Bell size={20} />
-          </button> */}
-          {onOpenSettings && (
-            <button className="ghost icon" onClick={onOpenSettings} title="Settings">
-              <Gear size={20} />
-            </button>
-          )}
-        </div>
+      <header className="app-topbar row align-center">
+        {/* <button className="ghost icon" title="Notifications">
+          <Bell size={20} />
+        </button> */}
+        {onOpenSettings && (
+          <button className="ghost icon" onClick={onOpenSettings} title="Settings">
+            <Gear size={20} />
+          </button>
+        )}
       </header>
 
       {/* Mobile bottom tabbar — visible ≤780px */}

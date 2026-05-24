@@ -7,7 +7,7 @@ import type { SetEntry, StrengthSet } from '@features/training_log/domain/types'
 import type { GpsTrack } from '@data/sources/files/gps';
 import { SessionGpsPreview } from './SessionGpsPreview';
 import { ImportModal } from '../modals/ImportModal';
-import { HROverTimeChart, PaceOverTimeChart, ElevationProfileChart, KmSplitsTable, CHART_H, TICK, TOOLTIP_STYLE } from '../shared/Charts';
+import { HROverTimeChart, PaceOverTimeChart, ElevationProfileChart, KmSplitsTable, CHART_H, TICK, TOOLTIP_STYLE } from '@ui/patterns/charts/domain-charts';
 import ChartContainer from '@ui/patterns/charts/charts';
 import { ChevronLeft, Pencil, Share2, Image, MapPin, HeartPulse, TrendingUp, Mountain, Timer, Trophy, Heart, MessageCircle } from 'lucide-react';
 import { ACTIVITY_ICONS, getActivityLabel } from '@ui/icons/activityIcons';

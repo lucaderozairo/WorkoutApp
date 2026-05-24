@@ -5,6 +5,7 @@
 import { ActivitiesTab } from '@ui/components/profile/ActivitiesTab';
 import { HealthOverviewTab } from '@ui/components/profile/HealthOverviewTab';
 import { useProfileScreen } from './useProfileScreen';
+import { Flame } from 'lucide-react';
 
 import '@features/progress_analysis';
 import '@features/readiness';
@@ -24,7 +25,7 @@ export function ProfileScreen() {
             <span>{profile?.displayName ?? 'You'}</span>
             <span className="mono muted">{profile?.email ?? ''}</span>
             <div className="cluster">
-              <span className="pill accent">🔥 Active</span>
+              <span className="pill accent row align-center compact"><Flame size={12} /> Active</span>
             </div>
           </div>
         </div>

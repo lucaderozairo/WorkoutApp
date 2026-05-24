@@ -170,6 +170,15 @@
 .emoji-lg {
   font-size: 36px;
 }
+.chevron {
+  transition: transform var(--duration-short) var(--ease);
+}
+.chevron.open {
+  transform: rotate(180deg);
+}
+.shrink-0 {
+  flex-shrink: 0;
+}
 
 @media (max-width: 760px) {
   .desktop-only {

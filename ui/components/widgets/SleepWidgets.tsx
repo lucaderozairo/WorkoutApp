@@ -1,5 +1,5 @@
-import { ScoreRing, SleepStagesBar, fmtMin, PositiveNegativeChart, SparklineArea } from '../shared/Charts';
-import type { PositiveNegativeEntry } from '../shared/Charts';
+import { ScoreRing, SleepStagesBar, fmtMin, PositiveNegativeChart, SparklineArea } from '@ui/patterns/charts/domain-charts';
+import type { PositiveNegativeEntry } from '@ui/patterns/charts/domain-charts';
 import type { SleepSession } from '@features/readiness';
 
 function scoreBadge(score: number): { label: string; color: string } {

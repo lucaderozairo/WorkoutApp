@@ -1,3 +1,5 @@
+> **Status (2026-05-23):** Substantially completed. GPS parser + tests, HealthTrendWidgets (resting HR, HRV), ExerciseHistoryScreen, and SettingsScreen are all live. Outstanding: mock generator integration polish and Strava adapter.
+
 # Data Logging Overhaul — Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.

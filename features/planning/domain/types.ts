@@ -43,11 +43,26 @@ export interface SavedRoute {
   createdAt: number;
 }
 
+export interface TemplateExercise {
+  name: string;
+  setCount: number;
+}
+
+export interface SavedTemplate {
+  id: Id<'SavedTemplate'>;
+  name: string;
+  primarySport: SportType;
+  exercises: TemplateExercise[];
+  createdAt: number;
+}
+
 export type PlanningEvent =
   | DomainEvent<'SessionPlanned', PlannedSession>
   | DomainEvent<'PlannedSessionDeleted', { planId: Id<'PlannedSession'> }>
   | DomainEvent<'RouteSaved', SavedRoute>
-  | DomainEvent<'RouteDeleted', { routeId: Id<'SavedRoute'> }>;
+  | DomainEvent<'RouteDeleted', { routeId: Id<'SavedRoute'> }>
+  | DomainEvent<'TemplateSaved', SavedTemplate>
+  | DomainEvent<'TemplateDeleted', { templateId: Id<'SavedTemplate'> }>;
 
 export interface PlanSession {
   type: 'PlanSession';
@@ -84,4 +99,16 @@ export interface DeleteSavedRoute {
   routeId: Id<'SavedRoute'>;
 }
 
-export type PlanningCommand = PlanSession | DeletePlannedSession | SaveRoute | DeleteSavedRoute;
+export interface SaveTemplate {
+  type: 'SaveTemplate';
+  name: string;
+  primarySport: SportType;
+  exercises: TemplateExercise[];
+}
+
+export interface DeleteSavedTemplate {
+  type: 'DeleteSavedTemplate';
+  templateId: Id<'SavedTemplate'>;
+}
+
+export type PlanningCommand = PlanSession | DeletePlannedSession | SaveRoute | DeleteSavedRoute | SaveTemplate | DeleteSavedTemplate;

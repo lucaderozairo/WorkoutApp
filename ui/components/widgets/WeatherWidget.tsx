@@ -6,7 +6,7 @@ import {
     XAxis, YAxis, Tooltip,
     ReferenceLine,
 } from 'recharts';
-import { SparklineArea } from '../shared/Charts';
+import { SparklineArea } from '@ui/patterns/charts/domain-charts';
 
 const HOURLY_TEMP = [
     { x: '9am', y: 14 },

@@ -1,7 +1,8 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import {
   ActivityKey, ACTIVITY_META, ACTIVITY_CATEGORIES,
 } from '@shared/constants/activities';
+import { ACTIVITY_META_ICONS } from '@ui/icons/activityMetaIcons';
 
 interface Props {
   recentSports: ActivityKey[];
@@ -71,14 +72,15 @@ function ActivityGrid({ keys, onSelect, highlighted }: {
   return (
     <div className="grid-4">
       {keys.map(k => {
-        const { emoji, label } = ACTIVITY_META[k];
+        const { label } = ACTIVITY_META[k];
+        const Icon = ACTIVITY_META_ICONS[k];
         return (
           <button
             key={k}
             className={`surface tight column align-center interactive${highlighted ? ' surface selected' : ''}`}
             onClick={() => onSelect(k)}
           >
-            <h2>{emoji}</h2>
+            <Icon size={28} />
             <span className="caption">{label}</span>
           </button>
         );

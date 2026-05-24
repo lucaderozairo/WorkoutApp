@@ -1,4 +1,4 @@
-﻿import { ActivityMobilityView } from '@ui/components/health/ActivityMobilityView'
+import { ActivityMobilityView } from '@ui/components/health/ActivityMobilityView'
 import { BodyMeasurementsView } from '@ui/components/health/BodyMeasurementsView'
 import { InjuriesView } from '@ui/components/health/InjuriesView'
 import { RoutesView } from '@ui/components/health/RoutesView'
@@ -17,6 +17,7 @@ import { BodyBatteryView } from '@ui/components/health/BodyBatteryView'
 import { StressView } from '@ui/components/health/StressView'
 import { SkinTemperatureView } from '@ui/components/health/SkinTemperatureView'
 import { GoalsRecordsView } from '@ui/components/health/GoalsRecordsView'
+import { ScreenHeader } from '@ui/components/shared'
 import { useHealthCategory } from './useHealthCategory'
 
 const VIEW_MAP: Record<string, React.FC> = {
@@ -47,7 +48,7 @@ export function HealthCategoryScreen() {
   if (!cat) {
     return (
       <div className="stack">
-        <button className="ghost" onClick={() => navigate('/profile')}>Back</button>
+        <ScreenHeader title="Not Found" back={() => navigate('/profile')} />
         <p className="muted">Category not found.</p>
       </div>
     )
@@ -57,16 +58,10 @@ export function HealthCategoryScreen() {
 
   return (
     <div className="stack">
-      <button className="ghost" onClick={() => navigate('/profile')}>Back</button>
-
-      <div className="surface ghost">
-        <div className="row align-center">
-          <h1 className="display">{cat.icon}</h1>
-          <div className="stack compact grow">
-            <h2>{cat.name}</h2>
-          </div>
-        </div>
-      </div>
+      <ScreenHeader
+        title={`${cat.icon} ${cat.name}`}
+        back={() => navigate('/profile')}
+      />
 
       {CategoryView ? (
         <CategoryView />

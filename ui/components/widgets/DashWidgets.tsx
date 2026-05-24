@@ -6,7 +6,8 @@ import {
   PieChart, Pie, Cell,
   XAxis, YAxis, Tooltip,
 } from 'recharts';
-import { TOOLTIP_STYLE, TICK } from '../shared/Charts';
+import { Flame } from 'lucide-react';
+import { TOOLTIP_STYLE, TICK } from '@ui/patterns/charts/domain-charts';
 
 type WidgetSize = '1x1' | '2x1' | '2x2';
 
@@ -294,7 +295,7 @@ export function PlanAdherenceWidget({ size }: { size: WidgetSize }) {
         <div className="column compact grow">
           <h3 className="mono">{pct}<span className="caption faint">%</span></h3>
           <span className="caption faint">adherence</span>
-          <span className="mono">{currentStreak} 🔥</span>
+          <span className="mono row align-center compact">{currentStreak} <Flame size={12} /></span>
           <span className="caption faint">day streak</span>
         </div>
       </div>
@@ -461,7 +462,7 @@ export function HabitsWidget({ size }: { size: WidgetSize }) {
           <div key={i} className="row align-center compact list-divider-sm">
             <span className={`badge ${h.done ? 'green' : ''}`}>{h.done ? '✓' : '·'}</span>
             <span className="detail grow">{h.name}</span>
-            {h.streak > 0 && <span className="mono caption">{h.streak}🔥</span>}
+            {h.streak > 0 && <span className="mono caption row align-center compact">{h.streak}<Flame size={11} /></span>}
           </div>
         ))}
       </div>

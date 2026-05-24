@@ -61,11 +61,8 @@ export function OverviewTab() {
               </div>
               <div className="bar">
                 <div
-                  className="bar__fill"
-                  style={{
-                    '--fill': `${pct}%`,
-                    '--bar-color': done ? 'var(--ok)' : 'var(--accent)',
-                  } as React.CSSProperties}
+                  className={done ? 'fill done' : 'fill'}
+                  style={{ '--fill': `${pct}%` } as React.CSSProperties}
                 />
               </div>
               <div className="row space-between">

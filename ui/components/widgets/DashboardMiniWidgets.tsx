@@ -1,4 +1,4 @@
-import { ScoreRing, SleepStagesBar, SparklineArea, fmtMin } from '../shared/Charts';
+import { ScoreRing, SleepStagesBar, SparklineArea, fmtMin } from '@ui/patterns/charts/domain-charts';
 import type { SleepSession } from '@features/readiness';
 import type { HealthMetricsView } from '@features/readiness';
 import type { Appointment } from '@features/scheduling';

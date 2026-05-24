@@ -48,10 +48,7 @@ h6 {
 }
 
 /* Eyebrow: small uppercase label above a heading */
-.eyebrow,
-.field__label,
-.splits-table th,
-.app-tabbar a {
+.eyebrow {
   font-size: var(--t-xs);
   font-weight: 500;
   letter-spacing: 0.12em;
@@ -63,6 +60,8 @@ h6 {
 .bold {
   font-weight: 600;
 }
+.positive { color: var(--ok); }
+.negative { color: var(--bad); }
 .muted {
   color: var(--ink-muted);
 }

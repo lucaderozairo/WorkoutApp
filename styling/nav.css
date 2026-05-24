@@ -20,6 +20,21 @@ main {
   background: var(--surface-0);
   display: flex;
   flex-direction: column;
+  align-items: stretch;
+}
+
+/* Content width cap — centres content on wide viewports */
+main > * {
+  width: 100%;
+  max-width: 960px;
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+
+/* Full-bleed override for map screens */
+main > .full-bleed {
+  max-width: none;
+  margin-inline: 0;
 }
 
 /* ── Desktop rail (sidebar) ── */
@@ -88,18 +103,11 @@ main {
   top: 0;
   z-index: 10;
   align-items: center;
-  padding: var(--s-3) var(--s-4);
+  justify-content: flex-end;
+  padding: var(--s-2) var(--s-4);
   background: var(--surface-1);
   border-bottom: 1px solid var(--line);
   gap: var(--s-3);
-}
-
-.app-topbar a {
-  display: flex;
-  align-items: center;
-  margin-right: auto;
-  gap: var(--s-2);
-  line-height: 1;
 }
 
 /* ── Mobile tabbar — fixed to bottom ── */
@@ -123,6 +131,11 @@ main {
   align-items: center;
   justify-content: center;
   gap: var(--s-2);
+  font-size: var(--t-xs);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
   transition: color 0.12s var(--ease);
 }
 

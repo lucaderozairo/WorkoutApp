@@ -17,8 +17,8 @@ describe('ErrorBoundaryRoot', () => {
         <Bomb />
       </ErrorBoundaryRoot>
     );
-    expect(screen.getByText(/app crashed/i)).toBeInTheDocument();
-    expect(screen.getByText(/refresh/i)).toBeInTheDocument();
+    expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
+    expect(screen.getByText(/reload page/i)).toBeInTheDocument();
   });
 
   it('renders children when no error', () => {

@@ -1,4 +1,4 @@
-import type { PlanningEvent, PlannedSession, SavedRoute } from '../domain/types';
+import type { PlanningEvent, PlannedSession, SavedRoute, SavedTemplate } from '../domain/types';
 import { ProjectionBuilder, projectionRegistry } from '@data/projections/builders';
 
 export const plannedSessionsProjection = new ProjectionBuilder<PlannedSession[], PlanningEvent>(
@@ -32,3 +32,20 @@ export const savedRoutesProjection = new ProjectionBuilder<SavedRoute[], Plannin
 );
 
 projectionRegistry.register('saved_routes', savedRoutesProjection);
+
+export const savedTemplatesProjection = new ProjectionBuilder<SavedTemplate[], PlanningEvent>(
+  'saved_templates',
+  [],
+  {
+    TemplateSaved: (state, event) => {
+      if (event.type !== 'TemplateSaved') return state;
+      return [event.payload, ...state];
+    },
+    TemplateDeleted: (state, event) => {
+      if (event.type !== 'TemplateDeleted') return state;
+      return state.filter(t => t.id !== event.payload.templateId);
+    },
+  },
+);
+
+projectionRegistry.register('saved_templates', savedTemplatesProjection);

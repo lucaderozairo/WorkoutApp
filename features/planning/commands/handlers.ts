@@ -1,19 +1,21 @@
 import type { Result } from '@shared/types';
 import { ok, err } from '@shared/types';
-import type { PlanSession, DeletePlannedSession, SaveRoute, DeleteSavedRoute, PlanningEvent, PlannedSession, SavedRoute } from '../domain/types';
+import type { PlanSession, DeletePlannedSession, SaveRoute, DeleteSavedRoute, SaveTemplate, DeleteSavedTemplate, PlanningEvent, PlannedSession, SavedRoute, SavedTemplate } from '../domain/types';
 import { cryptoIdGenerator } from '@core/id-generator';
 import { systemClock } from '@core/clock';
 import { inMemoryEventStore } from '@data/store';
 import { viewStore } from '@data/projections/views';
-import { plannedSessionsProjection, savedRoutesProjection } from '../projections';
+import { plannedSessionsProjection, savedRoutesProjection, savedTemplatesProjection } from '../projections';
 
 function applyAndStore(events: PlanningEvent[]): void {
   events.forEach(e => {
     plannedSessionsProjection.apply(e);
     savedRoutesProjection.apply(e);
+    savedTemplatesProjection.apply(e);
   });
   viewStore.set('planned_sessions', plannedSessionsProjection.getState());
   viewStore.set('saved_routes', savedRoutesProjection.getState());
+  viewStore.set('saved_templates', savedTemplatesProjection.getState());
 }
 
 export async function handlePlanSession(cmd: PlanSession): Promise<Result<void, string>> {
@@ -88,6 +90,50 @@ export async function handleDeleteSavedRoute(cmd: DeleteSavedRoute): Promise<Res
     timestamp: systemClock.now(),
     version: 1,
     payload: { routeId: cmd.routeId },
+  };
+
+  await inMemoryEventStore.append(event);
+  applyAndStore([event]);
+  return ok(undefined);
+}
+
+export async function handleSaveTemplate(cmd: SaveTemplate): Promise<Result<void, string>> {
+  if (!cmd.name.trim()) return err('Template name is required');
+  if (cmd.exercises.length === 0) return err('Template must have at least one exercise');
+
+  const template: SavedTemplate = {
+    id: cryptoIdGenerator.next<'SavedTemplate'>(),
+    name: cmd.name.trim(),
+    primarySport: cmd.primarySport,
+    exercises: cmd.exercises,
+    createdAt: systemClock.now(),
+  };
+
+  const event: PlanningEvent = {
+    type: 'TemplateSaved',
+    aggregateId: template.id,
+    aggregateType: 'SavedTemplate',
+    timestamp: systemClock.now(),
+    version: 1,
+    payload: template,
+  };
+
+  await inMemoryEventStore.append(event);
+  applyAndStore([event]);
+  return ok(undefined);
+}
+
+export async function handleDeleteSavedTemplate(cmd: DeleteSavedTemplate): Promise<Result<void, string>> {
+  const exists = viewStore.get<SavedTemplate[]>('saved_templates')?.some(t => t.id === cmd.templateId);
+  if (!exists) return err('Saved template not found');
+
+  const event: PlanningEvent = {
+    type: 'TemplateDeleted',
+    aggregateId: cmd.templateId,
+    aggregateType: 'SavedTemplate',
+    timestamp: systemClock.now(),
+    version: 1,
+    payload: { templateId: cmd.templateId },
   };
 
   await inMemoryEventStore.append(event);

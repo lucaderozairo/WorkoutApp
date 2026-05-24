@@ -1,6 +1,8 @@
-﻿import {
+import {
   ActivityKey, OUTDOOR_SPORTS, ACTIVITY_META, DEFAULT_RECENT_SPORTS,
 } from '@shared/constants/activities';
+import { ACTIVITY_META_ICONS } from '@ui/icons/activityMetaIcons';
+import { CalendarDays, Map } from 'lucide-react';
 
 interface Props {
   recentSports: ActivityKey[];
@@ -24,14 +26,15 @@ export function ActivityInlinePicker({
     <div className="column compact surface">
       <div className="row compact">
         {chips.map(key => {
-          const { emoji, label } = ACTIVITY_META[key];
+          const { label } = ACTIVITY_META[key];
+          const Icon = ACTIVITY_META_ICONS[key];
           return (
             <button
               key={key}
               className={`surface tight column${selectedActivity === key ? ' active' : ''}`}
               onClick={() => onSelectActivity(key)}
             >
-              <h2>{emoji}</h2>
+              <Icon size={28} />
               <span className="caption">{label}</span>
             </button>
           );
@@ -44,7 +47,7 @@ export function ActivityInlinePicker({
 
       {isOutdoor && (
         <button className="surface inset row align-center compact">
-          <span>🗺️</span>
+          <Map size={16} />
           <span className="grow muted">Add route (optional)</span>
           <button className="primary icon">＋</button>
         </button>
@@ -52,7 +55,7 @@ export function ActivityInlinePicker({
 
       <div className="row compact">
         <button className="surface primary grow" onClick={onStartNow}>▶ Start now</button>
-        <button className="surface secondary grow" onClick={onPlan}>📅 Plan</button>
+        <button className="surface secondary grow row align-center compact" onClick={onPlan}><CalendarDays size={14} /> Plan</button>
       </div>
     </div>
   );

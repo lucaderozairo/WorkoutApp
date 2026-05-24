@@ -48,9 +48,11 @@ These are enforced by convention; future ESLint rules should formalise them.
    and are re-exported from `features/<x>/index.ts`.
 2. **Screens are thin orchestrators.** `ui/layouts/*.tsx` should compose
    components, plumb route params, and call command handlers — not contain
-   inline presentational JSX. Target < 250 lines per layout. `LogScreen.tsx` is
-   the current exception (legacy size; partial decomposition complete, more
-   to extract in `ui/components/session/`).
+   inline presentational JSX. Target < 250 lines per layout. `LogScreen.tsx`
+   is now within target (~220 lines) after decomposition into
+   `ui/components/session/`. Current layouts above the target — to be
+   decomposed next — are `RoutePlannerScreen.tsx` (~445), `TrainingPlansScreen.tsx`
+   (~365), `ProgressScreen.tsx` (~360), and `EditSessionScreen.tsx` (~315).
 3. **Features own their domain.** Each feature module exports its types,
    events, commands, projections, and queries. Cross-feature imports go
    through the feature's public `index.ts`.

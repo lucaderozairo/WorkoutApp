@@ -2,7 +2,9 @@
    Apply to <aside class="side"> or to .app-rail.
    .side is expanded by default; add .collapsed for icon-rail mode. */
 .side {
-  flex: 0 0 260px;
+  flex: 0 0 280px;
+  width: 280px;
+  max-width: 280px;
   background: var(--surface-1);
   border-right: 1px solid var(--line);
   overflow-y: auto;
@@ -10,12 +12,22 @@
   scrollbar-width: thin;
   scrollbar-color: var(--line-strong) transparent;
   transition: flex-basis var(--duration-medium, 0.25s) var(--ease),
-              width var(--duration-medium, 0.25s) var(--ease);
+              width var(--duration-medium, 0.25s) var(--ease),
+              max-width var(--duration-medium, 0.25s) var(--ease);
 }
 .side.collapsed {
-  flex-basis: auto;
+  flex: 0 0 auto;
+  width: auto;
   max-width: fit-content;
   overflow: hidden;
+}
+
+/* Content padding for the side panel */
+.side.column {
+  padding: var(--s-4);
+}
+.side.collapsed.column {
+  padding: var(--s-2);
 }
 
 /* ── Sticky sidebar header ── */
@@ -32,28 +44,12 @@
   flex-shrink: 0;
 }
 
-/* ── Section block: eyebrow + content, divided by bottom border ── */
-.side-block {
-  padding: var(--s-3) var(--s-4);
-  border-bottom: 1px solid var(--line);
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-3);
-}
-
-
 /* ── Activity selector chips ── */
 .activity-chip {
-  flex: 1;
-  min-width: 0;
   padding: var(--s-3) var(--s-1);
   border-radius: var(--r-sm);
   border: 1.5px solid var(--line);
   background: var(--surface-2);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--s-1);
   cursor: pointer;
   transition: border-color 0.12s var(--ease), background 0.12s var(--ease);
 }
@@ -69,13 +65,7 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   color: #fff;
-  font-family: var(--font-mono);
-  font-size: 8px;
-  font-weight: 700;
   opacity: 0.45;
   transition: opacity 0.12s var(--ease);
 }
@@ -85,54 +75,6 @@
 .activity-dot[data-id="ride"] { background: var(--c-nutrition); }
 .activity-dot[data-id="walk"] { background: var(--c-recovery); }
 
-/* ── Waypoint badge ── */
-.waypoint-badge {
-  width: 22px;
-  height: 22px;
-  border-radius: var(--r-xs);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-mono);
-  font-size: var(--t-xs);
-  font-weight: 700;
-  flex-shrink: 0;
-}
-.waypoint-badge.start  { background: var(--accent); color: var(--accent-ink); }
-.waypoint-badge.finish { background: var(--ink); color: var(--surface-1); }
-.waypoint-badge.mid    { background: var(--surface-2); color: var(--ink-muted); border: 1px solid var(--line); }
-
-
-/* Bottom sheet — generic mobile primitive driven by data-snap */
-.bottom-sheet {
-  position: relative;
-  background: var(--surface-1);
-  border-top: 1px solid var(--line);
-  border-top-left-radius: var(--r-lg);
-  border-top-right-radius: var(--r-lg);
-  box-shadow: var(--box-shadow-lg, 0 -8px 24px rgba(14,19,32,0.08));
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition: height var(--duration-medium, 0.25s) var(--ease);
-}
-.bottom-sheet[data-snap="peek"] { height: 56px; }
-.bottom-sheet[data-snap="mid"]  { height: 240px; }
-.bottom-sheet[data-snap="full"] { height: 65vh; }
-.bottom-sheet .handle {
-  display: flex; justify-content: center; padding: var(--s-2) 0;
-  flex-shrink: 0; border: none; background: none; cursor: pointer;
-  width: 100%;
-}
-.bottom-sheet .handle::before {
-  content: ""; width: 38px; height: 4px; border-radius: var(--r-xs);
-  background: var(--surface-3); display: block;
-}
-.bottom-sheet .body {
-  flex: 1; overflow-y: auto;
-  display: flex; flex-direction: column; gap: var(--s-3);
-  padding: 0 var(--s-4) var(--s-4);
-}
 
 @media (max-width: 780px) {
   .side { display: none; }
@@ -175,3 +117,59 @@
 /* ── Bottom-sheet mini chart ── */
 [data-mini-chart] { height: 40px; }
 [data-mini-chart] svg { width: 100%; height: 100%; }
+
+/* ── Route planner icon rail ── */
+.side-rail {
+  flex: 0 0 56px;
+  width: 56px;
+  background: var(--surface-1);
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-1);
+  padding: var(--s-2) 0;
+  flex-shrink: 0;
+}
+.side-rail-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: var(--s-2) var(--s-1);
+  border-radius: var(--r-sm);
+  width: 48px;
+  cursor: pointer;
+  color: var(--ink-muted);
+  font-size: var(--t-xs);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: none;
+  background: none;
+  transition: background 0.12s var(--ease), color 0.12s var(--ease);
+}
+.side-rail-item:hover  { background: var(--surface-2); color: var(--ink); }
+.side-rail-item.active { background: var(--surface-2); color: var(--ink); }
+
+/* ── Surface mix segmented bar ── */
+.surface-mix-bar {
+  height: 8px;
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  width: 100%;
+  display: flex;
+  gap: 0;
+}
+.surface-mix-segment {
+  height: 100%;
+  flex: 0 0 var(--mix-pct, 0%);
+}
+.surface-mix-segment[data-surface="paved"]   { background: var(--c-cardio); }
+.surface-mix-segment[data-surface="gravel"]  { background: var(--warn); }
+.surface-mix-segment[data-surface="trail"]   { background: var(--ok); }
+.surface-mix-segment[data-surface="unpaved"] { background: var(--ink-faint); }
+
+@media (max-width: 780px) {
+  .side-rail { display: none; }
+}

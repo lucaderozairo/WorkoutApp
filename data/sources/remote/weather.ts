@@ -8,6 +8,7 @@ interface WeatherApiCache {
 }
 
 let cache: WeatherApiCache | null = null;
+let keyWarningLogged = false;
 
 function getApiKey(): string | undefined {
   try {
@@ -22,6 +23,14 @@ export async function fetchWeather(): Promise<WeatherCondition | null> {
 
   if (!apiKey) {
     return getStubWeather();
+  }
+
+  // VITE_ env vars are inlined into the client bundle and visible in DevTools.
+  // Before shipping with a real key, proxy this call through a serverless function
+  // (e.g. Cloudflare Worker) so the key stays server-side.
+  if (!(import.meta as any).env?.DEV && !keyWarningLogged) {
+    console.warn('[security] VITE_WEATHER_API_KEY is exposed in the client bundle. Proxy via a serverless function before production use.');
+    keyWarningLogged = true;
   }
 
   if (cache && Date.now() - cache.timestamp < CACHE_DURATION_MS) {

@@ -1,3 +1,4 @@
+import { ScreenHeader, EmptyState } from '@ui/components/shared';
 import { useSavedRoutes } from './useSavedRoutes';
 
 export function SavedRoutesScreen() {
@@ -13,28 +14,24 @@ export function SavedRoutesScreen() {
 
   return (
     <div className="column">
-      <div className="row space-between align-center compact">
-        <button className="ghost" onClick={handleBack}>Back</button>
-        <h2>Saved Routes</h2>
-        <div style={{ width: 60 }} />
-      </div>
+      <ScreenHeader title="Saved Routes" back={handleBack} />
 
       {savedRoutes.length === 0 ? (
-        <div className="surface column text-center">
-          <p className="caption muted">No saved routes yet.</p>
-          <p className="caption faint">Plan a route from the dashboard and save it to reuse later.</p>
-        </div>
+        <EmptyState
+          icon="🗺️"
+          title="No saved routes yet"
+          message="Plan a route and save it to reuse it for future sessions."
+        />
       ) : (
         <div className="grid-auto">
           {savedRoutes.map(route => (
             <div
               key={route.id}
-              className="surface column compact"
-              style={{ cursor: incoming.returnTo ? 'pointer' : 'default' }}
+              className={`surface column compact${incoming.returnTo ? ' interactive' : ''}`}
               onClick={() => incoming.returnTo && handleSelect(route)}
             >
               <div className="row space-between align-center">
-                <span style={{ fontSize: '1.5rem' }}>{profileIcon(route.profile)}</span>
+                <span className="emoji-sm">{profileIcon(route.profile)}</span>
                 {confirmDelete === route.id ? (
                   <div className="row compact">
                     <button className="danger sm" onClick={e => { e.stopPropagation(); handleDelete(route.id); }}>Delete</button>

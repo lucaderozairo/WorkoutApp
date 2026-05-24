@@ -1,4 +1,6 @@
-import { RPE_VALUES, SUGGESTED_TAGS, formatDuration, useFinishSession } from './useFinishSession';
+import { RPE_VALUES, SUGGESTED_TAGS, useFinishSession } from './useFinishSession';
+
+const canShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
 
 export function FinishSessionScreen() {
   const {
@@ -24,6 +26,7 @@ export function FinishSessionScreen() {
     submit,
     handleExportJson,
     handleExportCsv,
+    handleSaveAsTemplate,
   } = useFinishSession();
 
   if (!displaySession) {
@@ -74,7 +77,12 @@ export function FinishSessionScreen() {
       
 
       <div className="column compact">
-        <span className="caption">Review</span>
+        <div className="row space-between align-center">
+          <span className="caption">Review</span>
+          {displaySession.segments.length > 0 && (
+            <button type="button" className="ghost sm" onClick={handleSaveAsTemplate}>Save as template</button>
+          )}
+        </div>
         {displaySession.segments.map(b => (
           <div key={b.id} className="row align-center space-between">
             <span>{b.exerciseName}</span>
@@ -146,6 +154,22 @@ export function FinishSessionScreen() {
           <div className="row compact align-center">
             <button type="button" className="secondary" onClick={handleExportJson}>Export JSON</button>
             <button type="button" className="secondary" onClick={handleExportCsv}>Export CSV</button>
+            {canShare && (
+              <button
+                type="button"
+                className="secondary"
+                onClick={() => {
+                  const mins = Math.round((durationMs ?? 0) / 60000);
+                  const sets = displaySession.segments.reduce((n, b) => n + b.sets.length, 0);
+                  navigator.share({
+                    title: name,
+                    text: `${name} — ${mins} min · ${displaySession.segments.length} exercises · ${sets} sets`,
+                  }).catch(() => {});
+                }}
+              >
+                Share
+              </button>
+            )}
             <div className="grow" />
             <button type="button" className="primary" onClick={() => navigate(`/sessions/${displaySession.id}`)}>Done</button>
           </div>

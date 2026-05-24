@@ -1,9 +1,9 @@
+.pill, .chip, .tag, .avatar { display: inline-flex; align-items: center; }
+
 /* ════════════════════════════════════════════
    PILL — status/category label with dot
    ════════════════════════════════════════════ */
 .pill {
-  display: inline-flex;
-  align-items: center;
   gap: var(--s-2);
   padding: var(--s-1) var(--s-3);
   font-size: var(--t-xs);
@@ -90,8 +90,6 @@
    CHIP — interactive filter/segment control
    ════════════════════════════════════════════ */
 .chip {
-  display: inline-flex;
-  align-items: center;
   gap: var(--s-2);
   padding: var(--s-2) var(--s-3);
   background: transparent;
@@ -113,13 +111,6 @@
   font-size: var(--t-xs);
   padding: var(--s-1) var(--s-2);
 }
-.chip__dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--dot, var(--ink-faint));
-  flex-shrink: 0;
-}
 
 /* ════════════════════════════════════════════
    METRIC — display number
@@ -139,15 +130,11 @@
 .metric.xl { font-size: var(--t-5xl); }
 .metric.sm { font-size: var(--t-xl); }
 
-.positive { color: var(--ok); }
-.negative { color: var(--bad); }
 
 /* ════════════════════════════════════════════
    TAG — inline mono label with dot
    ════════════════════════════════════════════ */
 .tag {
-  display: inline-flex;
-  align-items: center;
   gap: 6px;
   font-size: var(--t-sm);
   color: var(--ink-muted);
@@ -171,8 +158,6 @@
 
   border-radius: 50%;
   background: linear-gradient(135deg, var(--c-strength), var(--c-mind));
-  display: inline-flex;
-  align-items: center;
   justify-content: center;
   font-weight: 600;
   font-size: calc(var(--size) * 0.4);
@@ -200,85 +185,17 @@
   border-radius: var(--r-pill);
   overflow: hidden;
 }
-.bar__fill {
+.fill {
   height: 100%;
   width: var(--fill, 50%);
   background: var(--bar-color, var(--accent));
   border-radius: inherit;
   transition: width 0.4s var(--ease);
 }
-
-/* ════════════════════════════════════════════
-   METER — segmented macro bar
-   ════════════════════════════════════════════ */
-.meter {
-  display: flex;
-  width: 100%;
-  height: var(--meter-height, 8px);
-  border-radius: var(--r-pill);
-  overflow: hidden;
-  background: var(--surface-2);
-}
-.meter__seg {
-  height: 100%;
-  background: var(--seg-color, var(--accent));
-  width: var(--seg-width, 33%);
+.fill.done {
+  --bar-color: var(--ok);
 }
 
-/* ════════════════════════════════════════════
-   RING — circular SVG progress
-   ════════════════════════════════════════════ */
-.ring {
-  position: relative;
-  display: inline-block;
-  line-height: 0;
-}
-.ring__svg {
-  transform: rotate(-90deg);
-}
-.ring__track {
-  fill: none;
-  stroke: var(--surface-2);
-  stroke-width: var(--ring-width, 12);
-}
-.ring__fill {
-  fill: none;
-  stroke: var(--ring-color, var(--accent));
-  stroke-width: var(--ring-width, 12);
-  stroke-linecap: round;
-  transition: stroke-dashoffset 0.6s var(--ease);
-}
-.ring__inner {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  gap: 2px;
-  text-align: center;
-}
-
-/* ════════════════════════════════════════════
-   SPARK — inline sparkline
-   ════════════════════════════════════════════ */
-.spark {
-  display: block;
-  width: 100%;
-  height: 32px;
-  overflow: visible;
-}
-.spark path {
-  fill: none;
-  stroke: var(--spark-color, var(--ink-muted));
-  stroke-width: 1.5;
-}
-.spark polygon,
-.spark-fill {
-  fill: var(--spark-color, var(--accent));
-  opacity: 0.18;
-}
 
 /* ════════════════════════════════════════════
    GLASS TRACKER — water intake
@@ -314,7 +231,7 @@
   width: var(--s-3);
   height: var(--s-3);
   border-radius: 50%;
-  background: var(--ink-faint);
+  background: var(--dot, var(--ink-faint));
   opacity: 0.5;
 }
 .dot.active {
@@ -351,6 +268,7 @@
 .dot.sm {
   width: var(--s-2);
   height: var(--s-2);
+  opacity: 1;
 }
 
 .dot.stretch {
@@ -417,22 +335,6 @@
   color: var(--color-legendary);
 }
 
-/* ════════════════════════════════════════════
-   SEG BAR — filled segments
-   ════════════════════════════════════════════ */
-.seg-bar {
-  display: flex;
-  gap: var(--s-1);
-  height: 6px;
-}
-.seg-bar .seg {
-  flex: 1;
-  background: var(--surface-3);
-  border-radius: 2px;
-}
-.seg-bar .seg.filled {
-  background: var(--accent);
-}
 
 /* ════════════════════════════════════════════
    SKELETON
@@ -577,18 +479,6 @@ button.skeleton {
   font-weight: 500;
   z-index: 2;
 }
-.carousel.preview {
-
-}
-/* ════════════════════════════════════════════
-   CHEVRON — animated expand/collapse indicator
-   ════════════════════════════════════════════ */
-.chevron {
-  transition: transform var(--duration-short) var(--ease);
-}
-.chevron.open {
-  transform: rotate(180deg);
-}
 
 /* ════════════════════════════════════════════
    ACTIONS — small context menu anchored below trigger
@@ -618,9 +508,6 @@ button.skeleton {
 /* ════════════════════════════════════════════
    DROPDOWN — positioned below its trigger
    ════════════════════════════════════════════ */
-.dropdown-wrap {
-  position: relative;
-}
 .dropdown {
   z-index: 200;
   min-width: 280px;
@@ -674,59 +561,6 @@ button.skeleton {
   flex-shrink: 0;
 }
 
-/* ════════════════════════════════════════════
-   SPLITS TABLE — 1 km splits for cardio sessions
-   ════════════════════════════════════════════ */
-.splits-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--t-sm);
-}
-.splits-table th {
-  text-align: left;
-  padding: var(--s-1) var(--s-2) var(--s-2);
-}
-.splits-table td {
-  padding: var(--s-2);
-  color: var(--ink);
-  border-top: 1px solid var(--line);
-}
-.splits-table td:first-child {
-  color: var(--ink-muted);
-  font-size: var(--t-xs);
-  font-weight: 600;
-}
-.splits-table .elev-up {
-  color: var(--ok);
-}
-.splits-table .elev-down {
-  color: var(--c-cardio);
-}
-
-/* ════════════════════════════════════════════
-   EVENT CARD — planned workout block
-   ════════════════════════════════════════════ */
-.event-card {
-  background: var(--accent-soft);
-  border-radius: var(--r-sm);
-  padding: var(--s-3);
-  border-left: 3px solid var(--accent);
-}
-
-/* ════════════════════════════════════════════
-   DATE CIRCLE — compact date indicator badge
-   ════════════════════════════════════════════ */
-.date-circle {
-  width: 42px;
-  height: 42px;
-  border-radius: var(--r-md);
-  background: var(--accent-soft);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
 
 /* ════════════════════════════════════════════
    PHOTO THUMB — fixed-size media thumbnail
@@ -754,20 +588,10 @@ button.skeleton {
 /* ════════════════════════════════════════════
    LIST DIVIDER — row with bottom border
    ════════════════════════════════════════════ */
-.list-divider {
-  padding-block: var(--s-2);
-  border-bottom: 1px solid var(--line);
-}
-.list-divider:last-child {
-  border-bottom: none;
-}
-.list-divider-sm {
-  padding-block: var(--s-1);
-  border-bottom: 1px solid var(--line);
-}
-.list-divider-sm:last-child {
-  border-bottom: none;
-}
+.list-divider, .list-divider-sm { border-bottom: 1px solid var(--line); }
+.list-divider:last-child, .list-divider-sm:last-child { border-bottom: none; }
+.list-divider { padding-block: var(--s-2); }
+.list-divider-sm { padding-block: var(--s-1); }
 
 /* ════════════════════════════════════════════
    TREND ITEM — health trend list row
@@ -807,11 +631,61 @@ button.skeleton {
 }
 
 /* ════════════════════════════════════════════
-   BLOCK — segmented/stacked bar unit
+   BOTTOM SHEET — generic mobile primitive driven by data-snap
    ════════════════════════════════════════════ */
-.block {
-  flex: 1 1 0;
-  min-width: 20px;
-  min-height: var(--t-xs);
-  box-shadow: var(--box-shadow-sm);
+.bottom-sheet {
+  position: relative;
+  background: var(--surface-1);
+  border-top: 1px solid var(--line);
+  border-top-left-radius: var(--r-lg);
+  border-top-right-radius: var(--r-lg);
+  box-shadow: var(--box-shadow-lg, 0 -8px 24px rgba(14,19,32,0.08));
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: height var(--duration-medium, 0.25s) var(--ease);
+}
+.bottom-sheet[data-snap="peek"] { height: 56px; }
+.bottom-sheet[data-snap="mid"]  { height: 240px; }
+.bottom-sheet[data-snap="full"] { height: 65vh; }
+.bottom-sheet .handle {
+  display: flex; justify-content: center; padding: var(--s-2) 0;
+  flex-shrink: 0; border: none; background: none; cursor: pointer;
+  width: 100%;
+}
+.bottom-sheet .handle::before {
+  content: ""; width: 38px; height: 4px; border-radius: var(--r-xs);
+  background: var(--surface-3); display: block;
+}
+.bottom-sheet .body {
+  gap: var(--s-3);
+  padding: 0 var(--s-4) var(--s-4);
+}
+
+/* ════════════════════════════════════════════
+   SCREEN HEADER — three-slot page nav bar
+   ════════════════════════════════════════════ */
+.screen-header {
+  padding: var(--s-3) var(--s-4);
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.screen-header h2 {
+  margin: 0;
+  font-size: var(--t-md);
+  font-weight: 600;
+}
+.header-slot {
+  min-width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.screen-header .header-slot:first-child {
+  justify-content: flex-start;
+}
+.icon-btn {
+  padding: var(--s-2) var(--s-3);
+  font-size: var(--t-md);
+  line-height: 1;
 }

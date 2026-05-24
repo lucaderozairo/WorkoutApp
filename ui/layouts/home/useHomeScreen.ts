@@ -40,6 +40,19 @@ export function useHomeScreen() {
   startOfWeek.setHours(0, 0, 0, 0);
   const workoutsThisWeek = history.filter(s => new Date(s.startedAt) >= startOfWeek).length;
 
+  // Consecutive training days ending today (or yesterday if not yet trained today)
+  const streak = useMemo(() => {
+    const trained = new Set(history.map(s => new Date(s.startedAt).toLocaleDateString()));
+    const cursor = new Date();
+    if (!trained.has(cursor.toLocaleDateString())) cursor.setDate(cursor.getDate() - 1);
+    let count = 0;
+    while (trained.has(cursor.toLocaleDateString())) {
+      count++;
+      cursor.setDate(cursor.getDate() - 1);
+    }
+    return count;
+  }, [history]);
+
   const sleepWeek = sleepHistory.slice(0, 7).reverse().map(sleepEntryToSession);
   const lastNight = sleepWeek.length > 0 ? sleepWeek[sleepWeek.length - 1] : null;
   const weeklyTrend = sleepWeek.map(session => {
@@ -56,9 +69,11 @@ export function useHomeScreen() {
 
   return {
     workoutsThisWeek,
+    streak,
     scoreClass,
     lastNight,
     weeklyTrend,
     scoreHistory,
+    isFirstRun: history.length === 0,
   };
 }

@@ -27,7 +27,7 @@ function PlanCard({ plan, adherenceRate }: { plan: TrainingPlan; adherenceRate: 
         <span className={`pill${pct >= 80 ? ' ok' : pct >= 60 ? '' : ' warn'}`}>{pct}%</span>
       </div>
       <span className="caption">Week {currentWeek} / {plan.durationWeeks} · Started {plan.startDate}</span>
-      <progress value={currentWeek} max={plan.durationWeeks} />
+      <div className="bar"><div className="fill" style={{ '--fill': `${Math.min(100, (currentWeek / plan.durationWeeks) * 100)}%` } as React.CSSProperties} /></div>
     </div>
   );
 }
@@ -298,15 +298,14 @@ export function TrainingPlansScreen() {
       </div>
 
       {/* Filter chips */}
-      <div className="row" style={{ overflowX: 'auto', paddingBottom: 4 }}>
+      <div className="row">
         {FILTERS.map(f => (
           <button
             key={f.label}
-            className={`chip${activeFilters.has(f.label) ? ' active' : ''}`}
-            style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
+            className={`chip nowrap shrink-0${activeFilters.has(f.label) ? ' active' : ''}`}
             onClick={() => toggleFilter(f.label)}
           >
-            <span className="chip__dot" style={{ '--dot': f.color } as React.CSSProperties} />
+            <span className="dot sm" style={{ '--dot': f.color } as React.CSSProperties} />
             {f.label}
           </button>
         ))}
@@ -315,12 +314,12 @@ export function TrainingPlansScreen() {
       {/* Month view */}
       {calView === 'month' && (
         <>
-          <div className="surface column compact">
+          <div className="surface column">
             <CalendarGrid year={currentDate.getFullYear()} month={currentDate.getMonth()} />
-            <div className="cluster" style={{ marginTop: 'var(--s-3)' }}>
+            <div className="cluster">
               {LEGEND.map(l => (
-                <div key={l.label} className="row align-center compact" style={{ fontSize: 'var(--t-xs)' }}>
-                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: l.color, display: 'inline-block', flexShrink: 0 }} />
+                <div key={l.label} className="row align-center compact caption">
+                  <span className="dot sm" style={{ '--dot': l.color } as React.CSSProperties} />
                   <span className="muted">{l.label}</span>
                 </div>
               ))}

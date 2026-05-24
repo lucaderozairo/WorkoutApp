@@ -1,3 +1,5 @@
+> **Status (2026-05-23):** Substantially completed. Auto-zoom guard, right-click delete, long-press delete, and undo/redo refs all landed in `ui/components/workout/wizard/RouteMap.tsx`. Outstanding: surface an Undo button in StepCardio's UI (logic exists at the map level, just not wired to a visible control).
+
 # Map Marker Delete, Undo Placement, Fix Auto-Zoom Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.

@@ -4,29 +4,36 @@ import { useExpandable } from '@ui/interactions/useExpandable';
 import type { ActivityHistoryItem } from '@features/training_log';
 import type { CardioSession, CardioSport } from '@features/cardio';
 import { EmptyState } from '@ui/components/shared/EmptyState';
+import { SparklineArea } from '@ui/patterns/charts/domain-charts';
 import { ShareModal } from '@ui/components/modals/ShareModal';
 import { useProgressScreen } from './useProgressScreen';
+import type { IconType } from 'react-icons';
+import {
+  MdDirectionsBike, MdDirectionsRun, MdDownhillSkiing, MdFitnessCenter, MdHiking,
+  MdKayaking, MdPool, MdRowing, MdSelfImprovement, MdSnowboarding, MdSurfing, MdTerrain,
+} from 'react-icons/md';
+import { PiBoxingGlove, PiFlame, PiPersonSimpleTaiChi } from 'react-icons/pi';
 
 import '@features/training_log';
 import '@features/cardio';
 import '@features/insights';
 import '@features/progress_analysis';
 
-const SPORT_META: Record<CardioSport, { label: string; icon: string; color: string }> = {
-  run:       { label: 'RUNS',       icon: '🏃', color: 'run' },
-  cycle:     { label: 'CYCLING',    icon: '🚴', color: 'cycle' },
-  swim:      { label: 'SWIMMING',   icon: '🏊', color: 'swim' },
-  row:       { label: 'ROWING',     icon: '🚣', color: 'rowing' },
-  hike:      { label: 'HIKING',     icon: '🥾', color: 'strength' },
-  ski:       { label: 'SKIING',     icon: '⛷️', color: 'strength' },
-  snowboard: { label: 'SNOWBOARD',  icon: '🏂', color: 'strength' },
-  climb:     { label: 'CLIMBING',   icon: '🧗', color: 'strength' },
-  surf:      { label: 'SURFING',    icon: '🏄', color: 'strength' },
-  kayak:     { label: 'KAYAKING',   icon: '🛶', color: 'strength' },
-  yoga:      { label: 'YOGA',       icon: '🧘', color: 'strength' },
-  boxing:    { label: 'BOXING',     icon: '🥊', color: 'strength' },
-  stretch:   { label: 'STRETCHING', icon: '🤸', color: 'strength' },
-  hiit:      { label: 'HIIT',       icon: '⚡', color: 'strength' },
+const SPORT_META: Record<CardioSport, { label: string; Icon: IconType; color: string }> = {
+  run:       { label: 'RUNS',       Icon: MdDirectionsRun,     color: 'run' },
+  cycle:     { label: 'CYCLING',    Icon: MdDirectionsBike,    color: 'cycle' },
+  swim:      { label: 'SWIMMING',   Icon: MdPool,              color: 'swim' },
+  row:       { label: 'ROWING',     Icon: MdRowing,            color: 'rowing' },
+  hike:      { label: 'HIKING',     Icon: MdHiking,            color: 'strength' },
+  ski:       { label: 'SKIING',     Icon: MdDownhillSkiing,    color: 'strength' },
+  snowboard: { label: 'SNOWBOARD',  Icon: MdSnowboarding,      color: 'strength' },
+  climb:     { label: 'CLIMBING',   Icon: MdTerrain,           color: 'strength' },
+  surf:      { label: 'SURFING',    Icon: MdSurfing,           color: 'strength' },
+  kayak:     { label: 'KAYAKING',   Icon: MdKayaking,          color: 'strength' },
+  yoga:      { label: 'YOGA',       Icon: MdSelfImprovement,   color: 'strength' },
+  boxing:    { label: 'BOXING',     Icon: PiBoxingGlove,       color: 'strength' },
+  stretch:   { label: 'STRETCHING', Icon: PiPersonSimpleTaiChi,color: 'strength' },
+  hiit:      { label: 'HIIT',       Icon: PiFlame,             color: 'strength' },
 };
 
 const SPORT_SEGMENTS = 14;
@@ -199,22 +206,6 @@ function CardioSessionCard({ session }: { session: CardioSession }) {
   );
 }
 
-function SparkBars({ values }: { values: number[] }) {
-  const max = Math.max(...values, 1);
-  return (
-    <div className="spark-bars">
-      {values.map((v, i) => (
-        <div
-          key={i}
-          className="spark-bars__bar"
-          style={
-            { "--bar-h": `${Math.round((v / max) * 100)}%` } as React.CSSProperties
-          }
-        />
-      ))}
-    </div>
-  );
-}
 
 /* ── Main Screen ── */
 
@@ -238,16 +229,19 @@ export function ProgressScreen({ onOpenSettings }: { onOpenSettings?: () => void
       {/* Sport filter */}
       <div className="tabs">
         <button className={sportFilter === 'all' ? 'active tab' : 'tab'} onClick={() => setSportFilter('all')}>All</button>
-        <button className={sportFilter === 'strength' ? 'active tab' : 'tab'} onClick={() => setSportFilter('strength')}>🏋️</button>
-        {visibleCardioSports.map(sport => (
-          <button
-            key={sport}
-            className={sportFilter === sport ? 'active tab' : 'tab'}
-            onClick={() => setSportFilter(sport)}
-          >
-            {SPORT_META[sport].icon}
-          </button>
-        ))}
+        <button className={sportFilter === 'strength' ? 'active tab' : 'tab'} onClick={() => setSportFilter('strength')}><MdFitnessCenter size={16} /></button>
+        {visibleCardioSports.map(sport => {
+          const { Icon } = SPORT_META[sport];
+          return (
+            <button
+              key={sport}
+              className={sportFilter === sport ? 'active tab' : 'tab'}
+              onClick={() => setSportFilter(sport)}
+            >
+              <Icon size={16} />
+            </button>
+          );
+        })}
       </div>
 
       {/* Lift sessions */}
@@ -278,7 +272,7 @@ export function ProgressScreen({ onOpenSettings }: { onOpenSettings?: () => void
                   <strong>{typeName}</strong>
                   <span className="pill active">{sessions.length}×</span>
                 </div>
-                <SparkBars values={values} />
+                <SparklineArea data={values.map((y, i) => ({ x: String(i), y }))} height={40} color="var(--accent)" />
                 <p className="caption">Volume trend · last {values.length} session{values.length !== 1 ? "s" : ""}</p>
               </section>
             );
@@ -302,7 +296,7 @@ export function ProgressScreen({ onOpenSettings }: { onOpenSettings?: () => void
                         <span className="pill active">{exHistory.length}×</span>
                       </div>
                     </div>
-                    <SparkBars values={values} />
+                    <SparklineArea data={values.map((y, i) => ({ x: String(i), y }))} height={40} color="var(--accent)" />
                     <div className="row space-between">
                       <p className="caption">Est. 1RM trend · last {values.length} session{values.length !== 1 ? 's' : ''}</p>
                       {latest && <span className="caption">{latest.maxWeightKg} kg</span>}
@@ -344,7 +338,7 @@ export function ProgressScreen({ onOpenSettings }: { onOpenSettings?: () => void
               <strong>{meta.label}</strong>
               <span className="pill">{sessions.length}×</span>
             </div>
-            <SparkBars values={values} />
+            <SparklineArea data={values.map((y, i) => ({ x: String(i), y }))} height={40} color="var(--accent)" />
             <p className="caption">
               Distance trend · last {values.length} session{values.length !== 1 ? "s" : ""}
             </p>

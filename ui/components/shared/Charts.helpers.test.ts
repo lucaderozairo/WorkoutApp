@@ -3,7 +3,7 @@ import {
   gpsPointsToHRSeries,
   gpsPointsToPaceSeries,
   gpsPointsToElevationSeries,
-} from './Charts';
+} from '@ui/patterns/charts/domain-charts';
 import type { GpsPoint } from '@data/sources/files/gps';
 
 const pt = (overrides: Partial<GpsPoint> & { timestamp: string }): GpsPoint => ({

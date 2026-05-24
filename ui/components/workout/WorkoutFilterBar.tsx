@@ -103,7 +103,7 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
         </button>
 
         {/* ── Filters button + panel ── */}
-        <div className="dropdown-wrap">
+        <div className="relative">
           <button
             className={activeCount > 0 ? 'primary' : `chip sm${filtersBtnOpen ? ' active' : ''}`}
             onClick={() => setFiltersOpen(o => !o)}
@@ -222,7 +222,7 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
 
                 {/* Exercise search */}
                 <span className="caption muted">Exercise</span>
-                <div className="dropdown-wrap">
+                <div className="relative">
                   <div className="row compact align-center">
                     <input
                       className="grow"

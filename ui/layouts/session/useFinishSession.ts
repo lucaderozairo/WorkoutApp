@@ -8,6 +8,7 @@ import {
 import { useCommand, useQuery } from '@ui/bindings';
 import { exportSessionEnvelope } from '@data/sources/local/persistence';
 import { exportSessionCsv, triggerDownload } from '@shared/utils/exportSession';
+import { handleSaveTemplate } from '@features/planning';
 
 export const RPE_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 export const SUGGESTED_TAGS = ['push', 'pull', 'legs', 'upper', 'lower', 'full-body', 'heavy', 'light', 'deload'];
@@ -84,6 +85,7 @@ export function useFinishSession() {
   const { dispatch: renameSession } = useCommand(handleRenameSession);
   const { dispatch: updateStartTime } = useCommand(handleUpdateSessionStartTime);
   const { dispatch: updateDetails } = useCommand(handleUpdateSessionDetails);
+  const { dispatch: saveTemplate } = useCommand(handleSaveTemplate);
 
   const startTimestamp = date && startTime ? new Date(`${date}T${startTime}`).getTime() : null;
   const endTimestampRaw = date && endTime ? new Date(`${date}T${endTime}`).getTime() : null;
@@ -171,6 +173,16 @@ export function useFinishSession() {
     if (session) exportSessionCsv(session);
   };
 
+  const handleSaveAsTemplate = async () => {
+    if (!session || session.segments.length === 0) return;
+    await saveTemplate({
+      type: 'SaveTemplate',
+      name: name.trim() || session.name,
+      primarySport: session.primarySport,
+      exercises: session.segments.map(s => ({ name: s.exerciseName, setCount: s.sets.length })),
+    });
+  };
+
   return {
     navigate,
     displaySession: session,
@@ -195,5 +207,6 @@ export function useFinishSession() {
     submit,
     handleExportJson,
     handleExportCsv,
+    handleSaveAsTemplate,
   };
 }

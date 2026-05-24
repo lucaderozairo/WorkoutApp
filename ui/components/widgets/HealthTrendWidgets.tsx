@@ -1,4 +1,4 @@
-import { SparklineArea } from '../shared/Charts';
+import { SparklineArea } from '@ui/patterns/charts/domain-charts';
 import type { RestingHREntry, HRVEntry } from '@features/health';
 
 export function RestingHRWidget({ history }: { history: RestingHREntry[] }) {

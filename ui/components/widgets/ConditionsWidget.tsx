@@ -46,11 +46,14 @@ export function ConditionsWidget({ conditions, suitability }: ConditionsWidgetPr
                 <div className="row space-between align-top">
                   <span className="caption">Sport suitability</span>
                   <div className="column">
-                    {suitability.map(s => (
-                      <span key={s.sport} className={`pill ${s.suitability}`}>
-                        {SPORT_ICONS[s.sport]} {s.sport}
-                      </span>
-                    ))}
+                    {suitability.map(s => {
+                      const Icon = SPORT_ICONS[s.sport];
+                      return (
+                        <span key={s.sport} className={`pill row align-center compact ${s.suitability}`}>
+                          {Icon && <Icon size={12} />} {s.sport}
+                        </span>
+                      );
+                    })}
                   </div>
                 </div>
               )}

@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+﻿import { useEffect, useRef, useState } from 'react';
 import { Download, Plus, Trash2 } from 'lucide-react';
 import { useCommand } from '@ui/bindings';
 import {
@@ -14,6 +14,7 @@ import type { ActivityView } from '@features/training_log';
 import type { StrengthSet, CardioSet } from '@features/training_log/domain/types';
 import type { Id } from '@shared/types';
 import { UndoToast, useUndoToast, RestTimerAlert } from '@ui/components/log';
+import { viewStore } from '@data/projections/views';
 import { domainBlocksToUIBlocks, sessionDateLabel } from '@features/training_log/projections/mappers';
 import type { UIBlock, UICardioSet, UICondition, DeleteTarget } from '@features/training_log/projections/viewTypes';
 import { SessionHeader } from './SessionHeader';
@@ -48,7 +49,14 @@ export function WorkoutView({
   const [deleteBlockAlert, setDeleteBlockAlert] = useState<string[] | null>(null);
   const [clearAlert, setClearAlert] = useState(false);
   const [acknowledged, setAcknowledged] = useState<Set<string>>(new Set());
-  const [restTimer, setRestTimer] = useState<{ seconds: number; exerciseName: string } | null>(null);
+  const [restTimer, setRestTimer] = useState<{ seconds: number; exerciseName: string } | null>(
+    () => viewStore.get('rest_timer') ?? null
+  );
+  const restTimerRef = useRef(restTimer);
+  useEffect(() => {
+    restTimerRef.current = restTimer;
+    viewStore.set('rest_timer', restTimer);
+  }, [restTimer]);
 
   const { enqueue: enqueueUndo } = useUndoToast();
   const { dispatch: removeBlock } = useCommand(handleRemoveBlock);
@@ -399,7 +407,7 @@ export function WorkoutView({
         <div className="bottom-banner">
           <RestTimerAlert
             initialSeconds={restTimer.seconds}
-            onSkip={() => setRestTimer(null)}
+            onSkip={() => { viewStore.set('rest_timer', null); setRestTimer(null); }}
           />
         </div>
       )}

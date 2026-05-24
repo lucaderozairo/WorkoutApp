@@ -2,6 +2,7 @@ import type { Id, DomainEvent } from '@shared/types';
 import type { EventStore } from '@shared/contracts';
 import { eventBus } from '@core/events';
 import { persistEvent, loadAllEvents } from '@data/sources/local/event-db';
+import { upcastEvent } from './upcasters';
 
 /**
  * Hybrid event store: IndexedDB backend with in-memory fallback.
@@ -10,6 +11,8 @@ class HybridEventStore implements EventStore {
   private streams = new Map<string, DomainEvent<string, object>[]>();
   private subscribers = new Map<string, Set<(event: DomainEvent<string, object>) => void>>();
   private useIndexedDB: boolean;
+  private hydrationFailed = false;
+  private persistenceFailures = 0;
 
   constructor() {
     try {
@@ -17,6 +20,11 @@ class HybridEventStore implements EventStore {
     } catch {
       this.useIndexedDB = false;
     }
+  }
+
+  /** False means events are in-memory only and will be lost on page refresh. */
+  isPersistenceWorking(): boolean {
+    return this.useIndexedDB && !this.hydrationFailed && this.persistenceFailures === 0;
   }
 
   async append(event: DomainEvent<string, object>): Promise<void> {
@@ -28,7 +36,7 @@ class HybridEventStore implements EventStore {
       try {
         await persistEvent(event);
       } catch {
-        // non-fatal: in-memory + localStorage snapshot still intact
+        this.persistenceFailures++;
       }
     }
 
@@ -55,16 +63,20 @@ class HybridEventStore implements EventStore {
   }
 
   async hydrate(): Promise<void> {
-    if (!this.useIndexedDB) return;
+    if (!this.useIndexedDB) {
+      this.hydrationFailed = true;
+      return;
+    }
     try {
       const events = await loadAllEvents();
-      for (const event of events) {
+      for (const raw of events) {
+        const event = upcastEvent(raw);
         const stream = this.streams.get(event.aggregateId) ?? [];
         stream.push(event);
         this.streams.set(event.aggregateId, stream);
       }
     } catch {
-      // IndexedDB unavailable — proceed with empty streams
+      this.hydrationFailed = true;
     }
   }
 

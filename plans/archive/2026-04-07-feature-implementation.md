@@ -1,4 +1,6 @@
-﻿# Feature Implementation Plan
+﻿> **Archived (2026-05-23):** Plan was never executed end-to-end; specific tasks have either been superseded by later work or are out of scope. Kept for reference.
+
+# Feature Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 

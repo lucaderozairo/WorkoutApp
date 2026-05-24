@@ -4,7 +4,7 @@ import {
   XAxis, YAxis, Tooltip, Cell,
 } from 'recharts';
 
-import { ScoreRing, fmtMin, TOOLTIP_STYLE, TICK } from '../shared/Charts';
+import { ScoreRing, fmtMin, TOOLTIP_STYLE, TICK } from '@ui/patterns/charts/domain-charts';
 import type { SleepSession } from '@features/readiness';
 
 type WidgetSize = '1x1' | '2x1' | '2x2';

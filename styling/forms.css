@@ -82,26 +82,6 @@ input[type="range"] {
   padding: 0;
 }
 
-/* ── Progress / Meter (native elements) ── */
-progress {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 100%;
-  height: var(--s-4);
-  border-radius: var(--r-pill);
-  overflow: hidden;
-  border: none;
-}
-::-webkit-progress-bar {
-  background: var(--surface-2);
-}
-::-webkit-progress-value {
-  background: var(--accent);
-}
-::-moz-progress-bar {
-  background: var(--accent);
-}
-
 /* ── Error text ── */
 .error-text {
   font-size: var(--t-xs);

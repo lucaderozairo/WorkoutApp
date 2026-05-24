@@ -9,6 +9,7 @@ interface NewsCache {
 }
 
 let cache: NewsCache | null = null;
+let keyWarningLogged = false;
 
 function getNewsApiKey(): string | undefined {
   try {
@@ -21,6 +22,15 @@ function getNewsApiKey(): string | undefined {
 export async function fetchNews(): Promise<{ headlines: Headline[]; deals: Deal[] }> {
   const apiKey = getNewsApiKey();
   if (!apiKey) return getStubNews();
+
+  // VITE_ env vars are inlined into the client bundle and visible in DevTools.
+  // Before shipping with a real key, proxy this call through a serverless function
+  // (e.g. Cloudflare Worker) so the key stays server-side.
+  if (!(import.meta as any).env?.DEV && !keyWarningLogged) {
+    console.warn('[security] VITE_NEWS_API_KEY is exposed in the client bundle. Proxy via a serverless function before production use.');
+    keyWarningLogged = true;
+  }
+
   if (cache && Date.now() - cache.timestamp < CACHE_DURATION_MS) return { headlines: cache.headlines, deals: cache.deals };
 
   try {
