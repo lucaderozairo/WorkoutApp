@@ -15,3 +15,7 @@ export { ActionSheet } from './ActionSheet';
 export { Popover } from './Popover';
 export { Tabs } from './Tabs';
 export type { TabItem } from './Tabs';
+export { StatTile } from './StatTile';
+export { DetailRow } from './DetailRow';
+export { ChipGroup } from './ChipGroup';
+export { PhotoGallery } from './PhotoGallery';
