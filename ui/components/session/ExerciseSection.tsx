@@ -6,6 +6,7 @@ import { LetterBadge } from './LetterBadge';
 import { getWarnings } from '@features/training_log/projections/mappers';
 import type { UIExercise, UICondition } from '@features/training_log/projections/viewTypes';
 import type { SetMode } from '@data/static/exercises';
+import { Row, Column } from '@ui/layout';
 
 export interface ExerciseSectionProps {
   ex: UIExercise;
@@ -33,9 +34,9 @@ export function ExerciseSection({
   const isAcked = acknowledged.has(ex.name);
 
   return (
-    <div className="column compact">
-      <div className="row align-center space-between">
-        <div className="row compact grow align-center">
+    <Column gap={1}>
+      <Row align="center" justify="between">
+        <Row gap={1} align="center" className="grow">
           <button className="icon ghost" disabled>
             {ex.label && <LetterBadge letter={ex.label} />}
           </button>
@@ -44,27 +45,27 @@ export function ExerciseSection({
           {warnings.length > 0 && (
             <AlertTriangle size={11} className="muted" />
           )}
-        </div>
-      </div>
+        </Row>
+      </Row>
 
       {warnings.length > 0 && !isAcked && (
-        <div className="column compact">
+        <Column gap={1}>
           {warnings.map(w => (
-            <div key={w.id} className="row align-center compact">
+            <Row key={w.id} align="center" gap={1}>
               <span className="caption grow">{w.advice}</span>
               <button type="button" className="ghost icon sm" onClick={() => onAcknowledge(ex.name)}>
                 <AlertTriangle size={10} className="faint" />
               </button>
-            </div>
+            </Row>
           ))}
-        </div>
+        </Column>
       )}
 
       {ex.comment && <CommentLine text={ex.comment} indent={Boolean(ex.label)} />}
       {ex.sets && (
         <SetsBarChart sets={ex.sets} />
       )}
-      <div className="column compact">
+      <Column gap={1}>
         {ex.sets?.map((s, j) => {
           const workingNum = (ex.sets ?? []).filter((x, idx) => !x.warmup && idx <= j).length;
           return (
@@ -86,9 +87,9 @@ export function ExerciseSection({
             />
           );
         })}
-      </div>
+      </Column>
 
       <button type="button" className="ghost surface tight" onClick={onAddSet}>+ Add Set</button>
-    </div>
+    </Column>
   );
 }

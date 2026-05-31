@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Download, MoreVertical, Pause, Play, Share2, Trash2, X } from 'lucide-react';
+import { Row, Column } from '@ui/layout';
+import { Surface } from '@ui/atoms';
 
 export interface SessionHeaderProps {
   name: string;
@@ -38,12 +40,12 @@ export function SessionHeader({
   }
 
   return (
-    <div className="column">
+    <Column>
       <div className="row align-center space-between" style={{ padding: 'var(--s-3) var(--s-4)', background: 'var(--surface-0)', borderBottom: '1px solid var(--line)' }}>
-        <div className="row compact">
+        <Row gap={1}>
           <span className="detail">{name}</span>
-        </div>
-        <div className="row compact align-center">
+        </Row>
+        <Row gap={1} align="center">
           {isActive ? (
             <>
               <button type="button" className="primary sm" onClick={onFinish}>Finish</button>
@@ -71,53 +73,55 @@ export function SessionHeader({
           <button type="button" className="secondary sm" onClick={() => setMenuOpen(v => !v)}>
             <MoreVertical size={13} />
           </button>
-        </div>
+        </Row>
       </div>
 
       <div className="surface grid">
         {isActive && timerDisplay && !timerNotStarted && (
-          <div className="column compact align-center">
+          <Column gap={1} align="center">
             <span className="eyebrow">Timer</span>
             <span className="mono num detail">{timerDisplay}</span>
-          </div>
+          </Column>
         )}
-        <div className="column compact align-center">
+        <Column gap={1} align="center">
           <span className="eyebrow">Start</span>
           <span className="mono num detail">{startTime ?? '—'}</span>
-        </div>
-        <div className="column compact align-center">
+        </Column>
+        <Column gap={1} align="center">
           <span className="eyebrow">End</span>
           <span className="mono num detail">{endTime ?? '—'}</span>
-        </div>
-        <div className="column compact align-center">
+        </Column>
+        <Column gap={1} align="center">
           <span className="eyebrow">Date</span>
           <span className="mono num detail">{date ?? dateLabel}</span>
-        </div>
-        <div className="column compact align-center">
+        </Column>
+        <Column gap={1} align="center">
           <span className="eyebrow">Duration</span>
           <span className="mono num detail">{duration ?? '—'}</span>
-        </div>
+        </Column>
       </div>
 
       {menuOpen && (
         <div className="modal-overlay">
-          <div className="surface column">
-            <div className="row space-between align-center">
-              <span className="detail">Session Options</span>
-              <button type="button" className="ghost icon sm" onClick={() => setMenuOpen(false)}>
-                <X size={10} className="faint" />
+          <Surface>
+            <Column>
+              <Row justify="between" align="center">
+                <span className="detail">Session Options</span>
+                <button type="button" className="ghost icon sm" onClick={() => setMenuOpen(false)}>
+                  <X size={10} className="faint" />
+                </button>
+              </Row>
+              <button
+                type="button"
+                className="sm warning"
+                onClick={() => { setMenuOpen(false); onClearSession(); }}
+              >
+                <Trash2 size={9} /> Delete session
               </button>
-            </div>
-            <button
-              type="button"
-              className="sm warning"
-              onClick={() => { setMenuOpen(false); onClearSession(); }}
-            >
-              <Trash2 size={9} /> Delete session
-            </button>
-          </div>
+            </Column>
+          </Surface>
         </div>
       )}
-    </div>
+    </Column>
   );
 }
