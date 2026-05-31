@@ -88,7 +88,7 @@ function SessionCard({ session }: { session: ActivityHistoryItem }) {
             <Text as="time" size="caption">{new Date(session.startedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</Text>
             <Text as="p">{session.name}</Text>
             <Row>
-              <Badge variant={accent === 'run' ? 'run' : undefined}>{icon} {session.exerciseCount} exercises</Badge>
+              <Badge color={accent === 'run' ? 'c-cardio' : undefined}>{icon} {session.exerciseCount} exercises</Badge>
               {session.hasPR && <Badge active dot>🏆 PR</Badge>}
             </Row>
           </Column>
@@ -139,6 +139,10 @@ function sportColor(sport: string): string {
   }
 }
 
+const SPORT_TOKEN: Record<string, string> = {
+  run: 'c-cardio', cycle: 'c-nutrition', swim: 'c-water', rowing: 'c-recovery', strength: 'c-strength',
+};
+
 function CardioSessionCard({ session }: { session: CardioSession }) {
   const navigate = useNavigate();
   const id = useId();
@@ -166,9 +170,9 @@ function CardioSessionCard({ session }: { session: CardioSession }) {
         </Row>
         <Row>
           {pace > 0 && (
-            <Badge variant={color === 'strength' ? undefined : (color as 'run' | 'cycle' | 'swim' | 'rowing')}>{Math.floor(pace / 60)}:{String(Math.floor(pace % 60)).padStart(2, '0')}/km</Badge>
+            <Badge color={color !== 'strength' ? SPORT_TOKEN[color] : undefined}>{Math.floor(pace / 60)}:{String(Math.floor(pace % 60)).padStart(2, '0')}/km</Badge>
           )}
-          {heartRate != null && <Badge variant="lift" dot>♥ {Math.round(heartRate)}bpm</Badge>}
+          {heartRate != null && <Badge color="c-strength" dot>♥ {Math.round(heartRate)}bpm</Badge>}
           {elevationGain != null && elevationGain > 0 && <Badge dot>↑ {Math.round(elevationGain)}m</Badge>}
         </Row>
       </label>
@@ -262,7 +266,7 @@ export function ProgressScreen({ onOpenSettings }: { onOpenSettings?: () => void
                     <Row justify="between">
                       <Text as="strong">{exerciseName}</Text>
                       <Row>
-                        {plateauDetected && <Badge variant="warn" dot>⚠ Plateau</Badge>}
+                        {plateauDetected && <Badge tone="warn" dot>⚠ Plateau</Badge>}
                         <Badge active>{exHistory.length}×</Badge>
                       </Row>
                     </Row>

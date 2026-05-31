@@ -1,0 +1,1 @@
+{"nodes": [{"id": "activities", "label": "activities.ts", "file_type": "code", "source_file": "shared\\constants\\activities.ts", "source_location": "L1"}], "edges": [{"source": "activities", "target": "types", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "shared\\constants\\activities.ts", "source_location": "L1", "weight": 1.0}]}

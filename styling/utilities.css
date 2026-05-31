@@ -1,59 +1,11 @@
-.bg-primary {
-  background: var(--color-primary);
-}
-.bg-surface {
-  background: var(--color-surface);
-}
-.bg-background {
-  background: var(--color-background);
-}
-.bg-text-primary {
-  background: var(--color-text-primary);
-}
-.bg-text-secondary {
-  background: var(--color-text-secondary);
-}
-.bg-lift {
-  background: var(--color-lift);
-}
-.bg-run {
-  background: var(--color-run);
-}
-.bg-cycle {
-  background: var(--color-cycle);
-}
-.bg-swim {
-  background: var(--color-swim);
-}
-.bg-rowing {
-  background: var(--color-rowing);
-}
+.radius-0 { border-radius: var(--border-radius-0); }
+.radius-1 { border-radius: var(--border-radius-1); }
+.radius-2 { border-radius: var(--border-radius-2); }
+.radius-3 { border-radius: var(--border-radius-3); }
 
-.radius-0 {
-  border-radius: var(--border-radius-0);
-}
-.radius-1 {
-  border-radius: var(--border-radius-1);
-}
-.radius-2 {
-  border-radius: var(--border-radius-2);
-}
-.radius-3 {
-  border-radius: var(--border-radius-3);
-}
-
-.shadow-sm,
-.elev-1 {
-  box-shadow: var(--box-shadow-sm);
-}
-.shadow-md,
-.elev-2 {
-  box-shadow: var(--box-shadow-md);
-}
-.shadow-lg,
-.elev-3 {
-  box-shadow: var(--box-shadow-lg);
-}
+.shadow-sm { box-shadow: var(--box-shadow-sm); }
+.shadow-md { box-shadow: var(--box-shadow-md); }
+.shadow-lg { box-shadow: var(--box-shadow-lg); }
 
 .warning {
   --status-color: var(--bad);
@@ -140,6 +92,22 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+/* Multi-line clamp — collapsed captions / comments / descriptions.
+   Pairs with the :has() expandables (collapsed = clamped, expanded = full). */
+.clamp-2,
+.clamp-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.clamp-2 {
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+.clamp-3 {
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
 .nowrap {
   white-space: nowrap;
 }
@@ -190,3 +158,46 @@
     display: none;
   }
 }
+
+/* ════════════════════════════════════════════
+   SPINNER
+   ════════════════════════════════════════════ */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.spinner {
+  display: inline-block;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  border-top-color: var(--accent);
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+.spinner.sm { width: 14px; height: 14px; }
+.spinner.md { width: 18px; height: 18px; }
+.spinner.lg { width: 24px; height: 24px; }
+
+/* ════════════════════════════════════════════
+   SHIMMER SKELETON
+   ════════════════════════════════════════════ */
+@keyframes shimmer {
+  0%   { background-position: -700px 0; }
+  100% { background-position:  700px 0; }
+}
+.sk {
+  background: linear-gradient(
+    90deg,
+    var(--sk)    0%,
+    var(--sk)   25%,
+    var(--sk-hi) 50%,
+    var(--sk)   75%,
+    var(--sk)   100%
+  );
+  background-size: 1400px 100%;
+  animation: shimmer 2.2s infinite linear;
+  border-radius: var(--r-sm);
+}
+.sk:nth-child(2n) { animation-delay: -0.4s; }
+.sk:nth-child(3n) { animation-delay: -0.8s; }
+.sk:nth-child(5n) { animation-delay: -1.2s; }
+.sk:nth-child(7n) { animation-delay: -1.6s; }

@@ -1,5 +1,6 @@
 // ui/components/profile/HealthOverviewTab.tsx
 import { useState, useMemo, useRef } from 'react'
+import { Grid } from '@ui/layout'
 import { useNavigate } from 'react-router-dom'
 import { Search } from 'lucide-react'
 import { ChartContainer } from '@ui/patterns/charts/charts'
@@ -95,7 +96,7 @@ function CategoryRow({ cat, isPinned = false, onClick, onLongPress, charts }: Ca
     >
       <div className="row align-center">
         <span className="icon">{cat.icon}</span>
-        <div className="stack compact align-left">
+        <div className="column compact align-left">
           <span>{cat.name}</span>
         </div>
       </div>
@@ -169,7 +170,7 @@ export function HealthOverviewTab() {
   const unpinnedCats = useMemo(() => filtered.filter(c => !pinned.includes(c.slug)), [filtered, pinned])
 
   return (
-    <div className="stack">
+    <div className="column">
 
       {/* Search bar */}
       <div className="row align-center">
@@ -211,7 +212,7 @@ export function HealthOverviewTab() {
             const cats = unpinnedCats.filter(c => c.section === section)
             if (!cats.length) return null
             return (
-              <div key={section} className="stack compact">
+              <div key={section} className="column compact">
                 <span className="eyebrow">{section}</span>
                 {cats.map(cat => (
                   <CategoryRow
@@ -233,7 +234,7 @@ export function HealthOverviewTab() {
           {pinnedCats.length > 0 && (
             <>
               <span className="eyebrow">Pinned</span>
-              <div className="grid-4">
+              <Grid cols={4}>
                 {pinnedCats.map(cat => (
                   <CategoryTile
                     key={cat.slug}
@@ -244,7 +245,7 @@ export function HealthOverviewTab() {
                     charts={healthCharts[cat.slug]}
                   />
                 ))}
-              </div>
+              </Grid>
               <hr />
             </>
           )}
@@ -252,9 +253,9 @@ export function HealthOverviewTab() {
             const cats = unpinnedCats.filter(c => c.section === section)
             if (!cats.length) return null
             return (
-              <div key={section} className="stack compact">
+              <div key={section} className="column compact">
                 <span className="eyebrow">{section}</span>
-                <div className="grid">
+                <Grid variant="tiles">
                   {cats.map(cat => (
                     <CategoryTile
                       key={cat.slug}
@@ -264,7 +265,7 @@ export function HealthOverviewTab() {
                       charts={healthCharts[cat.slug]}
                     />
                   ))}
-                </div>
+                </Grid>
               </div>
             )
           })}

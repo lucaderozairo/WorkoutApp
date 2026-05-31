@@ -2,7 +2,7 @@ import { HealthChartsList } from './HealthChartsList';
 
 export function ActivityMobilityView() {
   return (
-    <div className="stack">
+    <div className="column">
       <HealthChartsList slug="activity-mobility" />
     </div>
   );

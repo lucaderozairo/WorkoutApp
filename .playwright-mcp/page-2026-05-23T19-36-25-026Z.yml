@@ -1,0 +1,61 @@
+- generic [ref=e6]:
+  - banner [ref=e7]:
+    - button "Settings" [ref=e8] [cursor=pointer]:
+      - img [ref=e9]
+  - navigation [ref=e13]:
+    - generic [ref=e14]:
+      - link [ref=e15] [cursor=pointer]:
+        - /url: "#/home"
+        - img [ref=e17]
+      - link [ref=e20] [cursor=pointer]:
+        - /url: "#/sessions"
+        - img [ref=e22]
+      - link [ref=e25] [cursor=pointer]:
+        - /url: "#/profile"
+        - img [ref=e27]
+  - main [ref=e32]:
+    - generic [ref=e165]:
+      - generic [ref=e166]:
+        - generic [ref=e167]: Saturday · 23 May
+        - heading "Good evening, there." [level=2] [ref=e169]
+        - paragraph [ref=e171]: No workouts logged yet this week.
+      - generic [ref=e172]:
+        - strong [ref=e173]: Get started — three things to try
+        - generic [ref=e174]:
+          - generic [ref=e175]:
+            - generic [ref=e176]:
+              - generic [ref=e177]: Log your first workout
+              - generic [ref=e178]: Track exercises, sets, reps, and weight
+            - link "Start session" [ref=e179] [cursor=pointer]:
+              - /url: "#/sessions/new"
+          - generic [ref=e180]:
+            - generic [ref=e181]:
+              - generic [ref=e182]: Plan a route
+              - generic [ref=e183]: Map out a run or ride before you head out
+            - link "Open map" [ref=e184] [cursor=pointer]:
+              - /url: "#/plan-route"
+          - generic [ref=e185]:
+            - generic [ref=e186]:
+              - generic [ref=e187]: Track your health
+              - generic [ref=e188]: Log sleep, nutrition, body metrics and more
+            - link "View profile" [ref=e189] [cursor=pointer]:
+              - /url: "#/profile"
+      - generic [ref=e190]:
+        - generic [ref=e191]:
+          - generic [ref=e192]: Display Name
+          - textbox [disabled] [ref=e193]
+          - button "Edit" [ref=e194] [cursor=pointer]
+        - generic [ref=e195]:
+          - generic [ref=e196]: Import Data
+          - paragraph [ref=e197]: Restore from a JSON backup or CSV file.
+          - button "Choose file" [ref=e198] [cursor=pointer]
+        - generic [ref=e199]:
+          - generic [ref=e200]: Export Data
+          - paragraph [ref=e201]: Download all your workout data as JSON or CSV.
+          - generic [ref=e202]:
+            - button "JSON" [ref=e203] [cursor=pointer]
+            - button "CSV" [ref=e204] [cursor=pointer]
+        - generic [ref=e205]:
+          - generic [ref=e206]: Plan a Route
+          - paragraph [ref=e207]: Map out a run or ride before you go.
+          - button "Open route planner" [ref=e208] [cursor=pointer]

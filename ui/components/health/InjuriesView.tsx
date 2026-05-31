@@ -11,7 +11,7 @@ export function InjuriesView() {
   const { dispatch } = useCommand(handleResolveInjury);
 
   return (
-    <div className="stack">
+    <div className="column">
       <HealthChartsList slug="injuries" height={100} />
 
       {injuries.length === 0 ? (
@@ -23,7 +23,7 @@ export function InjuriesView() {
               <span className="pill pill--bad">Active</span>
               <span className="mono muted">{new Date(inj.recordedAt).toLocaleDateString()}</span>
             </div>
-            <div className="stack">
+            <div className="column">
               <h3>{inj.bodyPart}</h3>
               <p className="muted">{inj.description}</p>
             </div>

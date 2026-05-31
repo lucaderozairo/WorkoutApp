@@ -1,4 +1,4 @@
-﻿// ui/components/profile/ActivitiesTab.tsx
+// ui/components/profile/ActivitiesTab.tsx
 import { useQuery } from '@ui/bindings';
 import { useNavigate } from 'react-router-dom';
 import type { Post } from '@features/social';
@@ -35,7 +35,7 @@ export function ActivitiesTab() {
   }
 
   return (
-    <div className="stack">
+    <div className="column">
       {myPosts.map(post => (
         <div
           key={post.id}
@@ -43,7 +43,7 @@ export function ActivitiesTab() {
           onClick={() => post.sessionId && navigate(`/sessions/${post.sessionId}`)}
         >
           <div className="row space-between align-center">
-            <div className="stack">
+            <div className="column">
               <span>{post.sessionName ?? 'Workout'}</span>
               {post.sport && <span className="muted">{SPORT_LABELS[post.sport] ?? post.sport}</span>}
             </div>

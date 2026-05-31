@@ -1,0 +1,33 @@
+- generic [ref=e6]:
+  - banner [ref=e7]:
+    - button "Settings" [ref=e8] [cursor=pointer]:
+      - img [ref=e9]
+  - navigation [ref=e13]:
+    - generic [ref=e14]:
+      - link [ref=e15] [cursor=pointer]:
+        - /url: "#/home"
+        - img [ref=e17]
+      - link [ref=e20] [cursor=pointer]:
+        - /url: "#/sessions"
+        - img [ref=e22]
+      - link [ref=e25] [cursor=pointer]:
+        - /url: "#/profile"
+        - img [ref=e27]
+  - main [ref=e32]:
+    - generic [ref=e54]:
+      - generic [ref=e55]:
+        - heading "My Sessions" [level=2] [ref=e56]
+        - button "＋ Add" [ref=e58] [cursor=pointer]
+      - generic [ref=e59]:
+        - button "≡ List" [ref=e60] [cursor=pointer]
+        - button "▦ Month" [ref=e61] [cursor=pointer]
+        - button "⬚ Week" [ref=e62] [cursor=pointer]
+      - generic [ref=e64]:
+        - generic [ref=e65]:
+          - img [ref=e66]
+          - textbox "Search sessions…" [ref=e69]
+        - button "↓ Newest" [ref=e70] [cursor=pointer]
+        - button "Filters" [ref=e72] [cursor=pointer]:
+          - img [ref=e73]
+          - text: Filters
+      - paragraph [ref=e74]: No sessions found

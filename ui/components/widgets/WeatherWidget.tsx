@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Grid } from '@ui/layout';
 import {
     ResponsiveContainer,
     ComposedChart, Bar, Line,
@@ -58,7 +59,7 @@ export function HourlyForecastRow() {
     return (
         <div className="row space-between">
             {NEXT_5_HOURS.map(({ hour, icon, temp, rain }) => (
-                <div key={hour} className="stack align-center compact">
+                <div key={hour} className="column align-center compact">
                     <span className="mono caption">{hour}</span>
                     <span>{icon}</span>
                     <span className="mono">{temp}°</span>
@@ -122,7 +123,7 @@ export function AirQualityPanel() {
                     <span className="caption">AQI</span>
                 </div>
             </div>
-            <div className="grid-4">
+            <Grid cols={4}>
                 <div className="surface centered">
                     <span className="caption">PM2.5</span>
                     <p>{pm25}</p>
@@ -139,7 +140,7 @@ export function AirQualityPanel() {
                     <span className="caption">O₃</span>
                     <p>{o3}</p>
                 </div>
-            </div>
+            </Grid>
         </div>
     );
 }

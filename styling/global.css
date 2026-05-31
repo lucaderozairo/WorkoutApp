@@ -1,16 +1,23 @@
-@import "./tokens.css";
-@import "./reset.css";
-@import "./layout.css";
-@import "./typography.css";
-@import "./nav.css";
-@import "./utilities.css";
-@import "./surface.css";
-@import "./buttons.css";
-@import "./forms.css";
-@import "./components.css";
-@import "./log.css";
-@import "./wizard.css";
-@import "./sidebar.css";
+/* Cascade layers. Vite requires @import to precede all other statements, so
+   we do NOT use a leading `@layer …;` statement — instead the layer order is
+   set by each layer's FIRST appearance in the imports below.
+   Effective order (low → high priority):
+   reset < tokens < base < layout < components < utilities < overrides
+   (utilities win over components; Leaflet's !important rules isolated last). */
+@import "./reset.css"      layer(reset);
+@import "./tokens.css"     layer(tokens);
+@import "./typography.css" layer(base);
+@import "./layout.css"     layer(layout);
+@import "./nav.css"        layer(layout);
+@import "./surface.css"    layer(components);
+@import "./buttons.css"    layer(components);
+@import "./forms.css"      layer(components);
+@import "./components.css" layer(components);
+@import "./containers.css" layer(components);
+@import "./log.css"        layer(components);
+@import "./sidebar.css"    layer(components);
+@import "./utilities.css"  layer(utilities);
+@import "./wizard.css"     layer(overrides);
 
 hr {
   height: 1px;

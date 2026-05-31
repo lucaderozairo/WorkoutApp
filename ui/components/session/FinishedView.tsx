@@ -1,4 +1,5 @@
 ﻿import { useState } from 'react';
+import { Grid } from '@ui/layout';
 import { useNavigate } from 'react-router-dom';
 import { Download, FileText, Gauge, Image, MoreVertical, Share2, Tag, Trash2, X } from 'lucide-react';
 import type { ActivityView, SetEntry, StrengthSet } from '@features/training_log';
@@ -189,7 +190,7 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
                   <div className="row align-center space-between">
                     <span className="detail">{ex.name}</span>
                   </div>
-                  <div className="grid-4">
+                  <Grid cols={4}>
                     {CARDIO_FIELDS.map((f, i) => {
                       const raw = ex.cardioSet?.[f.key] as number | undefined;
                       const display = raw != null && raw > 0 ? f.toDisplay(raw) : '—';
@@ -202,7 +203,7 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
                         </div>
                       );
                     })}
-                  </div>
+                  </Grid>
                 </>
               );
             })()}

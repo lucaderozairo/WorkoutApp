@@ -17,6 +17,7 @@ body,
   font-size: var(--t-md);
   font-weight: 500;
   line-height: 1.5;
+  text-wrap: pretty; /* inherited; headings override with balance */
   display: flex;
   min-height: 100dvh;
   width: 100%;
@@ -41,9 +42,9 @@ main {
   color: var(--accent-ink);
 }
 
-table {
-  text-align: left;
-}
+/* SVG text inherits CSS color via fill:currentColor so Text atom color props
+   work identically on SVG <text>/<tspan> as on HTML elements */
+svg text, svg tspan { fill: currentColor; }
 
 @media (prefers-reduced-motion: reduce) {
   *,

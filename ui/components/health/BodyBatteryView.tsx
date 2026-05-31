@@ -2,7 +2,7 @@ import { HealthChartsList } from './HealthChartsList';
 
 export function BodyBatteryView() {
   return (
-    <div className="stack">
+    <div className="column">
       <HealthChartsList slug="body-battery" />
     </div>
   );

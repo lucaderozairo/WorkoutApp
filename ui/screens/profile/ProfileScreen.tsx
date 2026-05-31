@@ -34,7 +34,7 @@ export function ProfileScreen() {
             <span>{profile?.displayName ?? 'You'}</span>
             <span className="mono muted">{profile?.email ?? ''}</span>
             <div className="cluster">
-              <Badge variant="accent"><Flame size={12} /> Active</Badge>
+              <Badge tone="accent"><Flame size={12} /> Active</Badge>
             </div>
           </div>
         </Row>

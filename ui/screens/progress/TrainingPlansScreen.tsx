@@ -26,7 +26,7 @@ function PlanCard({ plan, adherenceRate }: { plan: TrainingPlan; adherenceRate: 
     <Surface className="column compact">
       <Row justify="between" align="center">
         <Text as="h3">{plan.name}</Text>
-        <Badge variant={pct >= 80 ? 'ok' : pct < 60 ? 'warn' : undefined}>{pct}%</Badge>
+        <Badge tone={pct >= 80 ? 'ok' : pct < 60 ? 'warn' : undefined}>{pct}%</Badge>
       </Row>
       <Text size="caption">Week {currentWeek} / {plan.durationWeeks} · Started {plan.startDate}</Text>
       <ProgressBar value={Math.min(100, (currentWeek / plan.durationWeeks) * 100)} />

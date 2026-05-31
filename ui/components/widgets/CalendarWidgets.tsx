@@ -1,4 +1,5 @@
 import { useQuery } from '@ui/bindings';
+import { Grid } from '@ui/layout';
 import type { SportType } from '@features/training_log/domain/types';
 import type { MockCalendarEvent } from '@features/scheduling';
 
@@ -21,7 +22,7 @@ export function CalendarGrid({ year, month }: { year: number; month: number }) {
     ];
 
     return (
-        <div className="cal">
+        <Grid variant="cal">
             {DAY_LABELS.map(label => (
                 <span key={label} className="day">{label}</span>
             ))}
@@ -37,7 +38,7 @@ export function CalendarGrid({ year, month }: { year: number; month: number }) {
                     </button>
                 );
             })}
-        </div>
+        </Grid>
     );
 }
 

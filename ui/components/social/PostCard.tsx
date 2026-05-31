@@ -1,5 +1,4 @@
-﻿import { useState } from 'react';
-import { useExpandable } from '@ui/interactions/useExpandable';
+﻿import { useState, useId } from 'react';
 import { useCommand } from '@ui/bindings';
 import { handleLikePost, handleCommentOnPost } from '@features/social';
 import type { Post } from '@features/social';
@@ -7,9 +6,8 @@ import { timeAgo } from '@shared/utils/timeAgo';
 import { USER_ID, USER_NAME, SPORT_MAP } from '@features/social/domain/constants';
 
 export function PostCard({ post }: { post: Post & { sport?: string; group?: string; sessionName?: string } }) {
-  const { expanded, toggle } = useExpandable();
+  const id = useId();
   const [commentText, setCommentText] = useState('');
-  const [showComment, setShowComment] = useState(false);
   const { dispatch: like } = useCommand(handleLikePost);
   const { dispatch: comment } = useCommand(handleCommentOnPost);
 
@@ -29,7 +27,8 @@ export function PostCard({ post }: { post: Post & { sport?: string; group?: stri
   const avatarClass = sport?.avatar ?? 'lift';
 
   return (
-    <section className={`surface${expanded ? ' expanded' : ''}`}>
+    <section className="surface">
+      <input type="checkbox" id={id} className="exp-toggle" />
       <header className="row space-between">
         <div className="row">
           <div className={`avatar ${avatarClass}`}>{post.authorInitials}</div>
@@ -49,10 +48,7 @@ export function PostCard({ post }: { post: Post & { sport?: string; group?: stri
 
         <p>{post.sessionName}</p>
         <p className="detail">{post.body}</p>
-        {/* <button className="secondary" onClick={toggle}>
-          {expanded ? '▲ Less' : '▼ Show details'}
-        </button> */}
-        <div className="expandable column" onClick={e => e.stopPropagation()}>
+        <div className="expandable column">
           {post.comments.length > 0 && (
             <div className="column">
               {post.comments.map(c => (
@@ -63,14 +59,12 @@ export function PostCard({ post }: { post: Post & { sport?: string; group?: stri
               ))}
             </div>
           )}
-          {showComment && (
-            <div className="column ">
-              <input placeholder="Write a comment..." value={commentText}
-                onChange={e => setCommentText(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && handleComment()} />
-              <button className="" onClick={handleComment}>Post</button>
-            </div>
-          )}
+          <div className="column">
+            <input placeholder="Write a comment..." value={commentText}
+              onChange={e => setCommentText(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleComment()} />
+            <button className="" onClick={handleComment}>Post</button>
+          </div>
         </div>
       </div>
       <footer className="row space-between">
@@ -78,9 +72,9 @@ export function PostCard({ post }: { post: Post & { sport?: string; group?: stri
           <button className={post.likedByMe ? 'liked ghost' : 'ghost'} onClick={handleLike}>
             {post.likedByMe ? '❤️' : '🤍'} {post.likeCount}
           </button>
-          <button className='ghost' onClick={() => { setShowComment(true); if (!expanded) toggle(); }}>
+          <label htmlFor={id} className="ghost row align-center interactive">
             💬 {post.comments.length}
-          </button>
+          </label>
         </div>
         <button className="ghost">⋮</button>
       </footer>

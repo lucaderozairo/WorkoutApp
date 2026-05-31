@@ -1,0 +1,25 @@
+- generic [active] [ref=e4]:
+  - generic [ref=e6]:
+    - banner [ref=e7]:
+      - button "Settings" [ref=e8] [cursor=pointer]:
+        - img [ref=e9]
+    - navigation [ref=e13]:
+      - generic [ref=e14]:
+        - link [ref=e15] [cursor=pointer]:
+          - /url: "#/home"
+          - img [ref=e17]
+        - link [ref=e20] [cursor=pointer]:
+          - /url: "#/sessions"
+          - img [ref=e22]
+        - link [ref=e26] [cursor=pointer]:
+          - /url: "#/messages"
+          - img [ref=e28]
+        - link [ref=e31] [cursor=pointer]:
+          - /url: "#/social"
+          - img [ref=e33]
+        - link [ref=e36] [cursor=pointer]:
+          - /url: "#/profile"
+          - img [ref=e38]
+    - main [ref=e43]:
+      - generic [ref=e1091]: Loading…
+  - generic [ref=e1025]: "30"

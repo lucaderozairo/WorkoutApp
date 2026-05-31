@@ -1,4 +1,5 @@
 export { ScreenHeader } from './ScreenHeader';
+export { NavItem } from './NavItem';
 export { EmptyState } from './EmptyState';
 export { ExpandableCard } from './ExpandableCard';
 export { Modal } from './Modal';

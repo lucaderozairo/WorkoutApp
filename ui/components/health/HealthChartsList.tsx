@@ -14,7 +14,7 @@ export function HealthChartsList({ slug, height = 120 }: Props) {
   return (
     <>
       {list.map(c => (
-        <div key={c.label} className="surface tight stack compact">
+        <div key={c.label} className="surface tight column compact">
           <div className="row space-between align-center">
             <span className="eyebrow">{c.label}</span>
             {c.currentValue && (

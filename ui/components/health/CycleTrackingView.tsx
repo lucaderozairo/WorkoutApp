@@ -2,7 +2,7 @@ import { HealthChartsList } from './HealthChartsList';
 
 export function CycleTrackingView() {
   return (
-    <div className="stack">
+    <div className="column">
       <HealthChartsList slug="cycle-tracking" />
     </div>
   );

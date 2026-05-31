@@ -1,4 +1,5 @@
 ﻿import { useMemo, useState } from 'react';
+import { Grid } from '@ui/layout';
 import type { ReactNode } from 'react';
 import type { TypeFilter } from './SessionFilterBar';
 import type { CombinedSession } from '@features/training_log/queries/calendarUtils';
@@ -59,13 +60,13 @@ export function MonthCalendar({ sessions, typeFilter, renderFilter }: Props) {
         <button className="secondary icon sm" onClick={next}>›</button>
       </div>
 
-      <div className="cal">
+      <Grid variant="cal">
         {WEEKDAY_LABELS.map((d, i) => (
           <span key={i} className="caption text-center">{d}</span>
         ))}
-      </div>
+      </Grid>
 
-      <div className="cal">
+      <Grid variant="cal">
         {grid.map((date, i) => {
           if (!date) return <div key={i} />;
           const key = toDateKey(date.getTime());
@@ -87,7 +88,7 @@ export function MonthCalendar({ sessions, typeFilter, renderFilter }: Props) {
             </button>
           );
         })}
-      </div>
+      </Grid>
 
       {renderFilter?.()}
 

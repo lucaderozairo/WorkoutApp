@@ -1,5 +1,6 @@
 // ui/components/log/ScheduleStrip.tsx
 import { useState } from "react";
+import { Grid } from '@ui/layout';
 import { useNavigate } from "react-router-dom";
 import type { ActivityHistoryItem } from "@features/training_log";
 import type { CardioSession } from "@features/cardio";
@@ -79,7 +80,7 @@ export function ScheduleStrip({
         </div>
       </div>
 
-      <div className="cal">
+      <Grid variant="cal">
         {days.map((day, i) => {
           const key = isoDate(day);
           const isToday = key === todayIso;
@@ -104,7 +105,7 @@ export function ScheduleStrip({
             </button>
           );
         })}
-      </div>
+      </Grid>
     </div>
   );
 }

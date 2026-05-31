@@ -1,0 +1,46 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - button "Settings" [ref=e5] [cursor=pointer]:
+      - img [ref=e6]
+  - navigation [ref=e10]:
+    - generic [ref=e11]:
+      - link [ref=e12] [cursor=pointer]:
+        - /url: "#/home"
+        - img [ref=e14]
+      - link [ref=e17] [cursor=pointer]:
+        - /url: "#/sessions"
+        - img [ref=e19]
+      - link [ref=e23] [cursor=pointer]:
+        - /url: "#/profile"
+        - img [ref=e25]
+  - main [ref=e30]:
+    - generic [ref=e344]:
+      - generic [ref=e345]:
+        - button "Go back" [ref=e346] [cursor=pointer]: ←
+        - heading "New Session" [level=2] [ref=e347]
+      - generic [ref=e348]:
+        - button "Gym" [ref=e349] [cursor=pointer]:
+          - img [ref=e350]
+          - generic [ref=e353]: Gym
+        - button "Run" [ref=e354] [cursor=pointer]:
+          - img [ref=e355]
+          - generic [ref=e358]: Run
+        - button "Cycle" [ref=e359] [cursor=pointer]:
+          - img [ref=e360]
+          - generic [ref=e363]: Cycle
+        - button "Hike" [ref=e364] [cursor=pointer]:
+          - img [ref=e365]
+          - generic [ref=e368]: Hike
+        - button "More" [ref=e369] [cursor=pointer]:
+          - heading [level=2] [ref=e370]:
+            - img [ref=e371]
+          - generic [ref=e372]: More
+      - generic [ref=e373]:
+        - generic [ref=e374]: Name
+        - textbox "Name" [ref=e375]: Evening Gym
+      - generic [ref=e376]:
+        - generic [ref=e377]: Date
+        - textbox "Date" [ref=e378]: 2026-05-23
+        - generic [ref=e379]: Time
+        - textbox "Time" [ref=e380]: 20:31
+      - button "New Session" [ref=e381] [cursor=pointer]

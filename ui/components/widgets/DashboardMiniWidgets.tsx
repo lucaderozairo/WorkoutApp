@@ -1,4 +1,5 @@
 import { ScoreRing, SleepStagesBar, SparklineArea, fmtMin } from '@ui/patterns/charts/domain-charts';
+import { Grid } from '@ui/layout';
 import type { SleepSession } from '@features/readiness';
 import type { HealthMetricsView } from '@features/readiness';
 import type { Appointment } from '@features/scheduling';
@@ -193,7 +194,7 @@ export function WeatherDashWidget({ size }: { size: WidgetSize }) {
           </div>
         ))}
       </div>
-      <div className="grid">
+      <Grid variant="tiles">
         <div className="column compact">
           <span className="caption faint">UV</span>
           <span>4</span>
@@ -214,7 +215,7 @@ export function WeatherDashWidget({ size }: { size: WidgetSize }) {
           <span>12km</span>
           <span className="badge green">Clear</span>
         </div>
-      </div>
+      </Grid>
       <div className="row space-between align-center compact">
         <span className="caption">Run conditions — mild temp, low wind</span>
         <span className="badge green">Go</span>
@@ -282,7 +283,7 @@ export function CalendarDashWidget({ size, appointments }: { size: WidgetSize; a
   return (
     <div className="surface column compact h-full">
       <span className="caption">{monthName} {year}</span>
-      <div className="cal">
+      <Grid variant="cal">
         {DAY_HEADERS.map(d => (
           <div key={d} className="caption faint text-center">{d}</div>
         ))}
@@ -291,7 +292,7 @@ export function CalendarDashWidget({ size, appointments }: { size: WidgetSize; a
             {day ?? ''}
           </div>
         ))}
-      </div>
+      </Grid>
       {appointments.length > 0 && (
         <div className="column compact">
           {appointments.slice(0, 2).map(a => (

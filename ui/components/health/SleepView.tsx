@@ -2,7 +2,7 @@ import { HealthChartsList } from './HealthChartsList';
 
 export function SleepView() {
   return (
-    <div className="stack">
+    <div className="column">
       <HealthChartsList slug="sleep" />
     </div>
   );

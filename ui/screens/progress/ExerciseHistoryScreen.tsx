@@ -38,7 +38,7 @@ export function ExerciseHistoryScreen() {
       <ScreenHeader
         title={exerciseName}
         back={() => navigate(-1)}
-        primary={progression?.plateauDetected ? <Badge variant="warn">Plateau</Badge> : undefined}
+        primary={progression?.plateauDetected ? <Badge tone="warn">Plateau</Badge> : undefined}
       />
 
       {points.length >= 1 && (

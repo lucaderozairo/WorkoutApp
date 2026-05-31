@@ -1,9 +1,10 @@
-.pill, .chip, .tag, .avatar { display: inline-flex; align-items: center; }
+.badge, .chip, .tag, .avatar { display: inline-flex; align-items: center; }
 
 /* ════════════════════════════════════════════
-   PILL — status/category label with dot
+   BADGE — status/category label with optional dot
+   (canonical name; .pill is a legacy alias kept for unswept raw consumers)
    ════════════════════════════════════════════ */
-.pill {
+.badge {
   gap: var(--s-2);
   padding: var(--s-1) var(--s-3);
   font-size: var(--t-xs);
@@ -14,77 +15,63 @@
   border-radius: var(--r-pill);
   white-space: nowrap;
 }
-.pill .dot {
+.badge .dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--pill-color, var(--ink-faint));
+  background: var(--badge-color, var(--ink-faint));
   flex-shrink: 0;
 }
-.pill.active {
+.badge.active {
   outline: 1.5px solid currentColor;
   font-weight: 600;
 }
 
-/* Activity category pills */
-.pill.lift {
-  --pill-color: var(--c-strength);
-}
-.pill.run {
-  --pill-color: var(--c-cardio);
-}
-.pill.rowing {
-  --pill-color: var(--c-recovery);
-}
-.pill.cycle {
-  --pill-color: var(--c-nutrition);
-}
-.pill.swim {
-  --pill-color: var(--c-water);
-}
-.pill.mind {
-  --pill-color: var(--c-mind);
-}
-
-/* Sleep stage pills (aliases) */
-.pill.awake {
-  --pill-color: var(--color-sleep-awake);
-}
-.pill.light {
-  --pill-color: var(--color-sleep-light);
-}
-.pill.deep {
-  --pill-color: var(--color-sleep-deep);
-}
-.pill.rem {
-  --pill-color: var(--color-sleep-rem);
-}
-
-/* Status pills */
-.pill.ok {
-  --pill-color: var(--ok);
-}
-.pill.warn {
-  --pill-color: var(--warn);
-}
-.pill.bad {
-  --pill-color: var(--bad);
-}
-
-/* Accent pill */
-.pill.accent {
+/* Tone variants */
+.badge.ok   { --badge-color: var(--ok); }
+.badge.warn { --badge-color: var(--warn); }
+.badge.bad  { --badge-color: var(--bad); }
+.badge.accent {
   background: var(--accent);
   color: var(--accent-ink);
 }
-.pill.accent .dot {
-  background: var(--accent-ink);
-}
+.badge.accent .dot { background: var(--accent-ink); }
 
 @media (max-width: 360px) {
-  .pill {
-    padding: var(--s-1) var(--s-2);
-  }
+  .badge { padding: var(--s-1) var(--s-2); }
 }
+
+/* legacy alias — remove after ui/components raw-class sweep */
+.pill {
+  gap: var(--s-2);
+  padding: var(--s-1) var(--s-3);
+  font-size: var(--t-xs);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  background: var(--surface-2);
+  border-radius: var(--r-pill);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+}
+.pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pill-color, var(--ink-faint)); flex-shrink: 0; }
+.pill.active { outline: 1.5px solid currentColor; font-weight: 600; }
+.pill.lift   { --pill-color: var(--c-strength); }
+.pill.run    { --pill-color: var(--c-cardio); }
+.pill.rowing { --pill-color: var(--c-recovery); }
+.pill.cycle  { --pill-color: var(--c-nutrition); }
+.pill.swim   { --pill-color: var(--c-water); }
+.pill.mind   { --pill-color: var(--c-mind); }
+.pill.awake  { --pill-color: var(--color-sleep-awake); }
+.pill.light  { --pill-color: var(--color-sleep-light); }
+.pill.deep   { --pill-color: var(--color-sleep-deep); }
+.pill.rem    { --pill-color: var(--color-sleep-rem); }
+.pill.ok     { --pill-color: var(--ok); }
+.pill.warn   { --pill-color: var(--warn); }
+.pill.bad    { --pill-color: var(--bad); }
+.pill.accent { background: var(--accent); color: var(--accent-ink); }
+@media (max-width: 360px) { .pill { padding: var(--s-1) var(--s-2); } }
 
 /* ════════════════════════════════════════════
    CHIP — interactive filter/segment control
@@ -122,9 +109,7 @@
   line-height: 1;
   letter-spacing: -0.02em;
   color: var(--ink);
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
+  /* layout: Metric atom composes <Row align="baseline"> internally */
 }
 .metric.lg { font-size: var(--t-4xl); }
 .metric.xl { font-size: var(--t-5xl); }
@@ -135,7 +120,7 @@
    TAG — inline mono label with dot
    ════════════════════════════════════════════ */
 .tag {
-  gap: 6px;
+  gap: var(--s-2);
   font-size: var(--t-sm);
   color: var(--ink-muted);
 }
@@ -277,50 +262,33 @@
 }
 
 /* ════════════════════════════════════════════
-   BADGE
+   NOTIFICATION BADGE — small count/status indicator
    ════════════════════════════════════════════ */
-.badge {
+.notif-badge {
   display: inline-block;
-  padding: 3px var(--s-2);
+  padding: var(--s-1) var(--s-2);
   border-radius: var(--r-xs);
   font-size: var(--t-xs);
   font-weight: 700;
 }
-.badge.green {
-  background: color-mix(in srgb, var(--ok) 18%, transparent);
-  color: color-mix(in srgb, var(--ok) 50%, #000);
+.notif-badge.ok {
+  background: color-mix(in srgb, var(--ok)          18%, transparent);
+  color:      color-mix(in srgb, var(--ok)          50%, var(--ink));
 }
-.badge.amber {
-  background: color-mix(in srgb, var(--warn) 18%, transparent);
-  color: color-mix(in srgb, var(--warn) 60%, #000);
+.notif-badge.warn {
+  background: color-mix(in srgb, var(--warn)        18%, transparent);
+  color:      color-mix(in srgb, var(--warn)        60%, var(--ink));
 }
-.badge.blue {
-  background: color-mix(in srgb, var(--c-recovery) 18%, transparent);
-  color: color-mix(in srgb, var(--c-recovery) 60%, #000);
+.notif-badge.accent {
+  background: color-mix(in srgb, var(--c-recovery)  18%, transparent);
+  color:      color-mix(in srgb, var(--c-recovery)  60%, var(--ink));
 }
 
-/* ════════════════════════════════════════════
-   RARITY
-   ════════════════════════════════════════════ */
-.rarity-dot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: var(--r-pill);
-  flex-shrink: 0;
-}
-.rarity-dot.common {
-  background: var(--color-common);
-}
-.rarity-dot.rare {
-  background: var(--color-rare);
-}
-.rarity-dot.epic {
-  background: var(--color-epic);
-}
-.rarity-dot.legendary {
-  background: var(--color-legendary);
-}
+/* rarity variants merged into .dot */
+.dot.common    { opacity: 1; background: var(--color-common); }
+.dot.rare      { opacity: 1; background: var(--color-rare); }
+.dot.epic      { opacity: 1; background: var(--color-epic); }
+.dot.legendary { opacity: 1; background: var(--color-legendary); }
 
 .color-common {
   color: var(--color-common);
@@ -336,49 +304,7 @@
 }
 
 
-/* ════════════════════════════════════════════
-   SKELETON
-   ════════════════════════════════════════════ */
-.skeleton,
-.skeleton:hover {
-  border: none;
-  color: transparent;
-  background: linear-gradient(
-    90deg,
-    var(--surface-3) 0%,
-    var(--surface-2) 35%,
-    var(--surface-2) 65%,
-    var(--surface-3) 100%
-  );
-  background-size: 200% 100%;
-  border-radius: var(--r-lg);
-  line-height: 1;
-  width: fit-content;
-  letter-spacing: -1px;
-  animation: skeleton-load 2s infinite ease-in-out;
-}
-@keyframes skeleton-load {
-  0% {
-    background-position-x: 100%;
-  }
-  100% {
-    background-position-x: -100%;
-  }
-}
-.skeleton.full {
-  width: 100%;
-}
-.skeleton.media {
-  border-radius: var(--r-sm);
-  min-height: 100px;
-}
-button.skeleton {
-  height: var(--s-6);
-}
-.skeleton.avatar {
-  width: var(--size);
-  height: var(--size);
-}
+/* skeleton loading — use .sk from utilities.css */
 
 /* ════════════════════════════════════════════
    TABS
@@ -524,7 +450,7 @@ button.skeleton {
 
 /* ─── Carousel ── */
 .carousel .track { gap: 0; transition: transform .28s var(--ease); }
-.carousel .track > * { min-width: 100%; flex-shrink: 0; height: 200px; position: relative; overflow: hidden;}
+.carousel .track > * { min-width: 100%; flex-shrink: 0; height: var(--media-md); position: relative; overflow: hidden;}
 .carousel .track img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .carousel button { background: rgba(0,0,0,.48); color: #fff; }
 .carousel button:hover { background: rgba(0,0,0,.7); }
@@ -536,7 +462,7 @@ button.skeleton {
   color: #fff;
   font-size: var(--t-xs);
   font-weight: 500;
-  z-index: 2;
+  z-index: var(--z-content);
 }
 
 /* ════════════════════════════════════════════
@@ -638,8 +564,8 @@ button.skeleton {
 }
 .photo-del {
   position: absolute;
-  top: 2px;
-  right: 2px;
+  top: var(--s-1);
+  right: var(--s-1);
   background: var(--surface-1);
 }
 

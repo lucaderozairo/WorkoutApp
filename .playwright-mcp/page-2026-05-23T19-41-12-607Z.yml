@@ -1,0 +1,128 @@
+- generic [active] [ref=e4]:
+  - generic [ref=e6]:
+    - complementary [ref=e1902]:
+      - navigation [ref=e1903]:
+        - link "Home" [ref=e1904] [cursor=pointer]:
+          - /url: "#/home"
+          - img [ref=e1906]
+          - generic [ref=e1909]: Home
+        - link "Workout" [ref=e1910] [cursor=pointer]:
+          - /url: "#/sessions"
+          - img [ref=e1912]
+          - generic [ref=e1916]: Workout
+        - link "Social" [ref=e1917] [cursor=pointer]:
+          - /url: "#/social"
+          - img [ref=e1919]
+          - generic [ref=e1923]: Social
+        - link "Messages" [ref=e1924] [cursor=pointer]:
+          - /url: "#/messages"
+          - img [ref=e1926]
+          - generic [ref=e1929]: Messages
+        - link "Profile" [ref=e1930] [cursor=pointer]:
+          - /url: "#/profile"
+          - img [ref=e1932]
+          - generic [ref=e1937]: Profile
+      - separator [ref=e1938]
+      - link "Settings" [ref=e1940] [cursor=pointer]:
+        - /url: "#/settings"
+        - img [ref=e1942]
+        - generic [ref=e1946]: Settings
+    - main [ref=e43]:
+      - generic [ref=e4534]:
+        - heading "Weather" [level=2] [ref=e4535]
+        - generic [ref=e4536]:
+          - generic [ref=e4537]:
+            - generic [ref=e4538]: Kingston, UK
+            - generic [ref=e4539]: 15m ago
+          - generic [ref=e4540]:
+            - generic [ref=e4541]:
+              - heading "⛅" [level=1] [ref=e4542]
+              - generic [ref=e4543]: Partly Cloudy
+            - generic [ref=e4544]:
+              - paragraph [ref=e4545]: 18°
+              - generic [ref=e4546]: Feels like 16° · Humidity 62%
+          - separator [ref=e4547]
+          - generic [ref=e4548]:
+            - generic [ref=e4549]:
+              - generic [ref=e4550]: 4pm
+              - generic [ref=e4551]: ⛅
+              - generic [ref=e4552]: 19°
+              - generic [ref=e4553]: 10%
+            - generic [ref=e4554]:
+              - generic [ref=e4555]: 5pm
+              - generic [ref=e4556]: 🌤
+              - generic [ref=e4557]: 18°
+              - generic [ref=e4558]: 15%
+            - generic [ref=e4559]:
+              - generic [ref=e4560]: 6pm
+              - generic [ref=e4561]: ☁️
+              - generic [ref=e4562]: 17°
+              - generic [ref=e4563]: 35%
+            - generic [ref=e4564]:
+              - generic [ref=e4565]: 7pm
+              - generic [ref=e4566]: 🌦
+              - generic [ref=e4567]: 16°
+              - generic [ref=e4568]: 60%
+            - generic [ref=e4569]:
+              - generic [ref=e4570]: 8pm
+              - generic [ref=e4571]: 🌧
+              - generic [ref=e4572]: 15°
+              - generic [ref=e4573]: 75%
+          - separator [ref=e4574]
+          - generic [ref=e4575]:
+            - generic [ref=e4576]:
+              - generic [ref=e4577]: UV Index
+              - paragraph [ref=e4578]: "4"
+              - generic [ref=e4579]: Moderate
+            - generic [ref=e4580]:
+              - generic [ref=e4581]: Wind
+              - paragraph [ref=e4582]: 14 km/h
+              - generic [ref=e4583]: SW
+            - generic [ref=e4584]:
+              - generic [ref=e4585]: Rain chance
+              - paragraph [ref=e4586]: 20%
+              - generic [ref=e4587]: Low
+            - generic [ref=e4588]:
+              - generic [ref=e4589]: Visibility
+              - paragraph [ref=e4590]: 12 km
+              - generic [ref=e4591]: Clear
+          - separator [ref=e4592]
+          - generic [ref=e4593]:
+            - generic [ref=e4594]:
+              - generic [ref=e4595]: Run conditions
+              - generic [ref=e4596]: Good — mild temp, low wind
+            - generic [ref=e4597]: Go
+        - generic [ref=e4598]:
+          - generic [ref=e4599]:
+            - button "7-Day Forecast" [ref=e4600] [cursor=pointer]
+            - button "Rain" [ref=e4601] [cursor=pointer]
+            - button "Air Quality" [ref=e4602] [cursor=pointer]
+          - generic [ref=e4603]:
+            - paragraph [ref=e4604]: Temperature (°C) & Rain chance (%)
+            - application [ref=e4607]:
+              - generic [ref=e4622]:
+                - generic [ref=e4623]:
+                  - generic [ref=e4625]: Mon
+                  - generic [ref=e4627]: Tue
+                  - generic [ref=e4629]: Wed
+                  - generic [ref=e4631]: Thu
+                  - generic [ref=e4633]: Fri
+                  - generic [ref=e4635]: Sat
+                  - generic [ref=e4637]: Sun
+                - generic [ref=e4638]:
+                  - generic [ref=e4640]: "0"
+                  - generic [ref=e4642]: "7"
+                  - generic [ref=e4644]: "14"
+                  - generic [ref=e4646]: "21"
+                  - generic [ref=e4648]: "25"
+                - generic [ref=e4649]:
+                  - generic [ref=e4651]: 0%
+                  - generic [ref=e4653]: 25%
+                  - generic [ref=e4655]: 50%
+                  - generic [ref=e4657]: 75%
+                  - generic [ref=e4659]: 100%
+            - generic [ref=e4660]:
+              - generic [ref=e4661]: High
+              - generic [ref=e4662]: Low
+              - generic [ref=e4663]: — Rain
+  - generic [ref=e1025]: "75"

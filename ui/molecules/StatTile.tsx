@@ -8,7 +8,7 @@ interface StatTileProps {
 }
 
 export function StatTile({ value, unit, label, className }: StatTileProps) {
-  const classes = ['surface', 'tight', 'flat', 'compact', 'column', 'grow', 'align-center', className]
+  const classes = ['surface', 'tight', 'flat', 'compact', 'column', 'grow', 'align-center', 'q-tile', className]
     .filter(Boolean).join(' ');
   return (
     <div className={classes}>
