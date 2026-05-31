@@ -1,5 +1,4 @@
-/* styling/wizard.css */
-
+/* Leaflet marker — external lib inject, must use !important */
 .leaflet-marker-icon.distance-marker {
   background: none !important;
   border: 0 !important;
@@ -8,25 +7,25 @@
   align-items: center;
   justify-content: flex-end;
   text-align: center;
-}
 
-.distance-marker .distance-marker-label {
-  font-size: var(--t-xs);
-  background-color: var(--accent);
-  color: var(--surface-2);
-  white-space: nowrap;
-  line-height: 1;
-  padding: var(--s-1);
-  border-radius: var(--s-1);
-  box-shadow: var(--box-shadow-sm);
-}
+  .distance-marker-label {
+    font-size: var(--t-xs);
+    background-color: var(--accent);
+    color: var(--surface-2);
+    white-space: nowrap;
+    line-height: 1;
+    padding: var(--s-1);
+    border-radius: var(--s-1);
+    box-shadow: var(--box-shadow-sm);
+  }
 
-.distance-marker .distance-marker-line {
-  width: 2px;
-  height: 10px;
-  background: var(--ink);
-  margin: 0px auto 0;
-  flex-shrink: 0;
+  .distance-marker-line {
+    width: 2px;
+    height: 10px;
+    background: var(--ink);
+    margin: 0 auto;
+    flex-shrink: 0;
+  }
 }
 
 .route-map-canvas {
@@ -44,69 +43,59 @@
   font-size: var(--t-xs);
   font-weight: 700;
   flex-shrink: 0;
-}
-.waypoint-badge.start  { background: var(--accent); color: var(--accent-ink); }
-.waypoint-badge.finish { background: var(--ink); color: var(--surface-1); }
-.waypoint-badge.mid    { background: var(--surface-2); color: var(--ink-muted); border: 1px solid var(--line); }
 
-/* ── Waypoint markers ── */
+  &.start  { background: var(--accent); color: var(--accent-ink); }
+  &.finish { background: var(--ink); color: var(--surface-1); }
+  &.mid    { background: var(--surface-2); color: var(--ink-muted); border: 1px solid var(--line); }
+}
+
+/* ── Route anchors ── */
 .route-anchor {
   background: transparent;
+
+  :is(&, & .dot).dot {
+    opacity: 1;
+    width: 14px;
+    height: 14px;
+    border-radius: var(--r-pill);
+    background: var(--accent);
+    border: 2px solid white;
+    box-shadow: var(--shadow-1);
+  }
+
+  &.start .dot { background: #22c55e; }
+  &.end   .dot { background: #ef4444; }
 }
 
-.route-anchor .dot,
-.route-anchor.dot {
-  opacity: 1;
-  width: 14px;
-  height: 14px;
-  border-radius: var(--r-pill);
-  background: var(--accent);
-  border: 2px solid #ffffff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
-}
-
-.route-anchor.start .dot {
-  background: #22c55e;
-}
-
-.route-anchor.end .dot {
-  background: #ef4444;
-}
-
-/* ── Leaflet map controls themed to design system ── */
-/* isolation: isolate keeps Leaflet's internal z-indexes scoped to the map container */
-.map-root {
-  isolation: isolate;
-}
+/* ── Leaflet map controls — isolation: isolate keeps Leaflet's z-indexes
+   scoped to the map container so they don't compete with our token scale ── */
+.map-root { isolation: isolate; }
 
 .leaflet-bar {
   border: 1px solid var(--line-strong) !important;
   border-radius: var(--r-sm) !important;
   box-shadow: var(--box-shadow-sm) !important;
   overflow: hidden;
+
+  a {
+    background: var(--surface-1) !important;
+    color: var(--ink) !important;
+    border-bottom-color: var(--line) !important;
+    font-family: var(--font-ui) !important;
+    width: 28px !important;
+    height: 28px !important;
+    line-height: 28px !important;
+    &:hover { background: var(--surface-2) !important; }
+    &:last-child { border-bottom: none !important; }
+  }
 }
-.leaflet-bar a {
-  background: var(--surface-1) !important;
-  color: var(--ink) !important;
-  border-bottom-color: var(--line) !important;
-  font-family: var(--font-ui) !important;
-  width: 28px !important;
-  height: 28px !important;
-  line-height: 28px !important;
-}
-.leaflet-bar a:hover {
-  background: var(--surface-2) !important;
-}
-.leaflet-bar a:last-child {
-  border-bottom: none !important;
-}
+
 .leaflet-control-attribution {
   background: var(--surface-1) !important;
   color: var(--ink-faint) !important;
   border: 1px solid var(--line) !important;
-  font-size: 10px !important;
-  padding: 2px 6px !important;
-}
-.leaflet-control-attribution a {
-  color: var(--accent) !important;
+  font-size: var(--t-xs) !important;
+  padding: var(--s-1) var(--s-2) !important;
+
+  a { color: var(--accent) !important; }
 }

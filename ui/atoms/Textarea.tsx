@@ -1,4 +1,5 @@
 import type { TextareaHTMLAttributes } from 'react';
+import { Column } from '../layout/Column';
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
@@ -20,7 +21,7 @@ export function Textarea({ label, hint, error, rows = 3, autoGrow = false, id, c
   }
 
   return (
-    <div className={['field', className].filter(Boolean).join(' ')}>
+    <Column gap={1} className={className}>
       {label && <label htmlFor={textareaId}>{label}</label>}
       <textarea
         id={textareaId}
@@ -34,6 +35,6 @@ export function Textarea({ label, hint, error, rows = 3, autoGrow = false, id, c
       ) : hint ? (
         <span className="caption muted">{hint}</span>
       ) : null}
-    </div>
+    </Column>
   );
 }

@@ -4,22 +4,8 @@ form {
   font-size: var(--t-md);
 }
 
-input,
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="number"],
-input[type="search"],
-input[type="url"],
-input[type="tel"],
-input[type="date"],
-input[type="time"],
-input[type="datetime-local"],
-input[type="month"],
-input[type="week"],
-textarea,
-select,
-.input {
+:is(input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="file"]):not([type="range"]),
+    textarea, select, .input) {
   background: var(--surface-1);
   color: var(--ink);
   padding: var(--s-1) var(--s-3);
@@ -32,78 +18,34 @@ select,
   width: 100%;
   transition: border-color 0.12s var(--ease);
   line-height: 1.6;
-}
 
-input:disabled,
-textarea:disabled {
-  border-color: transparent;
-  background-color: transparent;
-}
+  &:disabled { border-color: transparent; background-color: transparent; }
+  &:hover    { border-color: var(--ink-faint); }
 
-input.ghost {
-  background: transparent;
-  border-color: transparent;
-  padding: var(--s-1);
-}
+  &:focus-visible {
+    border-color: var(--accent);
+    outline: 2px solid var(--accent);
+    outline-offset: 0;
+  }
 
-input:hover,
-textarea:hover,
-select:hover,
-.input:hover {
-  border-color: var(--ink-faint);
-}
+  &.ghost { background: transparent; border-color: transparent; padding: var(--s-1); }
+  &.sm    { padding: 6px var(--s-2); font-size: var(--t-sm); min-height: unset; }
+  &.num   { text-align: center; }
 
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible,
-.input:focus-visible {
-  border-color: var(--accent);
-  outline: 2px solid var(--accent);
-  outline-offset: 0;
-}
+  &.error { border-color: var(--bad); }
 
-/* ── Input variants ── */
-.input--sm,
-input.sm {
-  padding: 6px var(--s-2);
-  font-size: var(--t-sm);
-  min-height: unset;
-}
-
-.input--num,
-input.num {
-  text-align: center;
-}
-
-input[type="number"] {
-  flex: 1;
-}
-input[type="range"] {
-  padding: 0;
-}
-
-/* ── Error text ── */
-.error-text {
-  font-size: var(--t-xs);
-  color: var(--bad);
-}
-
-/* ── Narrow viewport overrides ── */
-@media (max-width: 360px) {
-  input,
-  input[type="text"],
-  input[type="number"],
-  input[type="search"],
-  input[type="date"],
-  input[type="time"],
-  input[type="datetime-local"],
-  textarea,
-  select,
-  .input {
+  @media (max-width: 360px) {
     min-width: 0;
     flex: 1 1 40px;
   }
-  select {
-    flex: 0 1 auto;
-  }
+}
+
+input[type="number"] { flex: 1; }
+input[type="range"]  { padding: 0; }
+
+select { @media (max-width: 360px) { flex: 0 1 auto; } }
+
+.error-text {
+  font-size: var(--t-xs);
+  color: var(--bad);
 }
