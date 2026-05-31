@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import { useState, useId } from 'react';
 import { Grid, Row, Column } from '@ui/layout';
 import { useNavigate } from 'react-router-dom';
-import { useExpandable } from '@ui/interactions/useExpandable';
 import type { ActivityHistoryItem } from '@features/training_log';
 import type { CardioSession, CardioSport } from '@features/cardio';
-import { EmptyState, Tabs, StatTile, DetailRow } from '@ui/molecules';
-import { Button, Badge } from '@ui/atoms';
+import { EmptyState, Tabs, StatTile, DetailRow, Alert } from '@ui/molecules';
+import { Button, Badge, Surface, Text, SegmentBar } from '@ui/atoms';
 import { SparklineArea } from '@ui/patterns/charts/domain-charts';
 import { ShareModal } from '@ui/components/modals/ShareModal';
 import { useProgressScreen } from './useProgressScreen';
@@ -38,19 +37,6 @@ const SPORT_META: Record<CardioSport, { label: string; Icon: IconType; color: st
   hiit:      { label: 'HIIT',       Icon: PiFlame,             color: 'strength' },
 };
 
-const SPORT_SEGMENTS = 14;
-
-function SegBar({ value, max, variant }: { value: number; max: number; variant?: string }) {
-  const filled = Math.round((value / max) * SPORT_SEGMENTS);
-  return (
-    <div className={`seg-bar${variant ? ` ${variant}` : ''}`}>
-      {Array.from({ length: SPORT_SEGMENTS }, (_, i) => (
-        <div key={i} className={i < filled ? 'seg filled' : 'seg'} />
-      ))}
-    </div>
-  );
-}
-
 function formatDuration(seconds: number): string {
   const m = Math.floor(seconds / 60);
   if (m < 60) return `${m} min`;
@@ -66,20 +52,25 @@ function categoryIcon(category: string): string {
   }
 }
 
-function timeAgo(ts: number): string {
-  const diff = Date.now() - ts;
-  const m = Math.floor(diff / 60_000);
-  if (m < 60) return `${m}m ago`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ago`;
-  return `${Math.floor(h / 24)}d ago`;
+type AlertVariant = 'info' | 'success' | 'warn' | 'error';
+
+function severityVariant(severity: string): AlertVariant {
+  switch (severity) {
+    case 'error':
+    case 'critical': return 'error';
+    case 'warning':
+    case 'warn': return 'warn';
+    case 'success':
+    case 'positive': return 'success';
+    default: return 'info';
+  }
 }
 
 /* ── Session Card (expandable) ── */
 
 function SessionCard({ session }: { session: ActivityHistoryItem }) {
   const navigate = useNavigate();
-  const { expanded, toggle } = useExpandable();
+  const id = useId();
   const [shareData, setShareData] = useState<{
     title: string; date: string; summary: string;
     details: Array<{ label: string; value: string }>;
@@ -89,21 +80,24 @@ function SessionCard({ session }: { session: ActivityHistoryItem }) {
   const accent = session.category === 'strength' ? 'strength' : 'run';
 
   return (
-    <section className={`surface tight${session.hasPR ? ' accent' : ''}${expanded ? ' expanded' : ''}`} onClick={!expanded ? toggle : undefined}>
-      <header className="row space-between">
-        <div>
-          <time className="caption">{new Date(session.startedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</time>
-          <p>{session.name}</p>
+    <Surface as="section" className={`tight${session.hasPR ? ' accent' : ''}`}>
+      <input type="checkbox" id={id} className="exp-toggle" />
+      <label htmlFor={id} className="exp-trigger column interactive">
+        <Row justify="between">
+          <Column gap={0}>
+            <Text as="time" size="caption">{new Date(session.startedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</Text>
+            <Text as="p">{session.name}</Text>
+            <Row>
+              <Badge variant={accent === 'run' ? 'run' : undefined}>{icon} {session.exerciseCount} exercises</Badge>
+              {session.hasPR && <Badge active dot>🏆 PR</Badge>}
+            </Row>
+          </Column>
           <Row>
-            <Badge variant={accent === 'run' ? 'run' : undefined}>{icon} {session.exerciseCount} exercises</Badge>
-            {session.hasPR && <Badge active dot>🏆 PR</Badge>}
+            <SegmentBar value={session.totalSets} max={Math.max(session.totalSets, 10)} />
+            <Text className="chevron">›</Text>
           </Row>
-        </div>
-        <div className="row">
-          <SegBar value={session.totalSets} max={Math.max(session.totalSets, 10)} />
-          <span>›</span>
-        </div>
-      </header>
+        </Row>
+      </label>
       <Column className="expandable">
         <DetailRow label="Duration" value={formatDuration(session.durationSeconds)} />
         <DetailRow label="Total sets" value={session.totalSets} />
@@ -129,7 +123,7 @@ function SessionCard({ session }: { session: ActivityHistoryItem }) {
         </Row>
       </Column>
       {shareData && <ShareModal type="session" data={shareData} onClose={() => setShareData(null)} />}
-    </section>
+    </Surface>
   );
 }
 
@@ -147,7 +141,7 @@ function sportColor(sport: string): string {
 
 function CardioSessionCard({ session }: { session: CardioSession }) {
   const navigate = useNavigate();
-  const { expanded, toggle } = useExpandable();
+  const id = useId();
   const color = sportColor(session.sport);
   const distKm = session.distanceMeters / 1000;
   const duration = formatDuration(session.durationSeconds);
@@ -157,24 +151,27 @@ function CardioSessionCard({ session }: { session: CardioSession }) {
   const elevationGain = session.gpsTrack?.elevationGain;
 
   return (
-    <section className={`surface tight${expanded ? ' expanded' : ''}`} onClick={!expanded ? toggle : undefined}>
-      <header className="row space-between">
-        <div>
-          <time className="caption">{new Date(session.startedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</time>
-          <p>{session.sport.charAt(0).toUpperCase() + session.sport.slice(1)}{session.notes ? ` — ${session.notes}` : ''}</p>
-        </div>
-        <div>
-          <p className={`value ${color}`}>{distKm.toFixed(1)}km</p>
-          <time className="caption">{duration}</time>
-        </div>
-      </header>
-      <Row>
-        {pace > 0 && (
-          <Badge variant={color === 'strength' ? undefined : (color as 'run' | 'cycle' | 'swim' | 'rowing')}>{Math.floor(pace / 60)}:{String(Math.floor(pace % 60)).padStart(2, '0')}/km</Badge>
-        )}
-        {heartRate != null && <Badge variant="lift" dot>♥ {Math.round(heartRate)}bpm</Badge>}
-        {elevationGain != null && elevationGain > 0 && <Badge dot>↑ {Math.round(elevationGain)}m</Badge>}
-      </Row>
+    <Surface as="section" className="tight">
+      <input type="checkbox" id={id} className="exp-toggle" />
+      <label htmlFor={id} className="exp-trigger column interactive">
+        <Row justify="between">
+          <Column gap={0}>
+            <Text as="time" size="caption">{new Date(session.startedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</Text>
+            <Text as="p">{session.sport.charAt(0).toUpperCase() + session.sport.slice(1)}{session.notes ? ` — ${session.notes}` : ''}</Text>
+          </Column>
+          <Column gap={0}>
+            <Text as="p" className={color}>{distKm.toFixed(1)}km</Text>
+            <Text as="time" size="caption">{duration}</Text>
+          </Column>
+        </Row>
+        <Row>
+          {pace > 0 && (
+            <Badge variant={color === 'strength' ? undefined : (color as 'run' | 'cycle' | 'swim' | 'rowing')}>{Math.floor(pace / 60)}:{String(Math.floor(pace % 60)).padStart(2, '0')}/km</Badge>
+          )}
+          {heartRate != null && <Badge variant="lift" dot>♥ {Math.round(heartRate)}bpm</Badge>}
+          {elevationGain != null && elevationGain > 0 && <Badge dot>↑ {Math.round(elevationGain)}m</Badge>}
+        </Row>
+      </label>
       <Column className="expandable">
         <DetailRow label="Distance" value={`${distKm.toFixed(2)} km`} />
         <DetailRow label="Duration" value={duration} />
@@ -186,7 +183,7 @@ function CardioSessionCard({ session }: { session: CardioSession }) {
           navigate(`/sessions/${session.id}`);
         }}>📋 Details</Button>
       </Column>
-    </section>
+    </Surface>
   );
 }
 
@@ -227,41 +224,43 @@ export function ProgressScreen({ onOpenSettings }: { onOpenSettings?: () => void
       {/* Lift sessions */}
       {(sportFilter === 'all' || sportFilter === 'strength') && (
         <>
-          <section className="surface tight">
+          <Surface as="section" className="tight">
             <Grid variant="triple">
               <StatTile value={history.length} label="SESSIONS" />
               <StatTile value={totalSets} label="TOTAL SETS" />
               <StatTile value={prCount} label="PRS" />
             </Grid>
-          </section>
+          </Surface>
 
           {Array.from(sessionsByType.entries()).map(([typeName, sessions]) => {
             const values = sessions.slice(-5).map((s) => s.totalSets);
             return (
-              <section key={typeName} className="surface tight">
+              <Surface as="section" key={typeName} className="tight">
                 <Row justify="between">
-                  <strong>{typeName}</strong>
+                  <Text as="strong">{typeName}</Text>
                   <Badge active>{sessions.length}×</Badge>
                 </Row>
                 <SparklineArea data={values.map((y, i) => ({ x: String(i), y }))} height={40} color="var(--accent)" />
-                <p className="caption">Volume trend · last {values.length} session{values.length !== 1 ? "s" : ""}</p>
-              </section>
+                <Text as="p" size="caption">Volume trend · last {values.length} session{values.length !== 1 ? "s" : ""}</Text>
+              </Surface>
             );
           })}
 
           {exerciseList.length > 0 && (
             <>
-              <p className="h3">Exercises</p>
+              <Text as="h3">Exercises</Text>
               {exerciseList.map(({ exerciseName, history: exHistory, plateauDetected }) => {
                 const values = exHistory.slice(-5).map(e => e.oneRepMaxEstimate);
                 const latest = exHistory[exHistory.length - 1];
                 return (
-                  <section
+                  <Surface
+                    as="section"
                     key={exerciseName}
-                    className="surface compact interactive"
+                    className="compact"
+                    interactive
                     onClick={() => navigate(`/exercise/${encodeURIComponent(exerciseName)}`)}>
                     <Row justify="between">
-                      <strong>{exerciseName}</strong>
+                      <Text as="strong">{exerciseName}</Text>
                       <Row>
                         {plateauDetected && <Badge variant="warn" dot>⚠ Plateau</Badge>}
                         <Badge active>{exHistory.length}×</Badge>
@@ -269,10 +268,10 @@ export function ProgressScreen({ onOpenSettings }: { onOpenSettings?: () => void
                     </Row>
                     <SparklineArea data={values.map((y, i) => ({ x: String(i), y }))} height={40} color="var(--accent)" />
                     <Row justify="between">
-                      <p className="caption">Est. 1RM trend · last {values.length} session{values.length !== 1 ? 's' : ''}</p>
-                      {latest && <span className="caption">{latest.maxWeightKg} kg</span>}
+                      <Text as="p" size="caption">Est. 1RM trend · last {values.length} session{values.length !== 1 ? 's' : ''}</Text>
+                      {latest && <Text size="caption">{latest.maxWeightKg} kg</Text>}
                     </Row>
-                  </section>
+                  </Surface>
                 );
               })}
             </>
@@ -304,29 +303,26 @@ export function ProgressScreen({ onOpenSettings }: { onOpenSettings?: () => void
           .map((s) => +(s.distanceMeters / 1000).toFixed(1));
         const totalKm = sessions.reduce((a, s) => a + s.distanceMeters / 1000, 0);
         return (
-          <section key={sport} className="surface tight">
+          <Surface as="section" key={sport} className="tight">
             <Row justify="between">
-              <strong>{meta.label}</strong>
+              <Text as="strong">{meta.label}</Text>
               <Badge>{sessions.length}×</Badge>
             </Row>
             <SparklineArea data={values.map((y, i) => ({ x: String(i), y }))} height={40} color="var(--accent)" />
-            <p className="caption">
+            <Text as="p" size="caption">
               Distance trend · last {values.length} session{values.length !== 1 ? "s" : ""}
-            </p>
+            </Text>
             <DetailRow label="Total distance" value={`${totalKm.toFixed(1)} km`} />
-          </section>
+          </Surface>
         );
       })}
 
       {/* Insights */}
       {insights.length > 0 && (
         <>
-          <p className="h3">Insights</p>
+          <Text as="h3">Insights</Text>
           {insights.slice(0, 3).map(i => (
-            <div key={i.id} className={`insight ${i.severity}`}>
-              <span className="badge">{i.severity}</span>
-              <span className="message">{i.message}</span>
-            </div>
+            <Alert key={i.id} variant={severityVariant(i.severity)} title={i.severity} message={i.message} />
           ))}
         </>
       )}

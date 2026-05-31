@@ -2,7 +2,7 @@
 .exercise-rail {
   position: sticky;
   top: 0;
-  z-index: 40;
+  z-index: var(--z-sticky);
   padding: var(--s-2);
   background: var(--surface-0);
   overflow-x: auto;
@@ -68,6 +68,6 @@
   bottom: calc(var(--nav-height, 56px) + var(--s-1, 12px));
   left: var(--s-2, 12px);
   right: var(--s-2, 12px);
-  z-index: 60;
+  z-index: var(--z-fixed);
   overflow: hidden;
 }

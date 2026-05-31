@@ -1,40 +1,29 @@
-/* Collapsible side panel — generic primitive.
-   Apply to <aside class="side"> or to .app-rail.
-   .side is expanded by default; add .collapsed for icon-rail mode. */
+/* Collapsible side panel — row container; rail + optional content pane */
 .side {
-  flex: 0 0 280px;
-  width: 280px;
-  max-width: 280px;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: row;
   background: var(--surface-1);
   border-right: 1px solid var(--line);
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: var(--line-strong) transparent;
-  transition: flex-basis var(--duration-medium, 0.25s) var(--ease),
-              width var(--duration-medium, 0.25s) var(--ease),
-              max-width var(--duration-medium, 0.25s) var(--ease);
-}
-.side.collapsed {
-  flex: 0 0 auto;
-  width: auto;
-  max-width: fit-content;
   overflow: hidden;
 }
 
-/* Content padding for the side panel */
-.side.column {
-  padding: var(--s-4);
-}
-.side.collapsed.column {
-  padding: var(--s-2);
+/* Scrollable content pane next to the icon rail */
+.side-content {
+  width: 280px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--s-3) var(--s-4);
+  flex-shrink: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
 }
 
 /* ── Sticky sidebar header ── */
 .side-header {
   position: sticky;
   top: 0;
-  z-index: 2;
+  z-index: var(--z-content);
   background: var(--surface-1);
   border-bottom: 1px solid var(--line);
   padding: var(--s-4) var(--s-4) var(--s-3);
@@ -100,18 +89,15 @@
 [data-map-btn] {
   border-radius: 0;
 }
-[data-map-btn]:not(:last-child) {
-  border-bottom: 1px solid var(--line);
-}
 
 /* ── Elevation panel ── */
 [data-elevation-panel] {
   border-top: 1px solid var(--line);
-  min-height: 96px;
+  background: var(--surface-1);
 }
 
 /* ── Desktop elevation chart ── */
-[data-chart] { height: 60px; }
+[data-chart] { height: 100px; }
 [data-chart] svg { width: 100%; height: 100%; }
 
 /* ── Bottom-sheet mini chart ── */
@@ -165,11 +151,34 @@
   height: 100%;
   flex: 0 0 var(--mix-pct, 0%);
 }
-.surface-mix-segment[data-surface="paved"]   { background: var(--c-cardio); }
-.surface-mix-segment[data-surface="gravel"]  { background: var(--warn); }
-.surface-mix-segment[data-surface="trail"]   { background: var(--ok); }
-.surface-mix-segment[data-surface="unpaved"] { background: var(--ink-faint); }
+.surface-mix-segment[data-surface="paved"],
+.surface-mix-swatch[data-surface="paved"]   { background: var(--c-cardio); }
+
+.surface-mix-segment[data-surface="gravel"],
+.surface-mix-swatch[data-surface="gravel"]  { background: var(--warn); }
+
+.surface-mix-segment[data-surface="trail"],
+.surface-mix-swatch[data-surface="trail"]   { background: var(--ok); }
+
+.surface-mix-segment[data-surface="unpaved"],
+.surface-mix-swatch[data-surface="unpaved"] { background: var(--ink-faint); }
+
+.surface-mix-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--r-xs);
+  flex-shrink: 0;
+}
 
 @media (max-width: 780px) {
   .side-rail { display: none; }
+}
+
+/* When main directly contains a full-bleed child (e.g. route planner),
+   remove padding and switch to overflow:hidden so flex height fills correctly.
+   padding-bottom is preserved so the mobile tab bar doesn't obscure the bottom sheet. */
+main:has(> .full-bleed) {
+  padding-top: 0;
+  padding-inline: 0;
+  overflow: hidden;
 }

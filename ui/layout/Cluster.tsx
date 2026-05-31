@@ -1,16 +1,16 @@
-import type { ReactNode } from 'react';
-
-type Gap = 'xs' | 'sm' | 'md' | 'lg';
+import type { ElementType, ReactNode } from 'react';
+import { type Gap } from './_classes';
 
 interface ClusterProps {
   gap?: Gap;
+  as?: ElementType;
   className?: string;
   children: ReactNode;
+  onClick?: () => void;
 }
 
-const GAP_CLASS: Record<Gap, string> = { xs: 'compact', sm: '', md: 'gap-md', lg: 'gap-lg' };
-
-export function Cluster({ gap = 'sm', className, children }: ClusterProps) {
-  const classes = ['cluster', gap ? GAP_CLASS[gap] : '', className].filter(Boolean).join(' ');
-  return <div className={classes}>{children}</div>;
+export function Cluster({ gap, as: Tag = 'div', className, children, onClick }: ClusterProps) {
+  const gapClass = gap !== undefined && gap !== 2 ? `gap-${gap}` : '';
+  const classes = ['cluster', gapClass, className].filter(Boolean).join(' ');
+  return <Tag className={classes} onClick={onClick}>{children}</Tag>;
 }

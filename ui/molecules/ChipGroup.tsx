@@ -14,7 +14,7 @@ export function ChipGroup<T extends string | number>({
   options, isActive, onToggle, renderLabel, className,
 }: ChipGroupProps<T>) {
   return (
-    <Cluster gap="xs" className={className}>
+    <Cluster gap={1} className={className}>
       {options.map(opt => (
         <Chip key={String(opt)} active={isActive(opt)} onClick={() => onToggle(opt)}>
           {renderLabel ? renderLabel(opt) : opt}

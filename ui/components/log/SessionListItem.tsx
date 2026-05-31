@@ -5,6 +5,8 @@ import type { CardioSession } from "@features/cardio";
 import { EllipsisVertical } from "lucide-react";
 import { ACTIVITY_ICONS, getActivityLabel } from "@ui/icons/activityIcons";
 import { Carousel } from "../shared";
+import { Button } from "@ui/atoms";
+import { Layer, Layered } from "@ui/layout";
 
 function formatDuration(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -51,27 +53,31 @@ function ActionMenu({ onDelete }: ActionMenuProps) {
   }, [open]);
 
   return (
-    <div className="relative">
-      <button
+    <Layered>
+      <Button
         type="button"
-        className="ghost icon sm"
+        variant="ghost"
+        size="icon"
+        className="sm"
         onClick={e => { e.stopPropagation(); setOpen(o => !o); }}
         aria-label="Session actions"
       >
         <EllipsisVertical size={16} />
-      </button>
+      </Button>
       {open && (
-        <div className="dropdown surface column compact absolute actions">
-          <button
+        <Layer pin="below-right" z="fixed" className="dropdown surface column compact actions">
+          <Button
             type="button"
-            className="ghost w-full negative"
+            variant="ghost"
+            block
+            className="negative"
             onClick={e => { e.stopPropagation(); onDelete(); setOpen(false); }}
           >
             Delete session
-          </button>
-        </div>
+          </Button>
+        </Layer>
       )}
-    </div>
+    </Layered>
   );
 }
 

@@ -1,14 +1,15 @@
 import React from "react";
 import type { ElementType, ReactNode } from "react";
+import { type Gap } from './_classes';
 
-// ── Gap tokens ──────────────────────────────────────────────────────────────
-type GridGap = "none" | "xs" | "sm" | "md" | "lg";
-const GAP: Record<GridGap, string> = {
-  none: "0",
-  xs: "var(--s-1)",
-  sm: "var(--s-2)",
-  md: "var(--s-3)",
-  lg: "var(--s-4)",
+// ── Gap tokens — numeric 0-5 mirrors --s-{n} token scale ────────────────────
+const GAP: Record<Gap, string> = {
+  0: "0",
+  1: "var(--s-1)",
+  2: "var(--s-2)",
+  3: "var(--s-3)",
+  4: "var(--s-4)",
+  5: "var(--s-5)",
 };
 
 // ── Min-width tokens for auto-fit / auto-fill ────────────────────────────────
@@ -90,7 +91,7 @@ interface GridProps {
   autoRows?: GridAutoRows;
   flow?: GridFlow;
   dense?: boolean; // shorthand: grid-auto-flow dense
-  gap?: GridGap;
+  gap?: Gap;
   placeItems?: GridPlace;
   areas?: string; // grid-template-areas value, e.g. '"header header" "sidebar main"'
 

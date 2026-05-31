@@ -431,36 +431,95 @@ button.skeleton {
 /* ════════════════════════════════════════════
    SWITCH
    ════════════════════════════════════════════ */
-.switch input {
-  background-color: var(--surface-2);
-  width: var(--s-8);
+.switch {
+  display: inline-flex;
+  align-items: center;
+  width: 40px;
+  height: 24px;
+  border-radius: var(--r-pill);
+  background: var(--surface-3);
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  transition: background var(--duration-short) var(--ease);
+  flex-shrink: 0;
 }
+.switch[aria-checked="true"] { background: var(--accent); }
+.switch:disabled { opacity: 0.4; cursor: not-allowed; }
+.switch .thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--surface-1);
+  box-shadow: var(--shadow-1);
+  transition: transform var(--duration-short) var(--ease);
+}
+.switch[aria-checked="true"] .thumb { transform: translateX(16px); }
+.switch.sm { width: 32px; height: 20px; }
+.switch.sm .thumb { width: 16px; height: 16px; }
+.switch.sm[aria-checked="true"] .thumb { transform: translateX(12px); }
 
 /* ════════════════════════════════════════════
-   MODAL
+   TOP-LAYER OVERLAYS — native Popover API (no z-index, native light-dismiss).
+   .modal / .action-sheet / .menu-popover render in the browser top layer.
    ════════════════════════════════════════════ */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 200;
+
+/* Shared backdrop + mount/unmount transition for auto popovers */
+.modal::backdrop,
+.action-sheet::backdrop {
   background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
-.modal-overlay .surface {
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
+@media (prefers-reduced-transparency: reduce) {
+  .modal::backdrop,
+  .action-sheet::backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+
+/* Centered/bottom modal sheet (mirrors the old .modal-overlay .surface) */
+.modal {
+  margin: auto auto 0; /* horizontally centered, pinned to bottom */
   width: 100%;
   max-width: 280px;
   max-height: 80vh;
   overflow-y: auto;
   border-radius: var(--r-md) var(--r-md) 0 0;
   padding: var(--s-5);
-  z-index: 201;
+  transition:
+    opacity var(--duration-medium) var(--ease),
+    transform var(--duration-medium) var(--ease),
+    overlay var(--duration-medium) allow-discrete,
+    display var(--duration-medium) allow-discrete;
+}
+.modal:popover-open { opacity: 1; transform: translateY(0); }
+@starting-style {
+  .modal:popover-open { opacity: 0; transform: translateY(12px); }
+}
+.modal.modal-sm { max-width: 240px; }
+.modal.modal-lg { max-width: 360px; }
+
+/* Bottom action sheet (override .bottom-sheet's position: relative) */
+.action-sheet {
+  position: fixed;
+  inset: auto 0 0 0;
+  margin: 0;
+  width: 100%;
+  max-width: none;
+}
+
+/* Anchored menu (Dropdown/Popover) — placed against its invoker via the
+   implicit anchor. Falls back to UA-centered when anchor positioning is
+   unsupported (Firefox); still fully usable. */
+.menu-popover {
+  margin: var(--s-1) 0 0;
+}
+@supports (position-area: bottom) {
+  .menu-popover {
+    position-area: bottom span-inline-start;
+    position-try-fallbacks: flip-block, flip-inline;
+  }
+  .menu-popover.anchor-left  { position-area: bottom span-inline-end; }
+  .menu-popover.anchor-above { position-area: top span-inline-start; }
 }
 
 /* ─── Carousel ── */
@@ -506,10 +565,9 @@ button.skeleton {
 }
 
 /* ════════════════════════════════════════════
-   DROPDOWN — positioned below its trigger
+   DROPDOWN — positioned below its trigger (Popover API top layer — no z-index needed)
    ════════════════════════════════════════════ */
 .dropdown {
-  z-index: 200;
   min-width: 280px;
 }
 
@@ -660,6 +718,38 @@ button.skeleton {
 .bottom-sheet .body {
   gap: var(--s-3);
   padding: 0 var(--s-4) var(--s-4);
+}
+
+/* ════════════════════════════════════════════
+   EXPANDABLE — CSS-only collapse (no JS state).
+   A visually-hidden checkbox (.exp-toggle), toggled by a <label class="exp-trigger">,
+   reveals the .expandable region via :has(). Collapsed by default.
+   ════════════════════════════════════════════ */
+.surface:has(> .exp-toggle) {
+  position: relative; /* contains the absolutely-positioned toggle */
+}
+.exp-toggle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0; /* hidden but focusable for keyboard toggle */
+}
+.expandable {
+  display: none;
+}
+.surface:has(> .exp-toggle:checked) .expandable {
+  display: flex;
+}
+.surface:has(> .exp-toggle:checked) .chevron {
+  transform: rotate(180deg);
+}
+.surface:has(> .exp-toggle:focus-visible) .exp-trigger {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 /* ════════════════════════════════════════════

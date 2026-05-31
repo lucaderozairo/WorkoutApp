@@ -2,7 +2,7 @@
 import { Grid, Row, Column } from '@ui/layout';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MoreVertical } from 'lucide-react';
-import { Button, Input, Textarea } from '@ui/atoms';
+import { Button, Input, Textarea, Surface, Text } from '@ui/atoms';
 import { Dialog, ChipGroup, PhotoGallery } from '@ui/molecules';
 import { useQuery, useCommand } from '@ui/bindings';
 import type { ActivitiesState, ExerciseCategory } from '@features/training_log';
@@ -80,10 +80,10 @@ export function EditSessionScreen() {
   if (!session) {
     return (
       <Column>
-        <Row gap="xs">
+        <Row gap={1}>
           <Button variant="ghost" onClick={() => navigate('/sessions')}>Back</Button>
         </Row>
-        <p className="caption">Session not found.</p>
+        <Text as="p" size="caption">Session not found.</Text>
       </Column>
     );
   }
@@ -199,27 +199,27 @@ export function EditSessionScreen() {
     <UndoToastProvider>
       <Grid>
 
-        <div className="surface secondary column compact">
+        <Surface className="secondary column compact">
           <Row align="center" justify="between">
-            <Row gap="xs">
+            <Row gap={1}>
               <input id="edit-name" className="ghost" type="text" value={name} onChange={e => setName(e.target.value)} />
             </Row>
-            <Row gap="xs" align="center">
+            <Row gap={1} align="center">
               <Button variant="primary" size="sm" onClick={save}>Done</Button>
               <Button variant="secondary" size="sm" onClick={() => setDeleteAlert(true)}>
                 <MoreVertical size={13} />
               </Button>
             </Row>
           </Row>
-          <Grid cols={3} gap="xs">
+          <Grid cols={3} gap={1}>
             <Input label="Start Time" type="time" value={startTime} onChange={e => setStartTime(e.target.value)} />
             <Input label="End Time" type="time" value={endTime} onChange={e => setEndTime(e.target.value)} />
             <Input label="Date" type="date" value={date} onChange={e => setDate(e.target.value)} />
           </Grid>
-        </div>
+        </Surface>
 
         {isCardio ? (
-          <Row gap="xs">
+          <Row gap={1}>
             <Input label="Duration (sec)" type="number" min={0} value={durationSec} onChange={e => setDurationSec(Math.max(0, parseInt(e.target.value) || 0))} className="grow" />
             <Input label="Distance (m)" type="number" min={0} value={distanceM} onChange={e => setDistanceM(Math.max(0, parseInt(e.target.value) || 0))} className="grow" />
           </Row>
@@ -234,13 +234,13 @@ export function EditSessionScreen() {
               onFinish={() => navigate(`/sessions/${strengthSession!.id}`)}
             />
 
-            <Column gap="xs">
-              <span className="caption">Session RPE</span>
+            <Column gap={1}>
+              <Text size="caption">Session RPE</Text>
               <ChipGroup options={RPE_VALUES} isActive={n => rpe === n} onToggle={n => setRpe(rpe === n ? null : n)} />
             </Column>
 
-            <Column gap="xs">
-              <span className="caption">Tags</span>
+            <Column gap={1}>
+              <Text size="caption">Tags</Text>
               <ChipGroup options={SUGGESTED_TAGS} isActive={t => tags.includes(t)} onToggle={toggleTag} />
             </Column>
           </>

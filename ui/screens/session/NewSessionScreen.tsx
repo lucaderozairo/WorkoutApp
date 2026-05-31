@@ -50,7 +50,7 @@ export function NewSessionScreen() {
     <Grid>
       <ScreenHeader title="New Session" back={() => navigate(-1)} />
       {/* Pinned quick-select row */}
-      <Row gap="xs">
+      <Row gap={1}>
         {PINNED_ACTIVITIES.map(sport => (
           <ActivityButton key={sport} sport={sport} selected={selected} onSelect={setSelected} />
         ))}
@@ -66,11 +66,11 @@ export function NewSessionScreen() {
 
       {/* Expandable "More" grid */}
       {showMore && (
-        <Column gap="xs">
+        <Column gap={1}>
           {MORE_CATEGORIES.map(cat => (
-            <Column key={cat.label} gap="xs">
+            <Column key={cat.label} gap={1}>
               <p className="eyebrow">{cat.label}</p>
-              <Cluster gap="xs">
+              <Cluster gap={1}>
                 {cat.sports.map(sport => (
                   <ActivityButton key={sport} sport={sport} selected={selected} onSelect={sport => { setSelected(sport); setShowMore(false); }} />
                 ))}
@@ -82,20 +82,20 @@ export function NewSessionScreen() {
 
       <Input label="Name" type="text" value={name} onChange={e => { setName(e.target.value); setNameTouched(true); }} />
 
-      <Column gap="xs">
+      <Column gap={1}>
         <Input label="Date" type="date" value={date} min={todayDateString()} onChange={e => setDate(e.target.value)} />
         <Input label="Time" type="time" value={startTime} onChange={e => setStartTime(e.target.value)} />
       </Column>
 
       {savedTemplates.length > 0 && (
-        <Column gap="xs">
+        <Column gap={1}>
           <Button variant="ghost" size="sm" onClick={() => setShowTemplates(v => !v)}>
             {pendingTemplate
               ? `Template: ${pendingTemplate.name} ✓`
               : showTemplates ? 'Hide templates' : 'Load template'}
           </Button>
           {showTemplates && (
-            <Column gap="xs">
+            <Column gap={1}>
               {savedTemplates.map(t => (
                 <button
                   key={t.id}
@@ -113,7 +113,7 @@ export function NewSessionScreen() {
       )}
 
       {ROUTE_ACTIVITIES.has(selected) && (
-        <Row gap="xs">
+        <Row gap={1}>
           <Button variant="secondary" className="grow" onClick={handleAddRoute}>
             {routeLabel}
           </Button>

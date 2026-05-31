@@ -35,7 +35,7 @@ export function FinishSessionScreen() {
   if (!displaySession) {
     return (
       <Column>
-        <Row gap="xs">
+        <Row gap={1}>
           <Button variant="ghost" onClick={() => navigate('/sessions')}>Back</Button>
         </Row>
         <p className="caption">Session not found.</p>
@@ -45,7 +45,7 @@ export function FinishSessionScreen() {
 
   return (
     <Grid>
-      <Row justify="between" align="center" gap="xs">
+      <Row justify="between" align="center" gap={1}>
         <Button variant="ghost" onClick={() => navigate(`/sessions/${displaySession.id}`)}>Back</Button>
         <h2>{isAlreadyFinished ? 'Edit session' : 'Finish session'}</h2>
         {!finished && <Button variant="primary" onClick={submit}>{actionLabel}</Button>}
@@ -53,7 +53,7 @@ export function FinishSessionScreen() {
 
       <Input label="Title" type="text" value={name} onChange={e => setName(e.target.value)} />
 
-      <Grid min="xs" gap="xs">
+      <Grid min="xs" gap={1}>
         <Input label="Date" type="date" value={date} onChange={e => setDate(e.target.value)} />
         <Input label="Start time" type="time" value={startTime} onChange={e => setStartTime(e.target.value)} />
         <Input label="End time" type="time" value={endTime} onChange={e => setEndTime(e.target.value)} />
@@ -62,7 +62,7 @@ export function FinishSessionScreen() {
         )}
       </Grid>
 
-      <Column gap="xs">
+      <Column gap={1}>
         <Row justify="between" align="center">
           <span className="caption">Review</span>
           {displaySession.segments.length > 0 && (
@@ -76,12 +76,12 @@ export function FinishSessionScreen() {
 
       {!finished && (
         <>
-          <Column gap="xs">
+          <Column gap={1}>
             <span className="caption">Session RPE</span>
             <ChipGroup options={RPE_VALUES} isActive={n => rpe === n} onToggle={setRpe} />
           </Column>
 
-          <Column gap="xs">
+          <Column gap={1}>
             <span className="caption">Tags</span>
             <ChipGroup options={SUGGESTED_TAGS} isActive={t => tags.includes(t)} onToggle={toggleTag} />
           </Column>
@@ -99,13 +99,13 @@ export function FinishSessionScreen() {
       {finished && (
         <>
           {rpe !== null && (
-            <Row gap="xs" align="center">
+            <Row gap={1} align="center">
               <span className="caption">RPE</span>
               <Badge active>{rpe}</Badge>
             </Row>
           )}
           {tags.length > 0 && (
-            <Row gap="xs" align="center" wrap>
+            <Row gap={1} align="center" wrap>
               <span className="caption">Tags</span>
               {tags.map(t => (
                 <Badge key={t} dot>{t}</Badge>
@@ -113,7 +113,7 @@ export function FinishSessionScreen() {
             </Row>
           )}
 
-          <Row gap="xs" align="center">
+          <Row gap={1} align="center">
             <Button variant="secondary" onClick={handleExportJson}>Export JSON</Button>
             <Button variant="secondary" onClick={handleExportCsv}>Export CSV</Button>
             {canShare && (

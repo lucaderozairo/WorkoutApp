@@ -94,29 +94,37 @@
   --media-lg: 320px;
 }
 
-[data-theme="light"] {
-  --surface-0: #f4f6fb;
-  --surface-1: #ffffff;
-  --surface-2: #ebf0fa;
-  --surface-3: #dde5f5;
+/* ════════════════════════════════════════════
+   THEME — light/dark via light-dark() (single source).
+   Value pairs transcribed from DESIGN.md §2/§9 (Light | Dark).
+   color-scheme is forced per [data-theme] so the manual toggle drives
+   light-dark() resolution; with no attribute set it follows the OS.
+   ════════════════════════════════════════════ */
+:root {
+  color-scheme: light dark;
 
-  --ink: #0e1320;
-  --ink-muted: #4a5270;
-  --ink-faint: #8e96b0;
+  /* Raw surfaces / ink / line / accent — differ per theme */
+  --surface-0: light-dark(#f4f6fb, #080c18);
+  --surface-1: light-dark(#ffffff, #0f1525);
+  --surface-2: light-dark(#ebf0fa, #171e30);
+  --surface-3: light-dark(#dde5f5, #1f2840);
 
-  --line: #dde5f5;
-  --line-strong: #c5d0e8;
+  --sk:    light-dark(#dde5f5, #1a2236);
+  --sk-hi: light-dark(#edf2fb, #22304a);
 
-  --accent: #4f8ef7;
-  --accent-ink: #ffffff;
-  --accent-soft: #c5d9fc;
+  --ink:       light-dark(#0e1320, #e8eefa);
+  --ink-muted: light-dark(#4a5270, #8a93b2);
+  --ink-faint: light-dark(#8e96b0, #4a5270);
 
-  --shadow-1:
-    0 1px 2px rgba(14, 19, 32, 0.06), 0 1px 1px rgba(14, 19, 32, 0.04);
-  --shadow-2:
-    0 8px 32px rgba(14, 19, 32, 0.1), 0 2px 6px rgba(14, 19, 32, 0.06);
+  --line:        light-dark(#dde5f5, #1f2840);
+  --line-strong: light-dark(#c5d0e8, #2a3555);
 
-  /* Backward-compat aliases */
+  --accent:      light-dark(#4f8ef7, #6ba3ff);
+  --accent-ink:  light-dark(#ffffff, #050c20);
+  --accent-soft: light-dark(#c5d9fc, #0f2050);
+
+  /* Theme-agnostic backward-compat aliases (identical in both themes —
+     they reference tokens that are themselves theme-aware) */
   --color-primary: var(--accent);
   --color-accent: var(--accent);
   --color-warning: var(--bad);
@@ -135,119 +143,83 @@
   --color-primary-container: var(--accent-soft);
   --color-on-primary-container: var(--ink);
 
-  /* Sport color aliases → category equivalents */
   --color-lift: var(--c-strength);
   --color-run: var(--c-cardio);
   --color-cycle: var(--c-nutrition);
   --color-swim: var(--c-water);
   --color-rowing: var(--c-recovery);
 
-  /* Sport text aliases */
+  /* Sport/status text aliases — differ per theme (mix toward black in
+     light, toward white / identity in dark) */
   --color-primary-text: var(--accent-ink);
-  --color-run-text: color-mix(in srgb, var(--c-cardio) 55%, #000000);
-  --color-cycle-text: color-mix(in srgb, var(--c-nutrition) 60%, #000000);
-  --color-swim-text: color-mix(in srgb, var(--c-water) 50%, #000000);
-  --color-rowing-text: color-mix(in srgb, var(--c-recovery) 55%, #000000);
-  --color-sleep-awake-text: color-mix(
-    in srgb,
-    var(--color-sleep-awake) 60%,
-    #000000
-  );
-  --color-sleep-light-text: color-mix(
-    in srgb,
-    var(--color-sleep-light) 60%,
-    #000000
-  );
-  --color-sleep-deep-text: var(--color-sleep-deep);
-  --color-sleep-rem-text: color-mix(
-    in srgb,
-    var(--color-sleep-rem) 70%,
-    #000000
-  );
-  --color-success-text: color-mix(in srgb, var(--ok) 40%, #000000);
-  --color-warning-text: color-mix(in srgb, var(--warn) 50%, #000000);
-  --color-info-text: color-mix(in srgb, var(--c-recovery) 55%, #000000);
+  --color-run-text:    light-dark(color-mix(in srgb, var(--c-cardio) 55%, #000), var(--c-cardio));
+  --color-cycle-text:  light-dark(color-mix(in srgb, var(--c-nutrition) 60%, #000), color-mix(in srgb, var(--c-nutrition) 70%, #fff));
+  --color-swim-text:   light-dark(color-mix(in srgb, var(--c-water) 50%, #000), var(--c-water));
+  --color-rowing-text: light-dark(color-mix(in srgb, var(--c-recovery) 55%, #000), color-mix(in srgb, var(--c-recovery) 70%, #fff));
+  --color-sleep-awake-text: light-dark(color-mix(in srgb, var(--color-sleep-awake) 60%, #000), color-mix(in srgb, var(--color-sleep-awake) 70%, #fff));
+  --color-sleep-light-text: light-dark(color-mix(in srgb, var(--color-sleep-light) 60%, #000), color-mix(in srgb, var(--color-sleep-light) 70%, #fff));
+  --color-sleep-deep-text:  light-dark(var(--color-sleep-deep), color-mix(in srgb, var(--color-sleep-deep) 60%, #fff));
+  --color-sleep-rem-text:   light-dark(color-mix(in srgb, var(--color-sleep-rem) 70%, #000), color-mix(in srgb, var(--color-sleep-rem) 65%, #fff));
+  --color-success-text: light-dark(color-mix(in srgb, var(--ok) 40%, #000), var(--ok));
+  --color-warning-text: light-dark(color-mix(in srgb, var(--warn) 50%, #000), color-mix(in srgb, var(--warn) 70%, #fff));
+  --color-info-text:    light-dark(color-mix(in srgb, var(--c-recovery) 55%, #000), color-mix(in srgb, var(--c-recovery) 65%, #fff));
 
+  /* Shadow aliases (geometry differs per theme → real values set below;
+     these alias to them) */
   --box-shadow-sm: var(--shadow-1);
-  --box-shadow-md: 0 4px 12px rgba(14, 19, 32, 0.1);
   --box-shadow-lg: var(--shadow-2);
+
+  /* Default shadows — apply when no [data-theme] is set (OS-driven).
+     The [data-theme] blocks below override per theme (later source order). */
+  --shadow-1: 0 1px 2px rgba(14, 19, 32, 0.06), 0 1px 1px rgba(14, 19, 32, 0.04);
+  --shadow-2: 0 8px 32px rgba(14, 19, 32, 0.1), 0 2px 6px rgba(14, 19, 32, 0.06);
+  --box-shadow-md: 0 4px 12px rgba(14, 19, 32, 0.1);
+}
+
+/* Shadows can't use light-dark() (they're not <color> values — the dark
+   set differs in layer count/opacity), so keep them per-theme. */
+/* ── Z-index scale — 4 levels cover all non-overlay stacking needs.
+   Overlays (Modal, Dropdown, ActionSheet, Tooltip) use the Popover API
+   top layer and need no z-index at all. ── */
+:root {
+  --z-base:     0;
+  --z-content:  1;  /* in-flow raised elements */
+  --z-controls: 2;  /* sticky/fixed nav bars */
+  --z-sticky:   3;  /* sticky section headers */
+  --z-fixed:    4;  /* fixed banners (e.g. RestTimerAlert) */
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --shadow-1: 0 1px 2px rgba(14, 19, 32, 0.06), 0 1px 1px rgba(14, 19, 32, 0.04);
+  --shadow-2: 0 8px 32px rgba(14, 19, 32, 0.1), 0 2px 6px rgba(14, 19, 32, 0.06);
+  --box-shadow-md: 0 4px 12px rgba(14, 19, 32, 0.1);
 }
 
 [data-theme="dark"] {
-  --surface-0: #080c18;
-  --surface-1: #0f1525;
-  --surface-2: #171e30;
-  --surface-3: #1f2840;
-
-  --ink: #e8eefa;
-  --ink-muted: #8a93b2;
-  --ink-faint: #4a5270;
-
-  --line: #1f2840;
-  --line-strong: #2a3555;
-
-  --accent: #6ba3ff;
-  --accent-ink: #050c20;
-  --accent-soft: #0f2050;
-
+  color-scheme: dark;
   --shadow-1: 0 1px 2px rgba(0, 2, 18, 0.6);
   --shadow-2: 0 8px 32px rgba(0, 2, 18, 0.85);
-
-  /* Backward-compat aliases */
-  --color-primary: var(--accent);
-  --color-accent: var(--accent);
-  --color-warning: var(--bad);
-  --color-success: var(--ok);
-  --color-info: var(--c-recovery);
-  --color-surface: var(--surface-2);
-  --color-background: var(--surface-0);
-  --color-text-primary: var(--ink);
-  --color-text-secondary: var(--ink-muted);
-  --color-on-primary: var(--accent-ink);
-  --color-on-surface: var(--ink);
-  --color-on-background: var(--ink);
-  --color-outline: var(--line-strong);
-  --color-border: var(--line);
-  --color-skeleton: var(--surface-3);
-  --color-primary-container: var(--accent-soft);
-  --color-on-primary-container: var(--ink);
-
-  --color-lift: var(--c-strength);
-  --color-run: var(--c-cardio);
-  --color-cycle: var(--c-nutrition);
-  --color-swim: var(--c-water);
-  --color-rowing: var(--c-recovery);
-
-  --color-primary-text: var(--accent-ink);
-  --color-run-text: var(--c-cardio);
-  --color-cycle-text: color-mix(in srgb, var(--c-nutrition) 70%, #ffffff);
-  --color-swim-text: var(--c-water);
-  --color-rowing-text: color-mix(in srgb, var(--c-recovery) 70%, #ffffff);
-  --color-sleep-awake-text: color-mix(
-    in srgb,
-    var(--color-sleep-awake) 70%,
-    #ffffff
-  );
-  --color-sleep-light-text: color-mix(
-    in srgb,
-    var(--color-sleep-light) 70%,
-    #ffffff
-  );
-  --color-sleep-deep-text: color-mix(
-    in srgb,
-    var(--color-sleep-deep) 60%,
-    #ffffff
-  );
-  --color-sleep-rem-text: color-mix(
-    in srgb,
-    var(--color-sleep-rem) 65%,
-    #ffffff
-  );
-  --color-success-text: var(--ok);
-  --color-warning-text: color-mix(in srgb, var(--warn) 70%, #ffffff);
-  --color-info-text: color-mix(in srgb, var(--c-recovery) 65%, #ffffff);
-
-  --box-shadow-sm: var(--shadow-1);
   --box-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
-  --box-shadow-lg: var(--shadow-2);
+}
+
+/* ════════════════════════════════════════════
+   ACCESSIBILITY — contrast & motion preference axes (orthogonal to theme).
+   High-contrast auto-applies from the OS setting and can be forced via
+   [data-contrast="high"] (Settings toggle). Values stay light-dark()-aware
+   so HC keeps a light AND dark variant.
+   ════════════════════════════════════════════ */
+@media (prefers-contrast: more) {
+  :root {
+    --line:        light-dark(#9aa6c4, #44537d);
+    --line-strong: light-dark(#7184b0, #8a9bd0);
+    --ink-muted:   light-dark(#2c3450, #c2ccea);
+    --ink-faint:   light-dark(#4a5270, #8a93b2);
+  }
+}
+[data-contrast="high"] {
+  --line:        light-dark(#9aa6c4, #44537d);
+  --line-strong: light-dark(#7184b0, #8a9bd0);
+  --ink-muted:   light-dark(#2c3450, #c2ccea);
+  --ink-faint:   light-dark(#4a5270, #8a93b2);
 }

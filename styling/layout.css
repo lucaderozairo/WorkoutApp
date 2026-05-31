@@ -1,135 +1,219 @@
-.row {
-  display: flex;
-  flex-direction: row;
-  gap: var(--s-3);
+/* ── CSS custom property registrations (non-inheriting) ── */
+@property --grid-cols      { syntax: '*'; inherits: false; initial-value: 1fr; }
+@property --grid-rows      { syntax: '*'; inherits: false; initial-value: none; }
+@property --grid-auto-rows { syntax: '*'; inherits: false; initial-value: auto; }
+@property --grid-flow      { syntax: '*'; inherits: false; initial-value: row; }
+@property --grid-gap       { syntax: '*'; inherits: false; initial-value: 0px; }
+@property --grid-place     { syntax: '*'; inherits: false; initial-value: normal; }
+@property --grid-content   { syntax: '*'; inherits: false; initial-value: normal; }
+@property --grid-areas     { syntax: '*'; inherits: false; initial-value: none; }
+@property --col-span       { syntax: '*'; inherits: false; initial-value: auto; }
+@property --row-span       { syntax: '*'; inherits: false; initial-value: auto; }
+@property --place-self     { syntax: '*'; inherits: false; initial-value: auto; }
+@property --area           { syntax: '*'; inherits: false; initial-value: auto; }
+@property --layer-z        { syntax: '<integer>'; inherits: false; initial-value: 1; }
+
+/* ── Grid container — all config via CSS variables set by Grid.tsx ── */
+.grid {
+  display: grid;
+  grid-template-columns: var(--grid-cols, 1fr);
+  grid-template-rows:    var(--grid-rows, none);
+  grid-template-areas:   var(--grid-areas, none);
+  grid-auto-rows:        var(--grid-auto-rows, auto);
+  grid-auto-flow:        var(--grid-flow, row);
+  gap:                   var(--grid-gap, var(--s-3));
+  place-items:           var(--grid-place, normal);
+  place-content:         var(--grid-content, normal);
 }
 
-/* .stack is the canonical column container; .column is an alias */
-.stack,
-.column {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-4);
+/* ── Grid item — span + placement for children of .grid ── */
+.grid-item {
+  grid-area:   var(--area, auto);
+  grid-column: var(--col-span, auto);
+  grid-row:    var(--row-span, auto);
+  place-self:  var(--place-self, auto);
+  min-width:   0;
 }
 
-/* .cluster: wrapping row, useful for tag groups and filter bars */
+/* ── Flex layout primitives ── */
+.layered {
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  min-height: 0;
+}
+
+.layer {
+  position: absolute;
+  z-index: var(--layer-z, 1);
+  pointer-events: none;
+}
+
+.layer > * {
+  pointer-events: auto;
+}
+
+.layer-pin-top-left {
+  top: var(--s-2);
+  left: var(--s-2);
+}
+
+.layer-pin-top-right {
+  top: var(--s-2);
+  right: var(--s-2);
+}
+
+.layer-pin-bottom-left {
+  bottom: var(--s-2);
+  left: var(--s-2);
+}
+
+.layer-pin-bottom-right {
+  right: var(--s-2);
+  bottom: var(--s-2);
+}
+
+.layer-pin-below-left {
+  top: calc(100% + var(--s-1));
+  left: 0;
+}
+
+.layer-pin-below-center {
+  top: calc(100% + var(--s-1));
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.layer-pin-below-right {
+  top: calc(100% + var(--s-1));
+  right: 0;
+}
+
+.layer-pin-above-left {
+  bottom: calc(100% + var(--s-1));
+  left: 0;
+}
+
+.layer-pin-above-center {
+  bottom: calc(100% + var(--s-1));
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.layer-pin-above-right {
+  right: 0;
+  bottom: calc(100% + var(--s-1));
+}
+
+.layer-pin-left-start {
+  top: 0;
+  right: calc(100% + var(--s-1));
+}
+
+.layer-pin-left-center {
+  top: 50%;
+  right: calc(100% + var(--s-1));
+  transform: translateY(-50%);
+}
+
+.layer-pin-left-end {
+  right: calc(100% + var(--s-1));
+  bottom: 0;
+}
+
+.layer-pin-right-start {
+  top: 0;
+  left: calc(100% + var(--s-1));
+}
+
+.layer-pin-right-center {
+  top: 50%;
+  left: calc(100% + var(--s-1));
+  transform: translateY(-50%);
+}
+
+.layer-pin-right-end {
+  bottom: 0;
+  left: calc(100% + var(--s-1));
+}
+
+.layer-pin-center {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.layer-pin-full {
+  inset: 0;
+}
+
+/* layer-z-* classes for Layered/Layer component — reference token scale */
+.layer-z-base     { --layer-z: var(--z-base,     0); }
+.layer-z-content  { --layer-z: var(--z-content,  1); }
+.layer-z-controls { --layer-z: var(--z-controls, 2); }
+.layer-z-sticky   { --layer-z: var(--z-sticky,   3); }
+.layer-z-fixed    { --layer-z: var(--z-fixed,    4); }
+
+/* ── Flex layout primitives ── */
+
+/* Shared utilities — defined once via :is() to avoid duplication */
+:is(.row, .column) {
+  display: flex;
+
+  /* gap scale — mirrors token scale directly (gap-{n} = --s-{n}) */
+  &.gap-0 { gap: 0; }
+  &.gap-1 { gap: var(--s-1); }
+  &.gap-2 { gap: var(--s-2); }
+  &.gap-3 { gap: var(--s-3); }
+  &.gap-4 { gap: var(--s-4); }
+  &.gap-5 { gap: var(--s-5); }
+
+  /* align-items */
+  &.align-start    { align-items: flex-start; }
+  &.align-center   { align-items: center; }
+  &.align-end      { align-items: flex-end; }
+  &.align-stretch  { align-items: stretch; }
+  &.align-baseline { align-items: baseline; }
+
+  /* justify-content */
+  &.justify-start   { justify-content: flex-start; }
+  &.justify-center  { justify-content: center; }
+  &.justify-end     { justify-content: flex-end; }
+  &.justify-between { justify-content: space-between; }
+  &.justify-around  { justify-content: space-around; }
+
+  &.wrap { flex-wrap: wrap; }
+}
+
+/* direction + default gap per primitive */
+.row    { flex-direction: row;    gap: var(--s-3); }
+.column { flex-direction: column; gap: var(--s-4); }
+
+/* .cluster: wrapping row for chips/tags — stays independent (different default gap, always wraps) */
 .cluster {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--s-2);
+
+  &.gap-0 { gap: 0; }
+  &.gap-1 { gap: var(--s-1); }
+  &.gap-2 { gap: var(--s-2); }
+  &.gap-3 { gap: var(--s-3); }
+  &.gap-4 { gap: var(--s-4); }
+  &.gap-5 { gap: var(--s-5); }
 }
 
-.row.compact,
-.stack.compact,
-.column.compact, .cluster.compact {
-  gap: var(--s-1);
-}
-
-.row.space-between,
-.stack.space-between,
-.column.space-between {
-  justify-content: space-between;
-}
-
-.row.space-around,
-.stack.space-around,
-.column.space-around {
-  justify-content: space-around;
-}
-
-.row.center,
-.stack.center,
-.column.center {
-  justify-content: center;
-}
-
-.row.align-center,
-.stack.align-center,
-.column.align-center {
-  align-items: center;
-}
-
-.row.align-top {
-  align-items: flex-start;
-}
-.row.align-bottom {
-  align-items: flex-end;
-}
-
-.stack.align-left,
-.column.align-left {
-  align-items: flex-start;
-}
-
-.stack.align-right,
-.column.align-right {
-  align-items: flex-end;
-}
-
-.row.align-top > *,
-.row.align-bottom > *,
-.stack.align-left > *,
-.stack.align-right > *,
-.column.align-left > *,
-.column.align-right > * {
-  margin: 0;
-}
-
-.auto-grid {
-  columns: 320px;
-  column-gap: var(--s-4);
-}
-.auto-grid > * {
-  break-inside: avoid;
-  margin-bottom: var(--s-4);
-}
-
-.widget-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  grid-auto-rows: minmax(160px, auto);
-  gap: var(--s-3);
-}
-.widget-1x1 {
-  grid-column: span 1;
-  grid-row: span 1;
-  min-width: 0;
-}
-.widget-2x1 {
-  grid-column: span 2;
-  grid-row: span 1;
-  min-width: 0;
-}
-.widget-2x2 {
-  grid-column: span 2;
-  grid-row: span 2;
-  min-width: 0;
-}
-
-.widget {
-  min-height: 160px;
-  min-width: 160px;
-}
-
-@media (max-width: 640px) {
-  .widget-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-.auto-columns {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--s-4);
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: var(--s-1);
-}
-
+/* legacy aliases — remove after ui/components raw-class sweep */
+.row.compact, .column.compact, .cluster.compact { gap: var(--s-1); }
+.row.gap-0, .column.gap-0 { gap: 0; }
+.row.space-between, .column.space-between { justify-content: space-between; }
+.row.space-around,  .column.space-around  { justify-content: space-around; }
+.row.center,        .column.center        { justify-content: center; }
+.row.align-top    { align-items: flex-start; }
+.row.align-bottom { align-items: flex-end; }
+.column.align-left  { align-items: flex-start; }
+.column.align-right { align-items: flex-end; }
 
 .scroll-row {
   display: flex;
@@ -142,45 +226,17 @@
   flex-shrink: 0;
   width: auto;
 }
-.scroll.column, .scroll.grid {
+.scroll.column {
   gap: var(--s-1);
   overflow-y: scroll;
-}
-.grid-4 {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--s-3);
-}
-
-/* ── Calendar grid ── */
-.cal {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: var(--s-2);
 }
 
 /* ── Narrow viewport (≤360px) ── */
 @media (max-width: 360px) {
-  .row {
-    flex-wrap: wrap;
-    gap: var(--s-2);
-  }
-  .row.compact {
-    gap: var(--s-1);
-  }
-
-  .stack,
-  .column {
-    gap: var(--s-2);
-  }
-
-  h1 {
-    font-size: var(--t-xl);
-  }
-  h2 {
-    font-size: var(--t-lg);
-  }
-  h3 {
-    font-size: var(--t-md);
-  }
+  .row    { flex-wrap: wrap; gap: var(--s-2); }
+  .row.gap-1, .row.compact { gap: var(--s-1); }
+  .column { gap: var(--s-2); }
+  h1 { font-size: var(--t-xl); }
+  h2 { font-size: var(--t-lg); }
+  h3 { font-size: var(--t-md); }
 }
