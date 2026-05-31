@@ -1,4 +1,6 @@
 import { useRef } from 'react';
+import { Column } from '@ui/layout/Column';
+import { Cluster } from '@ui/layout/Cluster';
 
 interface PhotoGalleryProps {
   photos: string[];
@@ -10,9 +12,9 @@ interface PhotoGalleryProps {
 export function PhotoGallery({ photos, onAdd, onRemove, label = 'Photos' }: PhotoGalleryProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   return (
-    <div className="column compact">
+    <Column gap={1}>
       <span className="label">{label}</span>
-      <div className="row compact wrap">
+      <Cluster gap={1}>
         {photos.map((url, i) => (
           <div key={i} className="photo-thumb">
             <img src={url} alt="" />
@@ -26,7 +28,7 @@ export function PhotoGallery({ photos, onAdd, onRemove, label = 'Photos' }: Phot
         >
           <span className="caption">+</span>
         </button>
-      </div>
+      </Cluster>
       <input
         ref={fileInputRef}
         type="file"
@@ -35,6 +37,6 @@ export function PhotoGallery({ photos, onAdd, onRemove, label = 'Photos' }: Phot
         className="hidden"
         onChange={e => { if (e.target.files) onAdd(e.target.files); }}
       />
-    </div>
+    </Column>
   );
 }

@@ -10,6 +10,7 @@ interface SurfaceProps {
   interactive?: boolean;
   selected?: boolean;
   as?: SurfaceAs;
+  role?: string;
   className?: string;
   children: ReactNode;
   onClick?: () => void;
@@ -35,6 +36,7 @@ export function Surface({
   interactive = false,
   selected = false,
   as: Tag = 'div',
+  role,
   className,
   children,
   onClick,
@@ -50,7 +52,7 @@ export function Surface({
   ].filter(Boolean).join(' ');
 
   return (
-    <Tag className={classes} onClick={onClick}>
+    <Tag className={classes} role={role} onClick={onClick}>
       {children}
     </Tag>
   );

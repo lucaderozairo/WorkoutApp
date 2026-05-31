@@ -1,4 +1,5 @@
 import { Button } from '@ui/atoms/Button';
+import { Row } from '@ui/layout/Row';
 import { Modal } from './Modal';
 
 interface DialogProps {
@@ -16,7 +17,7 @@ export function Dialog({ open, onClose, title, message, confirm, onConfirm, dest
   return (
     <Modal open={open} onClose={onClose} title={title} size="sm"
       footer={
-        <div className="row justify-end gap-sm">
+        <Row justify="end">
           <Button variant="ghost" onClick={onClose}>Cancel</Button>
           <Button
             variant={destructive ? 'destructive' : 'primary'}
@@ -25,7 +26,7 @@ export function Dialog({ open, onClose, title, message, confirm, onConfirm, dest
           >
             {confirm}
           </Button>
-        </div>
+        </Row>
       }
     >
       {message && <p className="caption">{message}</p>}

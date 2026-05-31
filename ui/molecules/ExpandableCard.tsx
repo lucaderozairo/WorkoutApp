@@ -1,33 +1,31 @@
 import type { ReactNode } from 'react';
 import { useId } from 'react';
+import { Surface } from '@ui/atoms/Surface';
+import { Row } from '@ui/layout/Row';
+import { Column } from '@ui/layout/Column';
 
 interface ExpandableCardProps {
-  /** Always-visible content that toggles the card open/closed when clicked. */
   header: ReactNode;
-  /** Collapsible content, hidden until expanded. */
   children: ReactNode;
   footer?: ReactNode;
   className?: string;
 }
 
-/**
- * CSS-only expandable card. A visually-hidden checkbox toggled by the header
- * <label> reveals the body via `:has()` — no JS state. See the `.expandable`
- * / `.exp-toggle` rules in components.css.
- */
+/** CSS-only expandable — visually-hidden checkbox toggled by the header label
+ *  reveals the body via :has(). No JS state. See .expandable/.exp-toggle in components.css. */
 export function ExpandableCard({ header, children, footer, className }: ExpandableCardProps) {
   const id = useId();
-  const classes = ['surface', className].filter(Boolean).join(' ');
-
   return (
-    <section className={classes}>
+    <Surface as="section" className={className}>
       <input type="checkbox" id={id} className="exp-toggle" />
-      <label htmlFor={id} className="exp-trigger row space-between align-center interactive">
-        {header}
-        <span className="chevron" aria-hidden>⌄</span>
+      <label htmlFor={id} className="exp-trigger interactive">
+        <Row justify="between" align="center">
+          {header}
+          <span className="chevron" aria-hidden>⌄</span>
+        </Row>
       </label>
-      <div className="expandable column">{children}</div>
+      <Column className="expandable">{children}</Column>
       {footer}
-    </section>
+    </Surface>
   );
 }

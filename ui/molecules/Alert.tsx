@@ -1,5 +1,8 @@
 import type { ReactNode } from 'react';
 import { Button } from '@ui/atoms/Button';
+import { Surface } from '@ui/atoms/Surface';
+import { Row } from '@ui/layout/Row';
+import { Column } from '@ui/layout/Column';
 
 type AlertVariant = 'info' | 'success' | 'warn' | 'error';
 
@@ -13,26 +16,35 @@ interface AlertProps {
   className?: string;
 }
 
-const VARIANT_CLASS: Record<AlertVariant, string> = {
-  info: 'accent',
+const SURFACE_VARIANT = {
+  info:    'accent',
+  success: 'default',
+  warn:    'default',
+  error:   'default',
+} as const;
+
+const EXTRA_CLASS: Record<AlertVariant, string> = {
+  info:    '',
   success: '',
-  warn: 'warning',
-  error: 'warning',
+  warn:    'warning',
+  error:   'warning',
 };
 
 export function Alert({ variant, title, message, dismissible = false, onDismiss, action, className }: AlertProps) {
-  const classes = ['surface', VARIANT_CLASS[variant], 'row', 'align-center', className].filter(Boolean).join(' ');
+  const extra = [EXTRA_CLASS[variant], className].filter(Boolean).join(' ') || undefined;
 
   return (
-    <div className={classes} role="alert">
-      <div className="column grow">
-        {title && <strong>{title}</strong>}
-        <span className="caption">{message}</span>
-      </div>
-      {action}
-      {dismissible && onDismiss && (
-        <Button variant="ghost" size="icon" onClick={onDismiss} aria-label="Dismiss">×</Button>
-      )}
-    </div>
+    <Surface variant={SURFACE_VARIANT[variant]} className={extra} role="alert">
+      <Row align="center">
+        <Column className="grow">
+          {title && <strong>{title}</strong>}
+          <span className="caption">{message}</span>
+        </Column>
+        {action}
+        {dismissible && onDismiss && (
+          <Button variant="ghost" size="icon" onClick={onDismiss} aria-label="Dismiss">×</Button>
+        )}
+      </Row>
+    </Surface>
   );
 }

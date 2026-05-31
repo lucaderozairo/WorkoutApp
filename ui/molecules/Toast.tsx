@@ -1,5 +1,7 @@
 import { useState, useCallback, createContext, useContext, useRef } from 'react';
 import type { ReactNode } from 'react';
+import { Surface } from '@ui/atoms/Surface';
+import { Row } from '@ui/layout/Row';
 import { createPortal } from 'react-dom';
 import { Badge } from '@ui/atoms/Badge';
 import { Button } from '@ui/atoms/Button';
@@ -62,11 +64,13 @@ export function Toaster({ children }: { children: ReactNode }) {
       {createPortal(
         <div className="toast-stack column">
           {toasts.map(t => (
-            <div key={t.id} className="surface row align-center toast">
-              <Badge tone={BADGE_VARIANT[t.variant]} dot />
-              <span className="grow">{t.message}</span>
-              <Button variant="ghost" size="icon" onClick={() => dismiss(t.id)} aria-label="Dismiss">×</Button>
-            </div>
+            <Surface key={t.id} className="toast">
+              <Row align="center">
+                <Badge tone={BADGE_VARIANT[t.variant]} dot />
+                <span className="grow">{t.message}</span>
+                <Button variant="ghost" size="icon" onClick={() => dismiss(t.id)} aria-label="Dismiss">×</Button>
+              </Row>
+            </Surface>
           ))}
         </div>,
         document.body

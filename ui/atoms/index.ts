@@ -17,3 +17,4 @@ export { ProgressBar } from './ProgressBar';
 export { SegmentBar } from './SegmentBar';
 export { List, ListItem } from './List';
 export { Table, TableHead, TableRow, TableCell } from './Table';
+export { Divider } from './Divider';

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Button } from '@ui/atoms/Button';
 import { Icon } from '@ui/atoms/Icon';
+import { Row } from '@ui/layout/Row';
 
 interface ScreenHeaderProps {
   title: string;
@@ -10,7 +11,7 @@ interface ScreenHeaderProps {
 
 export function ScreenHeader({ title, back, primary }: ScreenHeaderProps) {
   return (
-    <div className="row space-between align-center screen-header">
+    <Row justify="between" align="center" className="screen-header">
       {back ? (
         <Button variant="ghost" size="icon" onClick={back} aria-label="Go back">
           <Icon name="back" />
@@ -19,11 +20,9 @@ export function ScreenHeader({ title, back, primary }: ScreenHeaderProps) {
         <div className="header-slot" />
       )}
       <h2>{title}</h2>
-      {primary != null ? (
-        <div className="header-slot">{primary}</div>
-      ) : (
-        <div className="header-slot" />
-      )}
-    </div>
+      <div className="header-slot">
+        {primary ?? null}
+      </div>
+    </Row>
   );
 }

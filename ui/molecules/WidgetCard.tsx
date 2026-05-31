@@ -1,4 +1,7 @@
 import type { ReactNode } from 'react';
+import { Surface } from '@ui/atoms/Surface';
+import { Column } from '@ui/layout/Column';
+import { Spacer } from '@ui/layout/Spacer';
 
 interface WidgetCardProps {
   label?: string;
@@ -10,20 +13,20 @@ interface WidgetCardProps {
 }
 
 export function WidgetCard({ label, footer, tight = false, loading = false, className, children }: WidgetCardProps) {
-  const classes = ['surface', 'column', 'h-full', tight ? 'tight' : '', className].filter(Boolean).join(' ');
-
   return (
-    <div className={classes}>
-      {label && <span className="eyebrow muted">{label}</span>}
-      {loading ? (
-        <div className="column grow">
-          <div className="sk" style={{ height: 48 }} />
-          <div className="sk" style={{ height: 24, width: '60%' }} />
-        </div>
-      ) : (
-        <div className="grow">{children}</div>
-      )}
-      {footer}
-    </div>
+    <Surface pad={tight ? 'sm' : 'md'} className={['h-full', className].filter(Boolean).join(' ')}>
+      <Column className="h-full">
+        {label && <span className="eyebrow muted">{label}</span>}
+        {loading ? (
+          <Column className="grow">
+            <div className="sk" style={{ height: 48 }} />
+            <div className="sk" style={{ height: 24, width: '60%' }} />
+          </Column>
+        ) : (
+          <div className="grow">{children}</div>
+        )}
+        {footer && <><Spacer />{footer}</>}
+      </Column>
+    </Surface>
   );
 }

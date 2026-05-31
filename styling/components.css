@@ -310,7 +310,7 @@
    TABS
    ════════════════════════════════════════════ */
 .tabs {
-  display: flex;
+  /* layout: Tabs molecule composes <Row> internally */
   width: 100%;
 }
 .tabs > * {
@@ -572,18 +572,21 @@
 /* ════════════════════════════════════════════
    LIST DIVIDER — row with bottom border
    ════════════════════════════════════════════ */
-.list-divider, .list-divider-sm { border-bottom: 1px solid var(--line); }
-.list-divider:last-child, .list-divider-sm:last-child { border-bottom: none; }
-.list-divider { padding-block: var(--s-2); }
+/* Divider atom — renders as <hr>; reset browser border then apply token border */
+.list-divider, .list-divider-sm {
+  border: none;
+  border-bottom: 1px solid var(--line);
+  margin: 0;
+  &:last-child { border-bottom: none; }
+}
+.list-divider    { padding-block: var(--s-2); }
 .list-divider-sm { padding-block: var(--s-1); }
 
 /* ════════════════════════════════════════════
    TREND ITEM — health trend list row
    ════════════════════════════════════════════ */
 .trend-item {
-  display: flex;
-  align-items: center;
-  gap: var(--s-3);
+  /* layout: TrendItem molecule composes <Row align="center"> internally */
   padding: var(--s-3) var(--s-5);
   border-bottom: 1px solid var(--line);
 }
@@ -597,11 +600,7 @@
 /* ════════════════════════════════════════════
    PAIN SCALE — row of severity dots
    ════════════════════════════════════════════ */
-.pain-scale {
-  display: flex;
-  gap: var(--s-1);
-  align-items: center;
-}
+/* .pain-scale layout removed — PainScale molecule composes <Row align="center" gap={1}> internally */
 .pain-dot {
   width: 10px;
   height: 10px;
@@ -693,9 +692,7 @@
 }
 .header-slot {
   min-width: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+  /* layout: ScreenHeader molecule composes <Row justify="end" align="center"> internally */
 }
 .screen-header .header-slot:first-child {
   justify-content: flex-start;
