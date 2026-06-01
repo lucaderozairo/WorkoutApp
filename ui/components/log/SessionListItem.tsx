@@ -178,9 +178,9 @@ export function CardioSessionItem({ session, onDelete }: CardioItemProps) {
       <Row align="center">
         {session.distanceMeters > 0 && (
           <Column gap={1}>
-            <h3 className="align-bottom compact row">
+            <Row as="h3" align="end" gap={1}>
               {distKm}<span className="caption muted">km</span>
-            </h3>
+            </Row>
             <p className="caption muted">Distance</p>
           </Column>
         )}

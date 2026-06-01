@@ -14,7 +14,7 @@ export function MessageScreen() {
           <Surface>
             <Column gap={1}>
               {calls.map(call => (
-                <Row key={call.id} justify="between" className="align-top">
+                <Row key={call.id} justify="between" align="start">
                   <Row>
                     <Avatar name={call.name} />
                     <Column gap={1}>

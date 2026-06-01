@@ -3,22 +3,13 @@
   border: 1px solid var(--line);
   border-radius: var(--r-md);
   box-shadow: var(--box-shadow-sm);
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-3);
+  display: block;
   padding: var(--s-4);
 
-  /* ── Pure-block shim — emitted by the Surface component.
-     Overrides legacy flex so layout is composed inside via Row/Column.
-     After the deferred ui/components sweep, .surface itself becomes
-     display:block and this shim is retired. ── */
-  &.block {
-    display: block;
-    gap: 0;
-
-    &.pad-sm   { padding: var(--s-3); }
-    &.pad-none { padding: 0; overflow: hidden; }
-  }
+  /* Surface is now always block — layout is composed inside via Row/Column.
+     .block shim retired after ui/components sweep (2026-06-01). */
+  &.pad-sm   { padding: var(--s-3); }
+  &.pad-none { padding: 0; overflow: hidden; }
 
   /* ── Visual variants ── */
   &.plain   { border-color: transparent; box-shadow: none; }
@@ -36,17 +27,13 @@
     &:active { background: color-mix(in srgb, var(--surface-1), var(--ink) 10%); }
   }
 
-  /* ── Legacy layout variants — keep for unswept raw className consumers.
-     Remove after ui/components raw-class sweep. ── */
-  &.row      { flex-direction: row; }
-  &.grid     { --grid-cols: repeat(2, 1fr); --grid-gap: var(--s-3); }
-  &.centered { text-align: center; align-items: center; }
+  /* ── Legacy layout-on-surface (kept for remaining button/molecule consumers) ── */
+  &.row      { display: flex; flex-direction: row; }
+  &.grid     { display: grid; --grid-cols: repeat(2, 1fr); --grid-gap: var(--s-3); }
+  &.compact  { gap: var(--s-1); }
+  &.warning  { background: color-mix(in srgb, var(--warn) 12%, var(--surface-1)); border-color: var(--warn); }
   &.inset    { background: var(--surface-2); border-style: dashed; }
   &.pinned   { border-color: var(--accent); background: var(--surface-2); }
-  &.tight    { padding: var(--s-1); }
-  &.bare     { padding: 0; overflow: hidden; }
-  &.card     { width: auto; }
-  &.warning  { background: color-mix(in srgb, var(--warn) 12%, var(--surface-1)); border-color: var(--warn); }
 
   /* ── Narrow viewport ── */
   @media (max-width: 360px) {

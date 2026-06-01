@@ -53,7 +53,7 @@ export function ImportDataWidget() {
 
   return (
     <Surface>
-      <Column gap={1} className="widget-1x1 space-between">
+      <Column gap={1} justify="between" className="widget-1x1">
         <span className="label">Import Data</span>
         <p className="detail">Restore from a JSON backup or CSV file.</p>
         <input ref={inputRef} type="file" accept=".json,.csv" onChange={handleFile} hidden />

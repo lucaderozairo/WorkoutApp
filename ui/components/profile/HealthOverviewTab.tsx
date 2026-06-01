@@ -98,7 +98,7 @@ function CategoryRow({ cat, isPinned = false, onClick, onLongPress, charts }: Ca
       <Row justify="between" align="center">
         <Row align="center">
           <span className="icon">{cat.icon}</span>
-          <Column gap={1} className="align-left">
+          <Column gap={1} align="start">
             <span>{cat.name}</span>
           </Column>
         </Row>

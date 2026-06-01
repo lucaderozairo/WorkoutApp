@@ -204,16 +204,10 @@
   &.gap-5 { gap: var(--s-5); }
 }
 
-/* legacy aliases — remove after ui/components raw-class sweep */
+/* legacy aliases — partially purged; remaining usages in molecules/nav/buttons pending full removal */
 .row.compact, .column.compact, .cluster.compact { gap: var(--s-1); }
-.row.gap-0, .column.gap-0 { gap: 0; }
 .row.space-between, .column.space-between { justify-content: space-between; }
-.row.space-around,  .column.space-around  { justify-content: space-around; }
 .row.center,        .column.center        { justify-content: center; }
-.row.align-top    { align-items: flex-start; }
-.row.align-bottom { align-items: flex-end; }
-.column.align-left  { align-items: flex-start; }
-.column.align-right { align-items: flex-end; }
 
 .scroll-row {
   display: flex;
@@ -234,7 +228,7 @@
 /* ── Narrow viewport (≤360px) ── */
 @media (max-width: 360px) {
   .row    { flex-wrap: wrap; gap: var(--s-2); }
-  .row.gap-1, .row.compact { gap: var(--s-1); }
+  .row.gap-1, .row.compact { gap: var(--s-1); } /* compact alias kept until molecules/nav migrated */
   .column { gap: var(--s-2); }
   h1 { font-size: var(--t-xl); }
   h2 { font-size: var(--t-lg); }

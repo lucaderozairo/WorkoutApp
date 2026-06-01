@@ -105,7 +105,7 @@ export function ImportModal({ context, existingSession, onComplete, onClose }: I
                 {parsing
                   ? <Row justify="center"><span>Parsing…</span></Row>
                   : (
-                    <Column className="center">
+                    <Column justify="center">
                       <p>Drop your file here</p>
                       <button
                         className="secondary sm"

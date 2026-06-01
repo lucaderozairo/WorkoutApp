@@ -117,7 +117,7 @@ export function ExercisePicker({ onClose, onCommit }: ExercisePickerProps) {
                       className={`surface row space-between${isSelected ? ' active' : ''}${i < arr.length - 1 ? ' bordered-bottom' : ''}`}
                       onClick={() => handleSelect(ex.name)}
                     >
-                      <Column gap={1} className="align-left grow">
+                      <Column gap={1} align="start" className="grow">
                         <span className="detail">{ex.name}</span>
                         <span className="caption">{ex.muscle}</span>
                       </Column>

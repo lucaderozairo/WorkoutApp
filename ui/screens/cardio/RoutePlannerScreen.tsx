@@ -154,7 +154,7 @@ export function RoutePlannerScreen() {
             </Button>
           }
         />
-        <Row gap={1} className="center">
+        <Row gap={1} justify="center">
           {(['select', 'add', 'split', 'delete'] as EditMode[]).map(m => (
             <Button
               key={m}
@@ -520,7 +520,7 @@ function PlanPanel({
       <hr />
 
       <Text size="eyebrow">Pace</Text>
-      <Row gap={1} className="align-bottom">
+      <Row gap={1} align="end">
         <Text as="h3" mono>{formatPace(paceSecondsPerKm)}</Text>
         <Text size="caption" color="muted">min/km</Text>
       </Row>

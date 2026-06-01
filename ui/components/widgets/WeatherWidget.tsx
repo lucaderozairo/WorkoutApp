@@ -164,11 +164,11 @@ export function WeatherWidget() {
                 </Row>
 
                 <Row justify="between">
-                    <Column justify="between" className="align-left">
+                    <Column justify="between" align="start">
                         <h1>⛅</h1>
                         <span className="detail">Partly Cloudy</span>
                     </Column>
-                    <Column justify="between" className="align-right">
+                    <Column justify="between" align="end">
                         <p>18°</p>
                         <span className="caption">Feels like 16° · Humidity 62%</span>
                     </Column>

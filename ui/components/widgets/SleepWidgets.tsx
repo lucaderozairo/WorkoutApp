@@ -86,7 +86,7 @@ export function SleepLarge({
                     subtitle="score"
                     size={88}
                 />
-                <Column gap={1} className="align-right">
+                <Column gap={1} align="end">
                     <h2>{duration}</h2>
                     <span className="caption">goal {fmtMin(goalMinutes)} · {debtLabel}</span>
                     <Row>

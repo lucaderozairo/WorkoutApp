@@ -180,7 +180,7 @@ export function WeatherDashWidget({ size }: { size: WidgetSize }) {
             <span className="caption faint">Partly Cloudy</span>
           </Column>
         </Row>
-        <Column gap={1} className="align-right">
+        <Column gap={1} align="end">
           <span className="caption">Feels like 16°</span>
           <span className="caption faint">Humidity 62%</span>
         </Column>
@@ -379,7 +379,7 @@ export function HeartStatsWidget({ size, bpm, hrv, history }: { size: WidgetSize
             <span className="metric">{bpm ?? '—'}<span className="muted">bpm</span></span>
             <span className="caption faint">HR</span>
           </Column>
-          <Column gap={1} className="align-right">
+          <Column gap={1} align="end">
             <span className="metric">{hrv ?? '—'}<span className="muted">ms</span></span>
             <span className="caption faint">HRV</span>
           </Column>
@@ -399,7 +399,7 @@ export function HeartStatsWidget({ size, bpm, hrv, history }: { size: WidgetSize
             </Column>
             <span className="caption faint">Resting HR</span>
           </Column>
-          <Column gap={1} className="align-right">
+          <Column gap={1} align="end">
             <Column gap={1}>
               <span className="metric">{hrv ?? '—'}<span className="muted">ms</span></span>
             </Column>
@@ -420,7 +420,7 @@ export function HeartStatsWidget({ size, bpm, hrv, history }: { size: WidgetSize
           </Column>
           <span className="caption faint">Resting HR</span>
         </Column>
-        <Column gap={1} className="align-right">
+        <Column gap={1} align="end">
           <Column gap={1}>
             <span className="metric">{hrv ?? '—'}<span className="muted">ms</span></span>
           </Column>

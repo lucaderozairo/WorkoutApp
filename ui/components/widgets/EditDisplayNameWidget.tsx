@@ -27,7 +27,7 @@ export function EditDisplayNameWidget() {
 
   return (
     <Surface>
-      <Column gap={1} className="widget-1x1 space-between">
+      <Column gap={1} justify="between" className="widget-1x1">
         <span className="label">Display Name</span>
         {editing ? (
           <>

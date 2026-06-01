@@ -16,7 +16,7 @@ export function PlanRouteWidget() {
 
   return (
     <Surface>
-      <Column gap={1} className="widget-1x1 space-between">
+      <Column gap={1} justify="between" className="widget-1x1">
         <span className="label">Plan a Route</span>
         <p className="detail">Map out a run or ride before you go.</p>
         <button  className='chip sm' onClick={handlePlan}>Open route planner</button>

@@ -67,7 +67,7 @@ export function LogScreen() {
 
           {activeSession && (
             <button className="surface row space-between align-center" onClick={() => navigate(`/sessions/${activeSession.id}`)}>
-              <Column gap={1} className="align-left">
+              <Column gap={1} align="start">
                 <span className="detail">{activeSession.name}</span>
                 <span className="caption">{activeSession.startedAt ? `${new Date(activeSession.startedAt).toLocaleDateString()} — tap to continue` : 'Not started — tap to continue'}</span>
               </Column>

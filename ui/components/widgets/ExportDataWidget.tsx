@@ -26,7 +26,7 @@ export function ExportDataWidget() {
 
   return (
     <Surface>
-      <Column gap={1} className="widget-1x1 space-between">
+      <Column gap={1} justify="between" className="widget-1x1">
         <span className="label">Export Data</span>
         <p className="detail">Download all your workout data as JSON or CSV.</p>
         <Row gap={1}>
