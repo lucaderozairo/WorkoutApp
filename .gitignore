@@ -34,7 +34,7 @@ Thumbs.db
 *.tsbuildinfo
 
 # Misc
-bash.exe.stackdump
+*.stackdump
 build-out.txt
 tsc-out.txt
 vite-prototype.err
