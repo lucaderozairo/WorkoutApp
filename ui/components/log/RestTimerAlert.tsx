@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { viewStore } from '@data/projections/views';
+import { Row } from '@ui/layout';
 
 type Props = {
   initialSeconds: number;
@@ -63,10 +64,10 @@ export function RestTimerAlert({ initialSeconds, onSkip }: Props) {
 
   return (
     <div className="alert">
-      <div className="row space-between align-center">
+      <Row justify="between" align="center">
         <span className="detail">Rest</span>
         <span className={`badge caption ${done ? 'warning' : 'neutral'}`}>{mm}:{ss}</span>
-        <div className="row">
+        <Row>
           <span className="sm caption ghost" onClick={restart}>Restart</span>
           {!done && (
             <span
@@ -78,8 +79,8 @@ export function RestTimerAlert({ initialSeconds, onSkip }: Props) {
             </span>
           )}
           <span className="sm caption ghost" onClick={handleSkip}>Skip</span>
-        </div>
-      </div>
+        </Row>
+      </Row>
     </div>
   );
 }

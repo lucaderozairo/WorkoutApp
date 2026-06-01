@@ -1,9 +1,10 @@
 import { HealthChartsList } from './HealthChartsList';
+import { Column } from '@ui/layout';
 
 export function ReadinessView() {
   return (
-    <div className="column">
+    <Column>
       <HealthChartsList slug="readiness" />
-    </div>
+    </Column>
   );
 }

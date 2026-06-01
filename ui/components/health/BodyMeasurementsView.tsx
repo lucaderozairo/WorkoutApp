@@ -1,9 +1,10 @@
 import { HealthChartsList } from './HealthChartsList';
+import { Column } from '@ui/layout';
 
 export function BodyMeasurementsView() {
   return (
-    <div className="column">
+    <Column>
       <HealthChartsList slug="body-measurements" />
-    </div>
+    </Column>
   );
 }

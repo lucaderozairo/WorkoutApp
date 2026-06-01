@@ -1,9 +1,11 @@
-﻿import { useState, useId } from 'react';
+import { useState, useId } from 'react';
 import { useCommand } from '@ui/bindings';
 import { handleLikePost, handleCommentOnPost } from '@features/social';
 import type { Post } from '@features/social';
 import { timeAgo } from '@shared/utils/timeAgo';
 import { USER_ID, USER_NAME, SPORT_MAP } from '@features/social/domain/constants';
+import { Row, Column, Cluster } from '@ui/layout';
+import { Surface } from '@ui/atoms';
 
 export function PostCard({ post }: { post: Post & { sport?: string; group?: string; sessionName?: string } }) {
   const id = useId();
@@ -27,57 +29,57 @@ export function PostCard({ post }: { post: Post & { sport?: string; group?: stri
   const avatarClass = sport?.avatar ?? 'lift';
 
   return (
-    <section className="surface">
+    <Surface>
       <input type="checkbox" id={id} className="exp-toggle" />
-      <header className="row space-between">
-        <div className="row">
+      <Row as="header" justify="between">
+        <Row>
           <div className={`avatar ${avatarClass}`}>{post.authorInitials}</div>
           <div>
             <p>{post.authorName}</p>
-            <div className="cluster">
+            <Cluster>
               {post.group && sport && (
                 <span className={`pill ${sport.pill}`}>{sport.icon} {post.group}</span>
               )}
-            </div>
+            </Cluster>
           </div>
-        </div>
+        </Row>
         <time className="caption">{timeAgo(post.createdAt)}</time>
-      </header>
+      </Row>
 
-      <div className="column">
+      <Column>
 
         <p>{post.sessionName}</p>
         <p className="detail">{post.body}</p>
         <div className="expandable column">
           {post.comments.length > 0 && (
-            <div className="column">
+            <Column>
               {post.comments.map(c => (
-                <div key={c.id} className="row space-between">
+                <Row key={c.id} justify="between">
                   <span className="caption">{c.authorName}</span>
                   <span className="caption">{c.body}</span>
-                </div>
+                </Row>
               ))}
-            </div>
+            </Column>
           )}
-          <div className="column">
+          <Column>
             <input placeholder="Write a comment..." value={commentText}
               onChange={e => setCommentText(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleComment()} />
             <button className="" onClick={handleComment}>Post</button>
-          </div>
+          </Column>
         </div>
-      </div>
-      <footer className="row space-between">
-        <div className="row">
+      </Column>
+      <Row as="footer" justify="between">
+        <Row>
           <button className={post.likedByMe ? 'liked ghost' : 'ghost'} onClick={handleLike}>
             {post.likedByMe ? '❤️' : '🤍'} {post.likeCount}
           </button>
           <label htmlFor={id} className="ghost row align-center interactive">
             💬 {post.comments.length}
           </label>
-        </div>
+        </Row>
         <button className="ghost">⋮</button>
-      </footer>
-    </section>
+      </Row>
+    </Surface>
   );
 }

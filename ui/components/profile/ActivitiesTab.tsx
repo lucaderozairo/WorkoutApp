@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import type { Post } from '@features/social';
 import type { Id } from '@shared/types';
 import { timeAgo } from '@shared/utils/timeAgo';
+import { Row, Column } from '@ui/layout';
+import { Surface } from '@ui/atoms';
 
 type SharedPost = Post & {
   sessionId?: Id<'Session'>;
@@ -28,34 +30,33 @@ export function ActivitiesTab() {
 
   if (myPosts.length === 0) {
     return (
-      <div className="surface">
+      <Surface>
         <p className="muted">No shared sessions yet. Share a workout from your session history.</p>
-      </div>
+      </Surface>
     );
   }
 
   return (
-    <div className="column">
+    <Column>
       {myPosts.map(post => (
-        <div
+        <Surface
           key={post.id}
-          className="surface"
           onClick={() => post.sessionId && navigate(`/sessions/${post.sessionId}`)}
         >
-          <div className="row space-between align-center">
-            <div className="column">
+          <Row justify="between" align="center">
+            <Column>
               <span>{post.sessionName ?? 'Workout'}</span>
               {post.sport && <span className="muted">{SPORT_LABELS[post.sport] ?? post.sport}</span>}
-            </div>
+            </Column>
             <time className="mono muted">{timeAgo(post.createdAt)}</time>
-          </div>
+          </Row>
           <p className="muted">{post.body}</p>
-          <div className="row">
+          <Row>
             <span className="caption">❤️ {post.likeCount} likes</span>
             <span className="caption">💬 {post.comments.length}</span>
-          </div>
-        </div>
+          </Row>
+        </Surface>
       ))}
-    </div>
+    </Column>
   );
 }

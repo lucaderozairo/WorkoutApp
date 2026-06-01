@@ -5,8 +5,8 @@ import type { CardioSession } from "@features/cardio";
 import { EllipsisVertical } from "lucide-react";
 import { ACTIVITY_ICONS, getActivityLabel } from "@ui/icons/activityIcons";
 import { Carousel } from "../shared";
-import { Button } from "@ui/atoms";
-import { Layer, Layered } from "@ui/layout";
+import { Button, Surface } from "@ui/atoms";
+import { Layer, Layered, Row, Column, Cluster } from "@ui/layout";
 
 function formatDuration(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -91,54 +91,54 @@ export function StrengthSessionItem({ session, matchedExercise, onDelete }: Stre
   const navigate = useNavigate();
   const { Icon: StrengthIcon } = ACTIVITY_ICONS['strength'];
   return (
-    <section
-      className="surface compact">
-      <header className="row space-between align-center surface bare interactive ghost"
-        onClick={() => navigate(`/sessions/${session.id}`)}>
-        <div className="align-center row grow">
-          <StrengthIcon size={20} />
-          <div className="column compact">
-            <span className="detail">{ACTIVITY_ICONS['strength'].label}</span>
-          <time className="caption muted" dateTime={new Date(session.startedAt).toISOString()}>
-            {formatRelativeTime(session.startedAt)} · {formatTime(session.startedAt)}
-          </time>
-          </div>
-          
-        </div>
-
-        {onDelete && <ActionMenu onDelete={onDelete} />}
-      </header>
+    <Surface pad="sm" as="section">
+      <Column>
+      <Surface as="header" variant="ghost" pad="none" interactive onClick={() => navigate(`/sessions/${session.id}`)}>
+        <Row justify="between" align="center">
+          <Row align="center" className="grow">
+            <StrengthIcon size={20} />
+            <Column gap={1}>
+              <span className="detail">{ACTIVITY_ICONS['strength'].label}</span>
+              <time className="caption muted" dateTime={new Date(session.startedAt).toISOString()}>
+                {formatRelativeTime(session.startedAt)} · {formatTime(session.startedAt)}
+              </time>
+            </Column>
+          </Row>
+          {onDelete && <ActionMenu onDelete={onDelete} />}
+        </Row>
+      </Surface>
       <h3>{session.name}</h3>
-      <div className="align-center row">
-        <div className="column compact">
+      <Row align="center">
+        <Column gap={1}>
           <h3>{session.exerciseCount}</h3>
           <p className="caption muted">Exercises</p>
-        </div>
-        <div className="column compact">
+        </Column>
+        <Column gap={1}>
           <h3>{formatDuration(session.durationSeconds)}</h3>
           <p className="caption muted">Duration</p>
-        </div>
-        <div className="column compact">
+        </Column>
+        <Column gap={1}>
           <h3>{session.totalSets}</h3>
           <p className="caption muted">Sets</p>
-        </div>
-      </div>
+        </Column>
+      </Row>
       <Carousel slides={session.media ?? []} />
       {session.notes && (
         <p className="detail muted">{session.notes}</p>
       )}
       {(session.category || session.tags?.length) && (
-        <div className="cluster">
+        <Cluster>
           <span className="pill">{session.category}</span>
           {session.tags?.map(tag => (
             <span key={tag} className="pill">{tag}</span>
           ))}
-        </div>
+        </Cluster>
       )}
       {matchedExercise && (
         <span className="pill active">{matchedExercise}</span>
       )}
-    </section>
+      </Column>
+    </Surface>
   );
 }
 
@@ -156,51 +156,53 @@ export function CardioSessionItem({ session, onDelete }: CardioItemProps) {
   const sportLabel = getActivityLabel(session.sport);
 
   return (
-    <section className="surface compact">
-      <header className="row space-between align-center surface bare interactive ghost"
-        onClick={() => navigate(`/sessions/${session.id}`)}>
-        <div className="align-center row grow">
-          <SportIcon size={20} />
-          <div className="column compact">
-            <span className="detail">
-            {sportLabel}{session.location && ` · ${session.location}`}
-          </span>
-          <time className="caption muted" dateTime={new Date(session.startedAt).toISOString()}>
-            {formatRelativeTime(session.startedAt)} · {formatTime(session.startedAt)}
-          </time>
-          </div>
-          
-        </div>
-        {onDelete && <ActionMenu onDelete={onDelete} />}
-      </header>
+    <Surface pad="sm" as="section">
+      <Column>
+      <Surface as="header" variant="ghost" pad="none" interactive onClick={() => navigate(`/sessions/${session.id}`)}>
+        <Row justify="between" align="center">
+          <Row align="center" className="grow">
+            <SportIcon size={20} />
+            <Column gap={1}>
+              <span className="detail">
+                {sportLabel}{session.location && ` · ${session.location}`}
+              </span>
+              <time className="caption muted" dateTime={new Date(session.startedAt).toISOString()}>
+                {formatRelativeTime(session.startedAt)} · {formatTime(session.startedAt)}
+              </time>
+            </Column>
+          </Row>
+          {onDelete && <ActionMenu onDelete={onDelete} />}
+        </Row>
+      </Surface>
       <h3>{title}</h3>
-      <div className="align-center row">
+      <Row align="center">
         {session.distanceMeters > 0 && (
-          <div className="column compact">
+          <Column gap={1}>
             <h3 className="align-bottom compact row">
               {distKm}<span className="caption muted">km</span>
             </h3>
             <p className="caption muted">Distance</p>
-          </div>
+          </Column>
         )}
-        <div className="column compact">
+        <Column gap={1}>
           <h3>{formatDuration(session.durationSeconds)}</h3>
           <p className="caption muted">Time</p>
-        </div>
+        </Column>
         {pace && (
-          <div className="column compact">
+          <Column gap={1}>
             <h3>{pace}</h3>
             <p className="caption muted">Avg Pace</p>
-          </div>
+          </Column>
         )}
-      </div>
+      </Row>
       <Carousel slides={session.media ?? []} />
       {session.notes && (
         <p className="detail muted">{session.notes}</p>
       )}
-      <div className="cluster">
+      <Cluster>
         <span className="pill">{session.sport}</span>
-      </div>
-    </section>
+      </Cluster>
+      </Column>
+    </Surface>
   );
 }
