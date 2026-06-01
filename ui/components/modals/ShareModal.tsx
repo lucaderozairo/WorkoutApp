@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Row, Column } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Surface, Button, Text, Table, TableRow, TableCell } from '@ui/atoms';
 
 interface ShareModalProps {
   type: 'session' | 'workout' | 'run';
@@ -22,45 +22,49 @@ export function ShareModal({ data, onClose }: ShareModalProps) {
         <Surface as="section">
           <Column>
           <Row justify="between">
-            <h3>Share Workout</h3>
-            <button className="ghost sm" onClick={onClose}>✕</button>
+            <Text as="h3">Share Workout</Text>
+            <Button variant="ghost" size="sm" onClick={onClose}>✕</Button>
           </Row>
 
-          <Row>
-            <button
-              className={`secondary sm ${theme === 'dark' ? 'primary sm' : ''}`}
+          <Row gap={1}>
+            <Button
+              variant={theme === 'dark' ? 'primary' : 'secondary'}
+              size="sm"
               onClick={() => setTheme('dark')}
             >
               Dark
-            </button>
-            <button
-              className={`secondary sm ${theme === 'light' ? 'primary sm' : ''}`}
+            </Button>
+            <Button
+              variant={theme === 'light' ? 'primary' : 'secondary'}
+              size="sm"
               onClick={() => setTheme('light')}
             >
               Light
-            </button>
+            </Button>
           </Row>
 
-          <div className={`card ${theme === 'dark' ? 'surface' : ''}`}>
-            <div className="value">{data.title}</div>
-            <div className="caption">{data.date}</div>
-            <div>{data.summary}</div>
-            {data.details.length > 0 && (
-              <table className="share-table">
-                <tbody>
-                  {data.details.map((d, i) => (
-                    <tr key={i}>
-                      <td className="caption">{d.label}</td>
-                      <td>{d.value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
+          <Surface variant={theme === 'dark' ? 'default' : 'plain'} pad="md">
+            <Column gap={2}>
+              <Text bold>{data.title}</Text>
+              <Text size="caption" color="muted">{data.date}</Text>
+              <Text>{data.summary}</Text>
+              {data.details.length > 0 && (
+                <Table>
+                  <tbody>
+                    {data.details.map((d, i) => (
+                      <TableRow key={i}>
+                        <TableCell muted>{d.label}</TableCell>
+                        <TableCell>{d.value}</TableCell>
+                      </TableRow>
+                    ))}
+                  </tbody>
+                </Table>
+              )}
+            </Column>
+          </Surface>
 
           <Row>
-            <button className="primary" onClick={() => window.print()}>Copy as Image</button>
+            <Button variant="primary" onClick={() => window.print()}>Copy as Image</Button>
           </Row>
           </Column>
         </Surface>

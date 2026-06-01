@@ -14,8 +14,8 @@ import { exportAllSessionsCsv } from '@shared/utils/exportCsv';
 import { triggerDownload } from '@shared/utils/csv';
 import { getActivityHistory } from '@features/training_log';
 import type { CardioSession } from '@features/cardio/domain/types';
-import { Row, Column, Spacer } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Row, Column } from '@ui/layout';
+import { Surface, Button, Text, Switch } from '@ui/atoms';
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -45,8 +45,8 @@ export function SettingsContent() {
     await dispatchUpdateProfile({ type: 'UpdateProfile', userId: USER_ID, displayName, email });
   };
 
-  const handleThemeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const next = e.target.value === '0' ? 'light' : 'dark';
+  const handleThemeToggle = (isDark: boolean) => {
+    const next = isDark ? 'dark' : 'light';
     setTheme(next);
     document.documentElement.setAttribute('data-theme', next);
   };
@@ -118,65 +118,31 @@ export function SettingsContent() {
 
   return (
     <>
-      {/* <section className="column">
-        <h3 className="caption">Profile</h3>
-        <div className="column">
-          {profile ? (
-            <div className="row">
-              <span className="caption">{profile.displayName}</span>
-              <span className="caption">{profile.email}</span>
-            </div>
-          ) : null}
-          <input className="input" placeholder="Display name" value={displayName} onChange={e => setDisplayName(e.target.value)} />
-          <input className="input" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-          <button className="primary sm" onClick={handleSaveProfile}>Save</button>
-        </div>
-      </section> */}
-
       <Column as="section">
-        <h3 className="caption">Appearance</h3>
+        <Text as="h3" size="caption">Appearance</Text>
         <Row justify="between" align="center">
-          <span className="caption">{theme === 'dark' ? '🌙 Dark' : '☀️ Light'}</span>
-          <label className="switch">
-            <input type="range" min="0" max="1" value={theme === 'light' ? 0 : 1} onChange={handleThemeChange} />
-          </label>
+          <Text size="caption">{theme === 'dark' ? '🌙 Dark' : '☀️ Light'}</Text>
+          <Switch checked={theme === 'dark'} onChange={handleThemeToggle} />
         </Row>
-        {/* <div className="row justify-between align-center">
-          <span className="caption">Units</span>
-          <div className="row">
-            <button
-              className={`secondary sm ${units === 'metric' ? 'primary sm' : ''}`}
-              onClick={setMetric}
-            >
-              Metric
-            </button>
-            <button
-              className={`secondary sm ${units === 'imperial' ? 'primary sm' : ''}`}
-              onClick={setImperial}
-            >
-              Imperial
-            </button>
-          </div>
-        </div> */}
       </Column>
 
       <Column as="section">
-        <h3 className="caption">Data</h3>
+        <Text as="h3" size="caption">Data</Text>
         <Row justify="between" align="center">
-          <span className="caption">Export history</span>
+          <Text size="caption">Export history</Text>
           <Row gap={1}>
-            <button className="secondary sm" onClick={exportData}>Export JSON</button>
-            <button className="secondary sm" onClick={exportDataCsv}>Export CSV</button>
+            <Button variant="secondary" size="sm" onClick={exportData}>Export JSON</Button>
+            <Button variant="secondary" size="sm" onClick={exportDataCsv}>Export CSV</Button>
           </Row>
         </Row>
         <Row justify="between" align="center">
           <Column gap={1}>
-            <span className="caption">Import history</span>
-            {importStatus && <span className="caption">{importStatus}</span>}
+            <Text size="caption">Import history</Text>
+            {importStatus && <Text size="caption">{importStatus}</Text>}
           </Column>
-          <button className="secondary sm" onClick={() => fileInputRef.current?.click()}>
+          <Button variant="secondary" size="sm" onClick={() => fileInputRef.current?.click()}>
             Import
-          </button>
+          </Button>
           <input
             ref={fileInputRef}
             type="file"
@@ -186,16 +152,16 @@ export function SettingsContent() {
           />
         </Row>
         <Row justify="between" align="center">
-          <span className="caption">Clear All Data</span>
-          <button className="danger sm" onClick={clearAllData}>Clear All</button>
+          <Text size="caption">Clear All Data</Text>
+          <Button variant="destructive" size="sm" onClick={clearAllData}>Clear All</Button>
         </Row>
       </Column>
 
       <Column as="section">
-        <h3 className="caption">About</h3>
+        <Text as="h3" size="caption">About</Text>
         <Row justify="between" align="center">
-          <span className="caption">Version</span>
-          <span className="caption">0.1.0</span>
+          <Text size="caption">Version</Text>
+          <Text size="caption">0.1.0</Text>
         </Row>
       </Column>
     </>
@@ -213,8 +179,8 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
         <Surface as="section">
           <Column>
             <Row justify="between" align="center">
-              <h3>Settings</h3>
-              <button className="ghost sm" onClick={onClose}>✕</button>
+              <Text as="h3">Settings</Text>
+              <Button variant="ghost" size="sm" onClick={onClose}>✕</Button>
             </Row>
             <SettingsContent />
           </Column>

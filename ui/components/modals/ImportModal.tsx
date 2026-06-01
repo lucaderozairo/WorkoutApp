@@ -3,7 +3,7 @@ import { parseGpsFile } from '@data/sources/files/gps';
 import type { GpsTrack } from '@data/sources/files/gps';
 import type { CardioSport } from '@features/cardio';
 import { Row, Column } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Surface, Button, Text, Badge, Slider, Textarea, Metric } from '@ui/atoms';
 
 type ImportContext = 'new-session' | 'enrich-session' | 'standalone';
 
@@ -87,35 +87,36 @@ export function ImportModal({ context, existingSession, onComplete, onClose }: I
           <Column>
           {/* Header */}
           <Row justify="between">
-            <h3>Import GPS file</h3>
-            <button className="ghost sm" onClick={onClose}>✕</button>
+            <Text as="h3">Import GPS file</Text>
+            <Button variant="ghost" size="sm" onClick={onClose}>✕</Button>
           </Row>
 
           {/* Step 1: file drop zone */}
           {step === 1 && (
             <Column>
-              {error && <p className="alert warning text-center">{error}</p>}
+              {error && <Text size="caption" color="negative">{error}</Text>}
               <section
                 className={`surface inset interactive${isDragOver ? ' active' : ''}`}
-                onDragOver={e => { e.preventDefault(); setIsDragOver(true); }}
+                onDragOver={(e: React.DragEvent) => { e.preventDefault(); setIsDragOver(true); }}
                 onDragLeave={() => setIsDragOver(false)}
                 onDrop={handleDrop}
                 onClick={() => inputRef.current?.click()}
               >
                 {parsing
-                  ? <Row justify="center"><span>Parsing…</span></Row>
+                  ? <Row justify="center"><Text>Parsing…</Text></Row>
                   : (
                     <Column justify="center">
-                      <p>Drop your file here</p>
-                      <button
-                        className="secondary sm"
-                        onClick={e => { e.stopPropagation(); inputRef.current?.click(); }}
+                      <Text>Drop your file here</Text>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={(e: React.MouseEvent) => { e.stopPropagation(); inputRef.current?.click(); }}
                       >
                         or browse files
-                      </button>
+                      </Button>
                       <Row justify="center">
                         {['GPX', 'TCX', 'FIT'].map(fmt => (
-                          <span key={fmt} className="badge"><span className="dot" />{fmt}</span>
+                          <Badge key={fmt} dot>{fmt}</Badge>
                         ))}
                       </Row>
                     </Column>
@@ -136,43 +137,43 @@ export function ImportModal({ context, existingSession, onComplete, onClose }: I
           {step === 2 && track && (
             <Column>
               <Surface pad="sm">
-                <div className="stats-row">
+                <Row gap={3} wrap>
                   <Column gap={1}>
-                    <span className="label">DISTANCE</span>
-                    <p className="value">{(track.totalDistance / 1000).toFixed(2)} km</p>
+                    <Text size="eyebrow">DISTANCE</Text>
+                    <Metric value={(track.totalDistance / 1000).toFixed(2)} unit="km" />
                   </Column>
                   <Column gap={1}>
-                    <span className="label">DURATION</span>
-                    <p className="value">{formatDuration(track.duration)}</p>
+                    <Text size="eyebrow">DURATION</Text>
+                    <Metric value={formatDuration(track.duration)} />
                   </Column>
                   <Column gap={1}>
-                    <span className="label">ELEVATION</span>
-                    <p className="value">{Math.round(track.elevationGain)} m</p>
+                    <Text size="eyebrow">ELEVATION</Text>
+                    <Metric value={Math.round(track.elevationGain)} unit="m" />
                   </Column>
                   {track.avgHeartRate && (
                     <Column gap={1}>
-                      <span className="label">AVG HR</span>
-                      <p className="value">{Math.round(track.avgHeartRate)} bpm</p>
+                      <Text size="eyebrow">AVG HR</Text>
+                      <Metric value={Math.round(track.avgHeartRate)} unit="bpm" />
                     </Column>
                   )}
-                </div>
+                </Row>
               </Surface>
 
               {/* Diff for enrich-session */}
               {context === 'enrich-session' && existingSession && (
                 <Surface pad="sm">
-                  <p className="caption">Existing session will be updated:</p>
+                  <Text size="caption">Existing session will be updated:</Text>
                   <Column>
                     {existingSession.durationSeconds !== track.duration && (
                       <Row justify="between">
-                        <span className="caption">Duration</span>
-                        <span className="caption">{formatDuration(existingSession.durationSeconds)} → {formatDuration(track.duration)}</span>
+                        <Text size="caption">Duration</Text>
+                        <Text size="caption">{formatDuration(existingSession.durationSeconds)} → {formatDuration(track.duration)}</Text>
                       </Row>
                     )}
                     {existingSession.distanceMeters !== track.totalDistance && (
                       <Row justify="between">
-                        <span className="caption">Distance</span>
-                        <span className="caption">{(existingSession.distanceMeters / 1000).toFixed(2)} km → {(track.totalDistance / 1000).toFixed(2)} km</span>
+                        <Text size="caption">Distance</Text>
+                        <Text size="caption">{(existingSession.distanceMeters / 1000).toFixed(2)} km → {(track.totalDistance / 1000).toFixed(2)} km</Text>
                       </Row>
                     )}
                   </Column>
@@ -180,15 +181,15 @@ export function ImportModal({ context, existingSession, onComplete, onClose }: I
               )}
 
               <Row justify="between">
-                <button className="ghost sm" onClick={() => { setStep(1); setTrack(null); }}>
+                <Button variant="ghost" size="sm" onClick={() => { setStep(1); setTrack(null); }}>
                   ← Looks wrong?
-                </button>
-                <button
-                  className="primary"
+                </Button>
+                <Button
+                  variant="primary"
                   onClick={() => context === 'enrich-session' ? handleSave() : setStep(3)}
                 >
                   {context === 'enrich-session' ? 'Save' : 'Continue →'}
-                </button>
+                </Button>
               </Row>
             </Column>
           )}
@@ -197,37 +198,34 @@ export function ImportModal({ context, existingSession, onComplete, onClose }: I
           {step === 3 && track && (
             <Column>
               <Column>
-                <label className="caption">Sport</label>
-                <Row>
+                <Text as="label" size="caption">Sport</Text>
+                <Row wrap gap={1}>
                   {SPORT_OPTIONS.map(o => (
-                    <button
+                    <Button
                       key={o.value}
-                      className={sport === o.value ? 'primary sm' : 'ghost sm'}
+                      variant={sport === o.value ? 'primary' : 'ghost'}
+                      size="sm"
                       onClick={() => setSport(o.value)}
                     >
                       {o.label}
-                    </button>
+                    </Button>
                   ))}
                 </Row>
               </Column>
-              <Column>
-                <label htmlFor="import-rpe" className="caption">How hard was that? ({rpe}/10)</label>
-                <input
-                  id="import-rpe"
-                  type="range"
-                  min={1}
-                  max={10}
-                  value={rpe}
-                  onChange={e => setRpe(Number(e.target.value))}
-                />
-              </Column>
-              <textarea
+              <Slider
+                label={`How hard was that? (${rpe}/10)`}
+                value={rpe}
+                onChange={setRpe}
+                min={1}
+                max={10}
+              />
+              <Textarea
                 placeholder="Notes (optional)"
                 value={notes}
                 onChange={e => setNotes(e.target.value)}
                 rows={3}
               />
-              <button className="primary" onClick={handleSave}>Save session</button>
+              <Button variant="primary" onClick={handleSave}>Save session</Button>
             </Column>
           )}
 
