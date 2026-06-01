@@ -1,0 +1,216 @@
+- generic [active] [ref=e4]:
+  - generic [ref=e6]:
+    - complementary [ref=e1902]:
+      - navigation [ref=e1903]:
+        - link "Home" [ref=e1904] [cursor=pointer]:
+          - /url: "#/home"
+          - img [ref=e1906]
+          - generic [ref=e1909]: Home
+        - link "Workout" [ref=e1910] [cursor=pointer]:
+          - /url: "#/sessions"
+          - img [ref=e1912]
+          - generic [ref=e1916]: Workout
+        - link "Social" [ref=e1917] [cursor=pointer]:
+          - /url: "#/social"
+          - img [ref=e1919]
+          - generic [ref=e1923]: Social
+        - link "Messages" [ref=e1924] [cursor=pointer]:
+          - /url: "#/messages"
+          - img [ref=e1926]
+          - generic [ref=e1929]: Messages
+        - link "Profile" [ref=e1930] [cursor=pointer]:
+          - /url: "#/profile"
+          - img [ref=e1932]
+          - generic [ref=e1937]: Profile
+      - separator [ref=e1938]
+      - link "Settings" [ref=e1940] [cursor=pointer]:
+        - /url: "#/settings"
+        - img [ref=e1942]
+        - generic [ref=e1946]: Settings
+    - main [ref=e43]:
+      - generic [ref=e3093]:
+        - generic [ref=e3094]:
+          - generic [ref=e3095]:
+            - textbox [ref=e3097]: Upper A
+            - generic [ref=e3098]:
+              - button "Done" [ref=e3099] [cursor=pointer]
+              - button [ref=e3100] [cursor=pointer]:
+                - img [ref=e3101]
+          - generic [ref=e3105]:
+            - generic [ref=e3106]:
+              - generic [ref=e3107]: Start Time
+              - textbox [ref=e3108]: 09:00
+            - generic [ref=e3109]:
+              - generic [ref=e3110]: End Time
+              - textbox [ref=e3111]: 10:15
+            - generic [ref=e3112]:
+              - generic [ref=e3113]: Date
+              - textbox [ref=e3114]: 2026-01-06
+        - generic [ref=e3116]:
+          - generic [ref=e3117]:
+            - generic [ref=e3118]:
+              - generic [ref=e3119]:
+                - heading "Bench Press" [level=3] [ref=e3120]
+                - generic [ref=e3121]: wt-reps
+              - button [ref=e3122] [cursor=pointer]:
+                - img [ref=e3123]
+            - application [ref=e3129]:
+              - generic [ref=e3153]:
+                - generic [ref=e3154]:
+                  - generic [ref=e3155]: 50 kg
+                  - generic [ref=e3156]: x 5
+                  - generic [ref=e3157]: 70 kg
+                  - generic [ref=e3158]: x 5
+                  - generic [ref=e3159]: 72.5 kg
+                  - generic [ref=e3160]: x 5
+                  - generic [ref=e3161]: 75 kg
+                  - generic [ref=e3162]: x 3
+                - generic [ref=e3163]:
+                  - generic [ref=e3165]: WU
+                  - generic [ref=e3167]: "1"
+                  - generic [ref=e3169]: "2"
+                  - generic [ref=e3171]: "3"
+                - generic [ref=e3172]:
+                  - generic [ref=e3174]: "0"
+                  - generic [ref=e3176]: "40"
+                  - generic [ref=e3178]: "80"
+            - generic [ref=e3179]:
+              - generic [ref=e3181]:
+                - generic [ref=e3182]: WU
+                - generic [ref=e3183]:
+                  - spinbutton [ref=e3184]: "50"
+                  - generic [ref=e3185]: kg ×
+                  - spinbutton [ref=e3186]: "5"
+                  - generic [ref=e3187]: reps
+                - button [ref=e3188] [cursor=pointer]:
+                  - img [ref=e3189]
+              - generic [ref=e3194]:
+                - generic [ref=e3195]: S1
+                - generic [ref=e3196]:
+                  - spinbutton [ref=e3197]: "70"
+                  - generic [ref=e3198]: kg ×
+                  - spinbutton [ref=e3199]: "5"
+                  - generic [ref=e3200]: reps
+                - button [ref=e3201] [cursor=pointer]:
+                  - img [ref=e3202]
+              - generic [ref=e3207]:
+                - generic [ref=e3208]: S2
+                - generic [ref=e3209]:
+                  - spinbutton [ref=e3210]: "72.5"
+                  - generic [ref=e3211]: kg ×
+                  - spinbutton [ref=e3212]: "5"
+                  - generic [ref=e3213]: reps
+                - button [ref=e3214] [cursor=pointer]:
+                  - img [ref=e3215]
+              - generic [ref=e3220]:
+                - generic [ref=e3221]: S3
+                - generic [ref=e3222]:
+                  - spinbutton [ref=e3223]: "75"
+                  - generic [ref=e3224]: kg ×
+                  - spinbutton [ref=e3225]: "3"
+                  - generic [ref=e3226]: reps
+                - button [ref=e3227] [cursor=pointer]:
+                  - img [ref=e3228]
+            - button "+ Add Set" [ref=e3232] [cursor=pointer]
+          - generic [ref=e3233]:
+            - generic [ref=e3234]:
+              - generic [ref=e3235]:
+                - heading "Overhead Press" [level=3] [ref=e3236]
+                - generic [ref=e3237]: wt-reps
+              - button [ref=e3238] [cursor=pointer]:
+                - img [ref=e3239]
+            - application [ref=e3245]:
+              - generic [ref=e3269]:
+                - generic [ref=e3270]:
+                  - generic [ref=e3271]: 30 kg
+                  - generic [ref=e3272]: x 5
+                  - generic [ref=e3273]: 50 kg
+                  - generic [ref=e3274]: x 5
+                  - generic [ref=e3275]: 52.5 kg
+                  - generic [ref=e3276]: x 5
+                  - generic [ref=e3277]: 55 kg
+                  - generic [ref=e3278]: x 3
+                - generic [ref=e3279]:
+                  - generic [ref=e3281]: WU
+                  - generic [ref=e3283]: "1"
+                  - generic [ref=e3285]: "2"
+                  - generic [ref=e3287]: "3"
+                - generic [ref=e3288]:
+                  - generic [ref=e3290]: "0"
+                  - generic [ref=e3292]: "30"
+                  - generic [ref=e3294]: "60"
+            - generic [ref=e3295]:
+              - generic [ref=e3297]:
+                - generic [ref=e3298]: WU
+                - generic [ref=e3299]:
+                  - spinbutton [ref=e3300]: "30"
+                  - generic [ref=e3301]: kg ×
+                  - spinbutton [ref=e3302]: "5"
+                  - generic [ref=e3303]: reps
+                - button [ref=e3304] [cursor=pointer]:
+                  - img [ref=e3305]
+              - generic [ref=e3310]:
+                - generic [ref=e3311]: S1
+                - generic [ref=e3312]:
+                  - spinbutton [ref=e3313]: "50"
+                  - generic [ref=e3314]: kg ×
+                  - spinbutton [ref=e3315]: "5"
+                  - generic [ref=e3316]: reps
+                - button [ref=e3317] [cursor=pointer]:
+                  - img [ref=e3318]
+              - generic [ref=e3323]:
+                - generic [ref=e3324]: S2
+                - generic [ref=e3325]:
+                  - spinbutton [ref=e3326]: "52.5"
+                  - generic [ref=e3327]: kg ×
+                  - spinbutton [ref=e3328]: "5"
+                  - generic [ref=e3329]: reps
+                - button [ref=e3330] [cursor=pointer]:
+                  - img [ref=e3331]
+              - generic [ref=e3336]:
+                - generic [ref=e3337]: S3
+                - generic [ref=e3338]:
+                  - spinbutton [ref=e3339]: "55"
+                  - generic [ref=e3340]: kg ×
+                  - spinbutton [ref=e3341]: "3"
+                  - generic [ref=e3342]: reps
+                - button [ref=e3343] [cursor=pointer]:
+                  - img [ref=e3344]
+            - button "+ Add Set" [ref=e3348] [cursor=pointer]
+          - button "Add Exercise" [ref=e3349] [cursor=pointer]:
+            - img [ref=e3350]
+            - text: Add Exercise
+        - generic [ref=e3351]:
+          - generic [ref=e3352]: Session RPE
+          - generic [ref=e3353]:
+            - button "1" [ref=e3354] [cursor=pointer]
+            - button "2" [ref=e3355] [cursor=pointer]
+            - button "3" [ref=e3356] [cursor=pointer]
+            - button "4" [ref=e3357] [cursor=pointer]
+            - button "5" [ref=e3358] [cursor=pointer]
+            - button "6" [ref=e3359] [cursor=pointer]
+            - button "7" [ref=e3360] [cursor=pointer]
+            - button "8" [ref=e3361] [cursor=pointer]
+            - button "9" [ref=e3362] [cursor=pointer]
+            - button "10" [ref=e3363] [cursor=pointer]
+        - generic [ref=e3364]:
+          - generic [ref=e3365]: Tags
+          - generic [ref=e3366]:
+            - button "push" [ref=e3367] [cursor=pointer]
+            - button "pull" [ref=e3368] [cursor=pointer]
+            - button "legs" [ref=e3369] [cursor=pointer]
+            - button "upper" [ref=e3370] [cursor=pointer]
+            - button "lower" [ref=e3371] [cursor=pointer]
+            - button "full-body" [ref=e3372] [cursor=pointer]
+            - button "heavy" [ref=e3373] [cursor=pointer]
+            - button "light" [ref=e3374] [cursor=pointer]
+            - button "deload" [ref=e3375] [cursor=pointer]
+        - generic [ref=e3376]:
+          - generic [ref=e3377]: Notes
+          - textbox "Notes" [ref=e3378]:
+            - /placeholder: Session notes…
+        - generic [ref=e3379]:
+          - generic [ref=e3380]: Photos
+          - button "+" [ref=e3382] [cursor=pointer]:
+            - generic [ref=e3383]: +
+  - generic [ref=e1025]: "75"

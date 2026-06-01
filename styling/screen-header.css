@@ -1,0 +1,20 @@
+/* ════════════════════════════════════════════
+   SCREEN HEADER — three-slot page nav bar
+   ════════════════════════════════════════════ */
+.screen-header {
+  padding: var(--s-3) var(--s-4);
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+
+  & h2 {
+    margin: 0;
+    font-size: var(--t-md);
+    font-weight: 600;
+  }
+}
+
+.header-slot {
+  min-width: 40px;
+
+  &:first-child { justify-content: flex-start; }
+}

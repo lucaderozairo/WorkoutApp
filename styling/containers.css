@@ -1,0 +1,42 @@
+/* ════════════════════════════════════════════
+   CONTAINER QUERIES — card/widget atoms adapt to their own width.
+
+   Opt-in container contexts (NOT a blanket container-type on .surface,
+   which would make every card a containing block for abspos descendants
+   like badges/pins/dropdowns).
+
+   Note: a container queries its own size only for its DESCENDANTS — an
+   element can't restyle itself from its own width. So each rule below
+   restyles children of the container, not the container element itself.
+   ════════════════════════════════════════════ */
+
+/* StatTile (.q-tile): compact centered tile by default; the value reads
+   as a hero stat once the tile is wide enough. */
+.q-tile {
+  container: tile / inline-size;
+
+  @container tile (min-width: 200px) {
+    & .mono { font-size: var(--t-lg); }
+  }
+}
+
+/* DetailRow (.q-row): label/value sit on one row by default; stack when
+   the row is squeezed into a narrow cell. (.q-row wraps an inner .row so
+   the inner element — a descendant — is what the query restyles.) */
+.q-row {
+  container: drow / inline-size;
+
+  @container drow (max-width: 240px) {
+    & > .row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--s-1);
+    }
+  }
+}
+
+/* Generic card container — available for opt-in use by widget/card
+   components that need to restyle their children by card width. */
+.q-card {
+  container: card / inline-size;
+}

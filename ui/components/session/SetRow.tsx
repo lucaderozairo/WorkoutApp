@@ -2,6 +2,8 @@
 import { Check, MessageSquare, MoreVertical, Pencil, Trash2, X } from 'lucide-react';
 import type { UISet } from '@features/training_log/projections/viewTypes';
 import type { SetMode } from '@data/static/exercises';
+import { Row, Column, Cluster } from '@ui/layout';
+import { Surface } from '@ui/atoms';
 
 export interface SetRowProps {
   num: number;
@@ -55,12 +57,12 @@ export function SetRow({
   const sepCls = `set-sep caption ${cls}`;
 
   return (
-    <div className="column compact">
-      <div className="row align-center space-between">
+    <Column gap={1}>
+      <Row align="center" justify="between">
         <span className={`mono caption ${cls}`} style={{ minWidth: 28, textAlign: 'center', fontWeight: 600 }}>
           {label}
         </span>
-        <div className="row grow align-center compact">
+        <Row className="grow" align="center" gap={1}>
           {currentMode === 'wt-reps' && (
             <>
               <input
@@ -166,7 +168,7 @@ export function SetRow({
               <span className={sepCls}>sec</span>
             </>
           )}
-        </div>
+        </Row>
         {!disabled && (
           <button
             type="button"
@@ -176,14 +178,14 @@ export function SetRow({
             <MoreVertical size={10} className="faint" />
           </button>
         )}
-      </div>
+      </Row>
 
       {comment && !commentOpen && (
-        <div className="row align-center space-between">
+        <Row align="center" justify="between">
           <button className="icon sm ghost" disabled>
             <MessageSquare size={9} className="faint" />
           </button>
-          <div className="surface tight ghost grow align-center">
+          <div className="surface pad-sm ghost grow">
             <span className="caption pre-wrap">{comment}</span>
           </div>
           {!disabled && (
@@ -191,28 +193,28 @@ export function SetRow({
               <Pencil size={10} className="faint" />
             </button>
           )}
-        </div>
+        </Row>
       )}
 
       {!disabled && isOpen && (
-        <div className="">
-          <div className="surface flat column compact">
-            <div className="row space-between align-center">
+        <Surface variant="flat" pad="sm">
+          <Column gap={1}>
+            <Row justify="between" align="center">
               <h3>Set Options</h3>
               <button type="button" className="ghost icon sm" onClick={() => onOpenMenu(null)}>
                 <X size={10} className="faint" />
               </button>
-            </div>
-            <div className="row compact">
+            </Row>
+            <Row gap={1}>
               <button type="button" className="ghost sm" onClick={() => { onToggleWarmup(); onOpenMenu(null); }}>
                 {warmup ? 'Mark working' : 'Mark warmup'}
               </button>
               <button type="button" className="ghost sm" onClick={() => { onOpenMenu(null); setCommentOpen(v => !v); }}>
                 <MessageSquare size={9} /> {comment ? 'Edit note' : 'Add note'}
               </button>
-            </div>
+            </Row>
             <span className="eyebrow">Set mode</span>
-            <div className="cluster compact">
+            <Cluster gap={1}>
               {availableModes.map(mode => (
                 <button
                   key={mode}
@@ -223,8 +225,8 @@ export function SetRow({
                   {mode}
                 </button>
               ))}
-            </div>
-            <div className="row compact space-between">
+            </Cluster>
+            <Row gap={1} justify="between">
               <span />
               <button
                 type="button"
@@ -233,13 +235,13 @@ export function SetRow({
               >
                 <Trash2 size={9} /> Delete
               </button>
-            </div>
-          </div>
-        </div>
+            </Row>
+          </Column>
+        </Surface>
       )}
 
       {!disabled && commentOpen && (
-        <div className="row compact align-top ">
+        <Row gap={1} align="start">
           <button className='icon sm ghost' disabled><MessageSquare size={9} /></button>
           <textarea
             className="grow"
@@ -253,16 +255,16 @@ export function SetRow({
               if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') submitComment();
             }}
           />
-          <div className="column compact align-center">
+          <Column gap={1} align="center">
             <button type="button" className="ghost icon sm" onClick={submitComment}>
               <Check size={10} />
             </button>
             <button type="button" className="ghost icon sm" onClick={() => setCommentOpen(false)}>
               <X size={10} className="faint" />
             </button>
-          </div>
-        </div>
+          </Column>
+        </Row>
       )}
-    </div>
+    </Column>
   );
 }

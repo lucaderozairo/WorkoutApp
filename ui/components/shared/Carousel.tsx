@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Row, Column } from '@ui/layout';
+import { Surface } from '@ui/atoms';
 
 type Slide = string | { src: string; caption?: string };
 
@@ -20,16 +22,16 @@ export function Carousel({ slides }: CarouselProps) {
   const current = normalise(slides[idx]);
 
   return (
-    <div className='column compact'>
+    <Column gap={1}>
       <div className="carousel relative clip">
         <div className="row track" style={{ transform: `translateX(-${idx * 100}%)` }}>
           {slides.map((slide, i) => {
             const { src } = normalise(slide);
-            return <div className='surface flat bare' key={i}><img src={src} alt="" /></div>;
+            return <Surface key={i} variant="flat" pad="none"><img src={src} alt="" /></Surface>;
           })}
         </div>
         {current.caption && (
-          <div className="slide-caption row center">{current.caption}</div>
+          <Row justify="center" className="slide-caption">{current.caption}</Row>
         )}
         {len > 1 && idx > 0 && (
           <button className="icon sm ghost absolute bottom left" onClick={e => { e.stopPropagation(); setIdx(i => i - 1); }}>
@@ -43,12 +45,12 @@ export function Carousel({ slides }: CarouselProps) {
         )}
       </div>
       {len > 1 && (
-        <div className="row compact center">
+        <Row gap={1} justify="center">
           {slides.map((_, i) => (
             <span key={i} className={`dot sm ${i === idx ? ' active stretch' : ''} interactive`} onClick={e => { e.stopPropagation(); setIdx(i); }} />
           ))}
-        </div>
+        </Row>
       )}
-    </ div>
+    </Column>
   );
 }

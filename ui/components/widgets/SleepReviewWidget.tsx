@@ -6,6 +6,8 @@ import {
 
 import { ScoreRing, fmtMin, TOOLTIP_STYLE, TICK } from '@ui/patterns/charts/domain-charts';
 import type { SleepSession } from '@features/readiness';
+import { Row, Column, Spacer } from '@ui/layout';
+import { Surface } from '@ui/atoms';
 
 type WidgetSize = '1x1' | '2x1' | '2x2';
 
@@ -118,24 +120,26 @@ export function SleepReviewWidget({
 
   if (size === '1x1') {
     return (
-      <div className="surface tight column center align-center h-full">
-        <span className="eyebrow">Sleep</span>
-        <h2 className="mono">{session.score}</h2>
-        <span className="caption faint">{duration}</span>
-        <span className={`badge ${badge.cls}`}>{badge.label}</span>
-      </div>
+      <Surface pad="sm">
+        <Column align="center" justify="center" className="h-full">
+          <span className="eyebrow">Sleep</span>
+          <h2 className="mono">{session.score}</h2>
+          <span className="caption faint">{duration}</span>
+          <span className={`badge ${badge.cls}`}>{badge.label}</span>
+        </Column>
+      </Surface>
     );
   }
 
   /* Shared stage rows ─────────────────────────────────────────────────────── */
 
   const stageRows = STAGE_KEYS.map((key, i) => (
-    <div key={key} className="row align-center compact space-between">
+    <Row key={key} gap={1} align="center" justify="between">
       <span className={`pill ${STAGE_PILLS[i]}`}>
         {['Deep', 'Light', 'REM', 'Awake'][i]}
       </span>
 
-      <span className="grow" />
+      <Spacer />
 
       <span className="mono caption">
         {fmtMin(session.stages[key])}
@@ -168,28 +172,30 @@ export function SleepReviewWidget({
           </BarChart>
         </ResponsiveContainer>
       </div>
-    </div>
+    </Row>
   ));
 
   /* 2x1 ───────────────────────────────────────────────────────────────────── */
 
   if (size === '2x1') {
     return (
-      <div className="surface tight column h-full">
-        <div className="row space-between align-center">
-          <span className="eyebrow">Sleep</span>
-          <span className={`badge ${badge.cls}`}>{badge.label}</span>
-        </div>
+      <Surface pad="sm">
+        <Column className="h-full">
+          <Row justify="between" align="center">
+            <span className="eyebrow">Sleep</span>
+            <span className={`badge ${badge.cls}`}>{badge.label}</span>
+          </Row>
 
-        <div className="row align-center">
-          <h2 className="mono">{session.score}</h2>
-          <span className="caption faint grow">
-            &nbsp;· {duration}
-          </span>
-        </div>
+          <Row align="center">
+            <h2 className="mono">{session.score}</h2>
+            <span className="caption faint grow">
+              &nbsp;· {duration}
+            </span>
+          </Row>
 
-        {stageRows}
-      </div>
+          {stageRows}
+        </Column>
+      </Surface>
     );
   }
 
@@ -199,67 +205,66 @@ export function SleepReviewWidget({
   const labelInterval = Math.max(1, Math.floor(sleepBar.length / 6));
 
   return (
-    <div className="surface tight column h-full">
-      <div className="row space-between align-center">
-        <span className="eyebrow">Sleep Review</span>
-        <span className={`badge ${badge.cls}`}>{badge.label}</span>
-      </div>
+    <Surface pad="sm">
+      <Column className="h-full">
+        <Row justify="between" align="center">
+          <span className="eyebrow">Sleep Review</span>
+          <span className={`badge ${badge.cls}`}>{badge.label}</span>
+        </Row>
 
-      <div className="row align-center space-between">
-        <ScoreRing
-          score={session.score}
-          color={color}
-          subtitle="score"
-          size={100}
-        />
-<div className="column compact">{stageRows}</div>
-        </div>
-        
-        
-
-      <ResponsiveContainer>
-        <BarChart data={sleepBar} barCategoryGap={0}>
-          <XAxis
-            dataKey="t"
-            tick={TICK}
-            interval={labelInterval}
-            axisLine={false}
-            tickLine={false}
-            
+        <Row align="center" justify="between">
+          <ScoreRing
+            score={session.score}
+            color={color}
+            subtitle="score"
+            size={100}
           />
+          <Column gap={1}>{stageRows}</Column>
+        </Row>
 
-          <YAxis
-            type="number"
-            domain={[0, 3]}
-            ticks={[0, 1, 2, 3]}
-            tickFormatter={(v: number) => STAGE_LABELS[v] ?? ''}
-            tick={TICK}
-            axisLine={false}
-            tickLine={false}
-            width={50}
-          />
+        <ResponsiveContainer>
+          <BarChart data={sleepBar} barCategoryGap={0}>
+            <XAxis
+              dataKey="t"
+              tick={TICK}
+              interval={labelInterval}
+              axisLine={false}
+              tickLine={false}
+            />
 
-          <Tooltip
-            contentStyle={TOOLTIP_STYLE}
-            formatter={(v: unknown) =>
-              [STAGE_LABELS[v as number] ?? '', 'Stage'] as [string, string]
-            }
-          />
+            <YAxis
+              type="number"
+              domain={[0, 3]}
+              ticks={[0, 1, 2, 3]}
+              tickFormatter={(v: number) => STAGE_LABELS[v] ?? ''}
+              tick={TICK}
+              axisLine={false}
+              tickLine={false}
+              width={50}
+            />
 
-          <Bar
-            dataKey="stage"
-            radius={[2, 2, 0, 0]}
-            isAnimationActive={false}
-          >
-            {sleepBar.map((entry, index) => (
-              <Cell
-                key={index}
-                fill={STAGE_COLORS[entry.stage]}
-              />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
+            <Tooltip
+              contentStyle={TOOLTIP_STYLE}
+              formatter={(v: unknown) =>
+                [STAGE_LABELS[v as number] ?? '', 'Stage'] as [string, string]
+              }
+            />
+
+            <Bar
+              dataKey="stage"
+              radius={[2, 2, 0, 0]}
+              isAnimationActive={false}
+            >
+              {sleepBar.map((entry, index) => (
+                <Cell
+                  key={index}
+                  fill={STAGE_COLORS[entry.stage]}
+                />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </Column>
+    </Surface>
   );
 }

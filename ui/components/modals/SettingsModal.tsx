@@ -14,6 +14,8 @@ import { exportAllSessionsCsv } from '@shared/utils/exportCsv';
 import { triggerDownload } from '@shared/utils/csv';
 import { getActivityHistory } from '@features/training_log';
 import type { CardioSession } from '@features/cardio/domain/types';
+import { Row, Column, Spacer } from '@ui/layout';
+import { Surface } from '@ui/atoms';
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -131,15 +133,15 @@ export function SettingsContent() {
         </div>
       </section> */}
 
-      <section className="column">
+      <Column as="section">
         <h3 className="caption">Appearance</h3>
-        <div className="row space-between align-center">
+        <Row justify="between" align="center">
           <span className="caption">{theme === 'dark' ? '🌙 Dark' : '☀️ Light'}</span>
           <label className="switch">
             <input type="range" min="0" max="1" value={theme === 'light' ? 0 : 1} onChange={handleThemeChange} />
           </label>
-        </div>
-        {/* <div className="row space-between align-center">
+        </Row>
+        {/* <div className="row justify-between align-center">
           <span className="caption">Units</span>
           <div className="row">
             <button
@@ -156,22 +158,22 @@ export function SettingsContent() {
             </button>
           </div>
         </div> */}
-      </section>
+      </Column>
 
-      <section className="column">
+      <Column as="section">
         <h3 className="caption">Data</h3>
-        <div className="row space-between align-center">
+        <Row justify="between" align="center">
           <span className="caption">Export history</span>
-          <div className="row compact">
+          <Row gap={1}>
             <button className="secondary sm" onClick={exportData}>Export JSON</button>
             <button className="secondary sm" onClick={exportDataCsv}>Export CSV</button>
-          </div>
-        </div>
-        <div className="row space-between align-center">
-          <div className="column compact">
+          </Row>
+        </Row>
+        <Row justify="between" align="center">
+          <Column gap={1}>
             <span className="caption">Import history</span>
             {importStatus && <span className="caption">{importStatus}</span>}
-          </div>
+          </Column>
           <button className="secondary sm" onClick={() => fileInputRef.current?.click()}>
             Import
           </button>
@@ -182,20 +184,20 @@ export function SettingsContent() {
             hidden
             onChange={handleImportFile}
           />
-        </div>
-        <div className="row space-between align-center">
+        </Row>
+        <Row justify="between" align="center">
           <span className="caption">Clear All Data</span>
           <button className="danger sm" onClick={clearAllData}>Clear All</button>
-        </div>
-      </section>
+        </Row>
+      </Column>
 
-      <section className="column">
+      <Column as="section">
         <h3 className="caption">About</h3>
-        <div className="row space-between align-center">
+        <Row justify="between" align="center">
           <span className="caption">Version</span>
           <span className="caption">0.1.0</span>
-        </div>
-      </section>
+        </Row>
+      </Column>
     </>
   );
 }
@@ -207,13 +209,17 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}>
-      <section className="surface" onClick={e => e.stopPropagation()}>
-        <div className="row space-between align-center">
-          <h3>Settings</h3>
-          <button className="ghost sm" onClick={onClose}>✕</button>
-        </div>
-        <SettingsContent />
-      </section>
+      <div onClick={e => e.stopPropagation()}>
+        <Surface as="section">
+          <Column>
+            <Row justify="between" align="center">
+              <h3>Settings</h3>
+              <button className="ghost sm" onClick={onClose}>✕</button>
+            </Row>
+            <SettingsContent />
+          </Column>
+        </Surface>
+      </div>
     </div>
   );
 }

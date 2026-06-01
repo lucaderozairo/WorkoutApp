@@ -5,6 +5,8 @@ import type { ActivitiesState } from '@features/training_log';
 import { getActivityHistory } from '@features/training_log';
 import type { CardioSession } from '@features/cardio/domain/types';
 import { exportAllSessionsCsv } from '@shared/utils/exportCsv';
+import { Row, Column } from '@ui/layout';
+import { Surface } from '@ui/atoms';
 
 export function ExportDataWidget() {
   useQuery<ActivitiesState>('sessions');
@@ -23,13 +25,15 @@ export function ExportDataWidget() {
   }
 
   return (
-    <div className="surface column compact widget-1x1 space-between">
-      <span className="label">Export Data</span>
-      <p className="detail">Download all your workout data as JSON or CSV.</p>
-      <div className="row compact">
-        <button className='chip sm' onClick={handleExportJson}>JSON</button>
-        <button className='chip sm' onClick={handleExportCsv}>CSV</button>
-      </div>
-    </div>
+    <Surface>
+      <Column gap={1} justify="between" className="widget-1x1">
+        <span className="label">Export Data</span>
+        <p className="detail">Download all your workout data as JSON or CSV.</p>
+        <Row gap={1}>
+          <button className='chip sm' onClick={handleExportJson}>JSON</button>
+          <button className='chip sm' onClick={handleExportCsv}>CSV</button>
+        </Row>
+      </Column>
+    </Surface>
   );
 }

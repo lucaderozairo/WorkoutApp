@@ -1,0 +1,43 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - button "Settings" [ref=e5] [cursor=pointer]:
+      - img [ref=e6]
+  - navigation [ref=e10]:
+    - generic [ref=e11]:
+      - link [ref=e12] [cursor=pointer]:
+        - /url: "#/home"
+        - img [ref=e14]
+      - link [ref=e17] [cursor=pointer]:
+        - /url: "#/sessions"
+        - img [ref=e19]
+      - link [ref=e23] [cursor=pointer]:
+        - /url: "#/profile"
+        - img [ref=e25]
+  - main [ref=e30]:
+    - generic [ref=e513]:
+      - generic [ref=e514]:
+        - button "Go back" [ref=e515] [cursor=pointer]: ←
+        - heading "Settings" [level=2] [ref=e516]
+      - generic [ref=e517]:
+        - heading "Appearance" [level=3] [ref=e518]
+        - generic [ref=e519]:
+          - generic [ref=e520]: ☀️ Light
+          - slider [ref=e522]: "0"
+      - generic [ref=e523]:
+        - heading "Data" [level=3] [ref=e524]
+        - generic [ref=e525]:
+          - generic [ref=e526]: Export history
+          - generic [ref=e527]:
+            - button "Export JSON" [ref=e528] [cursor=pointer]
+            - button "Export CSV" [ref=e529] [cursor=pointer]
+        - generic [ref=e530]:
+          - generic [ref=e532]: Import history
+          - button "Import" [ref=e533] [cursor=pointer]
+        - generic [ref=e534]:
+          - generic [ref=e535]: Clear All Data
+          - button "Clear All" [ref=e536] [cursor=pointer]
+      - generic [ref=e537]:
+        - heading "About" [level=3] [ref=e538]
+        - generic [ref=e539]:
+          - generic [ref=e540]: Version
+          - generic [ref=e541]: 0.1.0

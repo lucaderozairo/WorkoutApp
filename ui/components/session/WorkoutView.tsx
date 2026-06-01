@@ -1,5 +1,7 @@
 ﻿import { useEffect, useRef, useState } from 'react';
 import { Download, Plus, Trash2 } from 'lucide-react';
+import { Row, Column } from '@ui/layout';
+import { Surface } from '@ui/atoms';
 import { useCommand } from '@ui/bindings';
 import {
   handleRemoveBlock,
@@ -295,7 +297,7 @@ export function WorkoutView({
   }
 
   return (
-    <div className="column">
+    <Column>
       {!hideHeader && (
         <SessionHeader
           name={name}
@@ -323,7 +325,7 @@ export function WorkoutView({
 
       <UndoToast />
 
-      <div className="column">
+      <Column>
         {blocks.map((b, idx) => (
           <BlockCard
             key={b.id}
@@ -349,57 +351,63 @@ export function WorkoutView({
         <button type="button" className="neutral row" onClick={onAddExercise}>
           <Plus size={12} /> Add Exercise
         </button>
-      </div>
+      </Column>
 
       {deleteAlert && (
         <div className="modal-overlay">
-          <div className="surface">
-            <div className="column compact">
-              <span className="detail">Delete set?</span>
-              <span className="mono num detail muted">{deleteAlert.label}</span>
-              <span className="caption faint">This removes the set from your log.</span>
-            </div>
-            <div className="row space-between">
-              <button type="button" className="ghost" onClick={() => setDeleteAlert(null)}>Cancel</button>
-              <button type="button" className="warning" onClick={handleConfirmDelete}>
-                <Trash2 size={12} /> Delete
-              </button>
-            </div>
-          </div>
+          <Surface>
+            <Column>
+              <Column gap={1}>
+                <span className="detail">Delete set?</span>
+                <span className="mono num detail muted">{deleteAlert.label}</span>
+                <span className="caption faint">This removes the set from your log.</span>
+              </Column>
+              <Row justify="between">
+                <button type="button" className="ghost" onClick={() => setDeleteAlert(null)}>Cancel</button>
+                <button type="button" className="warning" onClick={handleConfirmDelete}>
+                  <Trash2 size={12} /> Delete
+                </button>
+              </Row>
+            </Column>
+          </Surface>
         </div>
       )}
 
       {deleteBlockAlert && (
         <div className="modal-overlay">
-          <div className="surface">
-            <div className="column compact">
-              <span className="detail">Delete exercise?</span>
-              <span className="caption faint">This removes the exercise and all its sets.</span>
-            </div>
-            <div className="row space-between">
-              <button type="button" className="ghost" onClick={() => setDeleteBlockAlert(null)}>Cancel</button>
-              <button type="button" className="warning" onClick={handleConfirmDeleteBlock}>
-                <Trash2 size={12} /> Delete
-              </button>
-            </div>
-          </div>
+          <Surface>
+            <Column>
+              <Column gap={1}>
+                <span className="detail">Delete exercise?</span>
+                <span className="caption faint">This removes the exercise and all its sets.</span>
+              </Column>
+              <Row justify="between">
+                <button type="button" className="ghost" onClick={() => setDeleteBlockAlert(null)}>Cancel</button>
+                <button type="button" className="warning" onClick={handleConfirmDeleteBlock}>
+                  <Trash2 size={12} /> Delete
+                </button>
+              </Row>
+            </Column>
+          </Surface>
         </div>
       )}
 
       {clearAlert && (
         <div className="modal-overlay">
-          <div className="surface">
-            <div className="column compact">
-              <h3>Delete session?</h3>
-              <span className="caption faint">This removes the entire session and cannot be undone.</span>
-            </div>
-            <div className="row space-between">
-              <button type="button" className="secondary" onClick={() => setClearAlert(false)}>Cancel</button>
-              <button type="button" className="warning" onClick={handleConfirmClearSession}>
-                <Trash2 size={12} /> Delete
-              </button>
-            </div>
-          </div>
+          <Surface>
+            <Column>
+              <Column gap={1}>
+                <h3>Delete session?</h3>
+                <span className="caption faint">This removes the entire session and cannot be undone.</span>
+              </Column>
+              <Row justify="between">
+                <button type="button" className="secondary" onClick={() => setClearAlert(false)}>Cancel</button>
+                <button type="button" className="warning" onClick={handleConfirmClearSession}>
+                  <Trash2 size={12} /> Delete
+                </button>
+              </Row>
+            </Column>
+          </Surface>
         </div>
       )}
 
@@ -411,6 +419,6 @@ export function WorkoutView({
           />
         </div>
       )}
-    </div>
+    </Column>
   );
 }

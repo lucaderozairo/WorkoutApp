@@ -5,6 +5,7 @@ import { handleFinishSession, handleUpdateSessionNote, getActivityHistory } from
 import { useCommand } from '@ui/bindings';
 import { exportSessionEnvelope } from '@data/sources/local/persistence';
 import { exportSessionCsv, triggerDownload } from '@shared/utils/exportSession';
+import { Row, Column, Cluster, Spacer } from '@ui/layout';
 
 const RPE_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const SUGGESTED_TAGS = ['push', 'pull', 'legs', 'upper', 'lower', 'full-body', 'heavy', 'light', 'deload'];
@@ -58,83 +59,87 @@ export function FinishSessionModal({ session, onClose, onFinished, onJumpToBlock
   };
 
   return (
-    <div className="surface column" role="dialog" aria-label="Finish session">
-      <header className="row align-center space-between compact">
-        <h3>Finish session</h3>
-        <button type="button" className="ghost sm" onClick={onClose}>✕</button>
-      </header>
+    <div role="dialog" aria-label="Finish session">
+      <Column>
+        <Row as="header" align="center" justify="between" gap={1}>
+          <h3>Finish session</h3>
+          <button type="button" className="ghost sm" onClick={onClose}>✕</button>
+        </Row>
 
-      <p className="caption">
-        {session.segments.length} exercises · {totalSets} sets
-      </p>
+        <p className="caption">
+          {session.segments.length} exercises · {totalSets} sets
+        </p>
 
-      <div className="column compact">
-        <span className="caption">Review</span>
-        {session.segments.map(b => (
-          <button
-            key={b.id}
-            type="button"
-            className="ghost row align-center space-between"
-            onClick={() => { onJumpToBlock?.(b.id); onClose(); }}
-          >
-            <span>{b.exerciseName}</span>
-            <span className="caption">{b.sets.length} sets</span>
-          </button>
-        ))}
-      </div>
-
-      <div className="column compact">
-        <span className="caption">Session RPE</span>
-        <div className="cluster compact">
-          {RPE_VALUES.map(n => (
+        <Column gap={1}>
+          <span className="caption">Review</span>
+          {session.segments.map(b => (
             <button
-              key={n}
+              key={b.id}
               type="button"
-              className={`pill${rpe === n ? ' primary' : ''}`}
-              onClick={() => setRpe(n)}
+              className="ghost"
+              onClick={() => { onJumpToBlock?.(b.id); onClose(); }}
             >
-              {n}
+              <Row justify="between" align="center">
+                <span>{b.exerciseName}</span>
+                <span className="caption">{b.sets.length} sets</span>
+              </Row>
             </button>
           ))}
-        </div>
-      </div>
+        </Column>
 
-      <div className="column compact">
-        <span className="caption">Tags</span>
-        <div className="cluster compact">
-          {SUGGESTED_TAGS.map(t => (
-            <button
-              key={t}
-              type="button"
-              className={`pill${tags.includes(t) ? ' primary' : ''}`}
-              onClick={() => toggleTag(t)}
-            >
-              {t}
-            </button>
-          ))}
-        </div>
-      </div>
+        <Column gap={1}>
+          <span className="caption">Session RPE</span>
+          <Cluster gap={1}>
+            {RPE_VALUES.map(n => (
+              <button
+                key={n}
+                type="button"
+                className={`pill${rpe === n ? ' primary' : ''}`}
+                onClick={() => setRpe(n)}
+              >
+                {n}
+              </button>
+            ))}
+          </Cluster>
+        </Column>
 
-      <textarea
-        value={notes}
-        onChange={e => setNotes(e.target.value)}
-        placeholder="Session notes…"
-        rows={3}
-      />
+        <Column gap={1}>
+          <span className="caption">Tags</span>
+          <Cluster gap={1}>
+            {SUGGESTED_TAGS.map(t => (
+              <button
+                key={t}
+                type="button"
+                className={`pill${tags.includes(t) ? ' primary' : ''}`}
+                onClick={() => toggleTag(t)}
+              >
+                {t}
+              </button>
+            ))}
+          </Cluster>
+        </Column>
 
-      {finished ? (
-        <div className="row compact align-center">
-          <button type="button" className="secondary" onClick={handleExportJson}>Export JSON</button>
-          <button type="button" className="secondary" onClick={handleExportCsv}>Export CSV</button>
-          <div className="grow" />
-          <button type="button" className="primary" onClick={onClose}>Close</button>
-        </div>
-      ) : (
-        <div className="row align-center space-between compact">
-          <button type="button" className="ghost" onClick={onClose}>Cancel</button>
-          <button type="button" className="primary" onClick={submit}>Finish</button>
-        </div>
-      )}
+        <textarea
+          value={notes}
+          onChange={e => setNotes(e.target.value)}
+          placeholder="Session notes…"
+          rows={3}
+        />
+
+        {finished ? (
+          <Row gap={1} align="center">
+            <button type="button" className="secondary" onClick={handleExportJson}>Export JSON</button>
+            <button type="button" className="secondary" onClick={handleExportCsv}>Export CSV</button>
+            <Spacer />
+            <button type="button" className="primary" onClick={onClose}>Close</button>
+          </Row>
+        ) : (
+          <Row align="center" justify="between" gap={1}>
+            <button type="button" className="ghost" onClick={onClose}>Cancel</button>
+            <button type="button" className="primary" onClick={submit}>Finish</button>
+          </Row>
+        )}
+      </Column>
     </div>
   );
 }

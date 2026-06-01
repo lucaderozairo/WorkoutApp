@@ -1,0 +1,22 @@
+/* ════════════════════════════════════════════
+   AVATAR — circular user/entity portrait
+   ════════════════════════════════════════════ */
+.avatar {
+  --size: 45px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-strength), var(--c-mind));
+  font-weight: 600;
+  font-size: calc(var(--size) * 0.4);
+  color: white;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  &.sm { --size: 28px; }
+  &.lg { --size: 56px; }
+  &.xl { --size: 80px; }
+}

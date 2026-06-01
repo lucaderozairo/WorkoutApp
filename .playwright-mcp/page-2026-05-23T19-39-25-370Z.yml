@@ -1,0 +1,586 @@
+- generic [active] [ref=e4]:
+  - generic [ref=e6]:
+    - complementary [ref=e1902]:
+      - navigation [ref=e1903]:
+        - link "Home" [ref=e1904] [cursor=pointer]:
+          - /url: "#/home"
+          - img [ref=e1906]
+          - generic [ref=e1909]: Home
+        - link "Workout" [ref=e1910] [cursor=pointer]:
+          - /url: "#/sessions"
+          - img [ref=e1912]
+          - generic [ref=e1916]: Workout
+        - link "Social" [ref=e1917] [cursor=pointer]:
+          - /url: "#/social"
+          - img [ref=e1919]
+          - generic [ref=e1923]: Social
+        - link "Messages" [ref=e1924] [cursor=pointer]:
+          - /url: "#/messages"
+          - img [ref=e1926]
+          - generic [ref=e1929]: Messages
+        - link "Profile" [ref=e1930] [cursor=pointer]:
+          - /url: "#/profile"
+          - img [ref=e1932]
+          - generic [ref=e1937]: Profile
+      - separator [ref=e1938]
+      - link "Settings" [ref=e1940] [cursor=pointer]:
+        - /url: "#/settings"
+        - img [ref=e1942]
+        - generic [ref=e1946]: Settings
+    - main [ref=e43]:
+      - generic [ref=e1974]:
+        - generic [ref=e1975]:
+          - heading "My Sessions" [level=2] [ref=e1976]
+          - button "＋ Add" [ref=e1978] [cursor=pointer]
+        - generic [ref=e1979]:
+          - button "≡ List" [ref=e1980] [cursor=pointer]
+          - button "▦ Month" [ref=e1981] [cursor=pointer]
+          - button "⬚ Week" [ref=e1982] [cursor=pointer]
+        - generic [ref=e1984]:
+          - generic [ref=e1985]:
+            - img [ref=e1986]
+            - textbox "Search sessions…" [ref=e1989]
+          - button "↓ Newest" [ref=e1990] [cursor=pointer]
+          - button "Filters" [ref=e1992] [cursor=pointer]:
+            - img [ref=e1993]
+            - text: Filters
+        - generic [ref=e1994]:
+          - paragraph [ref=e1995]: "2026"
+          - generic [ref=e1996]:
+            - generic [ref=e1997] [cursor=pointer]:
+              - generic [ref=e1998]:
+                - img [ref=e1999]
+                - generic [ref=e2002]:
+                  - generic [ref=e2003]: Gym
+                  - time [ref=e2004]: 24 Mar · 09:00
+              - button "Session actions" [ref=e2006]:
+                - img [ref=e2007]
+            - heading "Lower B" [level=3] [ref=e2011]
+            - generic [ref=e2012]:
+              - generic [ref=e2013]:
+                - heading "2" [level=3] [ref=e2014]
+                - paragraph [ref=e2015]: Exercises
+              - generic [ref=e2016]:
+                - heading "1h 10m" [level=3] [ref=e2017]
+                - paragraph [ref=e2018]: Duration
+              - generic [ref=e2019]:
+                - heading "6" [level=3] [ref=e2020]
+                - paragraph [ref=e2021]: Sets
+            - button [ref=e2029] [cursor=pointer]:
+              - img [ref=e2030]
+            - generic [ref=e2038]: strength
+          - generic [ref=e2039]:
+            - generic [ref=e2040] [cursor=pointer]:
+              - generic [ref=e2041]:
+                - img [ref=e2042]
+                - generic [ref=e2045]:
+                  - generic [ref=e2046]: Run
+                  - time [ref=e2047]: 22 Mar · 07:30
+              - button "Session actions" [ref=e2049]:
+                - img [ref=e2050]
+            - heading "Run" [level=3] [ref=e2054]
+            - generic [ref=e2055]:
+              - generic [ref=e2056]:
+                - heading "6.5 km" [level=3] [ref=e2057]:
+                  - text: "6.5"
+                  - generic [ref=e2058]: km
+                - paragraph [ref=e2059]: Distance
+              - generic [ref=e2060]:
+                - heading "40 min" [level=3] [ref=e2061]
+                - paragraph [ref=e2062]: Time
+              - generic [ref=e2063]:
+                - heading "6:09/km" [level=3] [ref=e2064]
+                - paragraph [ref=e2065]: Avg Pace
+            - generic [ref=e2067]: run
+          - generic [ref=e2068]:
+            - generic [ref=e2069] [cursor=pointer]:
+              - generic [ref=e2070]:
+                - img [ref=e2071]
+                - generic [ref=e2074]:
+                  - generic [ref=e2075]: Gym
+                  - time [ref=e2076]: 17 Mar · 09:00
+              - button "Session actions" [ref=e2078]:
+                - img [ref=e2079]
+            - heading "Upper B" [level=3] [ref=e2083]
+            - generic [ref=e2084]:
+              - generic [ref=e2085]:
+                - heading "2" [level=3] [ref=e2086]
+                - paragraph [ref=e2087]: Exercises
+              - generic [ref=e2088]:
+                - heading "1h 25m" [level=3] [ref=e2089]
+                - paragraph [ref=e2090]: Duration
+              - generic [ref=e2091]:
+                - heading "6" [level=3] [ref=e2092]
+                - paragraph [ref=e2093]: Sets
+            - generic [ref=e2099]: strength
+          - generic [ref=e2100]:
+            - generic [ref=e2101] [cursor=pointer]:
+              - generic [ref=e2102]:
+                - img [ref=e2103]
+                - generic [ref=e2106]:
+                  - generic [ref=e2107]: Cycle
+                  - time [ref=e2108]: 16 Mar · 07:30
+              - button "Session actions" [ref=e2110]:
+                - img [ref=e2111]
+            - heading "Cycle" [level=3] [ref=e2115]
+            - generic [ref=e2116]:
+              - generic [ref=e2117]:
+                - heading "35.0 km" [level=3] [ref=e2118]:
+                  - text: "35.0"
+                  - generic [ref=e2119]: km
+                - paragraph [ref=e2120]: Distance
+              - generic [ref=e2121]:
+                - heading "1h 30m" [level=3] [ref=e2122]
+                - paragraph [ref=e2123]: Time
+              - generic [ref=e2124]:
+                - heading "2:34/km" [level=3] [ref=e2125]
+                - paragraph [ref=e2126]: Avg Pace
+            - generic [ref=e2128]: cycle
+          - generic [ref=e2129]:
+            - generic [ref=e2130] [cursor=pointer]:
+              - generic [ref=e2131]:
+                - img [ref=e2132]
+                - generic [ref=e2135]:
+                  - generic [ref=e2136]: Gym
+                  - time [ref=e2137]: 10 Mar · 09:00
+              - button "Session actions" [ref=e2139]:
+                - img [ref=e2140]
+            - heading "Lower A" [level=3] [ref=e2144]
+            - generic [ref=e2145]:
+              - generic [ref=e2146]:
+                - heading "2" [level=3] [ref=e2147]
+                - paragraph [ref=e2148]: Exercises
+              - generic [ref=e2149]:
+                - heading "1h 12m" [level=3] [ref=e2150]
+                - paragraph [ref=e2151]: Duration
+              - generic [ref=e2152]:
+                - heading "6" [level=3] [ref=e2153]
+                - paragraph [ref=e2154]: Sets
+            - button [ref=e2160] [cursor=pointer]:
+              - img [ref=e2161]
+            - generic [ref=e2167]: strength
+          - generic [ref=e2168]:
+            - generic [ref=e2169] [cursor=pointer]:
+              - generic [ref=e2170]:
+                - img [ref=e2171]
+                - generic [ref=e2174]:
+                  - generic [ref=e2175]: Run
+                  - time [ref=e2176]: 9 Mar · 07:30
+              - button "Session actions" [ref=e2178]:
+                - img [ref=e2179]
+            - heading "Run" [level=3] [ref=e2183]
+            - generic [ref=e2184]:
+              - generic [ref=e2185]:
+                - heading "9.0 km" [level=3] [ref=e2186]:
+                  - text: "9.0"
+                  - generic [ref=e2187]: km
+                - paragraph [ref=e2188]: Distance
+              - generic [ref=e2189]:
+                - heading "55 min" [level=3] [ref=e2190]
+                - paragraph [ref=e2191]: Time
+              - generic [ref=e2192]:
+                - heading "6:06/km" [level=3] [ref=e2193]
+                - paragraph [ref=e2194]: Avg Pace
+            - paragraph [ref=e2195]: Long run
+            - generic [ref=e2197]: run
+          - generic [ref=e2198]:
+            - generic [ref=e2199] [cursor=pointer]:
+              - generic [ref=e2200]:
+                - img [ref=e2201]
+                - generic [ref=e2205]:
+                  - generic [ref=e2206]: Swim
+                  - time [ref=e2207]: 4 Mar · 07:30
+              - button "Session actions" [ref=e2209]:
+                - img [ref=e2210]
+            - heading "Swim" [level=3] [ref=e2214]
+            - generic [ref=e2215]:
+              - generic [ref=e2216]:
+                - heading "1.8 km" [level=3] [ref=e2217]:
+                  - text: "1.8"
+                  - generic [ref=e2218]: km
+                - paragraph [ref=e2219]: Distance
+              - generic [ref=e2220]:
+                - heading "45 min" [level=3] [ref=e2221]
+                - paragraph [ref=e2222]: Time
+              - generic [ref=e2223]:
+                - heading "25:00/km" [level=3] [ref=e2224]
+                - paragraph [ref=e2225]: Avg Pace
+            - generic [ref=e2227]: swim
+          - generic [ref=e2228]:
+            - generic [ref=e2229] [cursor=pointer]:
+              - generic [ref=e2230]:
+                - img [ref=e2231]
+                - generic [ref=e2234]:
+                  - generic [ref=e2235]: Gym
+                  - time [ref=e2236]: 3 Mar · 09:00
+              - button "Session actions" [ref=e2238]:
+                - img [ref=e2239]
+            - heading "Upper A" [level=3] [ref=e2243]
+            - generic [ref=e2244]:
+              - generic [ref=e2245]:
+                - heading "2" [level=3] [ref=e2246]
+                - paragraph [ref=e2247]: Exercises
+              - generic [ref=e2248]:
+                - heading "1h 18m" [level=3] [ref=e2249]
+                - paragraph [ref=e2250]: Duration
+              - generic [ref=e2251]:
+                - heading "6" [level=3] [ref=e2252]
+                - paragraph [ref=e2253]: Sets
+            - button [ref=e2260] [cursor=pointer]:
+              - img [ref=e2261]
+            - generic [ref=e2268]: strength
+          - generic [ref=e2269]:
+            - generic [ref=e2270] [cursor=pointer]:
+              - generic [ref=e2271]:
+                - img [ref=e2272]
+                - generic [ref=e2275]:
+                  - generic [ref=e2276]: Gym
+                  - time [ref=e2277]: 24 Feb · 09:00
+              - button "Session actions" [ref=e2279]:
+                - img [ref=e2280]
+            - heading "Lower B" [level=3] [ref=e2284]
+            - generic [ref=e2285]:
+              - generic [ref=e2286]:
+                - heading "2" [level=3] [ref=e2287]
+                - paragraph [ref=e2288]: Exercises
+              - generic [ref=e2289]:
+                - heading "1h 7m" [level=3] [ref=e2290]
+                - paragraph [ref=e2291]: Duration
+              - generic [ref=e2292]:
+                - heading "6" [level=3] [ref=e2293]
+                - paragraph [ref=e2294]: Sets
+            - generic [ref=e2296]: strength
+          - generic [ref=e2297]:
+            - generic [ref=e2298] [cursor=pointer]:
+              - generic [ref=e2299]:
+                - img [ref=e2300]
+                - generic [ref=e2303]:
+                  - generic [ref=e2304]: Run
+                  - time [ref=e2305]: 24 Feb · 07:30
+              - button "Session actions" [ref=e2307]:
+                - img [ref=e2308]
+            - heading "Run" [level=3] [ref=e2312]
+            - generic [ref=e2313]:
+              - generic [ref=e2314]:
+                - heading "5.9 km" [level=3] [ref=e2315]:
+                  - text: "5.9"
+                  - generic [ref=e2316]: km
+                - paragraph [ref=e2317]: Distance
+              - generic [ref=e2318]:
+                - heading "35 min" [level=3] [ref=e2319]
+                - paragraph [ref=e2320]: Time
+              - generic [ref=e2321]:
+                - heading "5:55/km" [level=3] [ref=e2322]
+                - paragraph [ref=e2323]: Avg Pace
+            - generic [ref=e2325]: run
+          - generic [ref=e2326]:
+            - generic [ref=e2327] [cursor=pointer]:
+              - generic [ref=e2328]:
+                - img [ref=e2329]
+                - generic [ref=e2332]:
+                  - generic [ref=e2333]: Cycle
+                  - time [ref=e2334]: 18 Feb · 07:30
+              - button "Session actions" [ref=e2336]:
+                - img [ref=e2337]
+            - heading "Cycle" [level=3] [ref=e2341]
+            - generic [ref=e2342]:
+              - generic [ref=e2343]:
+                - heading "28.5 km" [level=3] [ref=e2344]:
+                  - text: "28.5"
+                  - generic [ref=e2345]: km
+                - paragraph [ref=e2346]: Distance
+              - generic [ref=e2347]:
+                - heading "1h 15m" [level=3] [ref=e2348]
+                - paragraph [ref=e2349]: Time
+              - generic [ref=e2350]:
+                - heading "2:37/km" [level=3] [ref=e2351]
+                - paragraph [ref=e2352]: Avg Pace
+            - generic [ref=e2354]: cycle
+          - generic [ref=e2355]:
+            - generic [ref=e2356] [cursor=pointer]:
+              - generic [ref=e2357]:
+                - img [ref=e2358]
+                - generic [ref=e2361]:
+                  - generic [ref=e2362]: Gym
+                  - time [ref=e2363]: 17 Feb · 09:00
+              - button "Session actions" [ref=e2365]:
+                - img [ref=e2366]
+            - heading "Upper B" [level=3] [ref=e2370]
+            - generic [ref=e2371]:
+              - generic [ref=e2372]:
+                - heading "2" [level=3] [ref=e2373]
+                - paragraph [ref=e2374]: Exercises
+              - generic [ref=e2375]:
+                - heading "1h 22m" [level=3] [ref=e2376]
+                - paragraph [ref=e2377]: Duration
+              - generic [ref=e2378]:
+                - heading "6" [level=3] [ref=e2379]
+                - paragraph [ref=e2380]: Sets
+            - generic [ref=e2382]: strength
+          - generic [ref=e2383]:
+            - generic [ref=e2384] [cursor=pointer]:
+              - generic [ref=e2385]:
+                - img [ref=e2386]
+                - generic [ref=e2389]:
+                  - generic [ref=e2390]: Gym
+                  - time [ref=e2391]: 10 Feb · 09:00
+              - button "Session actions" [ref=e2393]:
+                - img [ref=e2394]
+            - heading "Lower A" [level=3] [ref=e2398]
+            - generic [ref=e2399]:
+              - generic [ref=e2400]:
+                - heading "2" [level=3] [ref=e2401]
+                - paragraph [ref=e2402]: Exercises
+              - generic [ref=e2403]:
+                - heading "1h 8m" [level=3] [ref=e2404]
+                - paragraph [ref=e2405]: Duration
+              - generic [ref=e2406]:
+                - heading "6" [level=3] [ref=e2407]
+                - paragraph [ref=e2408]: Sets
+            - generic [ref=e2410]: strength
+          - generic [ref=e2411]:
+            - generic [ref=e2412] [cursor=pointer]:
+              - generic [ref=e2413]:
+                - img [ref=e2414]
+                - generic [ref=e2417]:
+                  - generic [ref=e2418]: Run
+                  - time [ref=e2419]: 10 Feb · 07:30
+              - button "Session actions" [ref=e2421]:
+                - img [ref=e2422]
+            - heading "Run" [level=3] [ref=e2426]
+            - generic [ref=e2427]:
+              - generic [ref=e2428]:
+                - heading "8.1 km" [level=3] [ref=e2429]:
+                  - text: "8.1"
+                  - generic [ref=e2430]: km
+                - paragraph [ref=e2431]: Distance
+              - generic [ref=e2432]:
+                - heading "50 min" [level=3] [ref=e2433]
+                - paragraph [ref=e2434]: Time
+              - generic [ref=e2435]:
+                - heading "6:10/km" [level=3] [ref=e2436]
+                - paragraph [ref=e2437]: Avg Pace
+            - paragraph [ref=e2438]: Tempo run
+            - generic [ref=e2440]: run
+          - generic [ref=e2441]:
+            - generic [ref=e2442] [cursor=pointer]:
+              - generic [ref=e2443]:
+                - img [ref=e2444]
+                - generic [ref=e2448]:
+                  - generic [ref=e2449]: Swim
+                  - time [ref=e2450]: 5 Feb · 07:30
+              - button "Session actions" [ref=e2452]:
+                - img [ref=e2453]
+            - heading "Swim" [level=3] [ref=e2457]
+            - generic [ref=e2458]:
+              - generic [ref=e2459]:
+                - heading "1.5 km" [level=3] [ref=e2460]:
+                  - text: "1.5"
+                  - generic [ref=e2461]: km
+                - paragraph [ref=e2462]: Distance
+              - generic [ref=e2463]:
+                - heading "40 min" [level=3] [ref=e2464]
+                - paragraph [ref=e2465]: Time
+              - generic [ref=e2466]:
+                - heading "26:40/km" [level=3] [ref=e2467]
+                - paragraph [ref=e2468]: Avg Pace
+            - generic [ref=e2470]: swim
+          - generic [ref=e2471]:
+            - generic [ref=e2472] [cursor=pointer]:
+              - generic [ref=e2473]:
+                - img [ref=e2474]
+                - generic [ref=e2477]:
+                  - generic [ref=e2478]: Gym
+                  - time [ref=e2479]: 3 Feb · 09:00
+              - button "Session actions" [ref=e2481]:
+                - img [ref=e2482]
+            - heading "Upper A" [level=3] [ref=e2486]
+            - generic [ref=e2487]:
+              - generic [ref=e2488]:
+                - heading "2" [level=3] [ref=e2489]
+                - paragraph [ref=e2490]: Exercises
+              - generic [ref=e2491]:
+                - heading "1h 15m" [level=3] [ref=e2492]
+                - paragraph [ref=e2493]: Duration
+              - generic [ref=e2494]:
+                - heading "6" [level=3] [ref=e2495]
+                - paragraph [ref=e2496]: Sets
+            - generic [ref=e2498]: strength
+          - generic [ref=e2499]:
+            - generic [ref=e2500] [cursor=pointer]:
+              - generic [ref=e2501]:
+                - img [ref=e2502]
+                - generic [ref=e2505]:
+                  - generic [ref=e2506]: Run
+                  - time [ref=e2507]: 29 Jan · 07:30
+              - button "Session actions" [ref=e2509]:
+                - img [ref=e2510]
+            - heading "Run" [level=3] [ref=e2514]
+            - generic [ref=e2515]:
+              - generic [ref=e2516]:
+                - heading "4.8 km" [level=3] [ref=e2517]:
+                  - text: "4.8"
+                  - generic [ref=e2518]: km
+                - paragraph [ref=e2519]: Distance
+              - generic [ref=e2520]:
+                - heading "28 min" [level=3] [ref=e2521]
+                - paragraph [ref=e2522]: Time
+              - generic [ref=e2523]:
+                - heading "5:50/km" [level=3] [ref=e2524]
+                - paragraph [ref=e2525]: Avg Pace
+            - generic [ref=e2527]: run
+          - generic [ref=e2528]:
+            - generic [ref=e2529] [cursor=pointer]:
+              - generic [ref=e2530]:
+                - img [ref=e2531]
+                - generic [ref=e2534]:
+                  - generic [ref=e2535]: Gym
+                  - time [ref=e2536]: 27 Jan · 09:00
+              - button "Session actions" [ref=e2538]:
+                - img [ref=e2539]
+            - heading "Lower B" [level=3] [ref=e2543]
+            - generic [ref=e2544]:
+              - generic [ref=e2545]:
+                - heading "2" [level=3] [ref=e2546]
+                - paragraph [ref=e2547]: Exercises
+              - generic [ref=e2548]:
+                - heading "1h 5m" [level=3] [ref=e2549]
+                - paragraph [ref=e2550]: Duration
+              - generic [ref=e2551]:
+                - heading "6" [level=3] [ref=e2552]
+                - paragraph [ref=e2553]: Sets
+            - generic [ref=e2555]: strength
+          - generic [ref=e2556]:
+            - generic [ref=e2557] [cursor=pointer]:
+              - generic [ref=e2558]:
+                - img [ref=e2559]
+                - generic [ref=e2562]:
+                  - generic [ref=e2563]: Cycle
+                  - time [ref=e2564]: 22 Jan · 07:30
+              - button "Session actions" [ref=e2566]:
+                - img [ref=e2567]
+            - heading "Cycle" [level=3] [ref=e2571]
+            - generic [ref=e2572]:
+              - generic [ref=e2573]:
+                - heading "22.0 km" [level=3] [ref=e2574]:
+                  - text: "22.0"
+                  - generic [ref=e2575]: km
+                - paragraph [ref=e2576]: Distance
+              - generic [ref=e2577]:
+                - heading "1h" [level=3] [ref=e2578]
+                - paragraph [ref=e2579]: Time
+              - generic [ref=e2580]:
+                - heading "2:43/km" [level=3] [ref=e2581]
+                - paragraph [ref=e2582]: Avg Pace
+            - generic [ref=e2584]: cycle
+          - generic [ref=e2585]:
+            - generic [ref=e2586] [cursor=pointer]:
+              - generic [ref=e2587]:
+                - img [ref=e2588]
+                - generic [ref=e2591]:
+                  - generic [ref=e2592]: Gym
+                  - time [ref=e2593]: 20 Jan · 09:00
+              - button "Session actions" [ref=e2595]:
+                - img [ref=e2596]
+            - heading "Upper B" [level=3] [ref=e2600]
+            - generic [ref=e2601]:
+              - generic [ref=e2602]:
+                - heading "2" [level=3] [ref=e2603]
+                - paragraph [ref=e2604]: Exercises
+              - generic [ref=e2605]:
+                - heading "1h 20m" [level=3] [ref=e2606]
+                - paragraph [ref=e2607]: Duration
+              - generic [ref=e2608]:
+                - heading "6" [level=3] [ref=e2609]
+                - paragraph [ref=e2610]: Sets
+            - generic [ref=e2612]: strength
+          - generic [ref=e2613]:
+            - generic [ref=e2614] [cursor=pointer]:
+              - generic [ref=e2615]:
+                - img [ref=e2616]
+                - generic [ref=e2619]:
+                  - generic [ref=e2620]: Run
+                  - time [ref=e2621]: 15 Jan · 07:30
+              - button "Session actions" [ref=e2623]:
+                - img [ref=e2624]
+            - heading "Run" [level=3] [ref=e2628]
+            - generic [ref=e2629]:
+              - generic [ref=e2630]:
+                - heading "7.4 km" [level=3] [ref=e2631]:
+                  - text: "7.4"
+                  - generic [ref=e2632]: km
+                - paragraph [ref=e2633]: Distance
+              - generic [ref=e2634]:
+                - heading "45 min" [level=3] [ref=e2635]
+                - paragraph [ref=e2636]: Time
+              - generic [ref=e2637]:
+                - heading "6:04/km" [level=3] [ref=e2638]
+                - paragraph [ref=e2639]: Avg Pace
+            - generic [ref=e2641]: run
+          - generic [ref=e2642]:
+            - generic [ref=e2643] [cursor=pointer]:
+              - generic [ref=e2644]:
+                - img [ref=e2645]
+                - generic [ref=e2648]:
+                  - generic [ref=e2649]: Gym
+                  - time [ref=e2650]: 13 Jan · 09:00
+              - button "Session actions" [ref=e2652]:
+                - img [ref=e2653]
+            - heading "Lower A" [level=3] [ref=e2657]
+            - generic [ref=e2658]:
+              - generic [ref=e2659]:
+                - heading "2" [level=3] [ref=e2660]
+                - paragraph [ref=e2661]: Exercises
+              - generic [ref=e2662]:
+                - heading "1h 10m" [level=3] [ref=e2663]
+                - paragraph [ref=e2664]: Duration
+              - generic [ref=e2665]:
+                - heading "6" [level=3] [ref=e2666]
+                - paragraph [ref=e2667]: Sets
+            - generic [ref=e2669]: strength
+          - generic [ref=e2670]:
+            - generic [ref=e2671] [cursor=pointer]:
+              - generic [ref=e2672]:
+                - img [ref=e2673]
+                - generic [ref=e2676]:
+                  - generic [ref=e2677]: Run
+                  - time [ref=e2678]: 8 Jan · 07:30
+              - button "Session actions" [ref=e2680]:
+                - img [ref=e2681]
+            - heading "Run" [level=3] [ref=e2685]
+            - generic [ref=e2686]:
+              - generic [ref=e2687]:
+                - heading "5.2 km" [level=3] [ref=e2688]:
+                  - text: "5.2"
+                  - generic [ref=e2689]: km
+                - paragraph [ref=e2690]: Distance
+              - generic [ref=e2691]:
+                - heading "32 min" [level=3] [ref=e2692]
+                - paragraph [ref=e2693]: Time
+              - generic [ref=e2694]:
+                - heading "6:09/km" [level=3] [ref=e2695]
+                - paragraph [ref=e2696]: Avg Pace
+            - paragraph [ref=e2697]: Easy morning run
+            - generic [ref=e2699]: run
+          - generic [ref=e2700]:
+            - generic [ref=e2701] [cursor=pointer]:
+              - generic [ref=e2702]:
+                - img [ref=e2703]
+                - generic [ref=e2706]:
+                  - generic [ref=e2707]: Gym
+                  - time [ref=e2708]: 6 Jan · 09:00
+              - button "Session actions" [ref=e2710]:
+                - img [ref=e2711]
+            - heading "Upper A" [level=3] [ref=e2715]
+            - generic [ref=e2716]:
+              - generic [ref=e2717]:
+                - heading "2" [level=3] [ref=e2718]
+                - paragraph [ref=e2719]: Exercises
+              - generic [ref=e2720]:
+                - heading "1h 15m" [level=3] [ref=e2721]
+                - paragraph [ref=e2722]: Duration
+              - generic [ref=e2723]:
+                - heading "6" [level=3] [ref=e2724]
+                - paragraph [ref=e2725]: Sets
+            - generic [ref=e2727]: strength
+  - generic [ref=e1025]: "75"

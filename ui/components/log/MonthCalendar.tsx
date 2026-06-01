@@ -1,9 +1,12 @@
-﻿import { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+import { Grid } from '@ui/layout';
 import type { ReactNode } from 'react';
 import type { TypeFilter } from './SessionFilterBar';
 import type { CombinedSession } from '@features/training_log/queries/calendarUtils';
 import { buildDateMap, getMonthGrid, toDateKey } from '@features/training_log/queries/calendarUtils';
 import { StrengthSessionItem, CardioSessionItem } from './SessionListItem';
+import { Row, Column } from '@ui/layout';
+import { Surface } from '@ui/atoms';
 
 interface Props {
   sessions: CombinedSession[];
@@ -52,20 +55,22 @@ export function MonthCalendar({ sessions, typeFilter, renderFilter }: Props) {
     : allMonthSessions;
 
   return (
-    <div className="column">
-      <div className="row space-between align-center surface tight">
-        <button className="secondary icon sm" onClick={prev}>‹</button>
-        <strong>{monthLabel}</strong>
-        <button className="secondary icon sm" onClick={next}>›</button>
-      </div>
+    <Column>
+      <Surface pad="sm">
+        <Row justify="between" align="center">
+          <button className="secondary icon sm" onClick={prev}>‹</button>
+          <strong>{monthLabel}</strong>
+          <button className="secondary icon sm" onClick={next}>›</button>
+        </Row>
+      </Surface>
 
-      <div className="cal">
+      <Grid variant="cal">
         {WEEKDAY_LABELS.map((d, i) => (
           <span key={i} className="caption text-center">{d}</span>
         ))}
-      </div>
+      </Grid>
 
-      <div className="cal">
+      <Grid variant="cal">
         {grid.map((date, i) => {
           if (!date) return <div key={i} />;
           const key = toDateKey(date.getTime());
@@ -87,27 +92,29 @@ export function MonthCalendar({ sessions, typeFilter, renderFilter }: Props) {
             </button>
           );
         })}
-      </div>
+      </Grid>
 
       {renderFilter?.()}
 
-      <div className="column">
-        <div className="row space-between align-center compact surface flat">
-          {selectedKey ? (
-            <>
-              <button className="ghost sm" onClick={() => setSelectedKey(null)}>Back</button>
-              <span className="caption muted">
-                {new Date(selectedKey + 'T12:00:00').toLocaleDateString('en-GB', {
-                  weekday: 'short', day: 'numeric', month: 'long',
-                })}
-              </span>
-            </>
-          ) : (
-            <span className="caption muted">All sessions · {monthLabel}</span>
-          )}
-        </div>
+      <Column>
+        <Surface variant="flat">
+          <Row justify="between" align="center" gap={1}>
+            {selectedKey ? (
+              <>
+                <button className="ghost sm" onClick={() => setSelectedKey(null)}>Back</button>
+                <span className="caption muted">
+                  {new Date(selectedKey + 'T12:00:00').toLocaleDateString('en-GB', {
+                    weekday: 'short', day: 'numeric', month: 'long',
+                  })}
+                </span>
+              </>
+            ) : (
+              <span className="caption muted">All sessions · {monthLabel}</span>
+            )}
+          </Row>
+        </Surface>
         {displaySessions.length === 0 ? (
-          <p className="muted caption compact">No sessions {selectedKey ? 'this day' : 'this month'}.</p>
+          <p className="muted caption">No sessions {selectedKey ? 'this day' : 'this month'}.</p>
         ) : (
           displaySessions.map((entry, i) =>
             entry.kind === 'strength'
@@ -115,7 +122,7 @@ export function MonthCalendar({ sessions, typeFilter, renderFilter }: Props) {
               : <CardioSessionItem key={i} session={entry.session} />
           )
         )}
-      </div>
-    </div>
+      </Column>
+    </Column>
   );
 }

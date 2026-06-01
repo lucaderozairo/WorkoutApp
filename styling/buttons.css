@@ -1,8 +1,5 @@
-button,
-input[type="button"],
-input[type="submit"],
-input[type="reset"],
-.custom-file-upload {
+/* ── Base button ── */
+:is(button, input[type="button"], input[type="submit"], input[type="reset"], .custom-file-upload) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -21,146 +18,84 @@ input[type="reset"],
   text-align: center;
   transition:
     background-color 0.12s var(--ease),
-    border-color 0.12s var(--ease),
-    transform 0.12s var(--ease);
-}
+    border-color     0.12s var(--ease),
+    transform        0.12s var(--ease);
 
-:disabled {
-  cursor:default ;
-}
+  &:disabled { cursor: default; }
 
-button:not(:disabled):hover,
-input[type="button"]:not(:disabled):hover,
-input[type="submit"]:not(:disabled):hover,
-input[type="reset"]:not(:disabled):hover,
-.custom-file-upload:not(:disabled):hover {
-  background: var(--surface-2);
-  color: var(--ink);
-  box-shadow: none;
-}
+  &:not(:disabled):hover {
+    background: var(--surface-2);
+    color: var(--ink);
+    box-shadow: none;
+  }
 
-button:active,
-input[type="button"]:active,
-input[type="submit"]:active,
-input[type="reset"]:active {
-  transform: scale(0.98);
-}
+  &:active  { transform: scale(0.98); }
 
-button:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
 
-/* ── Primary ── */
-button.primary,
-input[type="submit"].primary,
-.primary {
-  background: var(--accent);
-  color: var(--accent-ink);
-  border-color: transparent;
-  font-weight: 600;
-}
-button.primary:not(:disabled):hover,
-input[type="submit"].primary:not(:disabled):hover,
-.primary:not(:disabled):hover {
-  filter: brightness(0.95);
-  background: var(--accent);
-}
+  /* ── Variants ── */
+  &.primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: transparent;
+    font-weight: 600;
+    &:not(:disabled):hover { filter: brightness(0.95); }
+  }
 
-/* ── Secondary (default surface style, explicit class) ── */
-.secondary {
-  background: var(--surface-1);
-  color: var(--ink);
-  border-color: var(--line-strong);
-}
+  &.secondary {
+    background: var(--surface-1);
+    color: var(--ink);
+    border-color: var(--line-strong);
+  }
 
-.neutral {
-  background: var(--ink);
-  color: var(--accent-ink);
-  border-color: var(--line-strong);
-}
+  &.ghost {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    color: var(--ink);
+    &:not(:disabled):hover { background: var(--surface-2); }
+    &.flush {
+      padding-inline: 0;
+      &:not(:disabled):hover { background: transparent; }
+    }
+    &.active {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-color: var(--accent);
+    }
+  }
 
-/* ── Ghost ── */
-button.ghost {
-  background: transparent;
-  border-color: transparent;
-  box-shadow: none;
-  color: var(--ink);
-}
-button.ghost:not(:disabled):hover {
-  background: var(--surface-2);
-}
-button.ghost.flush {
-  padding-inline: 0;
-}
-button.ghost.flush:not(:disabled):hover {
-  background: transparent;
-}
-button.ghost.active {
-  background: var(--accent);
-  color: var(--accent-ink);
-  border-color: var(--accent);
-}
+  &.destructive {
+    background: color-mix(in srgb, var(--bad) 10%, transparent);
+    color: var(--bad);
+    border-color: var(--bad);
+    &:not(:disabled):hover { background: color-mix(in srgb, var(--bad) 18%, transparent); }
+  }
 
-/* ── Icon ── */
-button.icon {
-  width: 40px;
-  min-height: 40px;
-  padding: 0;
-  border-radius: var(--s-3);
-}
+  /* ── Sizes ── */
+  &.sm   { min-height: 32px; padding: var(--s-2) var(--s-3); font-size: var(--t-xs); }
+  &.lg   { min-height: 48px; padding: var(--s-3) var(--s-5); font-size: var(--t-md); }
+  &.icon { width: 40px; min-height: 40px; padding: 0; border-radius: var(--s-3); }
+  &.block { width: 100%; }
+  &.active { background: var(--surface-2); border-color: var(--line-strong); }
 
-/* ── Sizes ── */
-button.sm,
-input[type="button"].sm {
-  min-height: 32px;
-  padding: var(--s-2) var(--s-3);
-  font-size: var(--t-xs);
-}
-
-button.lg,
-input[type="submit"].lg {
-  min-height: 48px;
-  padding: var(--s-3) var(--s-5);
-  font-size: var(--t-md);
-}
-
-button.block {
-  width: 100%;
-}
-button.active {
-  background: var(--surface-2);
-  border-color: var(--line-strong);
+  @media (max-width: 360px) {
+    padding: var(--s-2) var(--s-3);
+  }
 }
 
 /* ── File upload ── */
-.custom-file-upload {
-  background: var(--surface-1);
-  color: var(--ink);
-}
-input[type="file"] {
-  display: none;
-}
+.custom-file-upload { background: var(--surface-1); color: var(--ink); }
+input[type="file"]  { display: none; }
 
 /* ── Form action buttons ── */
-input[type="submit"] {
-  flex: 1 1 0;
-}
+input[type="submit"] { flex: 1 1 0; }
 input[type="reset"] {
   color: var(--ink-muted);
   border-color: var(--line-strong);
   background: transparent;
-}
-input[type="reset"]:not(:disabled):hover {
-  background: var(--surface-2);
-}
-
-/* ── Narrow viewport overrides ── */
-@media (max-width: 360px) {
-  button,
-  input[type="button"],
-  input[type="submit"],
-  input[type="reset"] {
-    padding: var(--s-2) var(--s-3);
-  }
+  &:not(:disabled):hover { background: var(--surface-2); }
 }

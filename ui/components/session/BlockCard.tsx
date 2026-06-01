@@ -1,5 +1,7 @@
 ﻿import { useState } from 'react';
 import { AlertTriangle, MoreVertical, Trash2, X } from 'lucide-react';
+import { Row, Column, Cluster } from '@ui/layout';
+import { Surface } from '@ui/atoms';
 import { ExerciseSection } from './ExerciseSection';
 import { CardioEditor } from './CardioEditor';
 import { CommentLine } from './CommentLine';
@@ -46,9 +48,9 @@ export function BlockCard({
   const getAvailableModes = (_ex: UIExercise): SetMode[] => ALL_MODES;
 
   const restPickerContent = (
-    <div className="column compact">
+    <Column gap={1}>
       <span className="caption muted">Choose duration</span>
-      <div className="cluster compact align-center">
+      <Cluster gap={1}>
         {(block.restSeconds != null ? [block.restSeconds] : [])
           .concat([30, 60, 90, 120, 180].filter(s => s !== block.restSeconds))
           .map(s => (
@@ -61,87 +63,95 @@ export function BlockCard({
               {s < 60 ? `${s}s` : `${s / 60}m`}
             </button>
           ))}
-      </div>
-    </div>
+      </Cluster>
+    </Column>
   );
 
   const blockMenu = (
     <div className="modal-overlay">
-      <div className="surface column">
-        <div className="row space-between align-center">
-          <span className="detail">{block.exerciseName}</span>
-          <button type="button" className="ghost icon sm" onClick={closeMenu}>
-            <X size={10} className="faint" />
+      <Surface>
+        <Column>
+          <Row justify="between" align="center">
+            <span className="detail">{block.exerciseName}</span>
+            <button type="button" className="ghost icon sm" onClick={closeMenu}>
+              <X size={10} className="faint" />
+            </button>
+          </Row>
+          {showRestPicker ? restPickerContent : (
+            <button type="button" className="secondary sm" onClick={() => setShowRestPicker(true)}>
+              Rest timer
+            </button>
+          )}
+          <button type="button" className="sm warning" onClick={() => { closeMenu(); onDeleteBlock(blockIds); }}>
+            <Trash2 size={9} /> Delete exercise
           </button>
-        </div>
-        {showRestPicker ? restPickerContent : (
-          <button type="button" className="secondary sm" onClick={() => setShowRestPicker(true)}>
-            Rest timer
-          </button>
-        )}
-        <button type="button" className="sm warning" onClick={() => { closeMenu(); onDeleteBlock(blockIds); }}>
-          <Trash2 size={9} /> Delete exercise
-        </button>
-      </div>
+        </Column>
+      </Surface>
     </div>
   );
 
   if (block.type === 'stretch') {
     return (
-      <div className="surface">
-        <div className="row align-center space-between">
-          <div className="row compact align-center">
-            {block.tag && (
-              <span className="pill">
-                <span className="dot" />
-                {block.tag}
-              </span>
-            )}
-            <span className="caption muted">Stretch</span>
-          </div>
-          <button type="button" className="ghost icon sm" onClick={() => setMenuOpen(v => !v)}>
-            <MoreVertical size={10} className="faint" />
-          </button>
-        </div>
-        {menuOpen && blockMenu}
-        {block.exercises.map((ex, i) => (
-          <div
-            key={i}
-            className={`row align-center space-between${i < block.exercises.length - 1 ? ' bordered-bottom' : ''}`}
-          >
-            <div className="column compact grow">
-              <span className="detail">{ex.name}</span>
-              <span className="caption">{ex.muscle}</span>
-            </div>
-            <span className="mono caption">{ex.hold}</span>
-          </div>
-        ))}
-      </div>
+      <Surface>
+        <Column>
+          <Row align="center" justify="between">
+            <Row gap={1} align="center">
+              {block.tag && (
+                <span className="badge">
+                  <span className="dot" />
+                  {block.tag}
+                </span>
+              )}
+              <span className="caption muted">Stretch</span>
+            </Row>
+            <button type="button" className="ghost icon sm" onClick={() => setMenuOpen(v => !v)}>
+              <MoreVertical size={10} className="faint" />
+            </button>
+          </Row>
+          {menuOpen && blockMenu}
+          {block.exercises.map((ex, i) => (
+            <Row
+              key={i}
+              align="center"
+              justify="between"
+              className={i < block.exercises.length - 1 ? 'bordered-bottom' : undefined}
+            >
+              <Column gap={1} className="grow">
+                <span className="detail">{ex.name}</span>
+                <span className="caption">{ex.muscle}</span>
+              </Column>
+              <span className="mono caption">{ex.hold}</span>
+            </Row>
+          ))}
+        </Column>
+      </Surface>
     );
   }
 
   if (block.type === 'cardio') {
     const ex = block.exercises[0];
     return (
-      <div className="surface">
-        <div className="row align-center space-between">
-          <span className="detail">{ex.name}</span>
-          <div className="row compact align-center">
-            <span className="pill">
-              <span className="dot" />
-              Cardio
-            </span>
-            <button type="button" className="ghost icon sm" onClick={() => setMenuOpen(v => !v)}>
-              <MoreVertical size={10} className="faint" />
-            </button>
-          </div>
-        </div>
-        {menuOpen && blockMenu}
-        <CardioEditor
-          cardioSet={ex.cardioSet ?? null}
-          onUpdate={(field, value) => onUpdateCardio(block.id, field, value)}
-        />
-      </div>
+      <Surface>
+        <Column>
+          <Row align="center" justify="between">
+            <span className="detail">{ex.name}</span>
+            <Row gap={1} align="center">
+              <span className="badge">
+                <span className="dot" />
+                Cardio
+              </span>
+              <button type="button" className="ghost icon sm" onClick={() => setMenuOpen(v => !v)}>
+                <MoreVertical size={10} className="faint" />
+              </button>
+            </Row>
+          </Row>
+          {menuOpen && blockMenu}
+          <CardioEditor
+            cardioSet={ex.cardioSet ?? null}
+            onUpdate={(field, value) => onUpdateCardio(block.id, field, value)}
+          />
+        </Column>
+      </Surface>
     );
   }
 
@@ -150,103 +160,107 @@ export function BlockCard({
     const warnings = getWarnings(ex.name, injuries);
     const isAcked = acknowledged.has(ex.name);
     const top = worstSev(warnings);
-    const flagCls = top && !isAcked ? (top.severity === 'severe' ? ' warning' : ' caution') : '';
+    const flagCls = top && !isAcked ? (top.severity === 'severe' ? 'warning' : 'caution') : undefined;
 
     return (
-      <div className={`surface${flagCls}`}>
-        <div className="row align-center space-between">
-          <div className="row compact grow align-center">
-            {warnings.length > 0 && <AlertTriangle size={12} />}
-            <h3 className="grow">{ex.name}</h3>
-            <span className="caption muted faint">{getMode(ex)}</span>
-            {warnings.map(w => (
-              <span key={w.id} className={`badge ${w.severity === 'severe' ? 'warning' : 'caution'}`}>{w.bodyPart}</span>
-            ))}
-          </div>
-          <button type="button" className="ghost icon sm" onClick={() => setMenuOpen(v => !v)}>
-            <MoreVertical size={10} className="faint" />
-          </button>
-        </div>
-        {menuOpen && blockMenu}
-        {warnings.length > 0 && !isAcked && (
-          <div className="column compact">
-            {warnings.map(w => (
-              <div key={w.id} className="row align-center compact">
-                <span className="caption grow">{w.advice}</span>
-              </div>
-            ))}
-          </div>
-        )}
-        {ex.comment && <CommentLine text={ex.comment} />}
-        {ex.sets?.some(s => s.w !== '—') && (
-          <SetsBarChart sets={ex.sets} />
-        )}
-        <div className="column compact">
-          {ex.sets?.map((s, j) => {
-            const workingNum = (ex.sets ?? []).filter((x, idx) => !x.warmup && idx <= j).length;
-            return (
-              <SetRow
-                key={s.id}
-                num={workingNum}
-                set={s}
-                menuKey={s.id}
-                openMenu={openMenu}
-                onOpenMenu={onOpenMenu}
-                onToggleWarmup={() => onToggleWarmup(block.id, 0, s.id)}
-                onToggleDone={() => onToggleDone(block.id, 0, s.id)}
-                onDeleteRequest={() => onDeleteRequest(block.id, 0, s.id, j)}
-                onUpdate={(kg, reps) => onUpdateSet(block.id, s.setNumber, kg, reps)}
-                onComment={text => onCommentSet(block.id, 0, s.id, text)}
-                currentMode={getMode(ex)}
-                availableModes={getAvailableModes(ex)}
-                onSetModeChange={mode => setMode(ex, mode)}
-              />
-            );
-          })}
-        </div>
-        <button type="button" className="ghost surface tight" onClick={() => onAddSet(block.id)}>+ Add Set</button>
-      </div>
+      <Surface className={flagCls}>
+        <Column>
+          <Row align="center" justify="between">
+            <Row gap={1} align="center" className="grow">
+              {warnings.length > 0 && <AlertTriangle size={12} />}
+              <h3 className="grow">{ex.name}</h3>
+              <span className="caption muted faint">{getMode(ex)}</span>
+              {warnings.map(w => (
+                <span key={w.id} className={`badge ${w.severity === 'severe' ? 'warning' : 'caution'}`}>{w.bodyPart}</span>
+              ))}
+            </Row>
+            <button type="button" className="ghost icon sm" onClick={() => setMenuOpen(v => !v)}>
+              <MoreVertical size={10} className="faint" />
+            </button>
+          </Row>
+          {menuOpen && blockMenu}
+          {warnings.length > 0 && !isAcked && (
+            <Column gap={1}>
+              {warnings.map(w => (
+                <Row key={w.id} align="center" gap={1}>
+                  <span className="caption grow">{w.advice}</span>
+                </Row>
+              ))}
+            </Column>
+          )}
+          {ex.comment && <CommentLine text={ex.comment} />}
+          {ex.sets?.some(s => s.w !== '—') && (
+            <SetsBarChart sets={ex.sets} />
+          )}
+          <Column gap={1}>
+            {ex.sets?.map((s, j) => {
+              const workingNum = (ex.sets ?? []).filter((x, idx) => !x.warmup && idx <= j).length;
+              return (
+                <SetRow
+                  key={s.id}
+                  num={workingNum}
+                  set={s}
+                  menuKey={s.id}
+                  openMenu={openMenu}
+                  onOpenMenu={onOpenMenu}
+                  onToggleWarmup={() => onToggleWarmup(block.id, 0, s.id)}
+                  onToggleDone={() => onToggleDone(block.id, 0, s.id)}
+                  onDeleteRequest={() => onDeleteRequest(block.id, 0, s.id, j)}
+                  onUpdate={(kg, reps) => onUpdateSet(block.id, s.setNumber, kg, reps)}
+                  onComment={text => onCommentSet(block.id, 0, s.id, text)}
+                  currentMode={getMode(ex)}
+                  availableModes={getAvailableModes(ex)}
+                  onSetModeChange={mode => setMode(ex, mode)}
+                />
+              );
+            })}
+          </Column>
+          <button type="button" className="ghost surface pad-sm" onClick={() => onAddSet(block.id)}>+ Add Set</button>
+        </Column>
+      </Surface>
     );
   }
 
   // Superset / Circuit
   return (
-    <div className="surface">
-      <div className="row align-center space-between">
-        <div className="row compact align-center">
-          <button className="icon ghost" disabled>{blockIndex + 1}.</button>
-          <span className="pill">
-            <span className="dot" />
-            {block.label}
-          </span>
-        </div>
-        <button type="button" className="ghost icon sm" onClick={() => setMenuOpen(v => !v)}>
-          <MoreVertical size={10} className="faint" />
-        </button>
-      </div>
-      {menuOpen && blockMenu}
-      {block.exercises.map((ex, i) => (
-        <div key={i}>
-          {i > 0 && <div className="rule" />}
-          <ExerciseSection
-            ex={ex}
-            openMenu={openMenu}
-            onOpenMenu={onOpenMenu}
-            onToggleWarmup={setId => onToggleWarmup(block.id, i, setId)}
-            onToggleDone={setId => onToggleDone(block.id, i, setId)}
-            onDeleteRequest={(setId, setIdx) => onDeleteRequest(block.id, i, setId, setIdx)}
-            onAddSet={() => onAddSet(ex.blockId ?? block.id)}
-            onUpdateSet={(setNumber, kg, reps) => onUpdateSet(ex.blockId ?? block.id, setNumber, kg, reps)}
-            onCommentSet={(setId, text) => onCommentSet(block.id, i, setId, text)}
-            injuries={injuries}
-            acknowledged={acknowledged}
-            onAcknowledge={onAcknowledge}
-            currentMode={getMode(ex)}
-            availableModes={getAvailableModes(ex)}
-            onSetModeChange={mode => setMode(ex, mode)}
-          />
-        </div>
-      ))}
-    </div>
+    <Surface>
+      <Column>
+        <Row align="center" justify="between">
+          <Row gap={1} align="center">
+            <button className="icon ghost" disabled>{blockIndex + 1}.</button>
+            <span className="badge">
+              <span className="dot" />
+              {block.label}
+            </span>
+          </Row>
+          <button type="button" className="ghost icon sm" onClick={() => setMenuOpen(v => !v)}>
+            <MoreVertical size={10} className="faint" />
+          </button>
+        </Row>
+        {menuOpen && blockMenu}
+        {block.exercises.map((ex, i) => (
+          <div key={i}>
+            {i > 0 && <div className="rule" />}
+            <ExerciseSection
+              ex={ex}
+              openMenu={openMenu}
+              onOpenMenu={onOpenMenu}
+              onToggleWarmup={setId => onToggleWarmup(block.id, i, setId)}
+              onToggleDone={setId => onToggleDone(block.id, i, setId)}
+              onDeleteRequest={(setId, setIdx) => onDeleteRequest(block.id, i, setId, setIdx)}
+              onAddSet={() => onAddSet(ex.blockId ?? block.id)}
+              onUpdateSet={(setNumber, kg, reps) => onUpdateSet(ex.blockId ?? block.id, setNumber, kg, reps)}
+              onCommentSet={(setId, text) => onCommentSet(block.id, i, setId, text)}
+              injuries={injuries}
+              acknowledged={acknowledged}
+              onAcknowledge={onAcknowledge}
+              currentMode={getMode(ex)}
+              availableModes={getAvailableModes(ex)}
+              onSetModeChange={mode => setMode(ex, mode)}
+            />
+          </div>
+        ))}
+      </Column>
+    </Surface>
   );
 }

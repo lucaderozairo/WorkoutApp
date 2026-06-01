@@ -1,6 +1,7 @@
 import { Map } from '../shared/Map';
 import type { GpsTrack } from '@data/sources/files/gps';
 import type { Id } from '@shared/types';
+import { Surface } from '@ui/atoms';
 
 interface SessionGpsPreviewProps {
   track: GpsTrack;
@@ -9,10 +10,10 @@ interface SessionGpsPreviewProps {
 
 export function SessionGpsPreview({ track }: SessionGpsPreviewProps) {
   return (
-    <section className="surface bare">
+    <Surface pad="none" as="section">
       <div className="media-lg">
         <Map track={track} interactive={true} colourMode="pace" />
       </div>
-    </section>
+    </Surface>
   );
 }

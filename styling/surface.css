@@ -1,80 +1,33 @@
 .surface {
-  width: 100%;
   background: var(--surface-1);
   border: 1px solid var(--line);
   border-radius: var(--r-md);
   box-shadow: var(--box-shadow-sm);
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-3);
+  display: block;
   padding: var(--s-4);
-}
-.surface.row {
-  flex-direction: row;
-}
-.surface.grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--s-3);
-}
-.surface.centered {
-  text-align: center;
-  align-items: center;
-}
-.surface.plain {
-  border-color: transparent;
-  box-shadow: none;
-}
 
-/* ── Surface variants ── */
-.surface.flat {
-  background: var(--surface-2);
-  border-color: transparent;
-}
-.surface.accent {
-  background: var(--accent);
-  color: var(--accent-ink);
-  border-color: transparent;
-}
-.surface.ghost {
-  background: transparent;
-  border-color: transparent;
-  box-shadow: none;
-}
-.surface.inset {
-  background: var(--surface-2);
-  border-style: dashed;
-}
-.surface.pinned {
-  border-color: var(--accent);
-  background: var(--surface-2);
-}
-.surface.tight {
-  padding: var(--s-1);
-}
-.surface.bare {
-  padding: 0;
-  overflow: hidden;
-}
-.surface.card {
-  width: auto;
-}
+  &.pad-sm, &.tight { padding: var(--s-3); }
+  &.pad-none { padding: 0; overflow: hidden; }
 
-/* ── Selected state ── */
-.surface.selected {
-  border-color: var(--accent);
-}
+  /* ── Visual variants ── */
+  &.plain    { border-color: transparent; box-shadow: none; }
+  &.flat     { background: var(--surface-2); border-color: transparent; }
+  &.accent   { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+  &.ghost    { background: transparent; border-color: transparent; box-shadow: none; }
+  &.selected { border-color: var(--accent); }
+  &.inset    { background: var(--surface-2); border-style: dashed; }
+  &.pinned   { border-color: var(--accent); background: var(--surface-2); }
 
-/* ── Status variants ── */
-.surface.warning {
-  background: color-mix(in srgb, var(--warn) 12%, var(--surface-1));
-  border-color: var(--warn);
-  color: var(--color-warning-text);
-}
+  /* ── Interactive state ── */
+  &.interactive {
+    cursor: pointer;
+    transition: background var(--duration-short) var(--ease),
+                box-shadow  var(--duration-short) var(--ease);
+    &:hover  { background: color-mix(in srgb, var(--surface-1), var(--ink) 5%); }
+    &:active { background: color-mix(in srgb, var(--surface-1), var(--ink) 10%); }
+  }
 
-/* ── Narrow viewport overrides ── */
-@media (max-width: 360px) {
-  .surface {
+  @media (max-width: 360px) {
     padding: var(--s-3);
     min-height: unset;
     gap: var(--s-2);

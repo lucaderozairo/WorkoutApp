@@ -1,0 +1,72 @@
+/* ════════════════════════════════════════════
+   SWITCH — toggle control
+   ════════════════════════════════════════════ */
+.switch {
+  display: inline-flex;
+  align-items: center;
+  width: 40px;
+  height: 24px;
+  border-radius: var(--r-pill);
+  background: var(--surface-3);
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  transition: background var(--duration-short) var(--ease);
+  flex-shrink: 0;
+
+  &[aria-checked="true"] { background: var(--accent); }
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  & .thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--surface-1);
+    box-shadow: var(--shadow-1);
+    transition: transform var(--duration-short) var(--ease);
+  }
+
+  &[aria-checked="true"] .thumb { transform: translateX(16px); }
+
+  &.sm {
+    width: 32px;
+    height: 20px;
+
+    & .thumb { width: 16px; height: 16px; }
+    &[aria-checked="true"] .thumb { transform: translateX(12px); }
+  }
+}
+
+/* ════════════════════════════════════════════
+   TABS — underline tab bar
+   ════════════════════════════════════════════ */
+.tabs {
+  width: 100%;
+
+  & > * { flex: 1; }
+}
+
+.tab {
+  border-radius: 0;
+  background: var(--surface-1);
+  border: none;
+  box-shadow: none;
+  padding: var(--s-2);
+  font-size: var(--t-sm);
+  color: var(--ink-muted);
+  border-bottom: 2px solid transparent;
+  transition:
+    color 0.12s var(--ease),
+    border-color 0.12s var(--ease);
+
+  &:first-child { border-top-left-radius: var(--r-sm); }
+  &:last-child  { border-top-right-radius: var(--r-sm); }
+
+  &.active {
+    color: var(--ink);
+    border-bottom-color: var(--accent);
+    background: var(--surface-1);
+  }
+
+  &:hover:not(.active) { background: var(--surface-2); }
+}

@@ -1,10 +1,12 @@
 // ui/components/profile/HealthOverviewTab.tsx
 import { useState, useMemo, useRef } from 'react'
+import { Grid } from '@ui/layout'
 import { useNavigate } from 'react-router-dom'
 import { Search } from 'lucide-react'
 import { ChartContainer } from '@ui/patterns/charts/charts'
 import { useQuery } from '@ui/bindings'
 import type { HealthChartDef, HealthChartMap } from '@features/health'
+import { Row, Column, Cluster } from '@ui/layout'
 
 // ─── Types & Registry ───────────────────────────────────────────────────────
 
@@ -68,17 +70,17 @@ interface CategoryButtonProps {
 function CategoryTile({ cat, isPinned = false, onClick, onLongPress, charts }: CategoryButtonProps) {
   return (
     <button
-      className={`surface tight${isPinned ? ' pinned' : ''}`}
+      className={`surface pad-sm${isPinned ? ' pinned' : ''}`}
       onClick={onClick}
       onPointerDown={onLongPress.start}
       onPointerUp={onLongPress.cancel}
       onPointerLeave={onLongPress.cancel}
       onPointerCancel={onLongPress.cancel}
     >
-      <div className="column align-center">
+      <Column align="center">
         <span>{cat.icon}</span>
         <span className="caption">{cat.name}</span>
-      </div>
+      </Column>
     </button>
   )
 }
@@ -86,33 +88,35 @@ function CategoryTile({ cat, isPinned = false, onClick, onLongPress, charts }: C
 function CategoryRow({ cat, isPinned = false, onClick, onLongPress, charts }: CategoryButtonProps) {
   return (
     <button
-      className={`surface tight row align-center space-between${isPinned ? ' pinned' : ''}`}
+      className={`surface pad-sm${isPinned ? ' pinned' : ''}`}
       onClick={onClick}
       onPointerDown={onLongPress.start}
       onPointerUp={onLongPress.cancel}
       onPointerLeave={onLongPress.cancel}
       onPointerCancel={onLongPress.cancel}
     >
-      <div className="row align-center">
-        <span className="icon">{cat.icon}</span>
-        <div className="stack compact align-left">
-          <span>{cat.name}</span>
-        </div>
-      </div>
-      <div className="row align-center">
-        {charts?.[0] && (
-          <div className="grow">
-            <ChartContainer
-              chartType={charts[0].chartType}
-              data={charts[0].data}
-              height={44}
-              axisShow={{ x: false, y: false }}
-              color={charts[0].color ?? 'var(--accent)'}
-            />
-          </div>
-        )}
-        <span className="faint" aria-hidden="true">›</span>
-      </div>
+      <Row justify="between" align="center">
+        <Row align="center">
+          <span className="icon">{cat.icon}</span>
+          <Column gap={1} align="start">
+            <span>{cat.name}</span>
+          </Column>
+        </Row>
+        <Row align="center">
+          {charts?.[0] && (
+            <div className="grow">
+              <ChartContainer
+                chartType={charts[0].chartType}
+                data={charts[0].data}
+                height={44}
+                axisShow={{ x: false, y: false }}
+                color={charts[0].color ?? 'var(--accent)'}
+              />
+            </div>
+          )}
+          <span className="faint" aria-hidden="true">›</span>
+        </Row>
+      </Row>
     </button>
   )
 }
@@ -169,10 +173,10 @@ export function HealthOverviewTab() {
   const unpinnedCats = useMemo(() => filtered.filter(c => !pinned.includes(c.slug)), [filtered, pinned])
 
   return (
-    <div className="stack">
+    <Column>
 
       {/* Search bar */}
-      <div className="row align-center">
+      <Row align="center">
         <Search size={16} className="faint" />
         <input
           className="input grow"
@@ -181,13 +185,13 @@ export function HealthOverviewTab() {
           value={query}
           onChange={e => setQuery(e.target.value)}
         />
-      </div>
+      </Row>
 
       {/* View toggle */}
-      <div className="cluster">
+      <Cluster>
         <button className={view === 'grid' ? 'chip active' : 'chip'} onClick={() => setView('grid')}>Grid</button>
         <button className={view === 'list' ? 'chip active' : 'chip'} onClick={() => setView('list')}>List</button>
-      </div>
+      </Cluster>
 
       {view === 'list' && (
         <>
@@ -211,7 +215,7 @@ export function HealthOverviewTab() {
             const cats = unpinnedCats.filter(c => c.section === section)
             if (!cats.length) return null
             return (
-              <div key={section} className="stack compact">
+              <Column key={section} gap={1}>
                 <span className="eyebrow">{section}</span>
                 {cats.map(cat => (
                   <CategoryRow
@@ -222,7 +226,7 @@ export function HealthOverviewTab() {
                     charts={healthCharts[cat.slug]}
                   />
                 ))}
-              </div>
+              </Column>
             )
           })}
         </>
@@ -233,7 +237,7 @@ export function HealthOverviewTab() {
           {pinnedCats.length > 0 && (
             <>
               <span className="eyebrow">Pinned</span>
-              <div className="grid-4">
+              <Grid cols={4}>
                 {pinnedCats.map(cat => (
                   <CategoryTile
                     key={cat.slug}
@@ -244,7 +248,7 @@ export function HealthOverviewTab() {
                     charts={healthCharts[cat.slug]}
                   />
                 ))}
-              </div>
+              </Grid>
               <hr />
             </>
           )}
@@ -252,9 +256,9 @@ export function HealthOverviewTab() {
             const cats = unpinnedCats.filter(c => c.section === section)
             if (!cats.length) return null
             return (
-              <div key={section} className="stack compact">
+              <Column key={section} gap={1}>
                 <span className="eyebrow">{section}</span>
-                <div className="grid">
+                <Grid variant="tiles">
                   {cats.map(cat => (
                     <CategoryTile
                       key={cat.slug}
@@ -264,13 +268,13 @@ export function HealthOverviewTab() {
                       charts={healthCharts[cat.slug]}
                     />
                   ))}
-                </div>
-              </div>
+                </Grid>
+              </Column>
             )
           })}
         </>
       )}
 
-    </div>
+    </Column>
   )
 }

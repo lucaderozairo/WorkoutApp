@@ -1,0 +1,158 @@
+- generic [active] [ref=e4]:
+  - generic [ref=e6]:
+    - complementary [ref=e1902]:
+      - navigation [ref=e1903]:
+        - link "Home" [ref=e1904] [cursor=pointer]:
+          - /url: "#/home"
+          - img [ref=e1906]
+          - generic [ref=e1909]: Home
+        - link "Workout" [ref=e1910] [cursor=pointer]:
+          - /url: "#/sessions"
+          - img [ref=e1912]
+          - generic [ref=e1916]: Workout
+        - link "Social" [ref=e1917] [cursor=pointer]:
+          - /url: "#/social"
+          - img [ref=e1919]
+          - generic [ref=e1923]: Social
+        - link "Messages" [ref=e1924] [cursor=pointer]:
+          - /url: "#/messages"
+          - img [ref=e1926]
+          - generic [ref=e1929]: Messages
+        - link "Profile" [ref=e1930] [cursor=pointer]:
+          - /url: "#/profile"
+          - img [ref=e1932]
+          - generic [ref=e1937]: Profile
+      - separator [ref=e1938]
+      - link "Settings" [ref=e1940] [cursor=pointer]:
+        - /url: "#/settings"
+        - img [ref=e1942]
+        - generic [ref=e1946]: Settings
+    - main [ref=e43]:
+      - generic [ref=e4714]:
+        - generic [ref=e4715]:
+          - generic [ref=e4716]:
+            - textbox "Search a place, address, or lat/lng…" [ref=e4717]
+            - generic [ref=e4718]:
+              - button "Select" [ref=e4719] [cursor=pointer]: ✋
+              - button "Add" [ref=e4720] [cursor=pointer]: ✏️
+              - button "Split" [ref=e4721] [cursor=pointer]: ✂️
+              - button "Delete" [ref=e4722] [cursor=pointer]: 🗑️
+              - button "Undo" [disabled] [ref=e4723]: ↩
+              - button "Redo" [disabled] [ref=e4724]: ↪
+          - separator
+          - generic [ref=e4725]:
+            - heading "New route" [level=3] [ref=e4727]
+            - button "Collapse sidebar" [ref=e4728] [cursor=pointer]:
+              - img [ref=e4729]
+          - generic [ref=e4731]:
+            - textbox "Route name…" [ref=e4732]
+            - generic [ref=e4733]:
+              - button "Save" [disabled] [ref=e4734]:
+                - img [ref=e4735]
+                - text: Save
+              - button [ref=e4739] [cursor=pointer]:
+                - img [ref=e4740]
+          - generic [ref=e4743]:
+            - generic [ref=e4744]: Activity
+            - generic [ref=e4745]:
+              - button "R Run" [ref=e4746] [cursor=pointer]:
+                - generic [ref=e4747]: R
+                - generic [ref=e4748]: Run
+              - button "H Hike" [ref=e4749] [cursor=pointer]:
+                - generic [ref=e4750]: H
+                - generic [ref=e4751]: Hike
+              - button "R Ride" [ref=e4752] [cursor=pointer]:
+                - generic [ref=e4753]: R
+                - generic [ref=e4754]: Ride
+              - button "W Walk" [ref=e4755] [cursor=pointer]:
+                - generic [ref=e4756]: W
+                - generic [ref=e4757]: Walk
+          - generic [ref=e4758]:
+            - generic [ref=e4759]: Summary
+            - generic [ref=e4760]:
+              - heading "—" [level=3] [ref=e4761]
+              - generic [ref=e4762]: km
+            - generic [ref=e4763]:
+              - generic [ref=e4764]:
+                - generic [ref=e4765]: —
+                - generic [ref=e4766]: Time
+              - generic [ref=e4767]:
+                - generic [ref=e4768]: — m
+                - generic [ref=e4769]: Gain
+              - generic [ref=e4770]:
+                - generic [ref=e4771]: — kcal
+                - generic [ref=e4772]: Energy
+          - generic [ref=e4773]:
+            - generic [ref=e4774]: Pace
+            - generic [ref=e4775]:
+              - heading "5:24" [level=3] [ref=e4776]
+              - generic [ref=e4777]: min/km
+            - textbox "m:ss" [ref=e4778]: 5:24
+            - slider [ref=e4779]: "324"
+            - generic [ref=e4780]:
+              - button "Easy 6:00" [ref=e4781] [cursor=pointer]:
+                - generic [ref=e4782]: Easy
+                - generic [ref=e4783]: 6:00
+              - button "Steady 5:00" [ref=e4784] [cursor=pointer]:
+                - generic [ref=e4785]: Steady
+                - generic [ref=e4786]: 5:00
+              - button "Tempo 4:15" [ref=e4787] [cursor=pointer]:
+                - generic [ref=e4788]: Tempo
+                - generic [ref=e4789]: 4:15
+              - button "Race 3:30" [ref=e4790] [cursor=pointer]:
+                - generic [ref=e4791]: Race
+                - generic [ref=e4792]: 3:30
+          - generic [ref=e4793]:
+            - generic [ref=e4794]: Waypoints
+            - generic [ref=e4795]: Add at least 2 points.
+          - generic [ref=e4796]:
+            - generic [ref=e4797]: Surface
+            - generic [ref=e4798]:
+              - generic [ref=e4799]: 🛣️ Paved
+              - generic [ref=e4800]: 65%
+            - generic [ref=e4801]:
+              - generic [ref=e4802]: 🪨 Gravel
+              - generic [ref=e4803]: 15%
+            - generic [ref=e4804]:
+              - generic [ref=e4805]: 🌲 Trail
+              - generic [ref=e4806]: 15%
+            - generic [ref=e4807]:
+              - generic [ref=e4808]: 🟫 Unpaved
+              - generic [ref=e4809]: 5%
+          - generic [ref=e4810]:
+            - generic [ref=e4811]:
+              - generic [ref=e4812]: Saved Routes
+              - button "All" [ref=e4813] [cursor=pointer]
+            - generic [ref=e4814]: No saved routes for this activity.
+          - generic [ref=e4815]:
+            - generic [ref=e4816]: Elevation
+            - generic [ref=e4817]:
+              - heading "—" [level=3] [ref=e4818]
+              - generic [ref=e4819]: gain · — loss
+            - img [ref=e4821]
+        - generic [ref=e4824]:
+          - generic [ref=e4827]:
+            - link "Leaflet" [ref=e4828] [cursor=pointer]:
+              - /url: https://leafletjs.com
+              - img [ref=e4829]
+              - text: Leaflet
+            - text: "| ©"
+            - link "OpenStreetMap" [ref=e4833] [cursor=pointer]:
+              - /url: https://www.openstreetmap.org/copyright
+            - text: ©
+            - link "CARTO" [ref=e4834] [cursor=pointer]:
+              - /url: https://carto.com/
+          - generic [ref=e4835]:
+            - generic [ref=e4836]:
+              - button "Zoom in" [ref=e4837] [cursor=pointer]:
+                - img [ref=e4838]
+              - button "Zoom out" [ref=e4839] [cursor=pointer]:
+                - img [ref=e4840]
+            - generic [ref=e4841]:
+              - button "Route overview" [ref=e4842] [cursor=pointer]:
+                - img [ref=e4843]
+              - button "Locate me" [ref=e4845] [cursor=pointer]:
+                - img [ref=e4846]
+          - button "Layers" [ref=e4850] [cursor=pointer]:
+            - img [ref=e4851]
+  - generic [ref=e1025]: "75"

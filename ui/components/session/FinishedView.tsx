@@ -1,4 +1,6 @@
 ﻿import { useState } from 'react';
+import { Grid, Row, Column, Cluster, Spacer } from '@ui/layout';
+import { Surface } from '@ui/atoms';
 import { useNavigate } from 'react-router-dom';
 import { Download, FileText, Gauge, Image, MoreVertical, Share2, Tag, Trash2, X } from 'lucide-react';
 import type { ActivityView, SetEntry, StrengthSet } from '@features/training_log';
@@ -76,233 +78,249 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
   }
 
   return (
-    <div className="column">
+    <Column>
       {/* detail-bar */}
-      <div className="row align-center space-between surface ghost tight">
-        <div className="row compact">
-          <span className="detail">{session.name}</span>
-        </div>
-        <div className="row compact align-center">
-          <button type="button" className="primary sm" onClick={() => navigate(-1)}>Done</button>
-          <button type="button" className="secondary sm" onClick={handleExport}>
-            <Download size={13} />
-          </button>
-          <button type="button" className="secondary sm" onClick={handleShare}>
-            <Share2 size={13} />
-          </button>
-          <button type="button" className="secondary sm" onClick={() => setMenuOpen(v => !v)}>
-            <MoreVertical size={13} />
-          </button>
-        </div>
-      </div>
+      <Surface pad="sm" variant="ghost">
+        <Row justify="between" align="center">
+          <Row gap={1}>
+            <span className="detail">{session.name}</span>
+          </Row>
+          <Row gap={1} align="center">
+            <button type="button" className="primary sm" onClick={() => navigate(-1)}>Done</button>
+            <button type="button" className="secondary sm" onClick={handleExport}>
+              <Download size={13} />
+            </button>
+            <button type="button" className="secondary sm" onClick={handleShare}>
+              <Share2 size={13} />
+            </button>
+            <button type="button" className="secondary sm" onClick={() => setMenuOpen(v => !v)}>
+              <MoreVertical size={13} />
+            </button>
+          </Row>
+        </Row>
+      </Surface>
 
       {/* stats grid */}
-      <div className="surface grid">
-        <div className="column compact align-center">
+      <Surface><Grid variant="double">
+        <Column gap={1} align="center">
           <span className="eyebrow">Date</span>
           <span className="mono num detail">{date}</span>
-        </div>
-        <div className="column compact align-center">
+        </Column>
+        <Column gap={1} align="center">
           <span className="eyebrow">Duration</span>
           <span className="mono num detail">{formatDuration(durationMs)}</span>
-        </div>
-        <div className="column compact align-center">
+        </Column>
+        <Column gap={1} align="center">
           <span className="eyebrow">Start</span>
           <span className="mono num detail">{startTime || '—'}</span>
-        </div>
-        <div className="column compact align-center">
+        </Column>
+        <Column gap={1} align="center">
           <span className="eyebrow">End</span>
           <span className="mono num detail">{endTime || '—'}</span>
-        </div>
-      </div>
+        </Column>
+      </Grid></Surface>
 
       {/* RPE */}
       {session.rpe != null && (
-        <div className="surface flat column compact">
-          <div className="row compact align-center">
-            <Gauge size={14} className="faint" />
-            <span className="eyebrow">Session RPE</span>
-          </div>
-          <span className="pill primary">{session.rpe}</span>
-        </div>
+        <Surface variant="flat" pad="sm">
+          <Column gap={1}>
+            <Row gap={1} align="center">
+              <Gauge size={14} className="faint" />
+              <span className="eyebrow">Session RPE</span>
+            </Row>
+            <span className="badge accent">{session.rpe}</span>
+          </Column>
+        </Surface>
       )}
 
       {/* Tags */}
       {session.tags != null && session.tags.length > 0 && (
-        <div className="surface flat column compact">
-          <div className="row compact align-center">
-            <Tag size={14} className="faint" />
-            <span className="eyebrow">Tags</span>
-          </div>
-          <div className="cluster">
-            {session.tags.map((t, i) => (
-              <span key={i} className="pill"><span className="dot" />{t}</span>
-            ))}
-          </div>
-        </div>
+        <Surface variant="flat" pad="sm">
+          <Column gap={1}>
+            <Row gap={1} align="center">
+              <Tag size={14} className="faint" />
+              <span className="eyebrow">Tags</span>
+            </Row>
+            <Cluster>
+              {session.tags.map((t, i) => (
+                <span key={i} className="badge"><span className="dot" />{t}</span>
+              ))}
+            </Cluster>
+          </Column>
+        </Surface>
       )}
 
       {/* Notes */}
       {session.notes && (
-        <div className="surface flat column compact">
-          <div className="row compact align-center">
-            <FileText size={14} className="faint" />
-            <span className="eyebrow">Notes</span>
-          </div>
-          <p className="muted">{session.notes}</p>
-        </div>
+        <Surface variant="flat" pad="sm">
+          <Column gap={1}>
+            <Row gap={1} align="center">
+              <FileText size={14} className="faint" />
+              <span className="eyebrow">Notes</span>
+            </Row>
+            <p className="muted">{session.notes}</p>
+          </Column>
+        </Surface>
       )}
 
       {/* Photos */}
       {session.media && session.media.length > 0 && (
-        <div className="surface flat column compact">
-          <div className="row compact align-center">
-            <Image size={14} className="faint" />
-            <span className="eyebrow">Photos · {session.media.length}</span>
-          </div>
-          <Carousel slides={session.media} />
-        </div>
+        <Surface variant="flat" pad="sm">
+          <Column gap={1}>
+            <Row gap={1} align="center">
+              <Image size={14} className="faint" />
+              <span className="eyebrow">Photos · {session.media.length}</span>
+            </Row>
+            <Carousel slides={session.media} />
+          </Column>
+        </Surface>
       )}
 
       {/* Blocks */}
-      <div className="column">
+      <Column>
         {blocks.map((b, idx) => (
-          <div key={b.id} className="surface">
-            {b.type === 'stretch' && (
-              <>
-                <div className="row align-center space-between">
-                  {b.tag && <span className="pill"><span className="dot" />{b.tag}</span>}
-                </div>
-                {b.exercises.map((ex, i) => (
-                  <div key={i} className="row align-center space-between">
-                    <span className="detail">{ex.name}</span>
-                    <span className="mono caption">{ex.hold}</span>
-                  </div>
-                ))}
-              </>
-            )}
-
-            {b.type === 'cardio' && (() => {
-              const ex = b.exercises[0];
-              return (
+          <Surface key={b.id}>
+            <Column>
+              {b.type === 'stretch' && (
                 <>
-                  <div className="row align-center space-between">
-                    <span className="detail">{ex.name}</span>
-                  </div>
-                  <div className="grid-4">
-                    {CARDIO_FIELDS.map((f, i) => {
-                      const raw = ex.cardioSet?.[f.key] as number | undefined;
-                      const display = raw != null && raw > 0 ? f.toDisplay(raw) : '—';
-                      return (
-                        <div key={i} className="column compact align-center">
-                          <span className="eyebrow">{f.label}</span>
-                          <span className="mono num detail">{display}
-                            {display !== '—' && <span className="muted caption"> {f.unit}</span>}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
+                  <Row align="center" justify="between">
+                    {b.tag && <span className="badge"><span className="dot" />{b.tag}</span>}
+                  </Row>
+                  {b.exercises.map((ex, i) => (
+                    <Row key={i} align="center" justify="between">
+                      <span className="detail">{ex.name}</span>
+                      <span className="mono caption">{ex.hold}</span>
+                    </Row>
+                  ))}
                 </>
-              );
-            })()}
+              )}
 
-            {(b.type === 'single' || b.type === 'superset' || b.type === 'circuit') && (
-              <>
-                {b.type === 'single' ? (
-                  <div className="row align-center space-between">
-                    <div className="row compact align-center grow">
-                      <span className="mono num caption muted" style={{ minWidth: 28, textAlign: 'center', fontWeight: 600 }}>{idx + 1}</span>
-                      <span className="detail">{b.exercises[0].name}</span>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="row align-center space-between">
-                    <span className="pill"><span className="dot" />{b.label}</span>
-                  </div>
-                )}
-                {b.exercises.map((ex, i) => (
-                  <div key={i}>
-                    {b.type !== 'single' && (
-                      <div className="row compact align-center space-between">
-                        <div className="row compact align-center">
-                          <LetterBadge letter={ex.label ?? String(i + 1)} />
-                          <span className="detail">{ex.name}</span>
-                        </div>
-                      </div>
-                    )}
-                    {(cd => cd && (
-                      <div className="surface tight ghost">
-                        <ChartContainer data={cd} chartType="sets-bar" color="var(--accent)" axisShow={{ x: true, y: true }} />
-                      </div>
-                    ))(chartDataOrNull(ex.sets))}
-                    <div className="column compact">
-                      {ex.sets?.map((s, j) => {
-                        const workingNum = (ex.sets ?? []).filter((x, idx2) => !x.warmup && idx2 <= j).length;
+              {b.type === 'cardio' && (() => {
+                const ex = b.exercises[0];
+                return (
+                  <>
+                    <Row align="center" justify="between">
+                      <span className="detail">{ex.name}</span>
+                    </Row>
+                    <Grid cols={4}>
+                      {CARDIO_FIELDS.map((f, i) => {
+                        const raw = ex.cardioSet?.[f.key] as number | undefined;
+                        const display = raw != null && raw > 0 ? f.toDisplay(raw) : '—';
                         return (
-                          <SetRow
-                            key={s.id}
-                            num={workingNum}
-                            set={s}
-                            menuKey=""
-                            openMenu={null}
-                            onOpenMenu={() => {}}
-                            onToggleWarmup={() => {}}
-                            onToggleDone={() => {}}
-                            onDeleteRequest={() => {}}
-                            onUpdate={() => {}}
-                            onComment={() => {}}
-                            currentMode="wt-reps"
-                            availableModes={[]}
-                            onSetModeChange={() => {}}
-                            disabled
-                          />
+                          <Column key={i} gap={1} align="center">
+                            <span className="eyebrow">{f.label}</span>
+                            <span className="mono num detail">{display}
+                              {display !== '—' && <span className="muted caption"> {f.unit}</span>}
+                            </span>
+                          </Column>
                         );
                       })}
+                    </Grid>
+                  </>
+                );
+              })()}
+
+              {(b.type === 'single' || b.type === 'superset' || b.type === 'circuit') && (
+                <>
+                  {b.type === 'single' ? (
+                    <Row align="center" justify="between">
+                      <Row gap={1} align="center" className="grow">
+                        <span className="mono num caption muted" style={{ minWidth: 28, textAlign: 'center', fontWeight: 600 }}>{idx + 1}</span>
+                        <span className="detail">{b.exercises[0].name}</span>
+                      </Row>
+                    </Row>
+                  ) : (
+                    <Row align="center" justify="between">
+                      <span className="badge"><span className="dot" />{b.label}</span>
+                    </Row>
+                  )}
+                  {b.exercises.map((ex, i) => (
+                    <div key={i}>
+                      {b.type !== 'single' && (
+                        <Row gap={1} align="center" justify="between">
+                          <Row gap={1} align="center">
+                            <LetterBadge letter={ex.label ?? String(i + 1)} />
+                            <span className="detail">{ex.name}</span>
+                          </Row>
+                        </Row>
+                      )}
+                      {(cd => cd && (
+                        <Surface pad="sm" variant="ghost">
+                          <ChartContainer data={cd} chartType="sets-bar" color="var(--accent)" axisShow={{ x: true, y: true }} />
+                        </Surface>
+                      ))(chartDataOrNull(ex.sets))}
+                      <Column gap={1}>
+                        {ex.sets?.map((s, j) => {
+                          const workingNum = (ex.sets ?? []).filter((x, idx2) => !x.warmup && idx2 <= j).length;
+                          return (
+                            <SetRow
+                              key={s.id}
+                              num={workingNum}
+                              set={s}
+                              menuKey=""
+                              openMenu={null}
+                              onOpenMenu={() => {}}
+                              onToggleWarmup={() => {}}
+                              onToggleDone={() => {}}
+                              onDeleteRequest={() => {}}
+                              onUpdate={() => {}}
+                              onComment={() => {}}
+                              currentMode="wt-reps"
+                              availableModes={[]}
+                              onSetModeChange={() => {}}
+                              disabled
+                            />
+                          );
+                        })}
+                      </Column>
                     </div>
-                  </div>
-                ))}
-              </>
-            )}
-          </div>
+                  ))}
+                </>
+              )}
+            </Column>
+          </Surface>
         ))}
-      </div>
+      </Column>
 
       {/* menu modal */}
       {menuOpen && (
         <div className="modal-overlay">
-          <div className="surface column">
-            <div className="row space-between align-center">
-              <span className="detail">Session Options</span>
-              <button type="button" className="ghost icon sm" onClick={() => setMenuOpen(false)}>
-                <X size={10} className="faint" />
+          <Surface>
+            <Column>
+              <Row justify="between" align="center">
+                <span className="detail">Session Options</span>
+                <button type="button" className="ghost icon sm" onClick={() => setMenuOpen(false)}>
+                  <X size={10} className="faint" />
+                </button>
+              </Row>
+              {onEdit && <button type="button" className="sm" onClick={() => { setMenuOpen(false); onEdit(); }}>Edit</button>}
+              <button type="button" className="sm warning" onClick={() => { setMenuOpen(false); setDeleteConfirm(true); }}>
+                <Trash2 size={9} /> Delete session
               </button>
-            </div>
-            {onEdit && <button type="button" className="sm" onClick={() => { setMenuOpen(false); onEdit(); }}>Edit</button>}
-            <button type="button" className="sm warning" onClick={() => { setMenuOpen(false); setDeleteConfirm(true); }}>
-              <Trash2 size={9} /> Delete session
-            </button>
-          </div>
+            </Column>
+          </Surface>
         </div>
       )}
 
       {/* delete confirm modal */}
       {deleteConfirm && (
         <div className="modal-overlay">
-          <div className="surface">
-            <div className="column compact">
-              <h3>Delete session?</h3>
-              <span className="caption faint">This removes the entire session and cannot be undone.</span>
-            </div>
-            <div className="row space-between">
-              <button type="button" className="secondary" onClick={() => setDeleteConfirm(false)}>Cancel</button>
-              <button type="button" className="warning" onClick={handleDelete}>
-                <Trash2 size={12} /> Delete
-              </button>
-            </div>
-          </div>
+          <Surface>
+            <Column>
+              <Column gap={1}>
+                <h3>Delete session?</h3>
+                <span className="caption faint">This removes the entire session and cannot be undone.</span>
+              </Column>
+              <Row justify="between">
+                <button type="button" className="secondary" onClick={() => setDeleteConfirm(false)}>Cancel</button>
+                <button type="button" className="warning" onClick={handleDelete}>
+                  <Trash2 size={12} /> Delete
+                </button>
+              </Row>
+            </Column>
+          </Surface>
         </div>
       )}
-    </div>
+    </Column>
   );
 }

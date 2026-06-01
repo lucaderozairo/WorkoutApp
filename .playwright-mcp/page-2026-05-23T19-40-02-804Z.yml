@@ -1,0 +1,95 @@
+- generic [active] [ref=e4]:
+  - generic [ref=e6]:
+    - complementary [ref=e1902]:
+      - navigation [ref=e1903]:
+        - link "Home" [ref=e1904] [cursor=pointer]:
+          - /url: "#/home"
+          - img [ref=e1906]
+          - generic [ref=e1909]: Home
+        - link "Workout" [ref=e1910] [cursor=pointer]:
+          - /url: "#/sessions"
+          - img [ref=e1912]
+          - generic [ref=e1916]: Workout
+        - link "Social" [ref=e1917] [cursor=pointer]:
+          - /url: "#/social"
+          - img [ref=e1919]
+          - generic [ref=e1923]: Social
+        - link "Messages" [ref=e1924] [cursor=pointer]:
+          - /url: "#/messages"
+          - img [ref=e1926]
+          - generic [ref=e1929]: Messages
+        - link "Profile" [ref=e1930] [cursor=pointer]:
+          - /url: "#/profile"
+          - img [ref=e1932]
+          - generic [ref=e1937]: Profile
+      - separator [ref=e1938]
+      - link "Settings" [ref=e1940] [cursor=pointer]:
+        - /url: "#/settings"
+        - img [ref=e1942]
+        - generic [ref=e1946]: Settings
+    - main [ref=e43]:
+      - generic [ref=e3029]:
+        - generic [ref=e3030]:
+          - button "Back" [ref=e3031] [cursor=pointer]
+          - heading "Edit session" [level=2] [ref=e3032]
+          - button "Update" [ref=e3033] [cursor=pointer]
+        - generic [ref=e3034]:
+          - generic [ref=e3035]: Title
+          - textbox "Title" [ref=e3036]: Upper A
+        - generic [ref=e3037]:
+          - generic [ref=e3038]:
+            - generic [ref=e3039]: Date
+            - textbox "Date" [ref=e3040]: 2026-01-06
+          - generic [ref=e3041]:
+            - generic [ref=e3042]: Start time
+            - textbox "Start time" [ref=e3043]: 09:00
+          - generic [ref=e3044]:
+            - generic [ref=e3045]: End time
+            - textbox "End time" [ref=e3046]: 10:15
+          - generic [ref=e3047]:
+            - generic [ref=e3048]: Duration
+            - textbox [disabled] [ref=e3049]: 01:15
+        - generic [ref=e3050]:
+          - generic [ref=e3051]:
+            - generic [ref=e3052]: Review
+            - button "Save as template" [ref=e3053] [cursor=pointer]
+          - generic [ref=e3054]:
+            - generic [ref=e3055]: Bench Press
+            - generic [ref=e3056]: 4 sets
+          - generic [ref=e3057]:
+            - generic [ref=e3058]: Overhead Press
+            - generic [ref=e3059]: 4 sets
+        - generic [ref=e3060]:
+          - generic [ref=e3061]: Session RPE
+          - generic [ref=e3062]:
+            - button "1" [ref=e3063] [cursor=pointer]
+            - button "2" [ref=e3064] [cursor=pointer]
+            - button "3" [ref=e3065] [cursor=pointer]
+            - button "4" [ref=e3066] [cursor=pointer]
+            - button "5" [ref=e3067] [cursor=pointer]
+            - button "6" [ref=e3068] [cursor=pointer]
+            - button "7" [ref=e3069] [cursor=pointer]
+            - button "8" [ref=e3070] [cursor=pointer]
+            - button "9" [ref=e3071] [cursor=pointer]
+            - button "10" [ref=e3072] [cursor=pointer]
+        - generic [ref=e3073]:
+          - generic [ref=e3074]: Tags
+          - generic [ref=e3075]:
+            - button "push" [ref=e3076] [cursor=pointer]
+            - button "pull" [ref=e3077] [cursor=pointer]
+            - button "legs" [ref=e3078] [cursor=pointer]
+            - button "upper" [ref=e3079] [cursor=pointer]
+            - button "lower" [ref=e3080] [cursor=pointer]
+            - button "full-body" [ref=e3081] [cursor=pointer]
+            - button "heavy" [ref=e3082] [cursor=pointer]
+            - button "light" [ref=e3083] [cursor=pointer]
+            - button "deload" [ref=e3084] [cursor=pointer]
+        - generic [ref=e3085]:
+          - generic [ref=e3086]: Notes
+          - textbox "Notes" [ref=e3087]:
+            - /placeholder: Session notes…
+        - generic [ref=e3088]:
+          - generic [ref=e3089]: Photos
+          - button "+" [ref=e3091] [cursor=pointer]:
+            - generic [ref=e3092]: +
+  - generic [ref=e1025]: "75"

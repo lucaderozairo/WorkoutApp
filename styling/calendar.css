@@ -1,0 +1,33 @@
+/* ════════════════════════════════════════════
+   CALENDAR — day cell grid
+   ════════════════════════════════════════════ */
+.cal {
+  & .day {
+    padding: var(--s-1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--s-1);
+    font-size: var(--t-xs);
+    border-radius: var(--r-sm);
+    background: transparent;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.12s var(--ease);
+
+    &:hover { background: var(--surface-2); }
+
+    & .caption { line-height: 0.7; }
+
+    & .dot {
+      height: var(--s-1);
+      width: var(--s-1);
+    }
+  }
+
+  & button.day[data-today] {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+}

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { ChevronDown, Check, SlidersHorizontal, Search, X } from 'lucide-react';
 import type { SessionFilters, TypeFilter, ViewMode } from '@ui/components/log/SessionFilterBar';
+import { Row, Column, Cluster } from '@ui/layout';
+import { Surface } from '@ui/atoms';
 
 const DATE_OPTIONS: { key: SessionFilters['dateRange']; label: string }[] = [
   { key: 'all', label: 'All time' },
@@ -76,10 +78,10 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
   const filtersBtnOpen = filtersOpen && activeCount === 0;
 
   return (
-    <div className="column compact">
-      <div className="row compact align-center">
+    <Column gap={1}>
+      <Row gap={1} align="center">
         {/* ── Session name search ── */}
-        <div className="row compact align-center grow">
+        <Row gap={1} align="center" className="grow">
           <Search size={14} className="faint" />
           <input
             className="grow"
@@ -92,7 +94,7 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
               <X size={12} />
             </button>
           )}
-        </div>
+        </Row>
 
         {/* ── Sort chip sm ── */}
         <button
@@ -110,174 +112,184 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
           >
             <SlidersHorizontal size={14} />
             Filters
-            {activeCount > 0 && <span className="pill">{activeCount}</span>}
+            {activeCount > 0 && <span className="badge">{activeCount}</span>}
           </button>
 
           {filtersOpen && (
             <div className="absolute right filter-panel">
-              <div className="surface column compact">
-                {/* Header */}
-                <div className="row compact space-between align-center">
-                  <span className="caption">Filters</span>
-                  {activeCount > 0 && (
-                    <button className="ghost sm" onClick={clearAll}>Clear all</button>
-                  )}
-                </div>
-                
-
-                {/* Date range — list view only */}
-                {view === 'list' && (
-                  <>
-                    <button
-                      className="ghost flush row space-between align-center"
-                      onClick={() => setDateExpanded(e => !e)}
-                    >
-                      Date range
-                      <ChevronDown size={12} className={`chevron${dateExpanded ? ' open' : ''}`} />
-                    </button>
-                    {dateExpanded && (
-                      <div className="cluster compact">
-                        {DATE_OPTIONS.map(opt => (
-                          <button
-                            key={opt.key}
-                            className={`chip sm${filters.dateRange === opt.key ? ' active' : ''}`}
-                            onClick={() => onChange({ ...filters, dateRange: opt.key, dateFrom: '', dateTo: '' })}
-                          >
-                            {opt.label}
-                          </button>
-                        ))}
-                      </div>
+              <Surface>
+                <Column gap={1}>
+                  {/* Header */}
+                  <Row gap={1} justify="between" align="center">
+                    <span className="caption">Filters</span>
+                    {activeCount > 0 && (
+                      <button className="ghost sm" onClick={clearAll}>Clear all</button>
                     )}
-                    
-                  </>
-                )}
+                  </Row>
 
-                {/* Custom date picker */}
-                <button
-                  className="ghost flush row space-between align-center"
-                  onClick={() => setDatePickerExpanded(e => !e)}
-                >
-                  Custom date
-                  <ChevronDown size={12} className={`chevron${datePickerExpanded ? ' open' : ''}`} />
-                </button>
-                {datePickerExpanded && (
-                  <div className=" column compact">
-                    <div className="column compact">
-                      <span className="caption muted">From</span>
-                      <input
-                        type="date"
-                        className="grow"
-                        value={filters.dateFrom}
-                        onChange={e => onChange({ ...filters, dateFrom: e.target.value, dateRange: 'all' })}
-                      />
-                    </div>
-                    <div className="column compact">
-                      <span className="caption muted">To</span>
-                      <input
-                        type="date"
-                        className="grow"
-                        value={filters.dateTo}
-                        min={filters.dateFrom || undefined}
-                        onChange={e => onChange({ ...filters, dateTo: e.target.value, dateRange: 'all' })}
-                      />
-                    </div>
-                    {(filters.dateFrom || filters.dateTo) && (
+
+                  {/* Date range — list view only */}
+                  {view === 'list' && (
+                    <>
                       <button
-                        className="ghost sm"
-                        onClick={() => onChange({ ...filters, dateFrom: '', dateTo: '' })}
+                        className="ghost flush"
+                        onClick={() => setDateExpanded(e => !e)}
                       >
-                        <div className="row space-between align-center">
-                          <span>Clear dates </span>
-                          <X size={12} />
-                        </div>
+                          <Row justify="between" align="center">
+                            Date range
+                            <ChevronDown size={12} className={`chevron${dateExpanded ? ' open' : ''}`} />
+                      </Row>
                       </button>
-                    )}
-                  </div>
-                )}
-                
+                      {dateExpanded && (
+                        <Cluster gap={1}>
+                          {DATE_OPTIONS.map(opt => (
+                            <button
+                              key={opt.key}
+                              className={`chip sm${filters.dateRange === opt.key ? ' active' : ''}`}
+                              onClick={() => onChange({ ...filters, dateRange: opt.key, dateFrom: '', dateTo: '' })}
+                            >
+                              {opt.label}
+                            </button>
+                          ))}
+                        </Cluster>
+                      )}
 
-                {/* Workout type */}
-                <button
-                  className="ghost flush row space-between align-center"
-                  onClick={() => setTypeExpanded(e => !e)}
-                >
-                  Workout type
-                  <ChevronDown size={12} className={`chevron${typeExpanded ? ' open' : ''}`} />
-                </button>
-                {typeExpanded && (
-                  <div className="cluster compact">
-                    {TYPE_OPTIONS.map(opt => (
-                      <button
-                        key={opt.key}
-                        className={`chip sm${filters.type === opt.key ? ' active' : ''}`}
-                        onClick={() => onChange({ ...filters, type: opt.key })}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
-
-                )}
-                
-
-                {/* Exercise search */}
-                <span className="caption muted">Exercise</span>
-                <div className="relative">
-                  <div className="row compact align-center">
-                    <input
-                      className="grow"
-                      placeholder="Search exercises…"
-                      value={exerciseSearch}
-                      onChange={e => setExerciseSearch(e.target.value)}
-                      onFocus={() => setExerciseFocused(true)}
-                      onBlur={() => setTimeout(() => setExerciseFocused(false), 150)}
-                    />
-                  </div>
-                  {exerciseFocused && exerciseSearch && matchingExercises.length > 0 && (
-                    <div className="dropdown">
-                      <div className="surface tight">
-                        {matchingExercises.slice(0, 6).map(name => (
-                          <button
-                            key={name}
-                            className="ghost row space-between align-center"
-                            onMouseDown={() => {
-                              onChange({ ...filters, exercise: name });
-                              setExerciseSearch('');
-                            }}
-                          >
-                            {name}
-                            {filters.exercise === name && <Check size={12} />}
-                          </button>
-                        ))}
-                        {filters.exercise && (
-                          <button
-                            className="ghost sm block"
-                            onMouseDown={() => onChange({ ...filters, exercise: '' })}
-                          >
-                            Clear ✕
-                          </button>
-                        )}
-                      </div>
-                    </div>
+                    </>
                   )}
-                </div>
-                {filters.exercise && (
+
+                  {/* Custom date picker */}
                   <button
-                    className="chip sm active"
-                    onClick={() => onChange({ ...filters, exercise: '' })}
+                    className="ghost flush"
+                    onClick={() => setDatePickerExpanded(e => !e)}
                   >
-                    {filters.exercise} <X size={9} />
+                      <Row justify="between" align="center">
+                        Custom date
+                        <ChevronDown size={12} className={`chevron${datePickerExpanded ? ' open' : ''}`} />
+                  </Row>
                   </button>
-                )}
-              </div>
+                  {datePickerExpanded && (
+                    <Column gap={1}>
+                      <Column gap={1}>
+                        <span className="caption muted">From</span>
+                        <input
+                          type="date"
+                          className="grow"
+                          value={filters.dateFrom}
+                          onChange={e => onChange({ ...filters, dateFrom: e.target.value, dateRange: 'all' })}
+                        />
+                      </Column>
+                      <Column gap={1}>
+                        <span className="caption muted">To</span>
+                        <input
+                          type="date"
+                          className="grow"
+                          value={filters.dateTo}
+                          min={filters.dateFrom || undefined}
+                          onChange={e => onChange({ ...filters, dateTo: e.target.value, dateRange: 'all' })}
+                        />
+                      </Column>
+                      {(filters.dateFrom || filters.dateTo) && (
+                        <button
+                          className="ghost sm"
+                          onClick={() => onChange({ ...filters, dateFrom: '', dateTo: '' })}
+                        >
+                          <Row justify="between" align="center">
+                            <span>Clear dates </span>
+                            <X size={12} />
+                          </Row>
+                        </button>
+                      )}
+                    </Column>
+                  )}
+
+
+                  {/* Workout type */}
+                  <button
+                    className="ghost flush"
+                    onClick={() => setTypeExpanded(e => !e)}
+                  >
+                      <Row justify="between" align="center">
+                        Workout type
+                        <ChevronDown size={12} className={`chevron${typeExpanded ? ' open' : ''}`} />
+                  </Row>
+                  </button>
+                  {typeExpanded && (
+                    <Cluster gap={1}>
+                      {TYPE_OPTIONS.map(opt => (
+                        <button
+                          key={opt.key}
+                          className={`chip sm${filters.type === opt.key ? ' active' : ''}`}
+                          onClick={() => onChange({ ...filters, type: opt.key })}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </Cluster>
+
+                  )}
+
+
+                  {/* Exercise search */}
+                  <span className="caption muted">Exercise</span>
+                  <div className="relative">
+                    <Row gap={1} align="center">
+                      <input
+                        className="grow"
+                        placeholder="Search exercises…"
+                        value={exerciseSearch}
+                        onChange={e => setExerciseSearch(e.target.value)}
+                        onFocus={() => setExerciseFocused(true)}
+                        onBlur={() => setTimeout(() => setExerciseFocused(false), 150)}
+                      />
+                    </Row>
+                    {exerciseFocused && exerciseSearch && matchingExercises.length > 0 && (
+                      <div className="dropdown">
+                        <Surface pad="sm">
+                          {matchingExercises.slice(0, 6).map(name => (
+                            <button
+                              key={name}
+                              className="ghost block"
+                              onMouseDown={() => {
+                                onChange({ ...filters, exercise: name });
+                                setExerciseSearch('');
+                              }}
+                            >
+                              <Row justify="between" align="center">
+                                {name}
+                                {filters.exercise === name && <Check size={12} />}
+                              </Row>
+                            </button>
+                          ))}
+                          {filters.exercise && (
+                            <button
+                              className="ghost sm block"
+                              onMouseDown={() => onChange({ ...filters, exercise: '' })}
+                            >
+                              Clear ✕
+                            </button>
+                          )}
+                        </Surface>
+                      </div>
+                    )}
+                  </div>
+                  {filters.exercise && (
+                    <button
+                      className="chip sm active"
+                      onClick={() => onChange({ ...filters, exercise: '' })}
+                    >
+                      {filters.exercise} <X size={9} />
+                    </button>
+                  )}
+                </Column>
+              </Surface>
             </div>
           )}
         </div>
-      </div>
+      </Row>
 
       {/* ── Active filter chip sms ── */}
       {hasActivechips && (
-        <div className="cluster compact">
+        <Cluster gap={1}>
           {filters.sessionName && (
             <button className="chip sm active" onClick={() => onChange({ ...filters, sessionName: '' })}>
               "{filters.sessionName}" <X size={9} />
@@ -308,8 +320,8 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
               ↑ Oldest <X size={9} />
             </button>
           )}
-        </div>
+        </Cluster>
       )}
-    </div>
+    </Column>
   );
 }

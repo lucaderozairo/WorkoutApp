@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { useQuery, useCommand } from '@ui/bindings';
 import { handleCreatePost } from '@features/social';
 import type { Post } from '@features/social';
@@ -8,6 +8,8 @@ import type { CardioSession } from '@features/cardio';
 import { PostCard } from './PostCard';
 import { StrengthActivityCard, CardioActivityCard } from './ActivityPostCard';
 import { USER_ID, USER_NAME, USER_INITIALS } from '@features/social/domain/constants';
+import { Row } from '@ui/layout';
+import { Surface } from '@ui/atoms';
 
 type FeedItem =
   | { kind: 'post';     ts: number; data: PostWithMeta }
@@ -68,14 +70,14 @@ export function FeedTab() {
 
   return (
     <>
-      <section className="surface">
-        <div className="row space-between">
+      <Surface>
+        <Row justify="between">
           <div className="avatar lift">{USER_INITIALS}</div>
           <input id="composer-input" placeholder="Share a workout or activity…"
             value={body} onChange={e => setBody(e.target.value)} />
-        </div>
+        </Row>
         <button className="primary sm" onClick={handlePost}>Post</button>
-      </section>
+      </Surface>
       <h3>Recent Activity</h3>
       {feed.length === 0 && <p>No posts yet.</p>}
       {feed.map(item => {

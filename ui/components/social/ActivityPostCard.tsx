@@ -6,6 +6,8 @@ import { ACTIVITY_ICONS, getActivityLabel } from '@ui/icons/activityIcons';
 import { Carousel } from '../shared';
 import { timeAgo } from '@shared/utils/timeAgo';
 import { USER_NAME, USER_INITIALS } from '@features/social/domain/constants';
+import { Row, Column, Cluster } from '@ui/layout';
+import { Surface } from '@ui/atoms';
 
 const SPORT_AVATAR: Partial<Record<CardioSport, string>> = {
   run: 'run', cycle: 'cycle', swim: 'swim', row: 'rowing',
@@ -29,46 +31,46 @@ export function StrengthActivityCard({ session }: { session: ActivityHistoryItem
   const navigate = useNavigate();
   const { Icon: SportIcon, label } = ACTIVITY_ICONS[session.primarySport];
   return (
-    <section className="surface">
-      <header className="row space-between">
-        <div className="row">
+    <Surface>
+      <Row as="header" justify="between">
+        <Row>
           <div className="avatar lift">{USER_INITIALS}</div>
-          <div className="column compact">
+          <Column gap={1}>
             <p>{USER_NAME}</p>
-            <div className="align-center row">
+            <Row align="center">
               <SportIcon size={13} />
               <span className="caption muted">{label}</span>
-            </div>
-          </div>
-        </div>
+            </Row>
+          </Column>
+        </Row>
         <time className="caption muted" dateTime={new Date(session.startedAt).toISOString()}>
           {timeAgo(session.startedAt)}
         </time>
-      </header>
+      </Row>
       <h3 className="interactive" onClick={() => navigate(`/sessions/${session.id}`)}>{session.name}</h3>
-      <div className="align-center row">
-        <div className="column compact">
+      <Row align="center">
+        <Column gap={1}>
           <h3>{session.exerciseCount}</h3>
           <p className="caption muted">Exercises</p>
-        </div>
-        <div className="column compact">
+        </Column>
+        <Column gap={1}>
           <h3>{formatDuration(session.durationSeconds)}</h3>
           <p className="caption muted">Duration</p>
-        </div>
-        <div className="column compact">
+        </Column>
+        <Column gap={1}>
           <h3>{session.totalSets}</h3>
           <p className="caption muted">Sets</p>
-        </div>
-      </div>
+        </Column>
+      </Row>
       <Carousel slides={session.media ?? []} />
       {session.notes && <p className="detail muted">{session.notes}</p>}
       {(session.category || session.tags?.length) && (
-        <div className="cluster">
-          <span className="pill">{session.category}</span>
-          {session.tags?.map(tag => <span key={tag} className="pill">{tag}</span>)}
-        </div>
+        <Cluster>
+          <span className="badge">{session.category}</span>
+          {session.tags?.map(tag => <span key={tag} className="badge">{tag}</span>)}
+        </Cluster>
       )}
-    </section>
+    </Surface>
   );
 }
 
@@ -82,50 +84,50 @@ export function CardioActivityCard({ session }: { session: CardioSession }) {
   const title = session.title || sportLabel;
 
   return (
-    <section className="surface">
-      <header className="row space-between">
-        <div className="row">
+    <Surface>
+      <Row as="header" justify="between">
+        <Row>
           <div className={`avatar ${avatarClass}`}>{USER_INITIALS}</div>
-          <div className="column compact">
+          <Column gap={1}>
             <p>{USER_NAME}</p>
-            <div className="align-center row">
+            <Row align="center">
               <SportIcon size={13} />
               <span className="caption muted">
                 {sportLabel}{session.location && ` · ${session.location}`}
               </span>
-            </div>
-          </div>
-        </div>
+            </Row>
+          </Column>
+        </Row>
         <time className="caption muted" dateTime={new Date(session.startedAt).toISOString()}>
           {timeAgo(session.startedAt)}
         </time>
-      </header>
+      </Row>
       <h3 className="interactive" onClick={() => navigate(`/sessions/${session.id}`)}>{title}</h3>
-      <div className="align-center row">
+      <Row align="center">
         {session.distanceMeters > 0 && (
-          <div className="column compact">
-            <h3 className="align-bottom compact row">
+          <Column gap={1}>
+            <Row as="h3" align="end" gap={1}>
               {distKm}<span className="caption muted">km</span>
-            </h3>
+            </Row>
             <p className="caption muted">Distance</p>
-          </div>
+          </Column>
         )}
-        <div className="column compact">
+        <Column gap={1}>
           <h3>{formatDuration(session.durationSeconds)}</h3>
           <p className="caption muted">Time</p>
-        </div>
+        </Column>
         {pace && (
-          <div className="column compact">
+          <Column gap={1}>
             <h3>{pace}</h3>
             <p className="caption muted">Avg Pace</p>
-          </div>
+          </Column>
         )}
-      </div>
+      </Row>
       <Carousel slides={session.media ?? []} />
       {session.notes && <p className="detail muted">{session.notes}</p>}
-      <div className="cluster">
-        <span className="pill">{sportLabel}</span>
-      </div>
-    </section>
+      <Cluster>
+        <span className="badge">{sportLabel}</span>
+      </Cluster>
+    </Surface>
   );
 }

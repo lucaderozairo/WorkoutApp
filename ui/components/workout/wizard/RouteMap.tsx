@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { Layer, Layered } from '@ui/layout';
 
 const TILE_ATTR = '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>';
 const DEFAULT_CENTER: L.LatLngTuple = [51.463955, -0.305095];  // London — replaced once user taps
@@ -364,7 +365,11 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
     const initial = baseLayers[baseLayerIdRef.current];
     baseLayerRef.current = L.tileLayer(initial.url, { attribution: TILE_ATTR, maxZoom: 19 }).addTo(map);
 
+    const ro = new ResizeObserver(() => map.invalidateSize());
+    ro.observe(containerRef.current);
+
     return () => {
+      ro.disconnect();
       map.remove();
       mapRef.current = null;
     };
@@ -772,8 +777,12 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
   }));
 
   return (
-    <div ref={mapWrapRef} className="grow map-root relative media-md">
-      <div ref={containerRef} className="route-map-canvas" />
+    <div ref={mapWrapRef} className="grow map-root media-md">
+      <Layered fill>
+        <Layer pin="full" z="base" direction="none">
+          <div ref={containerRef} className="route-map-canvas" />
+        </Layer>
+      </Layered>
     </div>
   );
 });

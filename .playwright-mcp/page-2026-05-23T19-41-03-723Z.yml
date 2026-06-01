@@ -1,0 +1,215 @@
+- generic [active] [ref=e4]:
+  - generic [ref=e6]:
+    - complementary [ref=e1902]:
+      - navigation [ref=e1903]:
+        - link "Home" [ref=e1904] [cursor=pointer]:
+          - /url: "#/home"
+          - img [ref=e1906]
+          - generic [ref=e1909]: Home
+        - link "Workout" [ref=e1910] [cursor=pointer]:
+          - /url: "#/sessions"
+          - img [ref=e1912]
+          - generic [ref=e1916]: Workout
+        - link "Social" [ref=e1917] [cursor=pointer]:
+          - /url: "#/social"
+          - img [ref=e1919]
+          - generic [ref=e1923]: Social
+        - link "Messages" [ref=e1924] [cursor=pointer]:
+          - /url: "#/messages"
+          - img [ref=e1926]
+          - generic [ref=e1929]: Messages
+        - link "Profile" [ref=e1930] [cursor=pointer]:
+          - /url: "#/profile"
+          - img [ref=e1932]
+          - generic [ref=e1937]: Profile
+      - separator [ref=e1938]
+      - link "Settings" [ref=e1940] [cursor=pointer]:
+        - /url: "#/settings"
+        - img [ref=e1942]
+        - generic [ref=e1946]: Settings
+    - main [ref=e43]:
+      - generic [ref=e4309]:
+        - generic [ref=e4310]:
+          - button "Go back" [ref=e4311] [cursor=pointer]: ←
+          - heading "Bench Press" [level=2] [ref=e4312]
+        - generic [ref=e4313]:
+          - generic [ref=e4314]: Weight over time
+          - generic [ref=e4315]:
+            - generic [ref=e4316]: kg
+            - application [ref=e4319]:
+              - generic [ref=e4378]:
+                - generic [ref=e4379]:
+                  - generic [ref=e4381]: 6 Jan
+                  - generic [ref=e4383]: 13 Jan
+                  - generic [ref=e4385]: 20 Jan
+                  - generic [ref=e4387]: 27 Jan
+                  - generic [ref=e4389]: 3 Feb
+                  - generic [ref=e4391]: 10 Feb
+                  - generic [ref=e4393]: 17 Feb
+                  - generic [ref=e4395]: 24 Feb
+                  - generic [ref=e4397]: 3 Mar
+                  - generic [ref=e4399]: 10 Mar
+                  - generic [ref=e4401]: 17 Mar
+                  - generic [ref=e4403]: 24 Mar
+                - generic [ref=e4404]:
+                  - generic [ref=e4406]: "0"
+                  - generic [ref=e4408]: "30"
+                  - generic [ref=e4410]: "60"
+                  - generic [ref=e4412]: "90"
+                  - generic [ref=e4414]: "120"
+        - generic [ref=e4415]:
+          - generic [ref=e4416]: Session history
+          - table [ref=e4417]:
+            - rowgroup [ref=e4418]:
+              - row "Date S1 S2 S3 1RM" [ref=e4419]:
+                - columnheader "Date" [ref=e4420]
+                - columnheader "S1" [ref=e4421]
+                - columnheader "S2" [ref=e4422]
+                - columnheader "S3" [ref=e4423]
+                - columnheader "1RM" [ref=e4424]
+            - rowgroup [ref=e4425]:
+              - row "24 Mar 2026 95 ×5 97.5 ×5 100 ×2 113.8" [ref=e4426]:
+                - cell "24 Mar 2026" [ref=e4427]
+                - cell "95 ×5" [ref=e4428]:
+                  - text: "95"
+                  - generic [ref=e4429]: ×5
+                - cell "97.5 ×5" [ref=e4430]:
+                  - text: "97.5"
+                  - generic [ref=e4431]: ×5
+                - cell "100 ×2" [ref=e4432]:
+                  - text: "100"
+                  - generic [ref=e4433]: ×2
+                - cell "113.8" [ref=e4434]
+              - row "17 Mar 2026 92.5 ×5 95 ×5 97.5 ×3 110.8" [ref=e4435]:
+                - cell "17 Mar 2026" [ref=e4436]
+                - cell "92.5 ×5" [ref=e4437]:
+                  - text: "92.5"
+                  - generic [ref=e4438]: ×5
+                - cell "95 ×5" [ref=e4439]:
+                  - text: "95"
+                  - generic [ref=e4440]: ×5
+                - cell "97.5 ×3" [ref=e4441]:
+                  - text: "97.5"
+                  - generic [ref=e4442]: ×3
+                - cell "110.8" [ref=e4443]
+              - row "10 Mar 2026 90 ×5 92.5 ×5 95 ×3 107.9" [ref=e4444]:
+                - cell "10 Mar 2026" [ref=e4445]
+                - cell "90 ×5" [ref=e4446]:
+                  - text: "90"
+                  - generic [ref=e4447]: ×5
+                - cell "92.5 ×5" [ref=e4448]:
+                  - text: "92.5"
+                  - generic [ref=e4449]: ×5
+                - cell "95 ×3" [ref=e4450]:
+                  - text: "95"
+                  - generic [ref=e4451]: ×3
+                - cell "107.9" [ref=e4452]
+              - row "3 Mar 2026 87.5 ×5 90 ×5 92.5 ×3 105.0" [ref=e4453]:
+                - cell "3 Mar 2026" [ref=e4454]
+                - cell "87.5 ×5" [ref=e4455]:
+                  - text: "87.5"
+                  - generic [ref=e4456]: ×5
+                - cell "90 ×5" [ref=e4457]:
+                  - text: "90"
+                  - generic [ref=e4458]: ×5
+                - cell "92.5 ×3" [ref=e4459]:
+                  - text: "92.5"
+                  - generic [ref=e4460]: ×3
+                - cell "105.0" [ref=e4461]
+              - row "24 Feb 2026 87.5 ×5 90 ×3 92.5 ×1 102.1" [ref=e4462]:
+                - cell "24 Feb 2026" [ref=e4463]
+                - cell "87.5 ×5" [ref=e4464]:
+                  - text: "87.5"
+                  - generic [ref=e4465]: ×5
+                - cell "90 ×3" [ref=e4466]:
+                  - text: "90"
+                  - generic [ref=e4467]: ×3
+                - cell "92.5 ×1" [ref=e4468]:
+                  - text: "92.5"
+                  - generic [ref=e4469]: ×1
+                - cell "102.1" [ref=e4470]
+              - row "17 Feb 2026 85 ×5 87.5 ×5 90 ×3 102.1" [ref=e4471]:
+                - cell "17 Feb 2026" [ref=e4472]
+                - cell "85 ×5" [ref=e4473]:
+                  - text: "85"
+                  - generic [ref=e4474]: ×5
+                - cell "87.5 ×5" [ref=e4475]:
+                  - text: "87.5"
+                  - generic [ref=e4476]: ×5
+                - cell "90 ×3" [ref=e4477]:
+                  - text: "90"
+                  - generic [ref=e4478]: ×3
+                - cell "102.1" [ref=e4479]
+              - row "10 Feb 2026 82.5 ×5 85 ×5 87.5 ×3 99.2" [ref=e4480]:
+                - cell "10 Feb 2026" [ref=e4481]
+                - cell "82.5 ×5" [ref=e4482]:
+                  - text: "82.5"
+                  - generic [ref=e4483]: ×5
+                - cell "85 ×5" [ref=e4484]:
+                  - text: "85"
+                  - generic [ref=e4485]: ×5
+                - cell "87.5 ×3" [ref=e4486]:
+                  - text: "87.5"
+                  - generic [ref=e4487]: ×3
+                - cell "99.2" [ref=e4488]
+              - row "3 Feb 2026 80 ×5 82.5 ×5 85 ×3 96.3" [ref=e4489]:
+                - cell "3 Feb 2026" [ref=e4490]
+                - cell "80 ×5" [ref=e4491]:
+                  - text: "80"
+                  - generic [ref=e4492]: ×5
+                - cell "82.5 ×5" [ref=e4493]:
+                  - text: "82.5"
+                  - generic [ref=e4494]: ×5
+                - cell "85 ×3" [ref=e4495]:
+                  - text: "85"
+                  - generic [ref=e4496]: ×3
+                - cell "96.3" [ref=e4497]
+              - row "27 Jan 2026 77.5 ×5 80 ×5 82.5 ×3 93.3" [ref=e4498]:
+                - cell "27 Jan 2026" [ref=e4499]
+                - cell "77.5 ×5" [ref=e4500]:
+                  - text: "77.5"
+                  - generic [ref=e4501]: ×5
+                - cell "80 ×5" [ref=e4502]:
+                  - text: "80"
+                  - generic [ref=e4503]: ×5
+                - cell "82.5 ×3" [ref=e4504]:
+                  - text: "82.5"
+                  - generic [ref=e4505]: ×3
+                - cell "93.3" [ref=e4506]
+              - row "20 Jan 2026 75 ×5 77.5 ×5 80 ×3 90.4" [ref=e4507]:
+                - cell "20 Jan 2026" [ref=e4508]
+                - cell "75 ×5" [ref=e4509]:
+                  - text: "75"
+                  - generic [ref=e4510]: ×5
+                - cell "77.5 ×5" [ref=e4511]:
+                  - text: "77.5"
+                  - generic [ref=e4512]: ×5
+                - cell "80 ×3" [ref=e4513]:
+                  - text: "80"
+                  - generic [ref=e4514]: ×3
+                - cell "90.4" [ref=e4515]
+              - row "13 Jan 2026 72.5 ×5 75 ×5 77.5 ×3 87.5" [ref=e4516]:
+                - cell "13 Jan 2026" [ref=e4517]
+                - cell "72.5 ×5" [ref=e4518]:
+                  - text: "72.5"
+                  - generic [ref=e4519]: ×5
+                - cell "75 ×5" [ref=e4520]:
+                  - text: "75"
+                  - generic [ref=e4521]: ×5
+                - cell "77.5 ×3" [ref=e4522]:
+                  - text: "77.5"
+                  - generic [ref=e4523]: ×3
+                - cell "87.5" [ref=e4524]
+              - row "6 Jan 2026 70 ×5 72.5 ×5 75 ×3 84.6" [ref=e4525]:
+                - cell "6 Jan 2026" [ref=e4526]
+                - cell "70 ×5" [ref=e4527]:
+                  - text: "70"
+                  - generic [ref=e4528]: ×5
+                - cell "72.5 ×5" [ref=e4529]:
+                  - text: "72.5"
+                  - generic [ref=e4530]: ×5
+                - cell "75 ×3" [ref=e4531]:
+                  - text: "75"
+                  - generic [ref=e4532]: ×3
+                - cell "84.6" [ref=e4533]
+  - generic [ref=e1025]: "75"

@@ -1,9 +1,11 @@
-﻿import { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { TypeFilter } from './SessionFilterBar';
 import type { CombinedSession } from '@features/training_log/queries/calendarUtils';
 import { buildDateMap, getWeekStart, formatWeekRange, toDateKey } from '@features/training_log/queries/calendarUtils';
 import { StrengthSessionItem, CardioSessionItem } from './SessionListItem';
+import { Row, Column } from '@ui/layout';
+import { Surface } from '@ui/atoms';
 
 interface Props {
   sessions: CombinedSession[];
@@ -60,57 +62,63 @@ export function WeekCalendar({ sessions, typeFilter, renderFilter }: Props) {
     : allWeekSessions;
 
   return (
-    <div className="column">
-      <div className="row space-between align-center surface tight">
-        <button className="secondary icon sm" onClick={prev}>‹</button>
-        <span className="caption text-center">{formatWeekRange(weekStart)}</span>
-        <button className="secondary icon sm" onClick={next}>›</button>
-      </div>
+    <Column>
+      <Surface pad="sm">
+        <Row justify="between" align="center">
+          <button className="secondary icon sm" onClick={prev}>‹</button>
+          <span className="caption text-center">{formatWeekRange(weekStart)}</span>
+          <button className="secondary icon sm" onClick={next}>›</button>
+        </Row>
+      </Surface>
 
-      <div className="row surface tight">
-        {days.map((date, i) => {
-          const key = toDateKey(date.getTime());
-          const isToday = key === todayKey;
-          const isFuture = date > today;
-          const hasSessions = dateMap.has(key);
-          const isSelected = key === selectedKey;
-          return (
-            <button
-              key={key}
-              className={`column align-center grow ghost${isSelected ? ' primary' : ''}`}
-              {...(isToday ? { 'data-today': true } : {})}
-              onClick={() => !isFuture && setSelectedKey(k => k === key ? null : key)}
-              disabled={isFuture}
-            >
-              <span className="caption">{DAY_LABELS[i]}</span>
-              <strong>{date.getDate()}</strong>
-              {hasSessions
-                ? <span className="dot sm active" />
-                : <span className="dot sm invisible" />
-              }
-            </button>
-          );
-        })}
-      </div>
+      <Surface pad="sm">
+        <Row>
+          {days.map((date, i) => {
+            const key = toDateKey(date.getTime());
+            const isToday = key === todayKey;
+            const isFuture = date > today;
+            const hasSessions = dateMap.has(key);
+            const isSelected = key === selectedKey;
+            return (
+              <button
+                key={key}
+                className={`column align-center grow ghost${isSelected ? ' primary' : ''}`}
+                {...(isToday ? { 'data-today': true } : {})}
+                onClick={() => !isFuture && setSelectedKey(k => k === key ? null : key)}
+                disabled={isFuture}
+              >
+                <span className="caption">{DAY_LABELS[i]}</span>
+                <strong>{date.getDate()}</strong>
+                {hasSessions
+                  ? <span className="dot sm active" />
+                  : <span className="dot sm invisible" />
+                }
+              </button>
+            );
+          })}
+        </Row>
+      </Surface>
 
       {renderFilter?.()}
 
-      <div className="column">
-        <div className="row space-between align-center compact surface flat">
-          <span className="caption muted">
-            {selectedKey
-              ? <>
-                  {new Date(selectedKey + 'T12:00:00').toLocaleDateString('en-GB', {
-                    weekday: 'short', day: 'numeric', month: 'long',
-                  })}
-                  {selectedKey === todayKey ? ' — today' : ''}
-                </>
-              : formatWeekRange(weekStart)
-            }
-          </span>
-        </div>
+      <Column>
+        <Surface variant="flat">
+          <Row justify="between" align="center" gap={1}>
+            <span className="caption muted">
+              {selectedKey
+                ? <>
+                    {new Date(selectedKey + 'T12:00:00').toLocaleDateString('en-GB', {
+                      weekday: 'short', day: 'numeric', month: 'long',
+                    })}
+                    {selectedKey === todayKey ? ' — today' : ''}
+                  </>
+                : formatWeekRange(weekStart)
+              }
+            </span>
+          </Row>
+        </Surface>
         {displaySessions.length === 0 ? (
-          <p className="muted caption compact">No sessions {selectedKey ? 'this day' : 'this week'}.</p>
+          <p className="muted caption">No sessions {selectedKey ? 'this day' : 'this week'}.</p>
         ) : (
           displaySessions.map((entry, i) =>
             entry.kind === 'strength'
@@ -118,7 +126,7 @@ export function WeekCalendar({ sessions, typeFilter, renderFilter }: Props) {
               : <CardioSessionItem key={i} session={entry.session} />
           )
         )}
-      </div>
-    </div>
+      </Column>
+    </Column>
   );
 }
