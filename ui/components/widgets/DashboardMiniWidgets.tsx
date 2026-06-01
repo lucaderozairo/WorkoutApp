@@ -1,5 +1,6 @@
 import { ScoreRing, SleepStagesBar, SparklineArea, fmtMin } from '@ui/patterns/charts/domain-charts';
-import { Grid } from '@ui/layout';
+import { Grid, Row, Column, Cluster, Spacer } from '@ui/layout';
+import { Surface } from '@ui/atoms';
 import type { SleepSession } from '@features/readiness';
 import type { HealthMetricsView } from '@features/readiness';
 import type { Appointment } from '@features/scheduling';
@@ -41,10 +42,10 @@ export function SleepWidget({
 }) {
   if (!session) {
     return (
-      <div className="surface column compact h-full">
+      <Surface><Column gap={1} className="h-full">
         <span className="caption">Sleep</span>
         <span className="caption faint">No data</span>
-      </div>
+      </Column></Surface>
     );
   }
 
@@ -58,50 +59,50 @@ export function SleepWidget({
 
   if (size === '1x1') {
     return (
-      <div className="surface column compact h-full">
+      <Surface><Column gap={1} className="h-full">
         <span className="caption">Sleep</span>
         <span className="metric lg">{session.score}</span>
-      </div>
+      </Column></Surface>
     );
   }
 
   if (size === '2x1') {
     return (
-      <div className="surface column compact h-full">
-        <div className="row space-between align-center">
+      <Surface><Column gap={1} className="h-full">
+        <Row justify="between" align="center">
           <span className="caption">Sleep</span>
           <span className={`badge ${badge.cls}`}>{badge.label}</span>
-        </div>
-        <div className="row align-center">
+        </Row>
+        <Row align="center">
           <span className="metric">{session.score}<span className="muted">/ 100</span></span>
-          <span className="grow" />
+          <Spacer />
           <span className="detail">{duration}</span>
-        </div>
+        </Row>
         <SleepStagesBar stages={session.stages} height={10} />
-      </div>
+      </Column></Surface>
     );
   }
 
   return (
-    <div className="surface column compact h-full">
-      <div className="row space-between align-center">
+    <Surface><Column gap={1} className="h-full">
+      <Row justify="between" align="center">
         <span className="caption">Sleep</span>
         <span className={`badge ${badge.cls}`}>{badge.label}</span>
-      </div>
-      <div className="row align-center">
+      </Row>
+      <Row align="center">
         <ScoreRing score={session.score} subtitle="score" size={72} />
-        <div className="column compact grow">
+        <Column gap={1} className="grow">
           <span className="detail">{duration}</span>
           <span className="caption faint">{debtLabel}</span>
-        </div>
-      </div>
+        </Column>
+      </Row>
       <SleepStagesBar stages={session.stages} height={10} />
-      <div className="cluster compact">
+      <Cluster gap={1}>
         <span className="pill deep">Deep {fmtMin(session.stages.deep)}</span>
         <span className="pill light">Light {fmtMin(session.stages.light)}</span>
         <span className="pill rem">REM {fmtMin(session.stages.rem)}</span>
         <span className="pill awake">Awake {fmtMin(session.stages.awake)}</span>
-      </div>
+      </Cluster>
       {scoreHistory.length > 0 && (
         <SparklineArea
           data={scoreHistory}
@@ -112,7 +113,7 @@ export function SleepWidget({
           tooltipFormatter={(v) => `Score ${v}`}
         />
       )}
-    </div>
+    </Column></Surface>
   );
 }
 
@@ -129,98 +130,98 @@ const NEXT_HOURS = [
 export function WeatherDashWidget({ size }: { size: WidgetSize }) {
   if (size === '1x1') {
     return (
-      <div className="surface column compact h-full center align-center">
+      <Surface><Column gap={1} justify="center" align="center" className="h-full">
         <span className="emoji-sm">⛅</span>
         <span className="metric">18<span className="muted">°C</span></span>
         <span className="caption faint">Kingston</span>
-      </div>
+      </Column></Surface>
     );
   }
 
   if (size === '2x1') {
     return (
-      <div className="surface column compact h-full">
-        <div className="row space-between align-center">
+      <Surface><Column gap={1} className="h-full">
+        <Row justify="between" align="center">
           <span className="caption">Kingston, UK</span>
           <span className="caption faint">15m ago</span>
-        </div>
-        <div className="row align-center">
+        </Row>
+        <Row align="center">
           <span className="emoji-md">⛅</span>
-          <div className="column compact grow">
+          <Column gap={1} className="grow">
             <span className="metric sm">18<span className="muted">°</span></span>
             <span className="caption faint">Partly Cloudy · Feels 16°</span>
-          </div>
-        </div>
-        <div className="row space-between">
+          </Column>
+        </Row>
+        <Row justify="between">
           {NEXT_HOURS.map(({ hour, icon, temp, rain }) => (
-            <div key={hour} className="column compact align-center">
+            <Column key={hour} gap={1} align="center">
               <span className="mono caption">{hour}</span>
               <span>{icon}</span>
               <span className="mono">{temp}°</span>
               <span className="mono caption faint">{rain}%</span>
-            </div>
+            </Column>
           ))}
-        </div>
-      </div>
+        </Row>
+      </Column></Surface>
     );
   }
 
   return (
-    <div className="surface column compact h-full">
-      <div className="row space-between align-center">
+    <Surface><Column gap={1} className="h-full">
+      <Row justify="between" align="center">
         <span className="caption">Kingston, UK</span>
         <span className="caption faint">15m ago</span>
-      </div>
-      <div className="row space-between align-center">
-        <div className="row align-center">
+      </Row>
+      <Row justify="between" align="center">
+        <Row align="center">
           <span className="emoji-lg">⛅</span>
-          <div className="column compact">
+          <Column gap={1}>
             <span className="metric sm">18<span className="muted">°C</span></span>
             <span className="caption faint">Partly Cloudy</span>
-          </div>
-        </div>
-        <div className="column compact align-right">
+          </Column>
+        </Row>
+        <Column gap={1} className="align-right">
           <span className="caption">Feels like 16°</span>
           <span className="caption faint">Humidity 62%</span>
-        </div>
-      </div>
-      <div className="row space-between">
+        </Column>
+      </Row>
+      <Row justify="between">
         {NEXT_HOURS.map(({ hour, icon, temp, rain }) => (
-          <div key={hour} className="column compact align-center">
+          <Column key={hour} gap={1} align="center">
             <span className="mono caption">{hour}</span>
             <span>{icon}</span>
             <span className="mono">{temp}°</span>
             <span className="mono caption faint">{rain}%</span>
-          </div>
+          </Column>
         ))}
-      </div>
+      </Row>
       <Grid variant="tiles">
-        <div className="column compact">
+        <Column gap={1}>
           <span className="caption faint">UV</span>
           <span>4</span>
           <span className="badge green">Mod.</span>
-        </div>
-        <div className="column compact">
+        </Column>
+        <Column gap={1}>
           <span className="caption faint">Wind</span>
           <span>14</span>
           <span className="badge blue">km/h</span>
-        </div>
-        <div className="column compact">
+        </Column>
+        <Column gap={1}>
           <span className="caption faint">Rain</span>
           <span>20%</span>
           <span className="badge amber">Low</span>
-        </div>
-        <div className="column compact">
+        </Column>
+        <Column gap={1}>
           <span className="caption faint">Vis.</span>
           <span>12km</span>
           <span className="badge green">Clear</span>
-        </div>
+        </Column>
       </Grid>
-      <div className="row space-between align-center compact">
+      <Row justify="between" align="center" gap={1}>
         <span className="caption">Run conditions — mild temp, low wind</span>
         <span className="badge green">Go</span>
-      </div>
-    </div>
+      </Row>
+    </Column></Surface>
   );
 }
 
@@ -243,45 +244,45 @@ export function CalendarDashWidget({ size, appointments }: { size: WidgetSize; a
 
   if (size === '1x1') {
     return (
-      <div className="surface column compact h-full center align-center">
+      <Surface><Column gap={1} justify="center" align="center" className="h-full">
         <span className="metric lg">{today}</span>
         <span className="caption faint">{monthName}</span>
         {appointments.length > 0 && (
           <span className={`badge ${appointments.length > 0 ? 'blue' : ''}`}>{appointments.length} event{appointments.length !== 1 ? 's' : ''}</span>
         )}
-      </div>
+      </Column></Surface>
     );
   }
 
   if (size === '2x1') {
     return (
-      <div className="surface column compact h-full">
-        <div className="row space-between align-center">
+      <Surface><Column gap={1} className="h-full">
+        <Row justify="between" align="center">
           <span className="caption">{now.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}</span>
-        </div>
+        </Row>
         {appointments.length === 0 ? (
           <span className="caption faint">Nothing scheduled today</span>
         ) : (
-          <div className="column compact">
+          <Column gap={1}>
             {appointments.slice(0, 3).map(a => (
-              <div key={a.id} className="row align-center compact">
+              <Row key={a.id} align="center" gap={1}>
                 <div className="dot bg-primary" />
                 <span className="caption grow">{a.title}</span>
                 <time className="caption faint">
                   {new Date(a.scheduledAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
                 </time>
-              </div>
+              </Row>
             ))}
-          </div>
+          </Column>
         )}
-      </div>
+      </Column></Surface>
     );
   }
 
   const cells = monthCells(year, month);
 
   return (
-    <div className="surface column compact h-full">
+    <Surface><Column gap={1} className="h-full">
       <span className="caption">{monthName} {year}</span>
       <Grid variant="cal">
         {DAY_HEADERS.map(d => (
@@ -294,16 +295,16 @@ export function CalendarDashWidget({ size, appointments }: { size: WidgetSize; a
         ))}
       </Grid>
       {appointments.length > 0 && (
-        <div className="column compact">
+        <Column gap={1}>
           {appointments.slice(0, 2).map(a => (
-            <div key={a.id} className="row compact align-center">
+            <Row key={a.id} gap={1} align="center">
               <div className="dot bg-primary" />
               <span className="caption grow">{a.title}</span>
-            </div>
+            </Row>
           ))}
-        </div>
+        </Column>
       )}
-    </div>
+    </Column></Surface>
   );
 }
 
@@ -314,43 +315,43 @@ export function ReadinessRecoveryWidget({ size, score, scoreClass }: { size: Wid
 
   if (size === '1x1') {
     return (
-      <div className="surface column compact h-full">
+      <Surface><Column gap={1} className="h-full">
         <span className="caption">Readiness</span>
         <span className="metric lg">{score}</span>
         <span className={`badge ${BADGE_CLASS[scoreClass]}`}>{RECOVERY_LABEL[scoreClass]}</span>
-      </div>
+      </Column></Surface>
     );
   }
 
   if (size === '2x1') {
     return (
-      <div className="surface column compact h-full">
-        <div className="row space-between align-center">
+      <Surface><Column gap={1} className="h-full">
+        <Row justify="between" align="center">
           <span className="caption">Readiness · Recovery</span>
           <span className={`badge ${BADGE_CLASS[scoreClass]}`}>{RECOVERY_LABEL[scoreClass]}</span>
-        </div>
-        <div className="row align-center">
+        </Row>
+        <Row align="center">
           <span className="metric lg grow">{score}</span>
           <p className="detail faint">{RECOVERY_DETAIL[scoreClass]}</p>
-        </div>
-      </div>
+        </Row>
+      </Column></Surface>
     );
   }
 
   return (
-    <div className="surface column compact h-full">
-      <div className="row space-between align-center">
+    <Surface><Column gap={1} className="h-full">
+      <Row justify="between" align="center">
         <span className="caption">Readiness · Recovery</span>
         <span className={`badge ${BADGE_CLASS[scoreClass]}`}>{RECOVERY_LABEL[scoreClass]}</span>
-      </div>
-      <div className="row align-center">
+      </Row>
+      <Row align="center">
         <ScoreRing score={score} color={ringColor} subtitle="score" size={72} />
-        <div className="column compact grow">
+        <Column gap={1} className="grow">
           <p className="detail">{RECOVERY_DETAIL[scoreClass]}</p>
           <p className="caption faint">{RECOVERY_TIP[scoreClass]}</p>
-        </div>
-      </div>
-    </div>
+        </Column>
+      </Row>
+    </Column></Surface>
   );
 }
 
@@ -371,61 +372,61 @@ export function HeartStatsWidget({ size, bpm, hrv, history }: { size: WidgetSize
 
   if (size === '1x1') {
     return (
-      <div className="surface column compact h-full">
+      <Surface><Column gap={1} className="h-full">
         <span className="caption">Heart</span>
-        <div className="row space-between align-center">
-          <div className="column compact">
+        <Row justify="between" align="center">
+          <Column gap={1}>
             <span className="metric">{bpm ?? '—'}<span className="muted">bpm</span></span>
             <span className="caption faint">HR</span>
-          </div>
-          <div className="column compact align-right">
+          </Column>
+          <Column gap={1} className="align-right">
             <span className="metric">{hrv ?? '—'}<span className="muted">ms</span></span>
             <span className="caption faint">HRV</span>
-          </div>
-        </div>
-      </div>
+          </Column>
+        </Row>
+      </Column></Surface>
     );
   }
 
   if (size === '2x1') {
     return (
-      <div className="surface column compact h-full">
+      <Surface><Column gap={1} className="h-full">
         <span className="caption">Heart</span>
-        <div className="row space-between align-center">
-          <div className="column compact">
-            <div className="column compact">
+        <Row justify="between" align="center">
+          <Column gap={1}>
+            <Column gap={1}>
               <span className="metric">{bpm ?? '—'}<span className="muted">bpm</span></span>
-            </div>
+            </Column>
             <span className="caption faint">Resting HR</span>
-          </div>
-          <div className="column compact align-right">
-            <div className="column compact">
+          </Column>
+          <Column gap={1} className="align-right">
+            <Column gap={1}>
               <span className="metric">{hrv ?? '—'}<span className="muted">ms</span></span>
-            </div>
+            </Column>
             <span className="caption faint">HRV</span>
-          </div>
-        </div>
-      </div>
+          </Column>
+        </Row>
+      </Column></Surface>
     );
   }
 
   return (
-    <div className="surface column compact h-full">
+    <Surface><Column gap={1} className="h-full">
       <span className="caption">Heart</span>
-      <div className="row space-between align-center">
-        <div className="column compact">
-          <div className="column compact">
+      <Row justify="between" align="center">
+        <Column gap={1}>
+          <Column gap={1}>
             <span className="metric">{bpm ?? '—'}<span className="muted">bpm</span></span>
-          </div>
+          </Column>
           <span className="caption faint">Resting HR</span>
-        </div>
-        <div className="column compact align-right">
-          <div className="column compact">
+        </Column>
+        <Column gap={1} className="align-right">
+          <Column gap={1}>
             <span className="metric">{hrv ?? '—'}<span className="muted">ms</span></span>
-          </div>
+          </Column>
           <span className="caption faint">HRV</span>
-        </div>
-      </div>
+        </Column>
+      </Row>
       {hrData.length > 0 && (
         <SparklineArea
           data={hrData}
@@ -448,6 +449,6 @@ export function HeartStatsWidget({ size, bpm, hrv, history }: { size: WidgetSize
           tooltipFormatter={(v) => `${v} ms HRV`}
         />
       )}
-    </div>
+    </Column></Surface>
   );
 }
