@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Row, Column } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Surface, Button } from '@ui/atoms';
 
 type Slide = string | { src: string; caption?: string };
 
@@ -34,14 +34,14 @@ export function Carousel({ slides }: CarouselProps) {
           <Row justify="center" className="slide-caption">{current.caption}</Row>
         )}
         {len > 1 && idx > 0 && (
-          <button className="icon sm ghost absolute bottom left" onClick={e => { e.stopPropagation(); setIdx(i => i - 1); }}>
+          <Button variant="ghost" size="icon" className="absolute bottom left" onClick={e => { e.stopPropagation(); setIdx(i => i - 1); }}>
             <ChevronLeft size={14} strokeWidth={2.5} />
-          </button>
+          </Button>
         )}
         {len > 1 && idx < len - 1 && (
-          <button className="icon sm ghost absolute bottom right" onClick={e => { e.stopPropagation(); setIdx(i => i + 1); }}>
+          <Button variant="ghost" size="icon" className="absolute bottom right" onClick={e => { e.stopPropagation(); setIdx(i => i + 1); }}>
             <ChevronRight size={14} strokeWidth={2.5} />
-          </button>
+          </Button>
         )}
       </div>
       {len > 1 && (

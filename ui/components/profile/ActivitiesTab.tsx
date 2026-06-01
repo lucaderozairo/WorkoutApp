@@ -1,11 +1,10 @@
-// ui/components/profile/ActivitiesTab.tsx
 import { useQuery } from '@ui/bindings';
 import { useNavigate } from 'react-router-dom';
 import type { Post } from '@features/social';
 import type { Id } from '@shared/types';
 import { timeAgo } from '@shared/utils/timeAgo';
 import { Row, Column } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Surface, Text } from '@ui/atoms';
 
 type SharedPost = Post & {
   sessionId?: Id<'Session'>;
@@ -31,7 +30,7 @@ export function ActivitiesTab() {
   if (myPosts.length === 0) {
     return (
       <Surface>
-        <p className="muted">No shared sessions yet. Share a workout from your session history.</p>
+        <Text color="muted">No shared sessions yet. Share a workout from your session history.</Text>
       </Surface>
     );
   }
@@ -45,15 +44,15 @@ export function ActivitiesTab() {
         >
           <Row justify="between" align="center">
             <Column>
-              <span>{post.sessionName ?? 'Workout'}</span>
-              {post.sport && <span className="muted">{SPORT_LABELS[post.sport] ?? post.sport}</span>}
+              <Text>{post.sessionName ?? 'Workout'}</Text>
+              {post.sport && <Text color="muted">{SPORT_LABELS[post.sport] ?? post.sport}</Text>}
             </Column>
             <time className="mono muted">{timeAgo(post.createdAt)}</time>
           </Row>
-          <p className="muted">{post.body}</p>
+          <Text color="muted">{post.body}</Text>
           <Row>
-            <span className="caption">❤️ {post.likeCount} likes</span>
-            <span className="caption">💬 {post.comments.length}</span>
+            <Text size="caption">❤️ {post.likeCount} likes</Text>
+            <Text size="caption">💬 {post.comments.length}</Text>
           </Row>
         </Surface>
       ))}

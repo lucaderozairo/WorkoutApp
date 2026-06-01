@@ -3,7 +3,7 @@ import { useQuery } from '@ui/bindings';
 import type { HealthChartMap } from '@features/health';
 import { ChartContainer } from '../../patterns/charts/charts';
 import { Row, Column } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Surface, Text, Badge } from '@ui/atoms';
 
 interface Props {
   slug: string;
@@ -21,9 +21,9 @@ export function HealthChartsList({ slug, height = 120, fallback = null }: Props)
         <Surface key={c.label} pad="sm">
           <Column gap={1}>
             <Row justify="between" align="center">
-              <span className="eyebrow">{c.label}</span>
+              <Text size="eyebrow">{c.label}</Text>
               {c.currentValue && (
-                <span className="badge"><span className="dot" />{c.currentValue}</span>
+                <Badge dot>{c.currentValue}</Badge>
               )}
             </Row>
             <ChartContainer

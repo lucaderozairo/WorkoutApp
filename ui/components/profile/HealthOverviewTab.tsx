@@ -7,6 +7,7 @@ import { ChartContainer } from '@ui/patterns/charts/charts'
 import { useQuery } from '@ui/bindings'
 import type { HealthChartDef, HealthChartMap } from '@features/health'
 import { Row, Column, Cluster } from '@ui/layout'
+import { Text, Chip, Divider } from '@ui/atoms'
 
 // ─── Types & Registry ───────────────────────────────────────────────────────
 
@@ -79,7 +80,7 @@ function CategoryTile({ cat, isPinned = false, onClick, onLongPress, charts }: C
     >
       <Column align="center">
         <span>{cat.icon}</span>
-        <span className="caption">{cat.name}</span>
+        <Text size="caption">{cat.name}</Text>
       </Column>
     </button>
   )
@@ -99,7 +100,7 @@ function CategoryRow({ cat, isPinned = false, onClick, onLongPress, charts }: Ca
         <Row align="center">
           <span className="icon">{cat.icon}</span>
           <Column gap={1} align="start">
-            <span>{cat.name}</span>
+            <Text>{cat.name}</Text>
           </Column>
         </Row>
         <Row align="center">
@@ -114,7 +115,7 @@ function CategoryRow({ cat, isPinned = false, onClick, onLongPress, charts }: Ca
               />
             </div>
           )}
-          <span className="faint" aria-hidden="true">›</span>
+          <Text color="faint" aria-hidden="true">›</Text>
         </Row>
       </Row>
     </button>
@@ -189,15 +190,15 @@ export function HealthOverviewTab() {
 
       {/* View toggle */}
       <Cluster>
-        <button className={view === 'grid' ? 'chip active' : 'chip'} onClick={() => setView('grid')}>Grid</button>
-        <button className={view === 'list' ? 'chip active' : 'chip'} onClick={() => setView('list')}>List</button>
+        <Chip active={view === 'grid'} onClick={() => setView('grid')}>Grid</Chip>
+        <Chip active={view === 'list'} onClick={() => setView('list')}>List</Chip>
       </Cluster>
 
       {view === 'list' && (
         <>
           {pinnedCats.length > 0 && (
             <>
-              <span className="eyebrow">Pinned</span>
+              <Text size="eyebrow">Pinned</Text>
               {pinnedCats.map(cat => (
                 <CategoryRow
                   key={cat.slug}
@@ -208,7 +209,7 @@ export function HealthOverviewTab() {
                   charts={healthCharts[cat.slug]}
                 />
               ))}
-              <hr />
+              <Divider />
             </>
           )}
           {SECTIONS.map(section => {
@@ -216,7 +217,7 @@ export function HealthOverviewTab() {
             if (!cats.length) return null
             return (
               <Column key={section} gap={1}>
-                <span className="eyebrow">{section}</span>
+                <Text size="eyebrow">{section}</Text>
                 {cats.map(cat => (
                   <CategoryRow
                     key={cat.slug}
@@ -236,7 +237,7 @@ export function HealthOverviewTab() {
         <>
           {pinnedCats.length > 0 && (
             <>
-              <span className="eyebrow">Pinned</span>
+              <Text size="eyebrow">Pinned</Text>
               <Grid cols={4}>
                 {pinnedCats.map(cat => (
                   <CategoryTile
@@ -249,7 +250,7 @@ export function HealthOverviewTab() {
                   />
                 ))}
               </Grid>
-              <hr />
+              <Divider />
             </>
           )}
           {SECTIONS.map(section => {
@@ -257,7 +258,7 @@ export function HealthOverviewTab() {
             if (!cats.length) return null
             return (
               <Column key={section} gap={1}>
-                <span className="eyebrow">{section}</span>
+                <Text size="eyebrow">{section}</Text>
                 <Grid variant="tiles">
                   {cats.map(cat => (
                     <CategoryTile
