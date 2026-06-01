@@ -5,7 +5,7 @@ import type { Post } from '@features/social';
 import { timeAgo } from '@shared/utils/timeAgo';
 import { USER_ID, USER_NAME, SPORT_MAP } from '@features/social/domain/constants';
 import { Row, Column, Cluster } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Surface, Avatar, Text, Badge, Button } from '@ui/atoms';
 
 export function PostCard({ post }: { post: Post & { sport?: string; group?: string; sessionName?: string } }) {
   const id = useId();
@@ -30,33 +30,33 @@ export function PostCard({ post }: { post: Post & { sport?: string; group?: stri
 
   return (
     <Surface>
+      {/* CSS-only expand toggle — must stay as input for :has() selector */}
       <input type="checkbox" id={id} className="exp-toggle" />
       <Row as="header" justify="between">
         <Row>
-          <div className={`avatar ${avatarClass}`}>{post.authorInitials}</div>
-          <div>
-            <p>{post.authorName}</p>
+          <Avatar name={post.authorInitials} className={avatarClass} />
+          <Column>
+            <Text>{post.authorName}</Text>
             <Cluster>
               {post.group && sport && (
-                <span className={`pill ${sport.pill}`}>{sport.icon} {post.group}</span>
+                <Badge className={`pill ${sport.pill}`}>{sport.icon} {post.group}</Badge>
               )}
             </Cluster>
-          </div>
+          </Column>
         </Row>
         <time className="caption">{timeAgo(post.createdAt)}</time>
       </Row>
 
       <Column>
-
-        <p>{post.sessionName}</p>
-        <p className="detail">{post.body}</p>
+        <Text>{post.sessionName}</Text>
+        <Text size="detail">{post.body}</Text>
         <div className="expandable column">
           {post.comments.length > 0 && (
             <Column>
               {post.comments.map(c => (
                 <Row key={c.id} justify="between">
-                  <span className="caption">{c.authorName}</span>
-                  <span className="caption">{c.body}</span>
+                  <Text size="caption">{c.authorName}</Text>
+                  <Text size="caption">{c.body}</Text>
                 </Row>
               ))}
             </Column>
@@ -65,18 +65,18 @@ export function PostCard({ post }: { post: Post & { sport?: string; group?: stri
             <input placeholder="Write a comment..." value={commentText}
               onChange={e => setCommentText(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleComment()} />
-            <button className="" onClick={handleComment}>Post</button>
+            <Button onClick={handleComment}>Post</Button>
           </Column>
         </div>
       </Column>
       <Row as="footer" justify="between">
         <Row>
-          <button className={post.likedByMe ? 'liked ghost' : 'ghost'} onClick={handleLike}>
+          <Button variant="ghost" className={post.likedByMe ? 'liked' : ''} onClick={handleLike}>
             {post.likedByMe ? '❤️' : '🤍'} {post.likeCount}
-          </button>
+          </Button>
           <label htmlFor={id} className="ghost interactive"><Row align="center">💬 {post.comments.length}</Row></label>
         </Row>
-        <button className="ghost">⋮</button>
+        <Button variant="ghost">⋮</Button>
       </Row>
     </Surface>
   );

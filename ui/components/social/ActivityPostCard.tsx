@@ -7,7 +7,7 @@ import { Carousel } from '../shared';
 import { timeAgo } from '@shared/utils/timeAgo';
 import { USER_NAME, USER_INITIALS } from '@features/social/domain/constants';
 import { Row, Column, Cluster } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Surface, Avatar, Text, Badge } from '@ui/atoms';
 
 const SPORT_AVATAR: Partial<Record<CardioSport, string>> = {
   run: 'run', cycle: 'cycle', swim: 'swim', row: 'rowing',
@@ -34,12 +34,12 @@ export function StrengthActivityCard({ session }: { session: ActivityHistoryItem
     <Surface>
       <Row as="header" justify="between">
         <Row>
-          <div className="avatar lift">{USER_INITIALS}</div>
+          <Avatar name={USER_INITIALS} className="lift" />
           <Column gap={1}>
-            <p>{USER_NAME}</p>
+            <Text>{USER_NAME}</Text>
             <Row align="center">
               <SportIcon size={13} />
-              <span className="caption muted">{label}</span>
+              <Text size="caption" color="muted">{label}</Text>
             </Row>
           </Column>
         </Row>
@@ -50,24 +50,24 @@ export function StrengthActivityCard({ session }: { session: ActivityHistoryItem
       <h3 className="interactive" onClick={() => navigate(`/sessions/${session.id}`)}>{session.name}</h3>
       <Row align="center">
         <Column gap={1}>
-          <h3>{session.exerciseCount}</h3>
-          <p className="caption muted">Exercises</p>
+          <Text as="h3">{session.exerciseCount}</Text>
+          <Text size="caption" color="muted">Exercises</Text>
         </Column>
         <Column gap={1}>
-          <h3>{formatDuration(session.durationSeconds)}</h3>
-          <p className="caption muted">Duration</p>
+          <Text as="h3">{formatDuration(session.durationSeconds)}</Text>
+          <Text size="caption" color="muted">Duration</Text>
         </Column>
         <Column gap={1}>
-          <h3>{session.totalSets}</h3>
-          <p className="caption muted">Sets</p>
+          <Text as="h3">{session.totalSets}</Text>
+          <Text size="caption" color="muted">Sets</Text>
         </Column>
       </Row>
       <Carousel slides={session.media ?? []} />
-      {session.notes && <p className="detail muted">{session.notes}</p>}
+      {session.notes && <Text size="detail" color="muted">{session.notes}</Text>}
       {(session.category || session.tags?.length) && (
         <Cluster>
-          <span className="badge">{session.category}</span>
-          {session.tags?.map(tag => <span key={tag} className="badge">{tag}</span>)}
+          <Badge>{session.category}</Badge>
+          {session.tags?.map(tag => <Badge key={tag}>{tag}</Badge>)}
         </Cluster>
       )}
     </Surface>
@@ -87,14 +87,14 @@ export function CardioActivityCard({ session }: { session: CardioSession }) {
     <Surface>
       <Row as="header" justify="between">
         <Row>
-          <div className={`avatar ${avatarClass}`}>{USER_INITIALS}</div>
+          <Avatar name={USER_INITIALS} className={avatarClass} />
           <Column gap={1}>
-            <p>{USER_NAME}</p>
+            <Text>{USER_NAME}</Text>
             <Row align="center">
               <SportIcon size={13} />
-              <span className="caption muted">
+              <Text size="caption" color="muted">
                 {sportLabel}{session.location && ` · ${session.location}`}
-              </span>
+              </Text>
             </Row>
           </Column>
         </Row>
@@ -107,26 +107,26 @@ export function CardioActivityCard({ session }: { session: CardioSession }) {
         {session.distanceMeters > 0 && (
           <Column gap={1}>
             <Row as="h3" align="end" gap={1}>
-              {distKm}<span className="caption muted">km</span>
+              {distKm}<Text as="span" size="caption" color="muted">km</Text>
             </Row>
-            <p className="caption muted">Distance</p>
+            <Text size="caption" color="muted">Distance</Text>
           </Column>
         )}
         <Column gap={1}>
-          <h3>{formatDuration(session.durationSeconds)}</h3>
-          <p className="caption muted">Time</p>
+          <Text as="h3">{formatDuration(session.durationSeconds)}</Text>
+          <Text size="caption" color="muted">Time</Text>
         </Column>
         {pace && (
           <Column gap={1}>
-            <h3>{pace}</h3>
-            <p className="caption muted">Avg Pace</p>
+            <Text as="h3">{pace}</Text>
+            <Text size="caption" color="muted">Avg Pace</Text>
           </Column>
         )}
       </Row>
       <Carousel slides={session.media ?? []} />
-      {session.notes && <p className="detail muted">{session.notes}</p>}
+      {session.notes && <Text size="detail" color="muted">{session.notes}</Text>}
       <Cluster>
-        <span className="badge">{sportLabel}</span>
+        <Badge>{sportLabel}</Badge>
       </Cluster>
     </Surface>
   );

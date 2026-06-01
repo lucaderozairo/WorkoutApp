@@ -9,7 +9,7 @@ import { PostCard } from './PostCard';
 import { StrengthActivityCard, CardioActivityCard } from './ActivityPostCard';
 import { USER_ID, USER_NAME, USER_INITIALS } from '@features/social/domain/constants';
 import { Row } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Surface, Avatar, Button, Text } from '@ui/atoms';
 
 type FeedItem =
   | { kind: 'post';     ts: number; data: PostWithMeta }
@@ -72,14 +72,14 @@ export function FeedTab() {
     <>
       <Surface>
         <Row justify="between">
-          <div className="avatar lift">{USER_INITIALS}</div>
+          <Avatar name={USER_INITIALS} className="lift" />
           <input id="composer-input" placeholder="Share a workout or activity…"
             value={body} onChange={e => setBody(e.target.value)} />
         </Row>
-        <button className="primary sm" onClick={handlePost}>Post</button>
+        <Button variant="primary" size="sm" onClick={handlePost}>Post</Button>
       </Surface>
-      <h3>Recent Activity</h3>
-      {feed.length === 0 && <p>No posts yet.</p>}
+      <Text as="h3">Recent Activity</Text>
+      {feed.length === 0 && <Text>No posts yet.</Text>}
       {feed.map(item => {
         if (item.kind === 'post')     return <PostCard key={item.data.id}     post={item.data} />;
         if (item.kind === 'strength') return <StrengthActivityCard key={item.data.id} session={item.data} />;

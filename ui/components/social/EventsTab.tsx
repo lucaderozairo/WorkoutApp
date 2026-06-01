@@ -2,7 +2,7 @@ import { useQuery } from '@ui/bindings';
 import type { MockSocialEvent } from '@features/social';
 import { SPORT_MAP } from '@features/social/domain/constants';
 import { Row, Column } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Surface, Avatar, Button, Text } from '@ui/atoms';
 
 export function EventsTab() {
   const mockEvents = (useQuery<MockSocialEvent[]>('social_events_mock') ?? []) as MockSocialEvent[];
@@ -10,19 +10,19 @@ export function EventsTab() {
   return (
     <Surface>
       <Column>
-        <h3>Upcoming Events</h3>
+        <Text as="h3">Upcoming Events</Text>
         {mockEvents.map(ev => {
           const sport = SPORT_MAP[ev.sport];
           return (
             <Row key={ev.id} justify="between">
               <Row>
-                <div className={`avatar ${sport?.avatar ?? 'lift'}`}>{sport?.icon}</div>
-                <div>
-                  <p>{ev.name}</p>
+                <Avatar name={sport?.icon ?? '?'} className={sport?.avatar ?? 'lift'} />
+                <Column>
+                  <Text>{ev.name}</Text>
                   <time className="caption">{ev.date} · {ev.location} · {ev.time}</time>
-                </div>
+                </Column>
               </Row>
-              <button>Join</button>
+              <Button variant="secondary" size="sm">Join</Button>
             </Row>
           );
         })}
