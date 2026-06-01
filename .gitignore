@@ -49,6 +49,7 @@ legacy/
 # Agent tooling
 .claude-flow/
 .code-review-graph/
+graphify-out/
 .worktrees/
 .superpowers/
 
