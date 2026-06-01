@@ -5,7 +5,7 @@ import {
   AirQualityPanel,
 } from '@ui/components/widgets/WeatherWidget';
 import { Tabs } from '@ui/molecules';
-import { Grid } from '@ui/layout';
+import { Grid, Column } from '@ui/layout';
 import { Surface, Text } from '@ui/atoms';
 import { useWeatherScreen } from './useWeatherScreen';
 
@@ -24,12 +24,14 @@ export function WeatherScreen() {
 
       <WeatherWidget />
 
-      <Surface className="column">
-        <Tabs items={[...WEATHER_TABS]} value={activeTab} onChange={setActiveTab} />
+      <Surface>
+        <Column>
+          <Tabs items={[...WEATHER_TABS]} value={activeTab} onChange={setActiveTab} />
 
-        {activeTab === 'forecast' && <DailyForecastChart />}
-        {activeTab === 'precip' && <PrecipitationChart />}
-        {activeTab === 'aqi' && <AirQualityPanel />}
+          {activeTab === 'forecast' && <DailyForecastChart />}
+          {activeTab === 'precip' && <PrecipitationChart />}
+          {activeTab === 'aqi' && <AirQualityPanel />}
+        </Column>
       </Surface>
     </Grid>
   );

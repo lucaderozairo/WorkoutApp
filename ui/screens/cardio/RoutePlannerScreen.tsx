@@ -94,7 +94,8 @@ export function RoutePlannerScreen() {
 
       {/* ── DESKTOP TOP TOOLBAR ── */}
       <div className="desktop-only">
-        <Surface className="tight row align-center compact shrink-0">
+        <Surface pad="sm">
+          <Row align="center" gap={1} className="shrink-0">
           {(['select', 'add', 'split', 'delete'] as EditMode[]).map(m => (
             <Button
               key={m}
@@ -138,6 +139,7 @@ export function RoutePlannerScreen() {
           <Button variant="primary" size="sm" disabled={!canSave} onClick={handleSave}>
             <Save size={14} /> Save route
           </Button>
+          </Row>
         </Surface>
       </div>
 
@@ -256,43 +258,49 @@ export function RoutePlannerScreen() {
             {/* Zoom + fit + locate */}
 
             <Layer pin="top-left" z="controls" gap={1}>
-              <div className="surface tight column compact" data-map-group>
-                <button className="ghost sm" onClick={() => mapRef.current?.zoomIn()} aria-label="Zoom in" data-map-btn><Plus size={10} /></button>
-                <button className="ghost sm" onClick={() => mapRef.current?.zoomOut()} aria-label="Zoom out" data-map-btn><Minus size={10} /></button>
-              </div>
-              <div className="surface tight column compact" data-map-group>
-                {layerPickerOpen ? (
-                  <>
-                    {BASE_LAYERS.map(l => (
-                      <button
-                        key={l.id}
-                        className={`ghost icon sm${baseLayerId === l.id ? ' active' : ''}`}
-                        onClick={() => { handleLayerSwitch(l.id); setLayerPickerOpen(false); }}
-                        aria-label={l.label}
-                        data-map-btn
-                      >
-                        {l.id === 'plain' ? <Map size={10} />
-                          : l.id === 'dark' ? <Moon size={10} />
-                            : l.id === 'topo' ? <Mountain size={10} />
-                              : <Satellite size={10} />}
+              <Surface pad="sm" data-map-group>
+                <Column gap={1}>
+                  <button className="ghost sm" onClick={() => mapRef.current?.zoomIn()} aria-label="Zoom in" data-map-btn><Plus size={10} /></button>
+                  <button className="ghost sm" onClick={() => mapRef.current?.zoomOut()} aria-label="Zoom out" data-map-btn><Minus size={10} /></button>
+                </Column>
+              </Surface>
+              <Surface pad="sm" data-map-group>
+                <Column gap={1}>
+                  {layerPickerOpen ? (
+                    <>
+                      {BASE_LAYERS.map(l => (
+                        <button
+                          key={l.id}
+                          className={`ghost icon sm${baseLayerId === l.id ? ' active' : ''}`}
+                          onClick={() => { handleLayerSwitch(l.id); setLayerPickerOpen(false); }}
+                          aria-label={l.label}
+                          data-map-btn
+                        >
+                          {l.id === 'plain' ? <Map size={10} />
+                            : l.id === 'dark' ? <Moon size={10} />
+                              : l.id === 'topo' ? <Mountain size={10} />
+                                : <Satellite size={10} />}
+                        </button>
+                      ))}
+                      <button className="ghost icon sm" onClick={() => setLayerPickerOpen(false)} aria-label="Close" data-map-btn>
+                        <Layers size={10} />
                       </button>
-                    ))}
-                    <button className="ghost icon sm" onClick={() => setLayerPickerOpen(false)} aria-label="Close" data-map-btn>
+                    </>
+                  ) : (
+                    <button className="ghost icon sm" onClick={() => setLayerPickerOpen(true)} aria-label="Layers" data-map-btn>
                       <Layers size={10} />
                     </button>
-                  </>
-                ) : (
-                  <button className="ghost icon sm" onClick={() => setLayerPickerOpen(true)} aria-label="Layers" data-map-btn>
-                    <Layers size={10} />
-                  </button>
-                )}
-              </div>
+                  )}
+                </Column>
+              </Surface>
             </Layer>
             <Layer pin="top-right" z="controls" gap={1}>
-              <div className="surface tight column compact" data-map-group>
-                <button className="ghost icon sm" onClick={() => mapRef.current?.fitRoute()} aria-label="Fit route" data-map-btn><PiLineSegments size={10} /></button>
-                <button className="ghost icon sm" onClick={() => mapRef.current?.locate()} aria-label="Locate me" data-map-btn><IoMdLocate size={10} /></button>
-              </div>
+              <Surface pad="sm" data-map-group>
+                <Column gap={1}>
+                  <button className="ghost icon sm" onClick={() => mapRef.current?.fitRoute()} aria-label="Fit route" data-map-btn><PiLineSegments size={10} /></button>
+                  <button className="ghost icon sm" onClick={() => mapRef.current?.locate()} aria-label="Locate me" data-map-btn><IoMdLocate size={10} /></button>
+                </Column>
+              </Surface>
             </Layer>
           </Layered>
 
@@ -482,22 +490,30 @@ function PlanPanel({
       <hr />
 
       <Text size="eyebrow">Summary</Text>
-      <Surface className="tight ghost row align-bottom compact">
-        <Text as="h2" mono>{displayKm > 0 ? displayKm.toFixed(2) : '—'}</Text>
-        <Text size="caption" color="muted">km</Text>
+      <Surface pad="sm" variant="ghost">
+        <Row align="end" gap={1}>
+          <Text as="h2" mono>{displayKm > 0 ? displayKm.toFixed(2) : '—'}</Text>
+          <Text size="caption" color="muted">km</Text>
+        </Row>
       </Surface>
       <Row gap={1}>
-        <Surface className="tight flat compact column grow align-center">
-          <Text size="detail" mono>{timeStr}</Text>
-          <Text size="eyebrow">Time</Text>
+        <Surface pad="sm" variant="flat" className="grow">
+          <Column gap={1} className="align-center">
+            <Text size="detail" mono>{timeStr}</Text>
+            <Text size="eyebrow">Time</Text>
+          </Column>
         </Surface>
-        <Surface className="tight flat compact column grow align-center">
-          <Text size="detail" mono>{displayKm > 0 ? `+${gain}` : '—'}<Text size="caption" color="muted"> m</Text></Text>
-          <Text size="eyebrow">Gain</Text>
+        <Surface pad="sm" variant="flat" className="grow">
+          <Column gap={1} className="align-center">
+            <Text size="detail" mono>{displayKm > 0 ? `+${gain}` : '—'}<Text size="caption" color="muted"> m</Text></Text>
+            <Text size="eyebrow">Gain</Text>
+          </Column>
         </Surface>
-        <Surface className="tight flat compact column grow align-center">
-          <Text size="detail" mono>{displayKm > 0 ? estimatedCal : '—'}<Text size="caption" color="muted"> kcal</Text></Text>
-          <Text size="eyebrow">Energy</Text>
+        <Surface pad="sm" variant="flat" className="grow">
+          <Column gap={1} className="align-center">
+            <Text size="detail" mono>{displayKm > 0 ? estimatedCal : '—'}<Text size="caption" color="muted"> kcal</Text></Text>
+            <Text size="eyebrow">Energy</Text>
+          </Column>
         </Surface>
       </Row>
 
@@ -652,13 +668,17 @@ function StatsPanel({ surfaceMix, displayKm, gain, loss, waypoints, timeStr }: S
 
       <Text size="eyebrow">Elevation</Text>
       <Row gap={1}>
-        <Surface className="tight flat compact column grow align-center">
-          <Text size="detail" mono>{displayKm > 0 ? `+${gain}` : '—'}<Text size="caption" color="muted"> m</Text></Text>
-          <Text size="eyebrow">Gain</Text>
+        <Surface pad="sm" variant="flat" className="grow">
+          <Column gap={1} className="align-center">
+            <Text size="detail" mono>{displayKm > 0 ? `+${gain}` : '—'}<Text size="caption" color="muted"> m</Text></Text>
+            <Text size="eyebrow">Gain</Text>
+          </Column>
         </Surface>
-        <Surface className="tight flat compact column grow align-center">
-          <Text size="detail" mono>{displayKm > 0 ? `−${loss}` : '—'}<Text size="caption" color="muted"> m</Text></Text>
-          <Text size="eyebrow">Loss</Text>
+        <Surface pad="sm" variant="flat" className="grow">
+          <Column gap={1} className="align-center">
+            <Text size="detail" mono>{displayKm > 0 ? `−${loss}` : '—'}<Text size="caption" color="muted"> m</Text></Text>
+            <Text size="eyebrow">Loss</Text>
+          </Column>
         </Surface>
       </Row>
 
@@ -678,7 +698,7 @@ function StatsPanel({ surfaceMix, displayKm, gain, loss, waypoints, timeStr }: S
 
       <hr />
 
-      <Surface className="flat tight compact">
+      <Surface pad="sm" variant="flat">
         <Text size="caption" color="muted">Surface mix and elevation are estimated values.</Text>
       </Surface>
     </Column>

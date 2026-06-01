@@ -102,34 +102,36 @@ export function HomeScreen() {
         <GridItem
           area="toast"
           children={
-            <div
-              className="surface row align-center"
-              role="status"
-              aria-live="polite">
-              <span aria-hidden="true">
-                {RARITY_EMOJI[toast.rarity] ?? "Achievement"}
-              </span>
-              <Column gap={1} className="grow">
-                <strong className="caption">
-                  Achievement unlocked - {toast.name}
-                </strong>
-                <span className="detail">{toast.description}</span>
-              </Column>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => setToast(null)}
-                aria-label="Dismiss">
-                x
-              </Button>
+            <div role="status" aria-live="polite">
+              <Surface>
+                <Row align="center">
+                  <span aria-hidden="true">
+                    {RARITY_EMOJI[toast.rarity] ?? "Achievement"}
+                  </span>
+                  <Column gap={1} className="grow">
+                    <strong className="caption">
+                      Achievement unlocked - {toast.name}
+                    </strong>
+                    <span className="detail">{toast.description}</span>
+                  </Column>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setToast(null)}
+                    aria-label="Dismiss">
+                    x
+                  </Button>
+                </Row>
+              </Surface>
             </div>
           }
         />
       )}
 
       {isFirstRun && (
-        <Surface className="column">
+        <Surface>
+          <Column>
           <strong>Get started - three things to try</strong>
           <Column>
             <Row align="center">
@@ -165,6 +167,7 @@ export function HomeScreen() {
                 View profile
               </Link>
             </Row>
+          </Column>
           </Column>
         </Surface>
       )}

@@ -23,13 +23,15 @@ function PlanCard({ plan, adherenceRate }: { plan: TrainingPlan; adherenceRate: 
   const currentWeek = Math.min(Math.floor(diffDays / 7) + 1, plan.durationWeeks);
 
   return (
-    <Surface className="column compact">
-      <Row justify="between" align="center">
-        <Text as="h3">{plan.name}</Text>
-        <Badge tone={pct >= 80 ? 'ok' : pct < 60 ? 'warn' : undefined}>{pct}%</Badge>
-      </Row>
-      <Text size="caption">Week {currentWeek} / {plan.durationWeeks} · Started {plan.startDate}</Text>
-      <ProgressBar value={Math.min(100, (currentWeek / plan.durationWeeks) * 100)} />
+    <Surface>
+      <Column gap={1}>
+        <Row justify="between" align="center">
+          <Text as="h3">{plan.name}</Text>
+          <Badge tone={pct >= 80 ? 'ok' : pct < 60 ? 'warn' : undefined}>{pct}%</Badge>
+        </Row>
+        <Text size="caption">Week {currentWeek} / {plan.durationWeeks} · Started {plan.startDate}</Text>
+        <ProgressBar value={Math.min(100, (currentWeek / plan.durationWeeks) * 100)} />
+      </Column>
     </Surface>
   );
 }
@@ -49,9 +51,9 @@ function PlanBuilder({ onCreated }: { onCreated: () => void }) {
   }
 
   return (
-    <Surface className="column">
-      <Text as="h3">New Plan</Text>
-      <Column>
+    <Surface>
+      <Column gap={1}>
+        <Text as="h3">New Plan</Text>
         <Input label="Plan name" type="text" value={name} onChange={e => setName(e.target.value)} placeholder="e.g. 4-Week Strength Block" />
         <Input label="Start date" type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
         <Input label="Duration (weeks)" type="number" min={1} max={52} value={durationWeeks} onChange={e => setDurationWeeks(Number(e.target.value))} />
@@ -110,7 +112,8 @@ function WeekView({ anchor, workoutCalendar }: { anchor: Date; workoutCalendar: 
   };
 
   return (
-    <Surface className="column compact">
+    <Surface>
+      <Column gap={1}>
       {/* Day headers */}
       <div style={gridStyle}>
         <span />
@@ -136,6 +139,7 @@ function WeekView({ anchor, workoutCalendar }: { anchor: Date; workoutCalendar: 
           })}
         </div>
       )}
+      </Column>
     </Surface>
   );
 }
@@ -149,33 +153,35 @@ function DayView({ anchor, workoutCalendar }: { anchor: Date; workoutCalendar: R
   const sports = workoutCalendar[anchor.getDate()] ?? [];
 
   return (
-    <Surface className="column compact">
-      <Row justify="between" align="center">
-        <Text bold>{dateLabel}</Text>
-        {isToday && <Text className="pill ok">Today</Text>}
-      </Row>
-      <hr />
+    <Surface>
+      <Column gap={1}>
+        <Row justify="between" align="center">
+          <Text bold>{dateLabel}</Text>
+          {isToday && <Text className="pill ok">Today</Text>}
+        </Row>
+        <hr />
 
-      {sports.length === 0 ? (
-        <Text as="p" size="caption" color="muted">No events scheduled.</Text>
-      ) : (
-        <Column gap={1}>
-          <Text size="eyebrow">18:00</Text>
-          {sports.map((sport, i) => (
-            <div key={i} style={{
-              background: 'var(--accent-soft)',
-              borderRadius: 'var(--r-sm)',
-              padding: 'var(--s-3)',
-              borderLeft: '3px solid var(--accent)',
-            }}>
-              <span style={{ fontWeight: 600, fontSize: 'var(--t-sm)', display: 'block' }}>{SPORT_TITLE[sport]}</span>
-              <span className="muted" style={{ display: 'block', fontSize: 'var(--t-xs)' }}>{SPORT_LABEL[sport]} · ~55 min est.</span>
-            </div>
-          ))}
-        </Column>
-      )}
+        {sports.length === 0 ? (
+          <Text as="p" size="caption" color="muted">No events scheduled.</Text>
+        ) : (
+          <Column gap={1}>
+            <Text size="eyebrow">18:00</Text>
+            {sports.map((sport, i) => (
+              <div key={i} style={{
+                background: 'var(--accent-soft)',
+                borderRadius: 'var(--r-sm)',
+                padding: 'var(--s-3)',
+                borderLeft: '3px solid var(--accent)',
+              }}>
+                <span style={{ fontWeight: 600, fontSize: 'var(--t-sm)', display: 'block' }}>{SPORT_TITLE[sport]}</span>
+                <span className="muted" style={{ display: 'block', fontSize: 'var(--t-xs)' }}>{SPORT_LABEL[sport]} · ~55 min est.</span>
+              </div>
+            ))}
+          </Column>
+        )}
 
-      <Button variant="ghost" style={{ width: '100%', borderStyle: 'dashed' }}>+ Add event</Button>
+        <Button variant="ghost" style={{ width: '100%', borderStyle: 'dashed' }}>+ Add event</Button>
+      </Column>
     </Surface>
   );
 }
@@ -192,20 +198,22 @@ function PlannedSessionCard({ plan }: { plan: PlannedSession }) {
     hour: '2-digit', minute: '2-digit',
   });
   return (
-    <Surface className="column compact">
-      <Row align="center" justify="between">
-        <Row gap={1} align="center">
-          <span aria-hidden>{PLAN_EMOJI[plan.type] ?? '📋'}</span>
-          <Text size="detail">{plan.name}</Text>
+    <Surface>
+      <Column gap={1}>
+        <Row align="center" justify="between">
+          <Row gap={1} align="center">
+            <span aria-hidden>{PLAN_EMOJI[plan.type] ?? '📋'}</span>
+            <Text size="detail">{plan.name}</Text>
+          </Row>
+          <Text size="caption" color="muted">{when}</Text>
         </Row>
-        <Text size="caption" color="muted">{when}</Text>
-      </Row>
-      {plan.distanceKm != null && (
-        <Text size="caption" color="muted">{plan.distanceKm} km</Text>
-      )}
-      {plan.exercises && plan.exercises.length > 0 && (
-        <Text size="caption" color="muted">{plan.exercises.length} exercises</Text>
-      )}
+        {plan.distanceKm != null && (
+          <Text size="caption" color="muted">{plan.distanceKm} km</Text>
+        )}
+        {plan.exercises && plan.exercises.length > 0 && (
+          <Text size="caption" color="muted">{plan.exercises.length} exercises</Text>
+        )}
+      </Column>
     </Surface>
   );
 }
@@ -231,9 +239,9 @@ export function TrainingPlansScreen() {
     <Grid>
 
       {upcomingPlanned.length > 0 && (
-        <Surface className="column">
-          <Text size="caption">PLANNED SESSIONS</Text>
+        <Surface>
           <Column gap={1}>
+            <Text size="caption">PLANNED SESSIONS</Text>
             {upcomingPlanned.map(plan => (
               <PlannedSessionCard key={plan.id} plan={plan} />
             ))}
@@ -310,16 +318,18 @@ export function TrainingPlansScreen() {
       {/* Month view */}
       {calView === 'month' && (
         <>
-          <Surface className="column">
-            <CalendarGrid year={currentDate.getFullYear()} month={currentDate.getMonth()} />
-            <Cluster>
-              {LEGEND.map(l => (
-                <Row key={l.label} align="center" gap={1} className="caption">
-                  <span className="dot sm" style={{ '--dot': l.color } as React.CSSProperties} />
-                  <Text color="muted">{l.label}</Text>
-                </Row>
-              ))}
-            </Cluster>
+          <Surface>
+            <Column gap={1}>
+              <CalendarGrid year={currentDate.getFullYear()} month={currentDate.getMonth()} />
+              <Cluster>
+                {LEGEND.map(l => (
+                  <Row key={l.label} align="center" gap={1} className="caption">
+                    <span className="dot sm" style={{ '--dot': l.color } as React.CSSProperties} />
+                    <Text color="muted">{l.label}</Text>
+                  </Row>
+                ))}
+              </Cluster>
+            </Column>
           </Surface>
 
           <Text as="h3">Coming up</Text>
@@ -328,18 +338,20 @@ export function TrainingPlansScreen() {
             : (
               <Column gap={1}>
                 {upcoming.map(ev => (
-                  <Surface key={ev.day} className="row align-center">
-                    <Column gap={1} className="align-center">
-                      <Text size="caption" mono>{ev.monthLabel}</Text>
-                      <Text size="caption">{ev.day}</Text>
-                    </Column>
-                    <Column gap={1} className="grow">
-                      <Row justify="between" align="center">
-                        <Text size="detail">{ev.title}</Text>
-                        <Text className={`pill ${ev.sport}`}>{SPORT_LABEL[ev.sport]}</Text>
-                      </Row>
-                      <Text size="caption">{ev.time}</Text>
-                    </Column>
+                  <Surface key={ev.day}>
+                    <Row align="center">
+                      <Column gap={1} className="align-center">
+                        <Text size="caption" mono>{ev.monthLabel}</Text>
+                        <Text size="caption">{ev.day}</Text>
+                      </Column>
+                      <Column gap={1} className="grow">
+                        <Row justify="between" align="center">
+                          <Text size="detail">{ev.title}</Text>
+                          <Text className={`pill ${ev.sport}`}>{SPORT_LABEL[ev.sport]}</Text>
+                        </Row>
+                        <Text size="caption">{ev.time}</Text>
+                      </Column>
+                    </Row>
                   </Surface>
                 ))}
               </Column>

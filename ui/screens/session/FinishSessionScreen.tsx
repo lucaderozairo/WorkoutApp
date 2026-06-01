@@ -1,6 +1,6 @@
 import type { ChangeEvent } from 'react';
 import { RPE_VALUES, SUGGESTED_TAGS, useFinishSession } from './useFinishSession';
-import { Grid, Row, Column } from '@ui/layout';
+import { Grid, Row, Column, Spacer } from '@ui/layout';
 import { Button, Input, Textarea, Badge } from '@ui/atoms';
 import { ChipGroup, PhotoGallery, DetailRow } from '@ui/molecules';
 
@@ -131,7 +131,7 @@ export function FinishSessionScreen() {
                 Share
               </Button>
             )}
-            <div className="grow" />
+            <Spacer />
             <Button variant="primary" onClick={() => navigate(`/sessions/${displaySession.id}`)}>Done</Button>
           </Row>
         </>

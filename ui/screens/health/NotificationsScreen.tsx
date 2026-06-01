@@ -16,7 +16,7 @@ export function NotificationsScreen() {
         />
       ) : (
         notifications.map(n => (
-          <Surface key={n.id} className="row">
+          <Surface key={n.id}>
             <Text>{n.message}</Text>
           </Surface>
         ))
