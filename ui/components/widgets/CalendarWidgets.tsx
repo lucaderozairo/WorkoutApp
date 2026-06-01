@@ -1,5 +1,6 @@
 import { useQuery } from '@ui/bindings';
-import { Grid } from '@ui/layout';
+import { Grid, Row, Column } from '@ui/layout';
+import { Surface } from '@ui/atoms';
 import type { SportType } from '@features/training_log/domain/types';
 import type { MockCalendarEvent } from '@features/scheduling';
 
@@ -51,32 +52,36 @@ export function CalendarLarge() {
     const upcoming = (useQuery<MockCalendarEvent[]>('calendar_upcoming') ?? []) as MockCalendarEvent[];
 
     return (
-        <div className="surface column">
-            <div className="row space-between align-center compact">
-                <button className="ghost icon">‹</button>
-                <span className="caption">{label}</span>
-                <button className="ghost icon">›</button>
-            </div>
-            <CalendarGrid year={today.getFullYear()} month={today.getMonth()} />
+        <Surface>
+            <Column>
+                <Row justify="between" align="center" gap={1}>
+                    <button className="ghost icon">‹</button>
+                    <span className="caption">{label}</span>
+                    <button className="ghost icon">›</button>
+                </Row>
+                <CalendarGrid year={today.getFullYear()} month={today.getMonth()} />
 
-            <h3>Coming up</h3>
-            <div className="column compact">
-                {upcoming.map(ev => (
-                    <div key={ev.day} className="surface row align-center compact">
-                        <div>
-                            <span className="eyebrow" style={{ fontSize: 9 }}>{ev.month}</span>
-                            <span style={{ fontSize: 'var(--t-lg)', lineHeight: 1 }}>{ev.day}</span>
-                        </div>
-                        <div className="column compact" style={{ flex: 1 }}>
-                            <div className="row space-between align-center">
-                                <span className="detail">{ev.title}</span>
-                                <span className={`pill ${ev.sport}`}>{ev.sport}</span>
-                            </div>
-                            <span className="caption">{ev.time}</span>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
+                <h3>Coming up</h3>
+                <Column gap={1}>
+                    {upcoming.map(ev => (
+                        <Surface key={ev.day}>
+                            <Row align="center" gap={1}>
+                                <div>
+                                    <span className="eyebrow" style={{ fontSize: 9 }}>{ev.month}</span>
+                                    <span style={{ fontSize: 'var(--t-lg)', lineHeight: 1 }}>{ev.day}</span>
+                                </div>
+                                <div className="column compact" style={{ flex: 1 }}>
+                                    <Row justify="between" align="center">
+                                        <span className="detail">{ev.title}</span>
+                                        <span className={`pill ${ev.sport}`}>{ev.sport}</span>
+                                    </Row>
+                                    <span className="caption">{ev.time}</span>
+                                </div>
+                            </Row>
+                        </Surface>
+                    ))}
+                </Column>
+            </Column>
+        </Surface>
     );
 }

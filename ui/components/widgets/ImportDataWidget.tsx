@@ -2,6 +2,8 @@ import { useRef, useState } from 'react';
 import { PERSISTED_KEYS } from '@data/sources/local/persistence';
 import { viewStore } from '@data/projections/views';
 import { importCsv, writeImportToStore } from '@shared/utils/importCsv';
+import { Column } from '@ui/layout';
+import { Surface } from '@ui/atoms';
 
 export function ImportDataWidget() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -50,13 +52,15 @@ export function ImportDataWidget() {
   }
 
   return (
-    <div className="surface column compact widget-1x1 space-between">
-      <span className="label">Import Data</span>
-      <p className="detail">Restore from a JSON backup or CSV file.</p>
-      <input ref={inputRef} type="file" accept=".json,.csv" onChange={handleFile} hidden />
-      <button className='chip sm' onClick={() => inputRef.current?.click()}>Choose file</button>
-      {status === 'ok' && <span className="caption value good">{message}</span>}
-      {status === 'error' && <span className="caption value poor">{message}</span>}
-    </div>
+    <Surface>
+      <Column gap={1} className="widget-1x1 space-between">
+        <span className="label">Import Data</span>
+        <p className="detail">Restore from a JSON backup or CSV file.</p>
+        <input ref={inputRef} type="file" accept=".json,.csv" onChange={handleFile} hidden />
+        <button className='chip sm' onClick={() => inputRef.current?.click()}>Choose file</button>
+        {status === 'ok' && <span className="caption value good">{message}</span>}
+        {status === 'error' && <span className="caption value poor">{message}</span>}
+      </Column>
+    </Surface>
   );
 }
