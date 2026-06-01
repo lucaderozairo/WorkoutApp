@@ -1,7 +1,7 @@
 ﻿import { useEffect, useRef, useState } from 'react';
 import { Download, Plus, Trash2 } from 'lucide-react';
 import { Row, Column } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Surface, Button, Text } from '@ui/atoms';
 import { useCommand } from '@ui/bindings';
 import {
   handleRemoveBlock,
@@ -348,9 +348,9 @@ export function WorkoutView({
           />
         ))}
 
-        <button type="button" className="neutral row" onClick={onAddExercise}>
+        <Button type="button" variant="ghost" className="row" onClick={onAddExercise}>
           <Plus size={12} /> Add Exercise
-        </button>
+        </Button>
       </Column>
 
       {deleteAlert && (
@@ -358,15 +358,15 @@ export function WorkoutView({
           <Surface>
             <Column>
               <Column gap={1}>
-                <span className="detail">Delete set?</span>
-                <span className="mono num detail muted">{deleteAlert.label}</span>
-                <span className="caption faint">This removes the set from your log.</span>
+                <Text size="detail">Delete set?</Text>
+                <Text size="detail" mono color="muted" className="num">{deleteAlert.label}</Text>
+                <Text size="caption" color="faint">This removes the set from your log.</Text>
               </Column>
               <Row justify="between">
-                <button type="button" className="ghost" onClick={() => setDeleteAlert(null)}>Cancel</button>
-                <button type="button" className="warning" onClick={handleConfirmDelete}>
+                <Button type="button" variant="ghost" onClick={() => setDeleteAlert(null)}>Cancel</Button>
+                <Button type="button" className="warning" onClick={handleConfirmDelete}>
                   <Trash2 size={12} /> Delete
-                </button>
+                </Button>
               </Row>
             </Column>
           </Surface>
@@ -378,14 +378,14 @@ export function WorkoutView({
           <Surface>
             <Column>
               <Column gap={1}>
-                <span className="detail">Delete exercise?</span>
-                <span className="caption faint">This removes the exercise and all its sets.</span>
+                <Text size="detail">Delete exercise?</Text>
+                <Text size="caption" color="faint">This removes the exercise and all its sets.</Text>
               </Column>
               <Row justify="between">
-                <button type="button" className="ghost" onClick={() => setDeleteBlockAlert(null)}>Cancel</button>
-                <button type="button" className="warning" onClick={handleConfirmDeleteBlock}>
+                <Button type="button" variant="ghost" onClick={() => setDeleteBlockAlert(null)}>Cancel</Button>
+                <Button type="button" className="warning" onClick={handleConfirmDeleteBlock}>
                   <Trash2 size={12} /> Delete
-                </button>
+                </Button>
               </Row>
             </Column>
           </Surface>
@@ -397,14 +397,14 @@ export function WorkoutView({
           <Surface>
             <Column>
               <Column gap={1}>
-                <h3>Delete session?</h3>
-                <span className="caption faint">This removes the entire session and cannot be undone.</span>
+                <Text as="h3">Delete session?</Text>
+                <Text size="caption" color="faint">This removes the entire session and cannot be undone.</Text>
               </Column>
               <Row justify="between">
-                <button type="button" className="secondary" onClick={() => setClearAlert(false)}>Cancel</button>
-                <button type="button" className="warning" onClick={handleConfirmClearSession}>
+                <Button type="button" variant="secondary" onClick={() => setClearAlert(false)}>Cancel</Button>
+                <Button type="button" className="warning" onClick={handleConfirmClearSession}>
                   <Trash2 size={12} /> Delete
-                </button>
+                </Button>
               </Row>
             </Column>
           </Surface>

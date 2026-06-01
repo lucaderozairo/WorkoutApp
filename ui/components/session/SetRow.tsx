@@ -1,9 +1,9 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Check, MessageSquare, MoreVertical, Pencil, Trash2, X } from 'lucide-react';
 import type { UISet } from '@features/training_log/projections/viewTypes';
 import type { SetMode } from '@data/static/exercises';
-import { Row, Column, Cluster } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Row, Column, Cluster, Spacer } from '@ui/layout';
+import { Surface, Button, Text, Chip } from '@ui/atoms';
 
 export interface SetRowProps {
   num: number;
@@ -52,14 +52,13 @@ export function SetRow({
   };
 
   const label = warmup ? 'WU' : `S${num}`;
-  const cls = warmup ? 'faint' : 'muted';
-
-  const sepCls = `set-sep caption ${cls}`;
+  const labelColor = warmup ? 'faint' : 'muted';
 
   return (
     <Column gap={1}>
       <Row align="center" justify="between">
-        <span className={`mono caption ${cls}`} style={{ minWidth: 28, textAlign: 'center', fontWeight: 600 }}>
+        {/* minWidth keeps the label column stable; no CSS utility available */}
+        <span className={`mono caption bold text-center ${labelColor}`} style={{ minWidth: 28 }}>
           {label}
         </span>
         <Row className="grow" align="center" gap={1}>
@@ -76,7 +75,7 @@ export function SetRow({
                 onChange={e => setWVal(e.target.value)}
                 onBlur={e => commit(e.target.value, rVal)}
               />
-              <span className={sepCls}>kg ×</span>
+              <Text size="caption" color={labelColor} mono className="set-sep">kg ×</Text>
               <input
                 type="number"
                 className={`mono num${warmup ? ' faint' : ''}`}
@@ -88,12 +87,12 @@ export function SetRow({
                 onChange={e => setRVal(e.target.value)}
                 onBlur={e => commit(wVal, e.target.value)}
               />
-              <span className={sepCls}>reps</span>
+              <Text size="caption" color={labelColor} mono className="set-sep">reps</Text>
             </>
           )}
           {currentMode === 'reps' && (
             <>
-              <span className={sepCls}>×</span>
+              <Text size="caption" color={labelColor} mono className="set-sep">×</Text>
               <input
                 type="number"
                 className={`mono num grow${warmup ? ' faint' : ''}`}
@@ -105,7 +104,7 @@ export function SetRow({
                 onChange={e => setRVal(e.target.value)}
                 onBlur={e => commit('0', e.target.value)}
               />
-              <span className={sepCls}>reps</span>
+              <Text size="caption" color={labelColor} mono className="set-sep">reps</Text>
             </>
           )}
           {currentMode === 'time' && (
@@ -121,7 +120,7 @@ export function SetRow({
                 onChange={e => setWVal(e.target.value)}
                 onBlur={e => commit(e.target.value, '0')}
               />
-              <span className={sepCls}>sec</span>
+              <Text size="caption" color={labelColor} mono className="set-sep">sec</Text>
             </>
           )}
           {currentMode === 'dist' && (
@@ -137,7 +136,7 @@ export function SetRow({
                 onChange={e => setWVal(e.target.value)}
                 onBlur={e => commit(e.target.value, '0')}
               />
-              <span className={sepCls}>m</span>
+              <Text size="caption" color={labelColor} mono className="set-sep">m</Text>
             </>
           )}
           {currentMode === 'dist-time' && (
@@ -153,7 +152,7 @@ export function SetRow({
                 onChange={e => setWVal(e.target.value)}
                 onBlur={e => commit(e.target.value, rVal)}
               />
-              <span className={sepCls}>m</span>
+              <Text size="caption" color={labelColor} mono className="set-sep">m</Text>
               <input
                 type="number"
                 className={`mono num${warmup ? ' faint' : ''}`}
@@ -165,33 +164,34 @@ export function SetRow({
                 onChange={e => setRVal(e.target.value)}
                 onBlur={e => commit(wVal, e.target.value)}
               />
-              <span className={sepCls}>sec</span>
+              <Text size="caption" color={labelColor} mono className="set-sep">sec</Text>
             </>
           )}
         </Row>
         {!disabled && (
-          <button
+          <Button
             type="button"
-            className="ghost icon sm"
+            variant="ghost"
+            size="icon"
             onClick={() => onOpenMenu(isOpen ? null : menuKey)}
           >
             <MoreVertical size={10} className="faint" />
-          </button>
+          </Button>
         )}
       </Row>
 
       {comment && !commentOpen && (
         <Row align="center" justify="between">
-          <button className="icon sm ghost" disabled>
+          <Button variant="ghost" size="icon" disabled>
             <MessageSquare size={9} className="faint" />
-          </button>
-          <div className="surface pad-sm ghost grow">
-            <span className="caption pre-wrap">{comment}</span>
-          </div>
+          </Button>
+          <Surface variant="ghost" pad="sm" className="grow">
+            <Text size="caption" className="pre-wrap">{comment}</Text>
+          </Surface>
           {!disabled && (
-            <button className="ghost icon sm" onClick={() => setCommentOpen(true)}>
+            <Button variant="ghost" size="icon" onClick={() => setCommentOpen(true)}>
               <Pencil size={10} className="faint" />
-            </button>
+            </Button>
           )}
         </Row>
       )}
@@ -200,41 +200,41 @@ export function SetRow({
         <Surface variant="flat" pad="sm">
           <Column gap={1}>
             <Row justify="between" align="center">
-              <h3>Set Options</h3>
-              <button type="button" className="ghost icon sm" onClick={() => onOpenMenu(null)}>
+              <Text as="h3">Set Options</Text>
+              <Button type="button" variant="ghost" size="icon" onClick={() => onOpenMenu(null)}>
                 <X size={10} className="faint" />
-              </button>
+              </Button>
             </Row>
             <Row gap={1}>
-              <button type="button" className="ghost sm" onClick={() => { onToggleWarmup(); onOpenMenu(null); }}>
+              <Button type="button" variant="ghost" size="sm" onClick={() => { onToggleWarmup(); onOpenMenu(null); }}>
                 {warmup ? 'Mark working' : 'Mark warmup'}
-              </button>
-              <button type="button" className="ghost sm" onClick={() => { onOpenMenu(null); setCommentOpen(v => !v); }}>
+              </Button>
+              <Button type="button" variant="ghost" size="sm" onClick={() => { onOpenMenu(null); setCommentOpen(v => !v); }}>
                 <MessageSquare size={9} /> {comment ? 'Edit note' : 'Add note'}
-              </button>
+              </Button>
             </Row>
-            <span className="eyebrow">Set mode</span>
+            <Text size="eyebrow">Set mode</Text>
             <Cluster gap={1}>
               {availableModes.map(mode => (
-                <button
+                <Chip
                   key={mode}
-                  type="button"
-                  className={`chip${currentMode === mode ? ' active' : ''}`}
+                  active={currentMode === mode}
                   onClick={() => { onSetModeChange(mode); onOpenMenu(null); }}
                 >
                   {mode}
-                </button>
+                </Chip>
               ))}
             </Cluster>
             <Row gap={1} justify="between">
-              <span />
-              <button
+              <Spacer />
+              <Button
                 type="button"
-                className="sm warning"
+                size="sm"
+                className="warning"
                 onClick={() => { onOpenMenu(null); onDeleteRequest(); }}
               >
                 <Trash2 size={9} /> Delete
-              </button>
+              </Button>
             </Row>
           </Column>
         </Surface>
@@ -242,7 +242,7 @@ export function SetRow({
 
       {!disabled && commentOpen && (
         <Row gap={1} align="start">
-          <button className='icon sm ghost' disabled><MessageSquare size={9} /></button>
+          <Button variant="ghost" size="icon" disabled><MessageSquare size={9} /></Button>
           <textarea
             className="grow"
             rows={3}
@@ -256,12 +256,12 @@ export function SetRow({
             }}
           />
           <Column gap={1} align="center">
-            <button type="button" className="ghost icon sm" onClick={submitComment}>
+            <Button type="button" variant="ghost" size="icon" onClick={submitComment}>
               <Check size={10} />
-            </button>
-            <button type="button" className="ghost icon sm" onClick={() => setCommentOpen(false)}>
+            </Button>
+            <Button type="button" variant="ghost" size="icon" onClick={() => setCommentOpen(false)}>
               <X size={10} className="faint" />
-            </button>
+            </Button>
           </Column>
         </Row>
       )}

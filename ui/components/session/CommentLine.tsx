@@ -1,10 +1,12 @@
 import { MessageSquare } from 'lucide-react';
+import { Row } from '@ui/layout';
+import { Text } from '@ui/atoms';
 
-export function CommentLine({ text, indent }: { text: string; indent?: boolean }) {
+export function CommentLine({ text }: { text: string; indent?: boolean }) {
   return (
-    <div className={`row align-center${indent ? '' : ''}`}>
+    <Row align="center">
       <MessageSquare size={9} />
-      <span className="pre-wrap">{text}</span>
-    </div>
+      <Text className="pre-wrap">{text}</Text>
+    </Row>
   );
 }

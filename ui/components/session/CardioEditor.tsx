@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Surface } from '@ui/atoms';
+import { Surface, Text } from '@ui/atoms';
 import { Grid, Row, Column } from '@ui/layout';
 import type { UICardioSet } from '@features/training_log/projections/viewTypes';
 
@@ -35,7 +35,7 @@ export function CardioEditor({ cardioSet, onUpdate }: {
     <Surface pad="sm"><Grid variant="double" gap={1}>
       {CARDIO_FIELDS.map(f => (
         <Column key={f.key} gap={1}>
-          <span className="eyebrow">{f.label}</span>
+          <Text size="eyebrow">{f.label}</Text>
           <Row gap={1} align="center">
             <input
               type="number"
@@ -47,7 +47,7 @@ export function CardioEditor({ cardioSet, onUpdate }: {
               onChange={e => setVals(prev => ({ ...prev, [f.key]: e.target.value }))}
               onBlur={e => onUpdate(f.key, f.fromDisplay(e.target.value))}
             />
-            <span className="caption muted">{f.unit}</span>
+            <Text size="caption" color="muted">{f.unit}</Text>
           </Row>
         </Column>
       ))}

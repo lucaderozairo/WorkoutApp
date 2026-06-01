@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Download, MoreVertical, Pause, Play, Share2, Trash2, X } from 'lucide-react';
-import { Row, Column , Grid } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Row, Column, Grid } from '@ui/layout';
+import { Surface, Button, Text } from '@ui/atoms';
 
 export interface SessionHeaderProps {
   name: string;
@@ -43,61 +43,61 @@ export function SessionHeader({
     <Column>
       <Row align="center" justify="between" style={{ padding: 'var(--s-3) var(--s-4)', background: 'var(--surface-0)', borderBottom: '1px solid var(--line)' }}>
         <Row gap={1}>
-          <span className="detail">{name}</span>
+          <Text size="detail">{name}</Text>
         </Row>
         <Row gap={1} align="center">
           {isActive ? (
             <>
-              <button type="button" className="primary sm" onClick={onFinish}>Finish</button>
+              <Button type="button" variant="primary" size="sm" onClick={onFinish}>Finish</Button>
               {timerNotStarted ? (
-                <button type="button" className="primary sm session-timer-start" onClick={onStartTimer}>
+                <Button type="button" variant="primary" size="sm" className="session-timer-start" onClick={onStartTimer}>
                   <Play size={13} /> Start
-                </button>
+                </Button>
               ) : (
-                <button type="button" className="secondary sm" onClick={isPaused ? onResume : onPause}>
+                <Button type="button" variant="secondary" size="sm" onClick={isPaused ? onResume : onPause}>
                   {isPaused ? <Play size={13} /> : <Pause size={13} />}
-                </button>
+                </Button>
               )}
             </>
           ) : (
-            <button type="button" className="primary sm" onClick={() => onDone?.()}>Edit</button>
+            <Button type="button" variant="primary" size="sm" onClick={() => onDone?.()}>Edit</Button>
           )}
           {onExport && (
-            <button type="button" className="secondary sm" onClick={onExport}>
+            <Button type="button" variant="secondary" size="sm" onClick={onExport}>
               <Download size={13} />
-            </button>
+            </Button>
           )}
-          <button type="button" className="secondary sm" onClick={handleShare}>
+          <Button type="button" variant="secondary" size="sm" onClick={handleShare}>
             <Share2 size={13} />
-          </button>
-          <button type="button" className="secondary sm" onClick={() => setMenuOpen(v => !v)}>
+          </Button>
+          <Button type="button" variant="secondary" size="sm" onClick={() => setMenuOpen(v => !v)}>
             <MoreVertical size={13} />
-          </button>
+          </Button>
         </Row>
       </Row>
 
       <Surface><Grid variant="double">
         {isActive && timerDisplay && !timerNotStarted && (
           <Column gap={1} align="center">
-            <span className="eyebrow">Timer</span>
-            <span className="mono num detail">{timerDisplay}</span>
+            <Text size="eyebrow">Timer</Text>
+            <Text size="detail" mono className="num">{timerDisplay}</Text>
           </Column>
         )}
         <Column gap={1} align="center">
-          <span className="eyebrow">Start</span>
-          <span className="mono num detail">{startTime ?? '—'}</span>
+          <Text size="eyebrow">Start</Text>
+          <Text size="detail" mono className="num">{startTime ?? '—'}</Text>
         </Column>
         <Column gap={1} align="center">
-          <span className="eyebrow">End</span>
-          <span className="mono num detail">{endTime ?? '—'}</span>
+          <Text size="eyebrow">End</Text>
+          <Text size="detail" mono className="num">{endTime ?? '—'}</Text>
         </Column>
         <Column gap={1} align="center">
-          <span className="eyebrow">Date</span>
-          <span className="mono num detail">{date ?? dateLabel}</span>
+          <Text size="eyebrow">Date</Text>
+          <Text size="detail" mono className="num">{date ?? dateLabel}</Text>
         </Column>
         <Column gap={1} align="center">
-          <span className="eyebrow">Duration</span>
-          <span className="mono num detail">{duration ?? '—'}</span>
+          <Text size="eyebrow">Duration</Text>
+          <Text size="detail" mono className="num">{duration ?? '—'}</Text>
         </Column>
       </Grid></Surface>
 
@@ -106,18 +106,19 @@ export function SessionHeader({
           <Surface>
             <Column>
               <Row justify="between" align="center">
-                <span className="detail">Session Options</span>
-                <button type="button" className="ghost icon sm" onClick={() => setMenuOpen(false)}>
+                <Text size="detail">Session Options</Text>
+                <Button type="button" variant="ghost" size="icon" onClick={() => setMenuOpen(false)}>
                   <X size={10} className="faint" />
-                </button>
+                </Button>
               </Row>
-              <button
+              <Button
                 type="button"
-                className="sm warning"
+                size="sm"
+                className="warning"
                 onClick={() => { setMenuOpen(false); onClearSession(); }}
               >
                 <Trash2 size={9} /> Delete session
-              </button>
+              </Button>
             </Column>
           </Surface>
         </div>

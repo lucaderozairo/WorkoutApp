@@ -1,9 +1,9 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { AlertTriangle, ChevronDown, ChevronUp } from 'lucide-react';
 import type { UICondition } from '@features/training_log/projections/viewTypes';
 import { worstActiveCondition } from '@features/training_log/projections/mappers';
 import { Row, Column } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Surface, Text, Badge, Button } from '@ui/atoms';
 
 export function InjuryBanner({ conditions }: { conditions: UICondition[] }) {
   const [open, setOpen] = useState(false);
@@ -16,38 +16,33 @@ export function InjuryBanner({ conditions }: { conditions: UICondition[] }) {
   return (
     <Surface className={sevClass}>
       <Column>
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => setOpen(v => !v)}
-          onKeyDown={(e: React.KeyboardEvent) => e.key === 'Enter' && setOpen(v => !v)}
-        >
-        <Row align="center" justify="between">
-          <Row gap={1} align="center">
-            <AlertTriangle size={13} />
-            <span className="detail">
-              {active.length} injury warning{active.length > 1 ? 's' : ''} active
-            </span>
-            {!open && <span className="caption">· tap to review</span>}
+        <Button type="button" variant="ghost" block onClick={() => setOpen(v => !v)}>
+          <Row align="center" justify="between">
+            <Row gap={1} align="center">
+              <AlertTriangle size={13} />
+              <Text size="detail">
+                {active.length} injury warning{active.length > 1 ? 's' : ''} active
+              </Text>
+              {!open && <Text size="caption">· tap to review</Text>}
+            </Row>
+            {open ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
           </Row>
-          {open ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
-        </Row>
-        </div>
+        </Button>
 
         {open && (
           <Column gap={1}>
             {active.map(inj => {
-              const badgeCls = inj.severity === 'severe' ? 'warning' : 'caution';
+              const badgeTone = inj.severity === 'severe' ? 'bad' : 'warn';
               return (
                 <Column key={inj.id} gap={1}>
                   <Row gap={1} align="center">
-                    <span className="detail grow">{inj.fullName}</span>
-                    <span className={`badge ${badgeCls}`}>{inj.severity}</span>
+                    <Text size="detail" className="grow">{inj.fullName}</Text>
+                    <Badge tone={badgeTone}>{inj.severity}</Badge>
                   </Row>
-                  <p className="caption">{inj.advice}</p>
+                  <Text size="caption">{inj.advice}</Text>
                   <Row gap={1}>
                     {inj.affectedExercises.map(ex => (
-                      <span key={ex} className="badge">{ex}</span>
+                      <Badge key={ex}>{ex}</Badge>
                     ))}
                   </Row>
                 </Column>

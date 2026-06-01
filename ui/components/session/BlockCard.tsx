@@ -1,7 +1,7 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { AlertTriangle, MoreVertical, Trash2, X } from 'lucide-react';
 import { Row, Column, Cluster } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Surface, Button, Text, Badge, Chip, Divider } from '@ui/atoms';
 import { ExerciseSection } from './ExerciseSection';
 import { CardioEditor } from './CardioEditor';
 import { CommentLine } from './CommentLine';
@@ -49,19 +49,17 @@ export function BlockCard({
 
   const restPickerContent = (
     <Column gap={1}>
-      <span className="caption muted">Choose duration</span>
+      <Text size="caption" color="muted">Choose duration</Text>
       <Cluster gap={1}>
         {(block.restSeconds != null ? [block.restSeconds] : [])
           .concat([30, 60, 90, 120, 180].filter(s => s !== block.restSeconds))
           .map(s => (
-            <button
+            <Chip
               key={s}
-              type="button"
-              className="chip"
               onClick={() => { closeMenu(); onStartRest(block.exerciseName, s); }}
             >
               {s < 60 ? `${s}s` : `${s / 60}m`}
-            </button>
+            </Chip>
           ))}
       </Cluster>
     </Column>
@@ -72,19 +70,19 @@ export function BlockCard({
       <Surface>
         <Column>
           <Row justify="between" align="center">
-            <span className="detail">{block.exerciseName}</span>
-            <button type="button" className="ghost icon sm" onClick={closeMenu}>
+            <Text size="detail">{block.exerciseName}</Text>
+            <Button type="button" variant="ghost" size="icon" onClick={closeMenu}>
               <X size={10} className="faint" />
-            </button>
+            </Button>
           </Row>
           {showRestPicker ? restPickerContent : (
-            <button type="button" className="secondary sm" onClick={() => setShowRestPicker(true)}>
+            <Button type="button" variant="secondary" size="sm" onClick={() => setShowRestPicker(true)}>
               Rest timer
-            </button>
+            </Button>
           )}
-          <button type="button" className="sm warning" onClick={() => { closeMenu(); onDeleteBlock(blockIds); }}>
+          <Button type="button" size="sm" className="warning" onClick={() => { closeMenu(); onDeleteBlock(blockIds); }}>
             <Trash2 size={9} /> Delete exercise
-          </button>
+          </Button>
         </Column>
       </Surface>
     </div>
@@ -96,17 +94,12 @@ export function BlockCard({
         <Column>
           <Row align="center" justify="between">
             <Row gap={1} align="center">
-              {block.tag && (
-                <span className="badge">
-                  <span className="dot" />
-                  {block.tag}
-                </span>
-              )}
-              <span className="caption muted">Stretch</span>
+              {block.tag && <Badge dot>{block.tag}</Badge>}
+              <Text size="caption" color="muted">Stretch</Text>
             </Row>
-            <button type="button" className="ghost icon sm" onClick={() => setMenuOpen(v => !v)}>
+            <Button type="button" variant="ghost" size="icon" onClick={() => setMenuOpen(v => !v)}>
               <MoreVertical size={10} className="faint" />
-            </button>
+            </Button>
           </Row>
           {menuOpen && blockMenu}
           {block.exercises.map((ex, i) => (
@@ -117,10 +110,10 @@ export function BlockCard({
               className={i < block.exercises.length - 1 ? 'bordered-bottom' : undefined}
             >
               <Column gap={1} className="grow">
-                <span className="detail">{ex.name}</span>
-                <span className="caption">{ex.muscle}</span>
+                <Text size="detail">{ex.name}</Text>
+                <Text size="caption">{ex.muscle}</Text>
               </Column>
-              <span className="mono caption">{ex.hold}</span>
+              <Text size="caption" mono>{ex.hold}</Text>
             </Row>
           ))}
         </Column>
@@ -134,15 +127,12 @@ export function BlockCard({
       <Surface>
         <Column>
           <Row align="center" justify="between">
-            <span className="detail">{ex.name}</span>
+            <Text size="detail">{ex.name}</Text>
             <Row gap={1} align="center">
-              <span className="badge">
-                <span className="dot" />
-                Cardio
-              </span>
-              <button type="button" className="ghost icon sm" onClick={() => setMenuOpen(v => !v)}>
+              <Badge dot>Cardio</Badge>
+              <Button type="button" variant="ghost" size="icon" onClick={() => setMenuOpen(v => !v)}>
                 <MoreVertical size={10} className="faint" />
-              </button>
+              </Button>
             </Row>
           </Row>
           {menuOpen && blockMenu}
@@ -168,22 +158,22 @@ export function BlockCard({
           <Row align="center" justify="between">
             <Row gap={1} align="center" className="grow">
               {warnings.length > 0 && <AlertTriangle size={12} />}
-              <h3 className="grow">{ex.name}</h3>
-              <span className="caption muted faint">{getMode(ex)}</span>
+              <Text as="h3" className="grow">{ex.name}</Text>
+              <Text size="caption" color="faint">{getMode(ex)}</Text>
               {warnings.map(w => (
-                <span key={w.id} className={`badge ${w.severity === 'severe' ? 'warning' : 'caution'}`}>{w.bodyPart}</span>
+                <Badge key={w.id} tone={w.severity === 'severe' ? 'bad' : 'warn'}>{w.bodyPart}</Badge>
               ))}
             </Row>
-            <button type="button" className="ghost icon sm" onClick={() => setMenuOpen(v => !v)}>
+            <Button type="button" variant="ghost" size="icon" onClick={() => setMenuOpen(v => !v)}>
               <MoreVertical size={10} className="faint" />
-            </button>
+            </Button>
           </Row>
           {menuOpen && blockMenu}
           {warnings.length > 0 && !isAcked && (
             <Column gap={1}>
               {warnings.map(w => (
                 <Row key={w.id} align="center" gap={1}>
-                  <span className="caption grow">{w.advice}</span>
+                  <Text size="caption" className="grow">{w.advice}</Text>
                 </Row>
               ))}
             </Column>
@@ -215,7 +205,7 @@ export function BlockCard({
               );
             })}
           </Column>
-          <button type="button" className="ghost surface pad-sm" onClick={() => onAddSet(block.id)}>+ Add Set</button>
+          <Button type="button" variant="ghost" className="surface pad-sm" onClick={() => onAddSet(block.id)}>+ Add Set</Button>
         </Column>
       </Surface>
     );
@@ -227,20 +217,17 @@ export function BlockCard({
       <Column>
         <Row align="center" justify="between">
           <Row gap={1} align="center">
-            <button className="icon ghost" disabled>{blockIndex + 1}.</button>
-            <span className="badge">
-              <span className="dot" />
-              {block.label}
-            </span>
+            <Text size="caption" color="muted">{blockIndex + 1}.</Text>
+            <Badge dot>{block.label}</Badge>
           </Row>
-          <button type="button" className="ghost icon sm" onClick={() => setMenuOpen(v => !v)}>
+          <Button type="button" variant="ghost" size="icon" onClick={() => setMenuOpen(v => !v)}>
             <MoreVertical size={10} className="faint" />
-          </button>
+          </Button>
         </Row>
         {menuOpen && blockMenu}
         {block.exercises.map((ex, i) => (
-          <div key={i}>
-            {i > 0 && <div className="rule" />}
+          <Column key={i}>
+            {i > 0 && <Divider />}
             <ExerciseSection
               ex={ex}
               openMenu={openMenu}
@@ -258,7 +245,7 @@ export function BlockCard({
               availableModes={getAvailableModes(ex)}
               onSetModeChange={mode => setMode(ex, mode)}
             />
-          </div>
+          </Column>
         ))}
       </Column>
     </Surface>

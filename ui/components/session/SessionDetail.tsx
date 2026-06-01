@@ -7,14 +7,14 @@ import type { SetEntry, StrengthSet } from '@features/training_log/domain/types'
 import type { GpsTrack } from '@data/sources/files/gps';
 import { SessionGpsPreview } from './SessionGpsPreview';
 import { ImportModal } from '../modals/ImportModal';
-import { HROverTimeChart, PaceOverTimeChart, ElevationProfileChart, KmSplitsTable, CHART_H, TICK, TOOLTIP_STYLE } from '@ui/patterns/charts/domain-charts';
+import { HROverTimeChart, PaceOverTimeChart, ElevationProfileChart, KmSplitsTable } from '@ui/patterns/charts/domain-charts';
 import ChartContainer from '@ui/patterns/charts/charts';
 import { ChevronLeft, Pencil, Share2, Image, MapPin, HeartPulse, TrendingUp, Mountain, Timer, Trophy, Heart, MessageCircle } from 'lucide-react';
 import { ACTIVITY_ICONS, getActivityLabel } from '@ui/icons/activityIcons';
 import type { SportType } from '@features/training_log/domain/types';
 import { Carousel } from '@ui/components/shared/Carousel';
 import { Row, Column, Cluster, Grid } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Surface, Button, Text, Badge, Chip, Table, TableRow, TableCell } from '@ui/atoms';
 
 
 interface SampleCardioSession {
@@ -142,7 +142,7 @@ function EditableTitle({
   const Tag = level;
   return (
     <Tag className="interactive" onClick={startEdit} title="Click to edit">
-      {value || <span className="faint">{placeholder}</span>}
+      {value || <Text as="span" color="faint">{placeholder}</Text>}
     </Tag>
   );
 }
@@ -178,14 +178,13 @@ function SocialBar({ session }: { session: CardioSession }) {
   return (
     <Row justify="between" align="center">
       <Cluster>
-        <button type="button" className="ghost" onClick={() => setShowRanWithInput(true)}>
+        <Button type="button" variant="ghost" onClick={() => setShowRanWithInput(true)}>
           + Ran with
-        </button>
+        </Button>
         {ranWith.map(name => (
-          <span key={name} className="badge">
+          <Chip key={name} trailing={<Button variant="ghost" size="icon" onClick={() => removeRanWith(name)}>×</Button>}>
             {name}
-            <button type="button" className="ghost icon" onClick={() => removeRanWith(name)}>×</button>
-          </span>
+          </Chip>
         ))}
         {showRanWithInput && (
           <input
@@ -200,14 +199,15 @@ function SocialBar({ session }: { session: CardioSession }) {
         )}
       </Cluster>
       <Row gap={1} align="center">
-        <button
+        <Button
           type="button"
-          className={`ghost${liked ? ' active' : ''}`}
+          variant="ghost"
+          className={liked ? 'active' : undefined}
           onClick={() => setLiked(l => !l)}
         >
           <Heart size={14} /> {liked ? 1 : 0}
-        </button>
-        <button type="button" className="ghost"><MessageCircle size={14} /> 0</button>
+        </Button>
+        <Button type="button" variant="ghost"><MessageCircle size={14} /> 0</Button>
       </Row>
     </Row>
   );
@@ -224,7 +224,7 @@ function SessionSetChart({ sets }: { sets: SetEntry[] }) {
   }));
   return (
     <Row align="center">
-      <span className="chart-ylabel">kg</span>
+      <Text className="chart-ylabel">kg</Text>
       <ChartContainer data={data} chartType={"sets-bar"} />
     </Row>
   );
@@ -248,44 +248,46 @@ function StrengthDetail({ session }: { session: ActivityView }) {
                   </Link>
                 </Row>
                 {block.blockType && (
-                  <span className={`badge ${block.blockType}`}>{block.blockType}</span>
+                  <Badge className={block.blockType}>{block.blockType}</Badge>
                 )}
               </Row>
               <SessionSetChart sets={strengthSets} />
               {block.sets.length > 0 && (
-                <table className="center">
+                <Table className="center">
+                  <thead>
+                    <TableRow>
+                      <TableCell header><Text size="eyebrow">#</Text></TableCell>
+                      <TableCell header><Text size="eyebrow">kg</Text></TableCell>
+                      <TableCell header><Text size="eyebrow">reps</Text></TableCell>
+                      <TableCell header><Text size="eyebrow">type</Text></TableCell>
+                      <TableCell header><Text size="eyebrow">RPE</Text></TableCell>
+                    </TableRow>
+                  </thead>
                   <tbody>
-                    <tr className="">
-                      <th className="eyebrow">#</th>
-                      <th className="eyebrow">kg</th>
-                      <th className="eyebrow">reps</th>
-                      <th className="eyebrow">type</th>
-                      <th className="eyebrow">RPE</th>
-                    </tr>
                     {block.sets.map((set, i) => (
-                      <tr key={i} className="">
-                        <td className="caption">{i + 1}</td>
+                      <TableRow key={i}>
+                        <TableCell muted>{i + 1}</TableCell>
                         {isStrengthSet(set) ? (
                           <>
-                            <td>{set.weightKg}</td>
-                            <td>{set.reps}</td>
-                            <td className="caption">{set.setType ?? 'normal'}</td>
-                            <td>{set.rpe != null ? set.rpe : '—'}</td>
+                            <TableCell>{set.weightKg}</TableCell>
+                            <TableCell>{set.reps}</TableCell>
+                            <TableCell muted>{set.setType ?? 'normal'}</TableCell>
+                            <TableCell>{set.rpe != null ? set.rpe : '—'}</TableCell>
                           </>
                         ) : (
                           <>
-                            <td>{(set as any).distanceMeters ?? '—'}</td>
-                            <td>{(set as any).durationSeconds ?? '—'}</td>
-                            <td className="caption">cardio</td>
-                            <td>—</td>
+                            <TableCell>{(set as any).distanceMeters ?? '—'}</TableCell>
+                            <TableCell>{(set as any).durationSeconds ?? '—'}</TableCell>
+                            <TableCell muted>cardio</TableCell>
+                            <TableCell>—</TableCell>
                           </>
                         )}
-                      </tr>
+                      </TableRow>
                     ))}
                   </tbody>
-                </table>
+                </Table>
               )}
-              {block.notes && <p className="caption">{block.notes}</p>}
+              {block.notes && <Text size="caption">{block.notes}</Text>}
             </Column>
           </Surface>
         );
@@ -294,10 +296,10 @@ function StrengthDetail({ session }: { session: ActivityView }) {
         <Surface pad="sm" as="section">
           <Row gap={1} wrap align="center">
             {session.rpe != null && (
-              <span className="badge accent">RPE {session.rpe}</span>
+              <Badge tone="accent">RPE {session.rpe}</Badge>
             )}
             {session.tags?.map(t => (
-              <span key={t} className="badge"><span className="dot" />{t}</span>
+              <Badge key={t} dot>{t}</Badge>
             ))}
           </Row>
         </Surface>
@@ -305,8 +307,8 @@ function StrengthDetail({ session }: { session: ActivityView }) {
       {session.notes && (
         <Surface pad="sm" as="section">
           <Column gap={1}>
-            <span className="caption">Notes</span>
-            <p className="detail">{session.notes}</p>
+            <Text size="caption">Notes</Text>
+            <Text size="detail">{session.notes}</Text>
           </Column>
         </Surface>
       )}
@@ -318,8 +320,8 @@ function StrengthDetail({ session }: { session: ActivityView }) {
           {session.comments.map((c, i) => (
             <Surface key={i} variant="flat" pad="sm">
               <Column gap={1}>
-                <span className="caption muted">{new Date(c.createdAt).toLocaleString('en-GB')}</span>
-                <p>{c.text}</p>
+                <Text size="caption" color="muted">{new Date(c.createdAt).toLocaleString('en-GB')}</Text>
+                <Text>{c.text}</Text>
               </Column>
             </Surface>
           ))}
@@ -368,28 +370,28 @@ function CardioDetail({ session, fullPage }: { session: CardioSession; fullPage?
     <Surface variant="ghost" pad="sm"><Grid variant="double">
       {session.distanceMeters > 0 && (
         <Column gap={1} align="center">
-          <p className="eyebrow">Distance</p>
-          <h3 className={` ${color}`}>
-            {distKm.toFixed(1)}<span className="caption muted">km</span>
-          </h3>
+          <Text size="eyebrow">Distance</Text>
+          <Text as="h3" className={color}>
+            {distKm.toFixed(1)}<Text as="span" size="caption" color="muted">km</Text>
+          </Text>
         </Column>
       )}
       <Column gap={1} align="center">
-        <p className="eyebrow">Duration</p>
-        <h3>{formatDuration(session.durationSeconds)}</h3>
+        <Text size="eyebrow">Duration</Text>
+        <Text as="h3">{formatDuration(session.durationSeconds)}</Text>
       </Column>
       {pace > 0 && (
         <Column gap={1} align="center">
-          <p className="eyebrow">Avg Pace</p>
-          <h3>{formatPace(pace)}</h3>
+          <Text size="eyebrow">Avg Pace</Text>
+          <Text as="h3">{formatPace(pace)}</Text>
         </Column>
       )}
       {track?.elevationGain != null && (
         <Column gap={1} align="center">
-          <p className="eyebrow">Elevation</p>
-          <h3>
-            +{Math.round(track.elevationGain)}<span className="caption muted">m</span>
-          </h3>
+          <Text size="eyebrow">Elevation</Text>
+          <Text as="h3">
+            +{Math.round(track.elevationGain)}<Text as="span" size="caption" color="muted">m</Text>
+          </Text>
         </Column>
       )}
     </Grid></Surface>
@@ -401,7 +403,7 @@ function CardioDetail({ session, fullPage }: { session: CardioSession; fullPage?
         <Column>
           <Row gap={1} align="center">
             <TrendingUp size={14} className="faint" />
-            <p className="eyebrow">Pace Over Distance</p>
+            <Text size="eyebrow">Pace Over Distance</Text>
           </Row>
           <PaceOverTimeChart points={track.points} />
         </Column>
@@ -411,7 +413,7 @@ function CardioDetail({ session, fullPage }: { session: CardioSession; fullPage?
           <Column>
             <Row gap={1} align="center">
               <HeartPulse size={14} className="faint" />
-              <p className="eyebrow">Heart Rate</p>
+              <Text size="eyebrow">Heart Rate</Text>
             </Row>
             <HROverTimeChart points={track.points} />
           </Column>
@@ -422,7 +424,7 @@ function CardioDetail({ session, fullPage }: { session: CardioSession; fullPage?
           <Column>
             <Row gap={1} align="center">
               <Mountain size={14} className="faint" />
-              <p className="eyebrow">Elevation</p>
+              <Text size="eyebrow">Elevation</Text>
             </Row>
             <ElevationProfileChart points={track.points} />
           </Column>
@@ -432,7 +434,7 @@ function CardioDetail({ session, fullPage }: { session: CardioSession; fullPage?
         <Column>
           <Row gap={1} align="center">
             <Timer size={14} className="faint" />
-            <p className="eyebrow">Km Splits</p>
+            <Text size="eyebrow">Km Splits</Text>
           </Row>
           <KmSplitsTable points={track.points} />
         </Column>
@@ -467,9 +469,9 @@ function CardioDetail({ session, fullPage }: { session: CardioSession; fullPage?
           <Column>
             <Row gap={1} align="center">
               <SportIcon sport={session.sport} size={16} />
-              <h3>{defaultTitle}</h3>
-              <span className="caption muted">·</span>
-              <span className="caption muted">{date} · {time}</span>
+              <Text as="h3">{defaultTitle}</Text>
+              <Text as="span" size="caption" color="muted">·</Text>
+              <Text as="span" size="caption" color="muted">{date} · {time}</Text>
             </Row>
             <EditableTitle value={displayTitle} onSave={saveTitle} placeholder={defaultTitle} level="h1" />
           </Column>
@@ -487,7 +489,7 @@ function CardioDetail({ session, fullPage }: { session: CardioSession; fullPage?
               <Surface pad="sm" variant="ghost">
                 <Row gap={1} align="center">
                   <Image size={14} className="faint" />
-                  <p className="eyebrow">Photos · {session.media.length}</p>
+                  <Text size="eyebrow">Photos · {session.media.length}</Text>
                 </Row>
               </Surface>
               <Carousel slides={session.media} />
@@ -500,14 +502,14 @@ function CardioDetail({ session, fullPage }: { session: CardioSession; fullPage?
           <Column>
             <Row gap={1} align="center">
               <MapPin size={14} className="faint" />
-              <p className="eyebrow">Route</p>
+              <Text size="eyebrow">Route</Text>
             </Row>
             {track && (track.points?.length ?? 0) >= 2 ? (
               <SessionGpsPreview track={track} sessionId={session.id} />
             ) : (
-              <button type="button" className="ghost" onClick={() => setShowImport(true)}>
+              <Button type="button" variant="ghost" onClick={() => setShowImport(true)}>
                 + Attach GPS file
-              </button>
+              </Button>
             )}
           </Column>
         </Surface>
@@ -518,23 +520,23 @@ function CardioDetail({ session, fullPage }: { session: CardioSession; fullPage?
             <Column>
               <Row gap={1} align="center">
                 <HeartPulse size={14} className="faint" />
-                <p className="eyebrow">Performance</p>
+                <Text size="eyebrow">Performance</Text>
               </Row>
               <Cluster>
                 {track?.avgHeartRate != null && (
-                  <span className="badge">AVG HR <strong>{track.avgHeartRate} bpm</strong></span>
+                  <Badge>AVG HR <strong>{track.avgHeartRate} bpm</strong></Badge>
                 )}
                 {track?.maxHeartRate != null && (
-                  <span className="badge">MAX HR <strong>{track.maxHeartRate} bpm</strong></span>
+                  <Badge>MAX HR <strong>{track.maxHeartRate} bpm</strong></Badge>
                 )}
                 {track?.calories != null && (
-                  <span className="badge">{track.calories} kcal</span>
+                  <Badge>{track.calories} kcal</Badge>
                 )}
                 {track?.avgPower != null && (
-                  <span className="badge">{track.avgPower} W</span>
+                  <Badge>{track.avgPower} W</Badge>
                 )}
                 {session.rpe != null && (
-                  <span className={`badge ${color}`}><span className="dot" />RPE {session.rpe} / 10</span>
+                  <Badge dot className={color}>RPE {session.rpe} / 10</Badge>
                 )}
               </Cluster>
             </Column>
@@ -545,8 +547,8 @@ function CardioDetail({ session, fullPage }: { session: CardioSession; fullPage?
         {session.notes && (
           <Surface as="section">
             <Column gap={1}>
-              <p className="eyebrow">Notes</p>
-              <p>{session.notes}</p>
+              <Text size="eyebrow">Notes</Text>
+              <Text>{session.notes}</Text>
             </Column>
           </Surface>
         )}
@@ -564,24 +566,24 @@ function CardioDetail({ session, fullPage }: { session: CardioSession; fullPage?
         <Row justify="between">
           {session.distanceMeters > 0 && (
             <Column gap={1} align="center">
-              <span className="caption">DISTANCE</span>
-              <p className={`detail ${color}`}>{distKm.toFixed(2)} <span className="caption">km</span></p>
+              <Text size="caption">DISTANCE</Text>
+              <Text size="detail" className={color}>{distKm.toFixed(2)} <Text as="span" size="caption">km</Text></Text>
             </Column>
           )}
           <Column gap={1} align="center">
-            <span className="caption">DURATION</span>
-            <p className="detail">{formatDuration(session.durationSeconds)}</p>
+            <Text size="caption">DURATION</Text>
+            <Text size="detail">{formatDuration(session.durationSeconds)}</Text>
           </Column>
           {pace > 0 && (
             <Column gap={1} align="center">
-              <span className="caption">PACE</span>
-              <p className="detail">{formatPace(pace)}</p>
+              <Text size="caption">PACE</Text>
+              <Text size="detail">{formatPace(pace)}</Text>
             </Column>
           )}
           {track?.elevationGain != null && (
             <Column gap={1} align="center">
-              <span className="caption">ELEVATION</span>
-              <p className="detail">+{Math.round(track.elevationGain)} <span className="caption">m</span></p>
+              <Text size="caption">ELEVATION</Text>
+              <Text size="detail">+{Math.round(track.elevationGain)} <Text as="span" size="caption">m</Text></Text>
             </Column>
           )}
         </Row>
@@ -592,24 +594,24 @@ function CardioDetail({ session, fullPage }: { session: CardioSession; fullPage?
         </Surface>
       ) : (
         <Surface pad="sm" as="section">
-          <button type="button" className="ghost" onClick={() => setShowImport(true)}>+ Attach GPS file</button>
+          <Button type="button" variant="ghost" onClick={() => setShowImport(true)}>+ Attach GPS file</Button>
         </Surface>
       )}
       {hasSecondary && (
         <Surface pad="sm" as="section">
           <Cluster>
-            {track.avgHeartRate != null && <span className="badge">AVG HR <strong>{track.avgHeartRate} bpm</strong></span>}
-            {track.maxHeartRate != null && <span className="badge">MAX HR <strong>{track.maxHeartRate}</strong></span>}
-            {track.calories != null && <span className="badge">CALORIES <strong>{track.calories} kcal</strong></span>}
-            {track.avgPower != null && <span className="badge">POWER <strong>{track.avgPower} W</strong></span>}
+            {track.avgHeartRate != null && <Badge>AVG HR <strong>{track.avgHeartRate} bpm</strong></Badge>}
+            {track.maxHeartRate != null && <Badge>MAX HR <strong>{track.maxHeartRate}</strong></Badge>}
+            {track.calories != null && <Badge>CALORIES <strong>{track.calories} kcal</strong></Badge>}
+            {track.avgPower != null && <Badge>POWER <strong>{track.avgPower} W</strong></Badge>}
           </Cluster>
         </Surface>
       )}
       {session.notes && (
         <Surface pad="sm" as="section">
           <Column gap={1}>
-            <span className="caption">Private notes</span>
-            <p className="detail">{session.notes}</p>
+            <Text size="caption">Private notes</Text>
+            <Text size="detail">{session.notes}</Text>
           </Column>
         </Surface>
       )}
@@ -628,37 +630,37 @@ function HistoryDetail({ session }: { session: ActivityHistoryItem }) {
       <Column>
         <Row justify="between" align="center">
           <Column gap={1}>
-            <span className="caption">DURATION</span>
-            <p className="detail">{formatDuration(session.durationSeconds)}</p>
+            <Text size="caption">DURATION</Text>
+            <Text size="detail">{formatDuration(session.durationSeconds)}</Text>
           </Column>
           <Column gap={1}>
-            <span className="caption">SETS</span>
-            <p className="detail">{session.totalSets}</p>
+            <Text size="caption">SETS</Text>
+            <Text size="detail">{session.totalSets}</Text>
           </Column>
           <Column gap={1}>
-            <span className="caption">EXERCISES</span>
-            <p className="detail">{session.exerciseCount}</p>
+            <Text size="caption">EXERCISES</Text>
+            <Text size="detail">{session.exerciseCount}</Text>
           </Column>
         </Row>
         {session.hasPR && (
           <Row>
-            <span className="badge active"><Trophy size={11} /> PR</span>
+            <Badge active><Trophy size={11} /> PR</Badge>
           </Row>
         )}
         {(session.rpe != null || (session.tags?.length ?? 0) > 0) && (
           <Row gap={1} wrap align="center">
             {session.rpe != null && (
-              <span className="badge accent">RPE {session.rpe}</span>
+              <Badge tone="accent">RPE {session.rpe}</Badge>
             )}
             {session.tags?.map(t => (
-              <span key={t} className="badge"><span className="dot" />{t}</span>
+              <Badge key={t} dot>{t}</Badge>
             ))}
           </Row>
         )}
         {session.notes && (
           <Column gap={1}>
-            <span className="caption">Notes</span>
-            <p className="detail">{session.notes}</p>
+            <Text size="caption">Notes</Text>
+            <Text size="detail">{session.notes}</Text>
           </Column>
         )}
         {session.media && session.media.length > 0 && (
@@ -669,8 +671,8 @@ function HistoryDetail({ session }: { session: ActivityHistoryItem }) {
             {session.comments.map((c, i) => (
               <Surface key={i} variant="flat" pad="sm">
                 <Column gap={1}>
-                  <span className="caption muted">{new Date(c.createdAt).toLocaleString('en-GB')}</span>
-                  <p>{c.text}</p>
+                  <Text size="caption" color="muted">{new Date(c.createdAt).toLocaleString('en-GB')}</Text>
+                  <Text>{c.text}</Text>
                 </Column>
               </Surface>
             ))}
@@ -690,7 +692,6 @@ export function SessionDetail({ session, onClose, onEdit, onShare, onExportJson,
   const isStrength = isActivityView(session);
   const isHistory = isActivityHistoryItem(session);
 
-  // Derive display fields
   let defaultTitle = '';
   let date = '';
   let time = '';
@@ -736,7 +737,7 @@ export function SessionDetail({ session, onClose, onEdit, onShare, onExportJson,
   const header = (
     <Row align="end" justify="between">
       <Row align="start">
-        <p>{icon}</p>
+        {icon}
         <Column gap={1} className="grow">
           {isCardio ? (
             <EditableTitle
@@ -745,11 +746,11 @@ export function SessionDetail({ session, onClose, onEdit, onShare, onExportJson,
               placeholder={defaultTitle}
             />
           ) : (
-            <h2>{currentTitle}</h2>
+            <Text as="h2">{currentTitle}</Text>
           )}
-          {location && <p className="caption"><MapPin size={11} /> {location}</p>}
+          {location && <Text size="caption"><MapPin size={11} /> {location}</Text>}
           <time className="caption">{date}{time ? ` · ${time}` : ''}</time>
-          {description && <p className="detail muted">{description}</p>}
+          {description && <Text size="detail" color="muted">{description}</Text>}
         </Column>
       </Row>
     </Row>
@@ -761,13 +762,13 @@ export function SessionDetail({ session, onClose, onEdit, onShare, onExportJson,
     return (
       <Column>
         <Row justify="center" align="center">
-          <button type="button" className="ghost icon sm" onClick={handleClose}>
+          <Button type="button" variant="ghost" size="icon" onClick={handleClose}>
             <ChevronLeft size={14} />
-          </button>
-          <h3 className="grow truncate">{currentTitle}</h3>
+          </Button>
+          <Text as="h3" className="grow truncate">{currentTitle}</Text>
           <Row gap={1}>
-            {onEdit && <button type="button" className="ghost icon sm" onClick={onEdit}><Pencil size={13} /></button>}
-            {onShare && <button type="button" className="ghost icon sm" onClick={onShare}><Share2 size={13} /></button>}
+            {onEdit && <Button type="button" variant="ghost" size="icon" onClick={onEdit}><Pencil size={13} /></Button>}
+            {onShare && <Button type="button" variant="ghost" size="icon" onClick={onShare}><Share2 size={13} /></Button>}
           </Row>
         </Row>
         {!isCardio && !isSampleCardio && header}
@@ -785,7 +786,7 @@ export function SessionDetail({ session, onClose, onEdit, onShare, onExportJson,
         <Column>
           <Row justify="between" align="center">
             {header}
-            <button type="button" className="ghost icon" onClick={handleClose}>✕</button>
+            <Button type="button" variant="ghost" size="icon" onClick={handleClose}>✕</Button>
           </Row>
           {socialRow}
 
@@ -794,7 +795,7 @@ export function SessionDetail({ session, onClose, onEdit, onShare, onExportJson,
           {isHistory && <HistoryDetail session={session} />}
 
           <Row as="footer" justify="between" align="center">
-            <button type="button" className="ghost"><Share2 size={14} /> Share</button>
+            <Button type="button" variant="ghost"><Share2 size={14} /> Share</Button>
           </Row>
         </Column>
       </Surface>

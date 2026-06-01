@@ -1,3 +1,5 @@
+import { Badge } from '@ui/atoms';
+
 export function LetterBadge({ letter }: { letter: string }) {
-  return <div className="letter-badge">{letter}</div>;
+  return <Badge className="letter-badge">{letter}</Badge>;
 }

@@ -1,4 +1,4 @@
-﻿import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 import { SetRow } from './SetRow';
 import { SetsBarChart } from './SetsBarChart';
 import { CommentLine } from './CommentLine';
@@ -7,6 +7,7 @@ import { getWarnings } from '@features/training_log/projections/mappers';
 import type { UIExercise, UICondition } from '@features/training_log/projections/viewTypes';
 import type { SetMode } from '@data/static/exercises';
 import { Row, Column } from '@ui/layout';
+import { Button, Text } from '@ui/atoms';
 
 export interface ExerciseSectionProps {
   ex: UIExercise;
@@ -37,11 +38,9 @@ export function ExerciseSection({
     <Column gap={1}>
       <Row align="center" justify="between">
         <Row gap={1} align="center" className="grow">
-          <button className="icon ghost" disabled>
-            {ex.label && <LetterBadge letter={ex.label} />}
-          </button>
-          <h3 className="grow">{ex.name}</h3>
-          <span className="caption muted faint">{currentMode}</span>
+          {ex.label && <LetterBadge letter={ex.label} />}
+          <Text as="h3" className="grow">{ex.name}</Text>
+          <Text size="caption" color="faint">{currentMode}</Text>
           {warnings.length > 0 && (
             <AlertTriangle size={11} className="muted" />
           )}
@@ -52,10 +51,10 @@ export function ExerciseSection({
         <Column gap={1}>
           {warnings.map(w => (
             <Row key={w.id} align="center" gap={1}>
-              <span className="caption grow">{w.advice}</span>
-              <button type="button" className="ghost icon sm" onClick={() => onAcknowledge(ex.name)}>
+              <Text size="caption" className="grow">{w.advice}</Text>
+              <Button type="button" variant="ghost" size="icon" onClick={() => onAcknowledge(ex.name)}>
                 <AlertTriangle size={10} className="faint" />
-              </button>
+              </Button>
             </Row>
           ))}
         </Column>
@@ -89,7 +88,7 @@ export function ExerciseSection({
         })}
       </Column>
 
-      <button type="button" className="ghost surface pad-sm" onClick={onAddSet}>+ Add Set</button>
+      <Button type="button" variant="ghost" className="surface pad-sm" onClick={onAddSet}>+ Add Set</Button>
     </Column>
   );
 }

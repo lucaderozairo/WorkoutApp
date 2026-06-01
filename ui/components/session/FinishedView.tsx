@@ -1,9 +1,9 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Grid, Row, Column, Cluster, Spacer } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Surface, Button, Text, Badge, Divider } from '@ui/atoms';
 import { useNavigate } from 'react-router-dom';
 import { Download, FileText, Gauge, Image, MoreVertical, Share2, Tag, Trash2, X } from 'lucide-react';
-import type { ActivityView, SetEntry, StrengthSet } from '@features/training_log';
+import type { ActivityView } from '@features/training_log';
 import type { UISet } from '@features/training_log/projections/viewTypes';
 import { handleDeleteSession } from '@features/training_log';
 import { useCommand } from '@ui/bindings';
@@ -83,19 +83,19 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
       <Surface pad="sm" variant="ghost">
         <Row justify="between" align="center">
           <Row gap={1}>
-            <span className="detail">{session.name}</span>
+            <Text size="detail">{session.name}</Text>
           </Row>
           <Row gap={1} align="center">
-            <button type="button" className="primary sm" onClick={() => navigate(-1)}>Done</button>
-            <button type="button" className="secondary sm" onClick={handleExport}>
+            <Button type="button" variant="primary" size="sm" onClick={() => navigate(-1)}>Done</Button>
+            <Button type="button" variant="secondary" size="sm" onClick={handleExport}>
               <Download size={13} />
-            </button>
-            <button type="button" className="secondary sm" onClick={handleShare}>
+            </Button>
+            <Button type="button" variant="secondary" size="sm" onClick={handleShare}>
               <Share2 size={13} />
-            </button>
-            <button type="button" className="secondary sm" onClick={() => setMenuOpen(v => !v)}>
+            </Button>
+            <Button type="button" variant="secondary" size="sm" onClick={() => setMenuOpen(v => !v)}>
               <MoreVertical size={13} />
-            </button>
+            </Button>
           </Row>
         </Row>
       </Surface>
@@ -103,20 +103,20 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
       {/* stats grid */}
       <Surface><Grid variant="double">
         <Column gap={1} align="center">
-          <span className="eyebrow">Date</span>
-          <span className="mono num detail">{date}</span>
+          <Text size="eyebrow">Date</Text>
+          <Text size="detail" mono className="num">{date}</Text>
         </Column>
         <Column gap={1} align="center">
-          <span className="eyebrow">Duration</span>
-          <span className="mono num detail">{formatDuration(durationMs)}</span>
+          <Text size="eyebrow">Duration</Text>
+          <Text size="detail" mono className="num">{formatDuration(durationMs)}</Text>
         </Column>
         <Column gap={1} align="center">
-          <span className="eyebrow">Start</span>
-          <span className="mono num detail">{startTime || '—'}</span>
+          <Text size="eyebrow">Start</Text>
+          <Text size="detail" mono className="num">{startTime || '—'}</Text>
         </Column>
         <Column gap={1} align="center">
-          <span className="eyebrow">End</span>
-          <span className="mono num detail">{endTime || '—'}</span>
+          <Text size="eyebrow">End</Text>
+          <Text size="detail" mono className="num">{endTime || '—'}</Text>
         </Column>
       </Grid></Surface>
 
@@ -126,9 +126,9 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
           <Column gap={1}>
             <Row gap={1} align="center">
               <Gauge size={14} className="faint" />
-              <span className="eyebrow">Session RPE</span>
+              <Text size="eyebrow">Session RPE</Text>
             </Row>
-            <span className="badge accent">{session.rpe}</span>
+            <Badge tone="accent">{session.rpe}</Badge>
           </Column>
         </Surface>
       )}
@@ -139,11 +139,11 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
           <Column gap={1}>
             <Row gap={1} align="center">
               <Tag size={14} className="faint" />
-              <span className="eyebrow">Tags</span>
+              <Text size="eyebrow">Tags</Text>
             </Row>
             <Cluster>
               {session.tags.map((t, i) => (
-                <span key={i} className="badge"><span className="dot" />{t}</span>
+                <Badge key={i} dot>{t}</Badge>
               ))}
             </Cluster>
           </Column>
@@ -156,9 +156,9 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
           <Column gap={1}>
             <Row gap={1} align="center">
               <FileText size={14} className="faint" />
-              <span className="eyebrow">Notes</span>
+              <Text size="eyebrow">Notes</Text>
             </Row>
-            <p className="muted">{session.notes}</p>
+            <Text color="muted">{session.notes}</Text>
           </Column>
         </Surface>
       )}
@@ -169,7 +169,7 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
           <Column gap={1}>
             <Row gap={1} align="center">
               <Image size={14} className="faint" />
-              <span className="eyebrow">Photos · {session.media.length}</span>
+              <Text size="eyebrow">Photos · {session.media.length}</Text>
             </Row>
             <Carousel slides={session.media} />
           </Column>
@@ -184,12 +184,12 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
               {b.type === 'stretch' && (
                 <>
                   <Row align="center" justify="between">
-                    {b.tag && <span className="badge"><span className="dot" />{b.tag}</span>}
+                    {b.tag && <Badge dot>{b.tag}</Badge>}
                   </Row>
                   {b.exercises.map((ex, i) => (
                     <Row key={i} align="center" justify="between">
-                      <span className="detail">{ex.name}</span>
-                      <span className="mono caption">{ex.hold}</span>
+                      <Text size="detail">{ex.name}</Text>
+                      <Text size="caption" mono>{ex.hold}</Text>
                     </Row>
                   ))}
                 </>
@@ -200,7 +200,7 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
                 return (
                   <>
                     <Row align="center" justify="between">
-                      <span className="detail">{ex.name}</span>
+                      <Text size="detail">{ex.name}</Text>
                     </Row>
                     <Grid cols={4}>
                       {CARDIO_FIELDS.map((f, i) => {
@@ -208,10 +208,11 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
                         const display = raw != null && raw > 0 ? f.toDisplay(raw) : '—';
                         return (
                           <Column key={i} gap={1} align="center">
-                            <span className="eyebrow">{f.label}</span>
-                            <span className="mono num detail">{display}
-                              {display !== '—' && <span className="muted caption"> {f.unit}</span>}
-                            </span>
+                            <Text size="eyebrow">{f.label}</Text>
+                            <Text size="detail" mono className="num">
+                              {display}
+                              {display !== '—' && <Text as="span" size="caption" color="muted"> {f.unit}</Text>}
+                            </Text>
                           </Column>
                         );
                       })}
@@ -225,22 +226,23 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
                   {b.type === 'single' ? (
                     <Row align="center" justify="between">
                       <Row gap={1} align="center" className="grow">
+                        {/* minWidth keeps column stable; no CSS utility available */}
                         <span className="mono num caption muted" style={{ minWidth: 28, textAlign: 'center', fontWeight: 600 }}>{idx + 1}</span>
-                        <span className="detail">{b.exercises[0].name}</span>
+                        <Text size="detail">{b.exercises[0].name}</Text>
                       </Row>
                     </Row>
                   ) : (
                     <Row align="center" justify="between">
-                      <span className="badge"><span className="dot" />{b.label}</span>
+                      <Badge dot>{b.label}</Badge>
                     </Row>
                   )}
                   {b.exercises.map((ex, i) => (
-                    <div key={i}>
+                    <Column key={i}>
                       {b.type !== 'single' && (
                         <Row gap={1} align="center" justify="between">
                           <Row gap={1} align="center">
                             <LetterBadge letter={ex.label ?? String(i + 1)} />
-                            <span className="detail">{ex.name}</span>
+                            <Text size="detail">{ex.name}</Text>
                           </Row>
                         </Row>
                       )}
@@ -273,7 +275,7 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
                           );
                         })}
                       </Column>
-                    </div>
+                    </Column>
                   ))}
                 </>
               )}
@@ -288,15 +290,15 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
           <Surface>
             <Column>
               <Row justify="between" align="center">
-                <span className="detail">Session Options</span>
-                <button type="button" className="ghost icon sm" onClick={() => setMenuOpen(false)}>
+                <Text size="detail">Session Options</Text>
+                <Button type="button" variant="ghost" size="icon" onClick={() => setMenuOpen(false)}>
                   <X size={10} className="faint" />
-                </button>
+                </Button>
               </Row>
-              {onEdit && <button type="button" className="sm" onClick={() => { setMenuOpen(false); onEdit(); }}>Edit</button>}
-              <button type="button" className="sm warning" onClick={() => { setMenuOpen(false); setDeleteConfirm(true); }}>
+              {onEdit && <Button type="button" size="sm" onClick={() => { setMenuOpen(false); onEdit(); }}>Edit</Button>}
+              <Button type="button" size="sm" className="warning" onClick={() => { setMenuOpen(false); setDeleteConfirm(true); }}>
                 <Trash2 size={9} /> Delete session
-              </button>
+              </Button>
             </Column>
           </Surface>
         </div>
@@ -308,14 +310,14 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
           <Surface>
             <Column>
               <Column gap={1}>
-                <h3>Delete session?</h3>
-                <span className="caption faint">This removes the entire session and cannot be undone.</span>
+                <Text as="h3">Delete session?</Text>
+                <Text size="caption" color="faint">This removes the entire session and cannot be undone.</Text>
               </Column>
               <Row justify="between">
-                <button type="button" className="secondary" onClick={() => setDeleteConfirm(false)}>Cancel</button>
-                <button type="button" className="warning" onClick={handleDelete}>
+                <Button type="button" variant="secondary" onClick={() => setDeleteConfirm(false)}>Cancel</Button>
+                <Button type="button" className="warning" onClick={handleDelete}>
                   <Trash2 size={12} /> Delete
-                </button>
+                </Button>
               </Row>
             </Column>
           </Surface>
