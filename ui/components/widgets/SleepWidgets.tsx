@@ -1,7 +1,7 @@
 import { ScoreRing, SleepStagesBar, fmtMin, PositiveNegativeChart, SparklineArea } from '@ui/patterns/charts/domain-charts';
 import type { PositiveNegativeEntry } from '@ui/patterns/charts/domain-charts';
 import type { SleepSession } from '@features/readiness';
-import { Row, Column, Cluster } from '@ui/layout';
+import { Row, Column, Cluster , Grid } from '@ui/layout';
 import { Surface } from '@ui/atoms';
 
 function scoreBadge(score: number): { label: string; color: string } {
@@ -31,11 +31,11 @@ export function SleepSmall({ session }: { session: SleepSession }) {
                 <span className={`badge ${badge.color}`}>{badge.label}</span>
             </Row>
             <SleepStagesBar stages={session.stages} height={12} />
-            <Cluster className="space-between">
-                <span className="pill deep">Deep {fmtMin(session.stages.deep)}</span>
-                <span className="pill light">Light {fmtMin(session.stages.light)}</span>
-                <span className="pill rem">REM {fmtMin(session.stages.rem)}</span>
-                <span className="pill awake">Awake {fmtMin(session.stages.awake)}</span>
+            <Cluster justify="between">
+                <span className="badge deep">Deep {fmtMin(session.stages.deep)}</span>
+                <span className="badge light">Light {fmtMin(session.stages.light)}</span>
+                <span className="badge rem">REM {fmtMin(session.stages.rem)}</span>
+                <span className="badge awake">Awake {fmtMin(session.stages.awake)}</span>
             </Cluster>
         </Column></Surface>
     );
@@ -97,24 +97,24 @@ export function SleepLarge({
 
             <SleepStagesBar stages={session.stages} height={16} />
 
-            <div className="space-between grid">
+            <Grid variant="double" gap={3}>
                 <Column gap={1} align="center">
                     <span className="detail">{fmtMin(session.stages.deep)}</span>
-                    <span className="pill deep">Deep</span>
+                    <span className="badge deep">Deep</span>
                 </Column>
                 <Column gap={1} align="center">
                     <span className="detail">{fmtMin(session.stages.light)}</span>
-                    <span className="pill light">Light</span>
+                    <span className="badge light">Light</span>
                 </Column>
                 <Column gap={1} align="center">
                     <span className="detail">{fmtMin(session.stages.rem)}</span>
-                    <span className="pill rem">REM</span>
+                    <span className="badge rem">REM</span>
                 </Column>
                 <Column gap={1} align="center">
                     <span className="detail">{fmtMin(session.stages.awake)}</span>
-                    <span className="pill awake">Awake</span>
+                    <span className="badge awake">Awake</span>
                 </Column>
-            </div>
+            </Grid>
 
             <hr />
 

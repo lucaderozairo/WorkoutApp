@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Grid, Column } from '@ui/layout';
+import { Grid, Column , Row } from '@ui/layout';
 import { Navigate } from 'react-router-dom';
 import { Button } from '@ui/atoms';
 import { SessionFilterBar } from '@ui/components/log/SessionFilterBar';
@@ -66,11 +66,13 @@ export function LogScreen() {
           />
 
           {activeSession && (
-            <button className="surface row space-between align-center" onClick={() => navigate(`/sessions/${activeSession.id}`)}>
+            <button className="surface interactive" onClick={() => navigate(`/sessions/${activeSession.id}`)}>
+              <Row justify="between" align="center">
               <Column gap={1} align="start">
                 <span className="detail">{activeSession.name}</span>
                 <span className="caption">{activeSession.startedAt ? `${new Date(activeSession.startedAt).toLocaleDateString()} — tap to continue` : 'Not started — tap to continue'}</span>
               </Column>
+              </Row>
             </button>
           )}
 
@@ -119,7 +121,7 @@ export function LogScreen() {
               ? <p className="caption">No sessions found</p>
               : sessionsByYear.map(({ year, entries }) => (
                   <Column key={year}>
-                    <p className="eyebrow compact">{year}</p>
+                    <p className="eyebrow">{year}</p>
                     {entries.map(entry =>
                       entry.kind === 'strength'
                         ? <StrengthSessionItem

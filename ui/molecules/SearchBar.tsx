@@ -1,3 +1,4 @@
+import { Row } from '@ui/layout/Row';
 import { Icon } from '@ui/atoms/Icon';
 import { Spinner } from '@ui/atoms/Spinner';
 import { Button } from '@ui/atoms/Button';
@@ -13,10 +14,8 @@ interface SearchBarProps {
 }
 
 export function SearchBar({ value, onChange, placeholder = 'Search…', loading = false, onClear, onSubmit, className }: SearchBarProps) {
-  const classes = ['row', 'align-center', 'search-bar', className].filter(Boolean).join(' ');
-
   return (
-    <div className={classes}>
+    <Row align="center" className={['search-bar', className].filter(Boolean).join(' ')}>
       {loading ? <Spinner size="sm" /> : <Icon name="search" size="sm" aria-hidden />}
       <input
         type="search"
@@ -31,6 +30,6 @@ export function SearchBar({ value, onChange, placeholder = 'Search…', loading 
           <Icon name="close" size="sm" />
         </Button>
       )}
-    </div>
+    </Row>
   );
 }

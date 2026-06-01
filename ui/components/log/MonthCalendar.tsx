@@ -114,7 +114,7 @@ export function MonthCalendar({ sessions, typeFilter, renderFilter }: Props) {
           </Row>
         </Surface>
         {displaySessions.length === 0 ? (
-          <p className="muted caption compact">No sessions {selectedKey ? 'this day' : 'this month'}.</p>
+          <p className="muted caption">No sessions {selectedKey ? 'this day' : 'this month'}.</p>
         ) : (
           displaySessions.map((entry, i) =>
             entry.kind === 'strength'

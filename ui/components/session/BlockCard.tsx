@@ -97,7 +97,7 @@ export function BlockCard({
           <Row align="center" justify="between">
             <Row gap={1} align="center">
               {block.tag && (
-                <span className="pill">
+                <span className="badge">
                   <span className="dot" />
                   {block.tag}
                 </span>
@@ -136,7 +136,7 @@ export function BlockCard({
           <Row align="center" justify="between">
             <span className="detail">{ex.name}</span>
             <Row gap={1} align="center">
-              <span className="pill">
+              <span className="badge">
                 <span className="dot" />
                 Cardio
               </span>
@@ -215,7 +215,7 @@ export function BlockCard({
               );
             })}
           </Column>
-          <button type="button" className="ghost surface tight" onClick={() => onAddSet(block.id)}>+ Add Set</button>
+          <button type="button" className="ghost surface pad-sm" onClick={() => onAddSet(block.id)}>+ Add Set</button>
         </Column>
       </Surface>
     );
@@ -228,7 +228,7 @@ export function BlockCard({
         <Row align="center" justify="between">
           <Row gap={1} align="center">
             <button className="icon ghost" disabled>{blockIndex + 1}.</button>
-            <span className="pill">
+            <span className="badge">
               <span className="dot" />
               {block.label}
             </span>

@@ -32,7 +32,7 @@ export function WelcomeWidget({ workoutsThisWeek, streak, scoreClass }: WelcomeW
         <Row align="center" gap={1}>
           <p className="detail">{workoutLine}</p>
           {streak >= 2 && (
-            <span className="pill caption row align-center compact" title={`${streak} day training streak`}>
+            <span className="badge caption" title={`${streak} day training streak`}>
               <Flame size={12} /> {streak}
             </span>
           )}

@@ -1,6 +1,7 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { Surface } from '@ui/atoms';
+import { Grid, Row, Column } from '@ui/layout';
 import type { UICardioSet } from '@features/training_log/projections/viewTypes';
-import { Row, Column } from '@ui/layout';
 
 export const CARDIO_FIELDS: Array<{
   key: keyof UICardioSet;
@@ -31,7 +32,7 @@ export function CardioEditor({ cardioSet, onUpdate }: {
   }, [cardioSet?.durationSeconds, cardioSet?.distanceMeters, cardioSet?.avgPowerWatts, cardioSet?.resistance]);
 
   return (
-    <div className="surface grid compact">
+    <Surface pad="sm"><Grid variant="double" gap={1}>
       {CARDIO_FIELDS.map(f => (
         <Column key={f.key} gap={1}>
           <span className="eyebrow">{f.label}</span>
@@ -50,6 +51,6 @@ export function CardioEditor({ cardioSet, onUpdate }: {
           </Row>
         </Column>
       ))}
-    </div>
+    </Grid></Surface>
   );
 }

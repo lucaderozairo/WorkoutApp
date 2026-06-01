@@ -1,23 +1,33 @@
-/* Cascade layers. Vite requires @import to precede all other statements, so
-   we do NOT use a leading `@layer …;` statement — instead the layer order is
-   set by each layer's FIRST appearance in the imports below.
-   Effective order (low → high priority):
+/* Cascade layers — effective order (low → high priority):
    reset < tokens < base < layout < components < utilities < overrides
-   (utilities win over components; Leaflet's !important rules isolated last). */
-@import "./reset.css"      layer(reset);
-@import "./tokens.css"     layer(tokens);
-@import "./typography.css" layer(base);
-@import "./layout.css"     layer(layout);
-@import "./nav.css"        layer(layout);
-@import "./surface.css"    layer(components);
-@import "./buttons.css"    layer(components);
-@import "./forms.css"      layer(components);
-@import "./components.css" layer(components);
-@import "./containers.css" layer(components);
-@import "./log.css"        layer(components);
-@import "./sidebar.css"    layer(components);
-@import "./utilities.css"  layer(utilities);
-@import "./wizard.css"     layer(overrides);
+   (utilities win over components; Leaflet's !important rules isolated last) */
+@import "./reset.css"          layer(reset);
+@import "./tokens.css"         layer(tokens);
+@import "./typography.css"     layer(base);
+@import "./layout.css"         layer(layout);
+@import "./nav.css"            layer(layout);
+@import "./surface.css"        layer(components);
+@import "./buttons.css"        layer(components);
+@import "./forms.css"          layer(components);
+/* ── Atoms ── */
+@import "./labels.css"         layer(components);
+@import "./avatar.css"         layer(components);
+@import "./metric.css"         layer(components);
+/* ── Molecules / patterns ── */
+@import "./controls.css"       layer(components);
+@import "./feedback.css"       layer(components);
+@import "./data-display.css"   layer(components);
+@import "./media.css"          layer(components);
+@import "./overlays.css"       layer(components);
+@import "./calendar.css"       layer(components);
+@import "./list.css"           layer(components);
+@import "./screen-header.css"  layer(components);
+@import "./session.css"        layer(components);
+/* ── Feature-level ── */
+@import "./containers.css"     layer(components);
+@import "./route-planner.css"  layer(components);
+@import "./utilities.css"      layer(utilities);
+@import "./map.css"            layer(overrides);
 
 hr {
   height: 1px;

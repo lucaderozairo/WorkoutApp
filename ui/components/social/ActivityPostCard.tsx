@@ -66,8 +66,8 @@ export function StrengthActivityCard({ session }: { session: ActivityHistoryItem
       {session.notes && <p className="detail muted">{session.notes}</p>}
       {(session.category || session.tags?.length) && (
         <Cluster>
-          <span className="pill">{session.category}</span>
-          {session.tags?.map(tag => <span key={tag} className="pill">{tag}</span>)}
+          <span className="badge">{session.category}</span>
+          {session.tags?.map(tag => <span key={tag} className="badge">{tag}</span>)}
         </Cluster>
       )}
     </Surface>
@@ -126,7 +126,7 @@ export function CardioActivityCard({ session }: { session: CardioSession }) {
       <Carousel slides={session.media ?? []} />
       {session.notes && <p className="detail muted">{session.notes}</p>}
       <Cluster>
-        <span className="pill">{sportLabel}</span>
+        <span className="badge">{sportLabel}</span>
       </Cluster>
     </Surface>
   );

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Download, MoreVertical, Pause, Play, Share2, Trash2, X } from 'lucide-react';
-import { Row, Column } from '@ui/layout';
+import { Row, Column , Grid } from '@ui/layout';
 import { Surface } from '@ui/atoms';
 
 export interface SessionHeaderProps {
@@ -41,7 +41,7 @@ export function SessionHeader({
 
   return (
     <Column>
-      <div className="row align-center space-between" style={{ padding: 'var(--s-3) var(--s-4)', background: 'var(--surface-0)', borderBottom: '1px solid var(--line)' }}>
+      <Row align="center" justify="between" style={{ padding: 'var(--s-3) var(--s-4)', background: 'var(--surface-0)', borderBottom: '1px solid var(--line)' }}>
         <Row gap={1}>
           <span className="detail">{name}</span>
         </Row>
@@ -74,9 +74,9 @@ export function SessionHeader({
             <MoreVertical size={13} />
           </button>
         </Row>
-      </div>
+      </Row>
 
-      <div className="surface grid">
+      <Surface><Grid variant="double">
         {isActive && timerDisplay && !timerNotStarted && (
           <Column gap={1} align="center">
             <span className="eyebrow">Timer</span>
@@ -99,7 +99,7 @@ export function SessionHeader({
           <span className="eyebrow">Duration</span>
           <span className="mono num detail">{duration ?? '—'}</span>
         </Column>
-      </div>
+      </Grid></Surface>
 
       {menuOpen && (
         <div className="modal-overlay">

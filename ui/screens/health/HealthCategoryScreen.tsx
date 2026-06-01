@@ -1,47 +1,14 @@
-import { ActivityMobilityView } from '@ui/components/health/ActivityMobilityView'
-import { BodyMeasurementsView } from '@ui/components/health/BodyMeasurementsView'
+import React from 'react'
 import { InjuriesView } from '@ui/components/health/InjuriesView'
-import { RoutesView } from '@ui/components/health/RoutesView'
-import { CycleTrackingView } from '@ui/components/health/CycleTrackingView'
-import { HeartView } from '@ui/components/health/HeartView'
-import { VitalsView } from '@ui/components/health/VitalsView'
-import { SleepView } from '@ui/components/health/SleepView'
-import { NutritionView } from '@ui/components/health/NutritionView'
-import { MentalWellbeingView } from '@ui/components/health/MentalWellbeingView'
-import { SymptomsView } from '@ui/components/health/SymptomsView'
-import { HearingView } from '@ui/components/health/HearingView'
-import { MedicationsView } from '@ui/components/health/MedicationsView'
-import { HealthRecordsView } from '@ui/components/health/HealthRecordsView'
-import { ReadinessView } from '@ui/components/health/ReadinessView'
-import { BodyBatteryView } from '@ui/components/health/BodyBatteryView'
-import { StressView } from '@ui/components/health/StressView'
-import { SkinTemperatureView } from '@ui/components/health/SkinTemperatureView'
-import { GoalsRecordsView } from '@ui/components/health/GoalsRecordsView'
+import { HealthChartsList } from '@ui/components/health/HealthChartsList'
 import { Surface } from '@ui/atoms'
 import { ScreenHeader } from '@ui/molecules'
 import { Grid } from '@ui/layout'
 import { useHealthCategory } from './useHealthCategory'
 
-const VIEW_MAP: Record<string, React.FC> = {
-  'activity-mobility': ActivityMobilityView,
-  'body-measurements': BodyMeasurementsView,
+// Custom views for categories that need more than a chart list
+const CUSTOM_VIEWS: Record<string, React.FC> = {
   'injuries': InjuriesView,
-  'routes': RoutesView,
-  'cycle-tracking': CycleTrackingView,
-  'heart': HeartView,
-  'vitals': VitalsView,
-  'sleep': SleepView,
-  'nutrition': NutritionView,
-  'mental-wellbeing': MentalWellbeingView,
-  'symptoms': SymptomsView,
-  'hearing': HearingView,
-  'medications': MedicationsView,
-  'health-records': HealthRecordsView,
-  'readiness': ReadinessView,
-  'body-battery': BodyBatteryView,
-  'stress': StressView,
-  'skin-temperature': SkinTemperatureView,
-  'goals-records': GoalsRecordsView,
 }
 
 export function HealthCategoryScreen() {
@@ -56,7 +23,8 @@ export function HealthCategoryScreen() {
     )
   }
 
-  const CategoryView = VIEW_MAP[category ?? '']
+  const slug = category ?? ''
+  const CustomView = CUSTOM_VIEWS[slug]
 
   return (
     <Grid>
@@ -64,13 +32,14 @@ export function HealthCategoryScreen() {
         title={`${cat.icon} ${cat.name}`}
         back={() => navigate('/profile')}
       />
-
-      {CategoryView ? (
-        <CategoryView />
+      {CustomView ? (
+        <CustomView />
       ) : (
-        <Surface>
-          <p className="muted">Data for this category will appear here once logged.</p>
-        </Surface>
+        <HealthChartsList slug={slug} fallback={
+          <Surface>
+            <p className="muted">Data for this category will appear here once logged.</p>
+          </Surface>
+        } />
       )}
     </Grid>
   )

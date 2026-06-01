@@ -43,7 +43,6 @@ export function Surface({
 }: SurfaceProps) {
   const classes = [
     'surface',
-    'block',
     VARIANT_CLASS[variant],
     PAD_CLASS[pad],
     interactive ? 'interactive' : '',

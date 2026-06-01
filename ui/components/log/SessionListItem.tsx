@@ -65,7 +65,8 @@ function ActionMenu({ onDelete }: ActionMenuProps) {
         <EllipsisVertical size={16} />
       </Button>
       {open && (
-        <Layer pin="below-right" z="fixed" className="dropdown surface column compact actions">
+        <Layer pin="below-right" z="fixed" className="dropdown surface actions">
+          <Column gap={1}>
           <Button
             type="button"
             variant="ghost"
@@ -75,6 +76,7 @@ function ActionMenu({ onDelete }: ActionMenuProps) {
           >
             Delete session
           </Button>
+          </Column>
         </Layer>
       )}
     </Layered>
@@ -128,14 +130,14 @@ export function StrengthSessionItem({ session, matchedExercise, onDelete }: Stre
       )}
       {(session.category || session.tags?.length) && (
         <Cluster>
-          <span className="pill">{session.category}</span>
+          <span className="badge">{session.category}</span>
           {session.tags?.map(tag => (
-            <span key={tag} className="pill">{tag}</span>
+            <span key={tag} className="badge">{tag}</span>
           ))}
         </Cluster>
       )}
       {matchedExercise && (
-        <span className="pill active">{matchedExercise}</span>
+        <span className="badge active">{matchedExercise}</span>
       )}
       </Column>
     </Surface>
@@ -200,7 +202,7 @@ export function CardioSessionItem({ session, onDelete }: CardioItemProps) {
         <p className="detail muted">{session.notes}</p>
       )}
       <Cluster>
-        <span className="pill">{session.sport}</span>
+        <span className="badge">{session.sport}</span>
       </Cluster>
       </Column>
     </Surface>

@@ -1,0 +1,68 @@
+/* ════════════════════════════════════════════
+   SESSION / LOG PATTERNS
+   ════════════════════════════════════════════ */
+
+/* ── Exercise rail — sticky horizontal exercise filter ── */
+.exercise-rail {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  padding: var(--s-2);
+  background: var(--surface-0);
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+
+  & .pill { flex-shrink: 0; }
+}
+
+/* ── Splits table — km splits for cardio sessions ──
+   th uses .eyebrow class for typography; CSS only handles layout/borders.  ── */
+.splits-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--t-sm);
+
+  & th {
+    text-align: left;
+    padding: var(--s-1) var(--s-2) var(--s-2);
+  }
+
+  & td {
+    padding: var(--s-2);
+    color: var(--ink);
+    border-top: 1px solid var(--line);
+
+    &:first-child { color: var(--ink-muted); font-size: var(--t-xs); font-weight: 600; }
+  }
+
+  & .elev-up   { color: var(--ok); }
+  & .elev-down { color: var(--c-cardio); }
+}
+
+/* ── Event card — planned workout block on calendar ── */
+.event-card {
+  background: var(--accent-soft);
+  border-radius: var(--r-sm);
+  padding: var(--s-3);
+  border-left: 3px solid var(--accent);
+}
+
+/* ── Block — segmented/stacked bar unit (SetsBarChart) ── */
+.block {
+  flex: 1 1 0;
+  min-width: 20px;
+  min-height: var(--t-xs);
+  box-shadow: var(--box-shadow-sm);
+}
+
+/* ── Bottom banner — fixed overlay above nav (RestTimerAlert) ── */
+.bottom-banner {
+  position: fixed;
+  bottom: calc(var(--nav-height, 56px) + var(--s-1, 12px));
+  left: var(--s-2, 12px);
+  right: var(--s-2, 12px);
+  z-index: var(--z-fixed);
+  overflow: hidden;
+}

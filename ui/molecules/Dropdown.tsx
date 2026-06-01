@@ -31,7 +31,7 @@ export function Dropdown({ trigger, items, align = 'right' }: DropdownProps) {
       <div
         id={pid}
         popover="auto"
-        className={`dropdown surface column compact menu-popover${align === 'left' ? ' anchor-left' : ''}`}
+        className={`dropdown surface column gap-1 menu-popover${align === 'left' ? ' anchor-left' : ''}`}
       >
         {items.map((item, i) => (
           <Button

@@ -114,17 +114,19 @@ export function ExercisePicker({ onClose, onCommit }: ExercisePickerProps) {
                     <button
                       key={i}
                       type="button"
-                      className={`surface row space-between${isSelected ? ' active' : ''}${i < arr.length - 1 ? ' bordered-bottom' : ''}`}
+                      className={`surface interactive${isSelected ? ' active' : ''}${i < arr.length - 1 ? ' bordered-bottom' : ''}`}
                       onClick={() => handleSelect(ex.name)}
                     >
+                      <Row justify="between" align="center">
                       <Column gap={1} align="start" className="grow">
                         <span className="detail">{ex.name}</span>
                         <span className="caption">{ex.muscle}</span>
                       </Column>
                       {isSelected
                         ? <Check size={14} className="accent" />
-                        : <span className="pill"><span className="dot" />{ex.defaultEquip}</span>
+                        : <span className="badge"><span className="dot" />{ex.defaultEquip}</span>
                       }
+                      </Row>
                     </button>
                   );
                 })

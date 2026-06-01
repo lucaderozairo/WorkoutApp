@@ -87,8 +87,8 @@ export function DailyForecastChart() {
                 </ComposedChart>
             </ResponsiveContainer>
             <Row gap={1}>
-                <span className="pill run caption">High</span>
-                <span className="pill swim caption">Low</span>
+                <span className="badge run caption">High</span>
+                <span className="badge swim caption">Low</span>
                 <span className="caption">— Rain</span>
             </Row>
         </Column>
@@ -158,7 +158,7 @@ export function WeatherWidget() {
                 <Row justify="between" align="center">
                     <span className="caption">Kingston, UK</span>
                     <span className='caption'>15m ago</span>
-                    {/* <div className="row compact align-center">
+                    {/* <div className="row gap-1 align-center">
                         <button className="ghost icon" onClick={() => setDetailOpen(true)}>›</button>
                     </div> */}
                 </Row>

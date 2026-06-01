@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { useQuery } from '@ui/bindings';
 import type { HealthChartMap } from '@features/health';
 import { ChartContainer } from '../../patterns/charts/charts';
@@ -7,12 +8,13 @@ import { Surface } from '@ui/atoms';
 interface Props {
   slug: string;
   height?: number;
+  fallback?: ReactNode;
 }
 
-export function HealthChartsList({ slug, height = 120 }: Props) {
+export function HealthChartsList({ slug, height = 120, fallback = null }: Props) {
   const charts = useQuery<HealthChartMap>('health_charts') ?? {};
   const list = charts[slug] ?? [];
-  if (list.length === 0) return null;
+  if (list.length === 0) return <>{fallback}</>;
   return (
     <>
       {list.map(c => (
@@ -21,7 +23,7 @@ export function HealthChartsList({ slug, height = 120 }: Props) {
             <Row justify="between" align="center">
               <span className="eyebrow">{c.label}</span>
               {c.currentValue && (
-                <span className="pill"><span className="dot" />{c.currentValue}</span>
+                <span className="badge"><span className="dot" />{c.currentValue}</span>
               )}
             </Row>
             <ChartContainer

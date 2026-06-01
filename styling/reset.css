@@ -31,6 +31,9 @@ main {
   width: 100%;
 }
 
+/* Ensure display-forcing classes don't override the hidden attribute */
+[hidden] { display: none !important; }
+
 *:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;

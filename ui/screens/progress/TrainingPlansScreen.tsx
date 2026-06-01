@@ -118,7 +118,7 @@ function WeekView({ anchor, workoutCalendar }: { anchor: Date; workoutCalendar: 
       <div style={gridStyle}>
         <span />
         {days.map((d, i) => (
-          <div key={i} className="column compact" style={{ alignItems: 'center', gap: 2 }}>
+          <div key={i} className="column gap-1" style={{ alignItems: 'center', gap: 2 }}>
             <span className="mono" style={{ fontSize: 9, color: 'var(--ink-faint)' }}>{DOW_SHORT[i]}</span>
             <span style={{ ...circleBase, ...dayCircleStyle(d, i) }}>{d.getDate()}</span>
           </div>
@@ -157,7 +157,7 @@ function DayView({ anchor, workoutCalendar }: { anchor: Date; workoutCalendar: R
       <Column gap={1}>
         <Row justify="between" align="center">
           <Text bold>{dateLabel}</Text>
-          {isToday && <Text className="pill ok">Today</Text>}
+          {isToday && <Text className="badge ok">Today</Text>}
         </Row>
         <hr />
 
@@ -340,14 +340,14 @@ export function TrainingPlansScreen() {
                 {upcoming.map(ev => (
                   <Surface key={ev.day}>
                     <Row align="center">
-                      <Column gap={1} className="align-center">
+                      <Column gap={1} align="center">
                         <Text size="caption" mono>{ev.monthLabel}</Text>
                         <Text size="caption">{ev.day}</Text>
                       </Column>
                       <Column gap={1} className="grow">
                         <Row justify="between" align="center">
                           <Text size="detail">{ev.title}</Text>
-                          <Text className={`pill ${ev.sport}`}>{SPORT_LABEL[ev.sport]}</Text>
+                          <Text className={`badge ${ev.sport}`}>{SPORT_LABEL[ev.sport]}</Text>
                         </Row>
                         <Text size="caption">{ev.time}</Text>
                       </Column>

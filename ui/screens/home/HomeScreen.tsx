@@ -7,7 +7,7 @@ import { SleepLarge } from "@ui/components/widgets/SleepWidgets";
 import { CalendarLarge } from "@ui/components/widgets/CalendarWidgets";
 import { WelcomeWidget } from "@ui/components/widgets/WelcomeWidget";
 import { WeatherWidget } from "@ui/components/widgets/WeatherWidget";
-import { GOAL_MINUTES } from "@ui/components/dashboard/dashboardUtils";
+import { GOAL_MINUTES } from "./dashboardUtils";
 import { PlanRouteWidget } from "@ui/components/widgets/PlanRouteWidget";
 import { EditDisplayNameWidget } from "@ui/components/widgets/EditDisplayNameWidget";
 import {

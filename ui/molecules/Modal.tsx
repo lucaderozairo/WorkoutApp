@@ -38,7 +38,7 @@ export function Modal({ open, onClose, title, footer, size = 'md', children }: M
       ref={ref}
       popover="auto"
       onToggle={handleToggle}
-      className={['modal', 'surface', 'column', SIZE_CLASS[size]].filter(Boolean).join(' ')}
+      className={['modal', 'surface', SIZE_CLASS[size]].filter(Boolean).join(' ')}
     >
       {title && <h3>{title}</h3>}
       <div className="modal-body">{children}</div>

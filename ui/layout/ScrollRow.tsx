@@ -6,6 +6,6 @@ interface ScrollRowProps {
 }
 
 export function ScrollRow({ className, children }: ScrollRowProps) {
-  const classes = ['scroll-row', className].filter(Boolean).join(' ');
+  const classes = ['row', 'scroll', className].filter(Boolean).join(' ');
   return <div className={classes}>{children}</div>;
 }

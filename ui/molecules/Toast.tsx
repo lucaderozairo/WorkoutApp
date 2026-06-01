@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { Surface } from '@ui/atoms/Surface';
 import { Row } from '@ui/layout/Row';
 import { createPortal } from 'react-dom';
+import { Column } from '@ui/layout/Column';
 import { Badge } from '@ui/atoms/Badge';
 import { Button } from '@ui/atoms/Button';
 
@@ -62,7 +63,7 @@ export function Toaster({ children }: { children: ReactNode }) {
     <ToastContext.Provider value={api}>
       {children}
       {createPortal(
-        <div className="toast-stack column">
+        <Column className="toast-stack">
           {toasts.map(t => (
             <Surface key={t.id} className="toast">
               <Row align="center">
@@ -72,7 +73,7 @@ export function Toaster({ children }: { children: ReactNode }) {
               </Row>
             </Surface>
           ))}
-        </div>,
+        </Column>,
         document.body
       )}
     </ToastContext.Provider>

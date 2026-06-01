@@ -49,7 +49,7 @@
   pointer-events: none;
 }
 
-.layer > * {
+  & > * {
   pointer-events: auto;
 }
 
@@ -205,30 +205,26 @@
 }
 
 /* legacy aliases — partially purged; remaining usages in molecules/nav/buttons pending full removal */
-.row.compact, .column.compact, .cluster.compact { gap: var(--s-1); }
-.row.space-between, .column.space-between { justify-content: space-between; }
-.row.center,        .column.center        { justify-content: center; }
 
-.scroll-row {
-  display: flex;
-  flex-direction: row;
-  gap: var(--s-1);
-  overflow-x: auto;
-  scrollbar-width: none;
+/* .row.scroll — horizontal scroll row; .column.scroll — vertical scroll column */
+.row {
+  &.scroll {
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: var(--s-1);
+    & > * { flex-shrink: 0; width: auto; }
+  }
 }
-.scroll-row > * {
-  flex-shrink: 0;
-  width: auto;
-}
-.scroll.column {
-  gap: var(--s-1);
-  overflow-y: scroll;
+.column {
+  &.scroll {
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
 }
 
 /* ── Narrow viewport (≤360px) ── */
 @media (max-width: 360px) {
   .row    { flex-wrap: wrap; gap: var(--s-2); }
-  .row.gap-1, .row.compact { gap: var(--s-1); } /* compact alias kept until molecules/nav migrated */
   .column { gap: var(--s-2); }
   h1 { font-size: var(--t-xl); }
   h2 { font-size: var(--t-lg); }

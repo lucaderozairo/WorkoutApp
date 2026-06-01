@@ -1,6 +1,7 @@
 import type { ReactNode, ToggleEvent } from 'react';
 import { useEffect, useRef } from 'react';
 import { Button } from '@ui/atoms/Button';
+import { Column } from '@ui/layout/Column';
 
 interface ActionSheetItem {
   label: string;
@@ -41,7 +42,7 @@ export function ActionSheet({ open, onClose, title, items }: ActionSheetProps) {
       onToggle={(e: ToggleEvent<HTMLDivElement>) => { if (e.newState === 'closed' && open) onClose(); }}
     >
       <div className="handle" />
-      <div className="body column">
+      <Column className="body">
         {title && <span className="caption muted">{title}</span>}
         {items.map((item, i) => (
           <Button
@@ -56,7 +57,7 @@ export function ActionSheet({ open, onClose, title, items }: ActionSheetProps) {
           </Button>
         ))}
         <Button variant="ghost" block onClick={onClose}>Cancel</Button>
-      </div>
+      </Column>
     </div>
   );
 }

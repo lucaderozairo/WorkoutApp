@@ -90,12 +90,12 @@ function WidgetCard({ def, instance, editMode, delay, onRemove, onCycleSize, onD
 function AddWidgetPanel({ activeIds, onAdd }: { activeIds: Set<string>; onAdd: (id: string) => void }) {
   const available = REGISTRY.filter(d => !activeIds.has(d.id));
   if (available.length === 0) return (
-    <Surface className="tight">
+    <Surface className="pad-sm">
       <Text size="caption" color="faint">All widgets are on the dashboard.</Text>
     </Surface>
   );
   return (
-    <Surface className="tight column">
+    <Surface className="pad-sm column">
       <Text size="eyebrow">Add Widget</Text>
       <Cluster>
         {available.map(d => (

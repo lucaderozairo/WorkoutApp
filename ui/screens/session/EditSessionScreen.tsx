@@ -199,7 +199,7 @@ export function EditSessionScreen() {
     <UndoToastProvider>
       <Grid>
 
-        <Surface className="secondary column compact">
+        <Surface className="secondary column gap-1">
           <Row align="center" justify="between">
             <Row gap={1}>
               <input id="edit-name" className="ghost" type="text" value={name} onChange={e => setName(e.target.value)} />

@@ -70,7 +70,7 @@ interface CategoryButtonProps {
 function CategoryTile({ cat, isPinned = false, onClick, onLongPress, charts }: CategoryButtonProps) {
   return (
     <button
-      className={`surface tight${isPinned ? ' pinned' : ''}`}
+      className={`surface pad-sm${isPinned ? ' pinned' : ''}`}
       onClick={onClick}
       onPointerDown={onLongPress.start}
       onPointerUp={onLongPress.cancel}
@@ -88,7 +88,7 @@ function CategoryTile({ cat, isPinned = false, onClick, onLongPress, charts }: C
 function CategoryRow({ cat, isPinned = false, onClick, onLongPress, charts }: CategoryButtonProps) {
   return (
     <button
-      className={`surface tight${isPinned ? ' pinned' : ''}`}
+      className={`surface pad-sm${isPinned ? ' pinned' : ''}`}
       onClick={onClick}
       onPointerDown={onLongPress.start}
       onPointerUp={onLongPress.cancel}

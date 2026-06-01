@@ -101,7 +101,7 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
       </Surface>
 
       {/* stats grid */}
-      <div className="surface grid">
+      <Surface><Grid variant="double">
         <Column gap={1} align="center">
           <span className="eyebrow">Date</span>
           <span className="mono num detail">{date}</span>
@@ -118,7 +118,7 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
           <span className="eyebrow">End</span>
           <span className="mono num detail">{endTime || '—'}</span>
         </Column>
-      </div>
+      </Grid></Surface>
 
       {/* RPE */}
       {session.rpe != null && (
@@ -128,7 +128,7 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
               <Gauge size={14} className="faint" />
               <span className="eyebrow">Session RPE</span>
             </Row>
-            <span className="pill primary">{session.rpe}</span>
+            <span className="badge accent">{session.rpe}</span>
           </Column>
         </Surface>
       )}
@@ -143,7 +143,7 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
             </Row>
             <Cluster>
               {session.tags.map((t, i) => (
-                <span key={i} className="pill"><span className="dot" />{t}</span>
+                <span key={i} className="badge"><span className="dot" />{t}</span>
               ))}
             </Cluster>
           </Column>
@@ -184,7 +184,7 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
               {b.type === 'stretch' && (
                 <>
                   <Row align="center" justify="between">
-                    {b.tag && <span className="pill"><span className="dot" />{b.tag}</span>}
+                    {b.tag && <span className="badge"><span className="dot" />{b.tag}</span>}
                   </Row>
                   {b.exercises.map((ex, i) => (
                     <Row key={i} align="center" justify="between">
@@ -231,7 +231,7 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
                     </Row>
                   ) : (
                     <Row align="center" justify="between">
-                      <span className="pill"><span className="dot" />{b.label}</span>
+                      <span className="badge"><span className="dot" />{b.label}</span>
                     </Row>
                   )}
                   {b.exercises.map((ex, i) => (

@@ -13,7 +13,7 @@ import { ChevronLeft, Pencil, Share2, Image, MapPin, HeartPulse, TrendingUp, Mou
 import { ACTIVITY_ICONS, getActivityLabel } from '@ui/icons/activityIcons';
 import type { SportType } from '@features/training_log/domain/types';
 import { Carousel } from '@ui/components/shared/Carousel';
-import { Row, Column, Cluster } from '@ui/layout';
+import { Row, Column, Cluster, Grid } from '@ui/layout';
 import { Surface } from '@ui/atoms';
 
 
@@ -182,7 +182,7 @@ function SocialBar({ session }: { session: CardioSession }) {
           + Ran with
         </button>
         {ranWith.map(name => (
-          <span key={name} className="pill">
+          <span key={name} className="badge">
             {name}
             <button type="button" className="ghost icon" onClick={() => removeRanWith(name)}>×</button>
           </span>
@@ -248,7 +248,7 @@ function StrengthDetail({ session }: { session: ActivityView }) {
                   </Link>
                 </Row>
                 {block.blockType && (
-                  <span className={`pill ${block.blockType}`}>{block.blockType}</span>
+                  <span className={`badge ${block.blockType}`}>{block.blockType}</span>
                 )}
               </Row>
               <SessionSetChart sets={strengthSets} />
@@ -256,11 +256,11 @@ function StrengthDetail({ session }: { session: ActivityView }) {
                 <table className="center">
                   <tbody>
                     <tr className="">
-                      <th className="caption">#</th>
-                      <th className="caption">kg</th>
-                      <th className="caption">reps</th>
-                      <th className="caption">type</th>
-                      <th className="caption">RPE</th>
+                      <th className="eyebrow">#</th>
+                      <th className="eyebrow">kg</th>
+                      <th className="eyebrow">reps</th>
+                      <th className="eyebrow">type</th>
+                      <th className="eyebrow">RPE</th>
                     </tr>
                     {block.sets.map((set, i) => (
                       <tr key={i} className="">
@@ -294,10 +294,10 @@ function StrengthDetail({ session }: { session: ActivityView }) {
         <Surface pad="sm" as="section">
           <Row gap={1} wrap align="center">
             {session.rpe != null && (
-              <span className="pill primary">RPE {session.rpe}</span>
+              <span className="badge accent">RPE {session.rpe}</span>
             )}
             {session.tags?.map(t => (
-              <span key={t} className="pill"><span className="dot" />{t}</span>
+              <span key={t} className="badge"><span className="dot" />{t}</span>
             ))}
           </Row>
         </Surface>
@@ -365,7 +365,7 @@ function CardioDetail({ session, fullPage }: { session: CardioSession; fullPage?
   }
 
   const statsGrid = (
-    <div className="surface tight grid ghost">
+    <Surface variant="ghost" pad="sm"><Grid variant="double">
       {session.distanceMeters > 0 && (
         <Column gap={1} align="center">
           <p className="eyebrow">Distance</p>
@@ -392,7 +392,7 @@ function CardioDetail({ session, fullPage }: { session: CardioSession; fullPage?
           </h3>
         </Column>
       )}
-    </div>
+    </Grid></Surface>
   );
 
   const charts = track && (track.points?.length ?? 0) > 0 && (
@@ -522,19 +522,19 @@ function CardioDetail({ session, fullPage }: { session: CardioSession; fullPage?
               </Row>
               <Cluster>
                 {track?.avgHeartRate != null && (
-                  <span className="pill">AVG HR <strong>{track.avgHeartRate} bpm</strong></span>
+                  <span className="badge">AVG HR <strong>{track.avgHeartRate} bpm</strong></span>
                 )}
                 {track?.maxHeartRate != null && (
-                  <span className="pill">MAX HR <strong>{track.maxHeartRate} bpm</strong></span>
+                  <span className="badge">MAX HR <strong>{track.maxHeartRate} bpm</strong></span>
                 )}
                 {track?.calories != null && (
-                  <span className="pill">{track.calories} kcal</span>
+                  <span className="badge">{track.calories} kcal</span>
                 )}
                 {track?.avgPower != null && (
-                  <span className="pill">{track.avgPower} W</span>
+                  <span className="badge">{track.avgPower} W</span>
                 )}
                 {session.rpe != null && (
-                  <span className={`pill ${color}`}><span className="dot" />RPE {session.rpe} / 10</span>
+                  <span className={`badge ${color}`}><span className="dot" />RPE {session.rpe} / 10</span>
                 )}
               </Cluster>
             </Column>
@@ -598,10 +598,10 @@ function CardioDetail({ session, fullPage }: { session: CardioSession; fullPage?
       {hasSecondary && (
         <Surface pad="sm" as="section">
           <Cluster>
-            {track.avgHeartRate != null && <span className="pill">AVG HR <strong>{track.avgHeartRate} bpm</strong></span>}
-            {track.maxHeartRate != null && <span className="pill">MAX HR <strong>{track.maxHeartRate}</strong></span>}
-            {track.calories != null && <span className="pill">CALORIES <strong>{track.calories} kcal</strong></span>}
-            {track.avgPower != null && <span className="pill">POWER <strong>{track.avgPower} W</strong></span>}
+            {track.avgHeartRate != null && <span className="badge">AVG HR <strong>{track.avgHeartRate} bpm</strong></span>}
+            {track.maxHeartRate != null && <span className="badge">MAX HR <strong>{track.maxHeartRate}</strong></span>}
+            {track.calories != null && <span className="badge">CALORIES <strong>{track.calories} kcal</strong></span>}
+            {track.avgPower != null && <span className="badge">POWER <strong>{track.avgPower} W</strong></span>}
           </Cluster>
         </Surface>
       )}
@@ -642,16 +642,16 @@ function HistoryDetail({ session }: { session: ActivityHistoryItem }) {
         </Row>
         {session.hasPR && (
           <Row>
-            <span className="pill active"><Trophy size={11} /> PR</span>
+            <span className="badge active"><Trophy size={11} /> PR</span>
           </Row>
         )}
         {(session.rpe != null || (session.tags?.length ?? 0) > 0) && (
           <Row gap={1} wrap align="center">
             {session.rpe != null && (
-              <span className="pill primary">RPE {session.rpe}</span>
+              <span className="badge accent">RPE {session.rpe}</span>
             )}
             {session.tags?.map(t => (
-              <span key={t} className="pill"><span className="dot" />{t}</span>
+              <span key={t} className="badge"><span className="dot" />{t}</span>
             ))}
           </Row>
         )}

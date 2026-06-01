@@ -90,7 +90,7 @@ export function RoutePlannerScreen() {
           'Past routes & favourites';
 
   return (
-    <Surface variant="ghost" className="tight grow gap-0 column clip full-bleed">
+    <Surface variant="ghost" className="pad-sm grow gap-0 column clip full-bleed">
 
       {/* ── DESKTOP TOP TOOLBAR ── */}
       <div className="desktop-only">
@@ -144,7 +144,7 @@ export function RoutePlannerScreen() {
       </div>
 
       {/* ── MOBILE HEADER ── */}
-      <div className="mobile-only column compact">
+      <div className="mobile-only column gap-1">
         <ScreenHeader
           title="Route Planner"
           back={handleBack}
@@ -192,7 +192,7 @@ export function RoutePlannerScreen() {
             ))}
           </div>
           {sideOpen && (
-            <div className="side-content column compact">
+            <div className="side-content column gap-1">
               <Row align="center" justify="between">
                 <Text size="eyebrow">{panelSubtitle}</Text>
                 <Button variant="ghost" size="icon" className="sm" onClick={() => setSideOpen(false)} aria-label="Collapse sidebar">
@@ -309,7 +309,7 @@ export function RoutePlannerScreen() {
             <div data-elevation-panel className="shrink-0">
               <Button
                 variant="ghost"
-                className="block row align-center compact"
+                className="block gap-1"
                 onClick={() => setElevOpen(v => !v)}
                 aria-expanded={elevOpen}
                 aria-label="Toggle elevation profile"
@@ -458,10 +458,10 @@ function PlanPanel({
             <button
               key={a.id}
               data-id={a.id}
-              className={`activity-chip column compact align-center${activity === a.id ? ' active' : ''}`}
+              className={`activity-chip column gap-1 align-center${activity === a.id ? ' active' : ''}`}
               onClick={() => setActivity(a.id)}
             >
-              <span data-id={a.id} className="activity-dot row center align-center">
+              <span data-id={a.id} className="activity-dot">
                 <Icon size={10} />
               </span>
               <Text size="caption">{a.label}</Text>
@@ -470,12 +470,12 @@ function PlanPanel({
         })}
       </Grid>
       <Button variant="ghost" size="sm" className="block" disabled aria-label="More activities coming soon">
-        <Row gap={1} className="center align-center">
+        <Row gap={1} align="center" justify="center">
           <Plus size={12} />
           <span>Other activity</span>
         </Row>
       </Button>
-      <Surface variant="ghost" className="tight">
+      <Surface variant="ghost" className="pad-sm">
         <Text size="caption" color="muted">
           {activity === 'ride'
             ? 'Cycling uses bike-optimised paths and roads.'
@@ -498,19 +498,19 @@ function PlanPanel({
       </Surface>
       <Row gap={1}>
         <Surface pad="sm" variant="flat" className="grow">
-          <Column gap={1} className="align-center">
+          <Column gap={1} align="center">
             <Text size="detail" mono>{timeStr}</Text>
             <Text size="eyebrow">Time</Text>
           </Column>
         </Surface>
         <Surface pad="sm" variant="flat" className="grow">
-          <Column gap={1} className="align-center">
+          <Column gap={1} align="center">
             <Text size="detail" mono>{displayKm > 0 ? `+${gain}` : '—'}<Text size="caption" color="muted"> m</Text></Text>
             <Text size="eyebrow">Gain</Text>
           </Column>
         </Surface>
         <Surface pad="sm" variant="flat" className="grow">
-          <Column gap={1} className="align-center">
+          <Column gap={1} align="center">
             <Text size="detail" mono>{displayKm > 0 ? estimatedCal : '—'}<Text size="caption" color="muted"> kcal</Text></Text>
             <Text size="eyebrow">Energy</Text>
           </Column>
@@ -539,11 +539,11 @@ function PlanPanel({
         value={paceSecondsPerKm}
         onChange={e => setPaceSecondsPerKm(Number(e.target.value))}
       />
-      <Cluster className="compact">
+      <Cluster className="gap-1">
         {PACE_PRESETS.map(p => (
           <button
             key={p}
-            className={`sm column tight${pacePreset === p ? ' active' : ''}`}
+            className={`sm column pad-sm${pacePreset === p ? ' active' : ''}`}
             onClick={() => handlePacePreset(p)}
           >
             <span>{p.charAt(0).toUpperCase() + p.slice(1)}</span>
@@ -652,7 +652,7 @@ function StatsPanel({ surfaceMix, displayKm, gain, loss, waypoints, timeStr }: S
           ) : null
         )}
       </div>
-      <Cluster className="compact">
+      <Cluster className="gap-1">
         {SURFACES.filter(s => surfaceMix[s.key] > 0).map(s => (
           <Row key={s.key} align="center" gap={1}>
             <Row align="center" gap={1} className="caption">
@@ -669,13 +669,13 @@ function StatsPanel({ surfaceMix, displayKm, gain, loss, waypoints, timeStr }: S
       <Text size="eyebrow">Elevation</Text>
       <Row gap={1}>
         <Surface pad="sm" variant="flat" className="grow">
-          <Column gap={1} className="align-center">
+          <Column gap={1} align="center">
             <Text size="detail" mono>{displayKm > 0 ? `+${gain}` : '—'}<Text size="caption" color="muted"> m</Text></Text>
             <Text size="eyebrow">Gain</Text>
           </Column>
         </Surface>
         <Surface pad="sm" variant="flat" className="grow">
-          <Column gap={1} className="align-center">
+          <Column gap={1} align="center">
             <Text size="detail" mono>{displayKm > 0 ? `−${loss}` : '—'}<Text size="caption" color="muted"> m</Text></Text>
             <Text size="eyebrow">Loss</Text>
           </Column>
@@ -721,15 +721,17 @@ function SavedPanel({ profileFilteredRoutes, handleLoadSavedRoute, navigate }: S
         profileFilteredRoutes.map(route => (
           <button
             key={route.id}
-            className="surface tight flat compact row align-center interactive"
+            className="surface pad-sm flat interactive"
             onClick={() => handleLoadSavedRoute(route)}
           >
+            <Row align="center" gap={1}>
             <span className={`dot ${route.profile === 'bike' ? 'cycle' : 'run'}`} />
             <Column gap={1} className="grow">
               <Text size="caption">{route.name}</Text>
               <Text size="caption" color="faint">{route.distanceKm.toFixed(1)} km</Text>
             </Column>
             <ChevronRight size={12} className="faint" />
+            </Row>
           </button>
         ))
       )}

@@ -141,7 +141,7 @@ export function SettingsContent() {
             <input type="range" min="0" max="1" value={theme === 'light' ? 0 : 1} onChange={handleThemeChange} />
           </label>
         </Row>
-        {/* <div className="row space-between align-center">
+        {/* <div className="row justify-between align-center">
           <span className="caption">Units</span>
           <div className="row">
             <button

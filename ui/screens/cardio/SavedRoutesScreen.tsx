@@ -29,7 +29,7 @@ export function SavedRoutesScreen() {
           {savedRoutes.map(route => (
             <div
               key={route.id}
-              className={`surface column compact${incoming.returnTo ? ' interactive' : ''}`}
+              className={`surface column gap-1${incoming.returnTo ? ' interactive' : ''}`}
               onClick={() => incoming.returnTo && handleSelect(route)}
             >
               <Row justify="between" align="center">

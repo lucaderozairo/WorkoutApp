@@ -118,7 +118,7 @@ export function WeekCalendar({ sessions, typeFilter, renderFilter }: Props) {
           </Row>
         </Surface>
         {displaySessions.length === 0 ? (
-          <p className="muted caption compact">No sessions {selectedKey ? 'this day' : 'this week'}.</p>
+          <p className="muted caption">No sessions {selectedKey ? 'this day' : 'this week'}.</p>
         ) : (
           displaySessions.map((entry, i) =>
             entry.kind === 'strength'

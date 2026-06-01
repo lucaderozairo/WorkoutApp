@@ -76,11 +76,13 @@ export function FinishSessionModal({ session, onClose, onFinished, onJumpToBlock
             <button
               key={b.id}
               type="button"
-              className="ghost row align-center space-between"
+              className="ghost"
               onClick={() => { onJumpToBlock?.(b.id); onClose(); }}
             >
-              <span>{b.exerciseName}</span>
-              <span className="caption">{b.sets.length} sets</span>
+              <Row justify="between" align="center">
+                <span>{b.exerciseName}</span>
+                <span className="caption">{b.sets.length} sets</span>
+              </Row>
             </button>
           ))}
         </Column>

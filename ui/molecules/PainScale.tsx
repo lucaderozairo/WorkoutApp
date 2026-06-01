@@ -9,12 +9,12 @@ interface PainScaleProps {
 
 export function PainScale({ value, max = 10, onChange, readOnly = false }: PainScaleProps) {
   return (
-    <Row gap={1} align="center" className="pain-scale">
+    <Row gap={1} align="center">
       {Array.from({ length: max }, (_, i) => (
         <button
           key={i}
           type="button"
-          className="pain-dot"
+          className="dot pain"
           data-active={i < value ? 'true' : undefined}
           disabled={readOnly}
           onClick={() => onChange?.(i + 1)}

@@ -6,17 +6,17 @@
   display: block;
   padding: var(--s-4);
 
-  /* Surface is now always block — layout is composed inside via Row/Column.
-     .block shim retired after ui/components sweep (2026-06-01). */
-  &.pad-sm   { padding: var(--s-3); }
+  &.pad-sm, &.tight { padding: var(--s-3); }
   &.pad-none { padding: 0; overflow: hidden; }
 
   /* ── Visual variants ── */
-  &.plain   { border-color: transparent; box-shadow: none; }
-  &.flat    { background: var(--surface-2); border-color: transparent; }
-  &.accent  { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
-  &.ghost   { background: transparent; border-color: transparent; box-shadow: none; }
+  &.plain    { border-color: transparent; box-shadow: none; }
+  &.flat     { background: var(--surface-2); border-color: transparent; }
+  &.accent   { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+  &.ghost    { background: transparent; border-color: transparent; box-shadow: none; }
   &.selected { border-color: var(--accent); }
+  &.inset    { background: var(--surface-2); border-style: dashed; }
+  &.pinned   { border-color: var(--accent); background: var(--surface-2); }
 
   /* ── Interactive state ── */
   &.interactive {
@@ -27,19 +27,9 @@
     &:active { background: color-mix(in srgb, var(--surface-1), var(--ink) 10%); }
   }
 
-  /* ── Legacy layout-on-surface (kept for remaining button/molecule consumers) ── */
-  &.row      { display: flex; flex-direction: row; }
-  &.grid     { display: grid; --grid-cols: repeat(2, 1fr); --grid-gap: var(--s-3); }
-  &.compact  { gap: var(--s-1); }
-  &.warning  { background: color-mix(in srgb, var(--warn) 12%, var(--surface-1)); border-color: var(--warn); }
-  &.inset    { background: var(--surface-2); border-style: dashed; }
-  &.pinned   { border-color: var(--accent); background: var(--surface-2); }
-
-  /* ── Narrow viewport ── */
   @media (max-width: 360px) {
     padding: var(--s-3);
     min-height: unset;
     gap: var(--s-2);
-    &.block { gap: 0; padding: var(--s-3); }
   }
 }

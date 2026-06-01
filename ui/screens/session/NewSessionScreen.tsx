@@ -55,7 +55,7 @@ export function NewSessionScreen() {
           <ActivityButton key={sport} sport={sport} selected={selected} onSelect={setSelected} />
         ))}
         <button
-          className={`column surface card compact align-center${showMore ? ' active' : ''}`}
+          className={`column surface card gap-1 align-center${showMore ? ' active' : ''}`}
           onClick={() => setShowMore(v => !v)}
           aria-expanded={showMore}
         >
@@ -100,11 +100,13 @@ export function NewSessionScreen() {
                 <button
                   key={t.id}
                   type="button"
-                  className={`surface tight row space-between align-center${pendingTemplate?.id === t.id ? ' active' : ''}`}
+                  className={`surface pad-sm interactive${pendingTemplate?.id === t.id ? ' active' : ''}`}
                   onClick={() => { handleLoadTemplate(t); setShowTemplates(false); }}
                 >
-                  <span className="detail">{t.name}</span>
-                  <span className="caption">{t.exercises.length} exercises</span>
+                  <Row justify="between" align="center">
+                    <span className="detail">{t.name}</span>
+                    <span className="caption">{t.exercises.length} exercises</span>
+                  </Row>
                 </button>
               ))}
             </Column>

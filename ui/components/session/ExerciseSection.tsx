@@ -89,7 +89,7 @@ export function ExerciseSection({
         })}
       </Column>
 
-      <button type="button" className="ghost surface tight" onClick={onAddSet}>+ Add Set</button>
+      <button type="button" className="ghost surface pad-sm" onClick={onAddSet}>+ Add Set</button>
     </Column>
   );
 }

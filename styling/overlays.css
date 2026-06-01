@@ -1,0 +1,131 @@
+/* ════════════════════════════════════════════
+   TOP-LAYER OVERLAYS — native Popover API (no z-index, native light-dismiss).
+   .modal / .action-sheet / .menu-popover render in the browser top layer.
+   ════════════════════════════════════════════ */
+
+/* Shared backdrop */
+.modal::backdrop,
+.action-sheet::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  @media (prefers-reduced-transparency: reduce) {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* ── Modal sheet ── */
+.modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  margin: auto auto 0;
+  width: 100%;
+  max-width: 280px;
+  max-height: 80vh;
+  overflow-y: auto;
+  border-radius: var(--r-md) var(--r-md) 0 0;
+  padding: var(--s-5);
+  transition:
+    opacity var(--duration-medium) var(--ease),
+    transform var(--duration-medium) var(--ease),
+    overlay var(--duration-medium) allow-discrete,
+    display var(--duration-medium) allow-discrete;
+
+  &:popover-open { opacity: 1; transform: translateY(0); }
+  &.modal-sm { max-width: 240px; }
+  &.modal-lg { max-width: 360px; }
+}
+@starting-style {
+  .modal:popover-open { opacity: 0; transform: translateY(12px); }
+}
+
+/* ── Action sheet — bottom-pinned variant ── */
+.action-sheet {
+  position: fixed;
+  inset: auto 0 0 0;
+  margin: 0;
+  width: 100%;
+  max-width: none;
+}
+
+/* ── Menu popover — anchored to invoker ── */
+.menu-popover {
+  margin: var(--s-1) 0 0;
+}
+@supports (position-area: bottom) {
+  .menu-popover {
+    position-area: bottom span-inline-start;
+    position-try-fallbacks: flip-block, flip-inline;
+
+    &.anchor-left  { position-area: bottom span-inline-end; }
+    &.anchor-above { position-area: top span-inline-start; }
+  }
+}
+
+/* ── Dropdown — positioned panel ── */
+.dropdown {
+  min-width: 280px;
+
+  &.actions {
+    top: 100%;
+    right: 0;
+    min-width: 120px;
+
+    & button { text-align: left; }
+  }
+
+  &.filter-panel {
+    right: 0;
+    left: auto;
+    max-height: calc(100dvh - 160px);
+    overflow-y: auto;
+  }
+}
+
+.filter-panel { min-width: 280px; }
+
+/* ── Bottom sheet — mobile snap container ── */
+.bottom-sheet {
+  position: relative;
+  background: var(--surface-1);
+  border-top: 1px solid var(--line);
+  border-top-left-radius: var(--r-lg);
+  border-top-right-radius: var(--r-lg);
+  box-shadow: var(--box-shadow-lg, 0 -8px 24px rgba(14,19,32,0.08));
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: height var(--duration-medium, 0.25s) var(--ease);
+
+  &[data-snap="peek"] { height: 56px; }
+  &[data-snap="mid"]  { height: 240px; }
+  &[data-snap="full"] { height: 65vh; }
+
+  & .handle {
+    display: flex;
+    justify-content: center;
+    padding: var(--s-2) 0;
+    flex-shrink: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    width: 100%;
+
+    &::before {
+      content: "";
+      width: 38px;
+      height: 4px;
+      border-radius: var(--r-xs);
+      background: var(--surface-3);
+      display: block;
+    }
+  }
+
+  & .body {
+    gap: var(--s-3);
+    padding: 0 var(--s-4) var(--s-4);
+  }
+}

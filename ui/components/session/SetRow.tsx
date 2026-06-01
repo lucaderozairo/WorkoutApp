@@ -185,7 +185,7 @@ export function SetRow({
           <button className="icon sm ghost" disabled>
             <MessageSquare size={9} className="faint" />
           </button>
-          <div className="surface tight ghost grow align-center">
+          <div className="surface pad-sm ghost grow">
             <span className="caption pre-wrap">{comment}</span>
           </div>
           {!disabled && (

@@ -112,7 +112,7 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
           >
             <SlidersHorizontal size={14} />
             Filters
-            {activeCount > 0 && <span className="pill">{activeCount}</span>}
+            {activeCount > 0 && <span className="badge">{activeCount}</span>}
           </button>
 
           {filtersOpen && (
@@ -132,11 +132,13 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
                   {view === 'list' && (
                     <>
                       <button
-                        className="ghost flush row space-between align-center"
+                        className="ghost flush"
                         onClick={() => setDateExpanded(e => !e)}
                       >
-                        Date range
-                        <ChevronDown size={12} className={`chevron${dateExpanded ? ' open' : ''}`} />
+                          <Row justify="between" align="center">
+                            Date range
+                            <ChevronDown size={12} className={`chevron${dateExpanded ? ' open' : ''}`} />
+                      </Row>
                       </button>
                       {dateExpanded && (
                         <Cluster gap={1}>
@@ -157,11 +159,13 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
 
                   {/* Custom date picker */}
                   <button
-                    className="ghost flush row space-between align-center"
+                    className="ghost flush"
                     onClick={() => setDatePickerExpanded(e => !e)}
                   >
-                    Custom date
-                    <ChevronDown size={12} className={`chevron${datePickerExpanded ? ' open' : ''}`} />
+                      <Row justify="between" align="center">
+                        Custom date
+                        <ChevronDown size={12} className={`chevron${datePickerExpanded ? ' open' : ''}`} />
+                  </Row>
                   </button>
                   {datePickerExpanded && (
                     <Column gap={1}>
@@ -201,11 +205,13 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
 
                   {/* Workout type */}
                   <button
-                    className="ghost flush row space-between align-center"
+                    className="ghost flush"
                     onClick={() => setTypeExpanded(e => !e)}
                   >
-                    Workout type
-                    <ChevronDown size={12} className={`chevron${typeExpanded ? ' open' : ''}`} />
+                      <Row justify="between" align="center">
+                        Workout type
+                        <ChevronDown size={12} className={`chevron${typeExpanded ? ' open' : ''}`} />
+                  </Row>
                   </button>
                   {typeExpanded && (
                     <Cluster gap={1}>
@@ -242,14 +248,16 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
                           {matchingExercises.slice(0, 6).map(name => (
                             <button
                               key={name}
-                              className="ghost row space-between align-center"
+                              className="ghost block"
                               onMouseDown={() => {
                                 onChange({ ...filters, exercise: name });
                                 setExerciseSearch('');
                               }}
                             >
-                              {name}
-                              {filters.exercise === name && <Check size={12} />}
+                              <Row justify="between" align="center">
+                                {name}
+                                {filters.exercise === name && <Check size={12} />}
+                              </Row>
                             </button>
                           ))}
                           {filters.exercise && (

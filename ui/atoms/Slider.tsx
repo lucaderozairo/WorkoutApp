@@ -1,3 +1,5 @@
+import { Row } from '../layout/Row';
+
 interface SliderProps {
   value: number;
   onChange: (value: number) => void;
@@ -14,10 +16,10 @@ export function Slider({ value, onChange, min = 0, max = 100, step = 1, label, s
   return (
     <div className={['slider-field', className].filter(Boolean).join(' ')}>
       {(label || showValue) && (
-        <div className="row space-between">
+        <Row justify="between">
           {label && <label className="caption">{label}</label>}
           {showValue && <span className="caption mono">{value}</span>}
-        </div>
+        </Row>
       )}
       <input
         type="range"

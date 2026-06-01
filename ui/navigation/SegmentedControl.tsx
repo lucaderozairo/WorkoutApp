@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react';
+import { Surface } from '@ui/atoms/Surface';
+import { Row } from '@ui/layout/Row';
 
 interface SegmentOption {
   value: string;
@@ -15,21 +17,21 @@ interface SegmentedControlProps {
 }
 
 export function SegmentedControl({ options, value, onChange, size = 'md', className }: SegmentedControlProps) {
-  const classes = ['surface', 'tight', 'row', 'compact', size !== 'md' ? size : '', className].filter(Boolean).join(' ');
-
   return (
-    <div className={classes}>
-      {options.map(opt => (
-        <button
-          key={opt.value}
-          type="button"
-          className={opt.value === value ? 'primary' : 'ghost'}
-          onClick={() => onChange(opt.value)}
-        >
-          {opt.icon}
-          {opt.label}
-        </button>
-      ))}
-    </div>
+    <Surface pad="sm" className={[size !== 'md' ? size : '', className].filter(Boolean).join(' ') || undefined}>
+      <Row gap={1}>
+        {options.map(opt => (
+          <button
+            key={opt.value}
+            type="button"
+            className={opt.value === value ? 'primary' : 'ghost'}
+            onClick={() => onChange(opt.value)}
+          >
+            {opt.icon}
+            {opt.label}
+          </button>
+        ))}
+      </Row>
+    </Surface>
   );
 }

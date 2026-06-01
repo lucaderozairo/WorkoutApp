@@ -80,7 +80,7 @@ function SessionCard({ session }: { session: ActivityHistoryItem }) {
   const accent = session.category === 'strength' ? 'strength' : 'run';
 
   return (
-    <Surface as="section" className={`tight${session.hasPR ? ' accent' : ''}`}>
+    <Surface as="section" className={`pad-sm${session.hasPR ? ' accent' : ''}`}>
       <input type="checkbox" id={id} className="exp-toggle" />
       <label htmlFor={id} className="exp-trigger column interactive">
         <Row justify="between">
@@ -155,7 +155,7 @@ function CardioSessionCard({ session }: { session: CardioSession }) {
   const elevationGain = session.gpsTrack?.elevationGain;
 
   return (
-    <Surface as="section" className="tight">
+    <Surface as="section" className="pad-sm">
       <input type="checkbox" id={id} className="exp-toggle" />
       <label htmlFor={id} className="exp-trigger column interactive">
         <Row justify="between">
@@ -228,7 +228,7 @@ export function ProgressScreen({ onOpenSettings }: { onOpenSettings?: () => void
       {/* Lift sessions */}
       {(sportFilter === 'all' || sportFilter === 'strength') && (
         <>
-          <Surface as="section" className="tight">
+          <Surface as="section" className="pad-sm">
             <Grid variant="triple">
               <StatTile value={history.length} label="SESSIONS" />
               <StatTile value={totalSets} label="TOTAL SETS" />
@@ -239,7 +239,7 @@ export function ProgressScreen({ onOpenSettings }: { onOpenSettings?: () => void
           {Array.from(sessionsByType.entries()).map(([typeName, sessions]) => {
             const values = sessions.slice(-5).map((s) => s.totalSets);
             return (
-              <Surface as="section" key={typeName} className="tight">
+              <Surface as="section" key={typeName} className="pad-sm">
                 <Row justify="between">
                   <Text as="strong">{typeName}</Text>
                   <Badge active>{sessions.length}×</Badge>
@@ -260,7 +260,7 @@ export function ProgressScreen({ onOpenSettings }: { onOpenSettings?: () => void
                   <Surface
                     as="section"
                     key={exerciseName}
-                    className="compact"
+                    className="gap-1"
                     interactive
                     onClick={() => navigate(`/exercise/${encodeURIComponent(exerciseName)}`)}>
                     <Row justify="between">
@@ -307,7 +307,7 @@ export function ProgressScreen({ onOpenSettings }: { onOpenSettings?: () => void
           .map((s) => +(s.distanceMeters / 1000).toFixed(1));
         const totalKm = sessions.reduce((a, s) => a + s.distanceMeters / 1000, 0);
         return (
-          <Surface as="section" key={sport} className="tight">
+          <Surface as="section" key={sport} className="pad-sm">
             <Row justify="between">
               <Text as="strong">{meta.label}</Text>
               <Badge>{sessions.length}×</Badge>

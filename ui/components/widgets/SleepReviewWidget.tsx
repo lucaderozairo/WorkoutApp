@@ -121,7 +121,7 @@ export function SleepReviewWidget({
   if (size === '1x1') {
     return (
       <Surface pad="sm">
-        <Column className="center align-center h-full">
+        <Column align="center" justify="center" className="h-full">
           <span className="eyebrow">Sleep</span>
           <h2 className="mono">{session.score}</h2>
           <span className="caption faint">{duration}</span>

@@ -22,3 +22,6 @@ export { ChipGroup } from './ChipGroup';
 export { PhotoGallery } from './PhotoGallery';
 export { TrendItem } from './TrendItem';
 export { PainScale } from './PainScale';
+
+export { Input } from './Input';
+export { Textarea } from './Textarea';

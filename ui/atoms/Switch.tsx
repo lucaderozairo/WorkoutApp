@@ -1,3 +1,5 @@
+import { Row } from '../layout/Row';
+
 interface SwitchProps {
   checked: boolean;
   onChange: (checked: boolean) => void;
@@ -26,9 +28,9 @@ export function Switch({ checked, onChange, disabled, size = 'md', label, classN
   if (!label) return btn;
 
   return (
-    <label className="row align-center gap-3">
+    <Row as="label" align="center" gap={3}>
       {btn}
       <span className="caption">{label}</span>
-    </label>
+    </Row>
   );
 }

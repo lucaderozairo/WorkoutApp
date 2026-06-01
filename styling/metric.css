@@ -1,0 +1,39 @@
+/* ════════════════════════════════════════════
+   METRIC — hero display number
+   ════════════════════════════════════════════ */
+.metric {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--s-2);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--t-2xl);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+
+  &.sm { font-size: var(--t-xl); }
+  &.lg { font-size: var(--t-4xl); }
+  &.xl { font-size: var(--t-5xl); }
+}
+
+/* ════════════════════════════════════════════
+   BAR — linear progress indicator
+   ════════════════════════════════════════════ */
+.bar {
+  width: 100%;
+  height: var(--bar-height, 6px);
+  background: var(--surface-2);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  width: var(--fill, 50%);
+  background: var(--bar-color, var(--accent));
+  border-radius: inherit;
+  transition: width 0.4s var(--ease);
+
+  &.done { --bar-color: var(--ok); }
+}

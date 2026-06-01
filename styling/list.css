@@ -1,0 +1,44 @@
+/* ════════════════════════════════════════════
+   LIST DIVIDER — semantic <hr> with token border
+   ════════════════════════════════════════════ */
+.list-divider,
+.list-divider-sm {
+  border: none;
+  border-bottom: 1px solid var(--line);
+  margin: 0;
+  &:last-child { border-bottom: none; }
+}
+.list-divider    { padding-block: var(--s-2); }
+.list-divider-sm { padding-block: var(--s-1); }
+
+/* ════════════════════════════════════════════
+   EXPANDABLE — CSS-only collapse via hidden checkbox.
+   A visually-hidden .exp-toggle (checkbox), toggled by .exp-trigger (label),
+   reveals .expandable via :has(). Collapsed by default.
+   ════════════════════════════════════════════ */
+.surface:has(> .exp-toggle) {
+  position: relative;
+}
+
+.exp-toggle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+}
+
+.expandable { display: none; }
+
+.surface:has(> .exp-toggle:checked) {
+  & .expandable { display: flex; }
+  & .chevron    { transform: rotate(180deg); }
+}
+
+.surface:has(> .exp-toggle:focus-visible) .exp-trigger {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}

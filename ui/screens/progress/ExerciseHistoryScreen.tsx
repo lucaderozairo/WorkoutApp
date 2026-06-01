@@ -26,7 +26,7 @@ export function ExerciseHistoryScreen() {
     return (
       <Grid>
         <ScreenHeader title={exerciseName} back={() => navigate(-1)} />
-        <Surface as="section" className="tight">
+        <Surface as="section" className="pad-sm">
           <Text as="p" size="caption">No history found for "{exerciseName}".</Text>
         </Surface>
       </Grid>
@@ -42,7 +42,7 @@ export function ExerciseHistoryScreen() {
       />
 
       {points.length >= 1 && (
-        <Surface as="section" className="tight column">
+        <Surface as="section" className="pad-sm column">
           <Text size="caption">Weight over time</Text>
           <Row align="center">
             <Text className="chart-ylabel">kg</Text>
@@ -105,7 +105,7 @@ export function ExerciseHistoryScreen() {
         </Surface>
       )}
 
-      <Surface as="section" className="tight column">
+      <Surface as="section" className="pad-sm column">
         <Text size="caption">Session history</Text>
         <Table className="center">
           <TableHead>

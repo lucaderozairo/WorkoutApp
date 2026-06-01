@@ -98,10 +98,10 @@ export function SleepWidget({
       </Row>
       <SleepStagesBar stages={session.stages} height={10} />
       <Cluster gap={1}>
-        <span className="pill deep">Deep {fmtMin(session.stages.deep)}</span>
-        <span className="pill light">Light {fmtMin(session.stages.light)}</span>
-        <span className="pill rem">REM {fmtMin(session.stages.rem)}</span>
-        <span className="pill awake">Awake {fmtMin(session.stages.awake)}</span>
+        <span className="badge deep">Deep {fmtMin(session.stages.deep)}</span>
+        <span className="badge light">Light {fmtMin(session.stages.light)}</span>
+        <span className="badge rem">REM {fmtMin(session.stages.rem)}</span>
+        <span className="badge awake">Awake {fmtMin(session.stages.awake)}</span>
       </Cluster>
       {scoreHistory.length > 0 && (
         <SparklineArea

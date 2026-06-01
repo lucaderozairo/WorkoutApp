@@ -35,6 +35,10 @@ Thumbs.db
 
 # Misc
 bash.exe.stackdump
+build-out.txt
+tsc-out.txt
+vite-prototype.err
+vite-prototype.log
 
 legacy/
 

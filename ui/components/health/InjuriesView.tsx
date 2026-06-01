@@ -23,7 +23,7 @@ export function InjuriesView() {
           <Surface key={inj.id}>
             <Column>
               <Row justify="between" align="center">
-                <span className="pill pill--bad">Active</span>
+                <span className="badge bad">Active</span>
                 <span className="mono muted">{new Date(inj.recordedAt).toLocaleDateString()}</span>
               </Row>
               <Column>

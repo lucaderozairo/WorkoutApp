@@ -74,9 +74,7 @@ export function PostCard({ post }: { post: Post & { sport?: string; group?: stri
           <button className={post.likedByMe ? 'liked ghost' : 'ghost'} onClick={handleLike}>
             {post.likedByMe ? '❤️' : '🤍'} {post.likeCount}
           </button>
-          <label htmlFor={id} className="ghost row align-center interactive">
-            💬 {post.comments.length}
-          </label>
+          <label htmlFor={id} className="ghost interactive"><Row align="center">💬 {post.comments.length}</Row></label>
         </Row>
         <button className="ghost">⋮</button>
       </Row>

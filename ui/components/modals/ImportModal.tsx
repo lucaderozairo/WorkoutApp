@@ -115,7 +115,7 @@ export function ImportModal({ context, existingSession, onComplete, onClose }: I
                       </button>
                       <Row justify="center">
                         {['GPX', 'TCX', 'FIT'].map(fmt => (
-                          <span key={fmt} className="pill"><span className="dot" />{fmt}</span>
+                          <span key={fmt} className="badge"><span className="dot" />{fmt}</span>
                         ))}
                       </Row>
                     </Column>

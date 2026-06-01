@@ -1,5 +1,4 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
-import { Row } from '../layout/Row';
 import { Spinner } from './Spinner';
 import { Icon } from './Icon';
 
@@ -57,17 +56,13 @@ export function Button({
       ? <Icon name="check" size="sm" />
       : trailing;
 
-  const hasSlots = leading || trailingSlot;
-
+  // button CSS is already display:inline-flex align-items:center gap:s-2 —
+  // no wrapper needed for leading/trailing slots
   return (
     <button className={classes} disabled={disabled || loading} {...rest}>
-      {hasSlots ? (
-        <Row align="center" gap={2} as="span">
-          {leading}
-          {children}
-          {trailingSlot}
-        </Row>
-      ) : children}
+      {leading}
+      {children}
+      {trailingSlot}
     </button>
   );
 }

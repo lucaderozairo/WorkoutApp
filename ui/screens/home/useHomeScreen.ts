@@ -7,7 +7,7 @@ import { handleRefreshConditions } from '@features/conditions';
 import type { WeatherCondition, SuitabilityEntry } from '@features/conditions';
 import type { Appointment } from '@features/scheduling';
 import { sleepEntryToSession } from '@features/readiness/queries';
-import { GOAL_MINUTES, DAY_LABELS } from '@ui/components/dashboard/dashboardUtils';
+import { GOAL_MINUTES, DAY_LABELS } from './dashboardUtils';
 
 export function useHomeScreen() {
   const readiness = useQuery<TodayReadinessView>('today_readiness');

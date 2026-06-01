@@ -23,10 +23,12 @@ export function PhotoGallery({ photos, onAdd, onRemove, label = 'Photos' }: Phot
         ))}
         <button
           type="button"
-          className="photo-thumb surface tight column align-center center"
+          className="photo-thumb surface pad-sm"
           onClick={() => fileInputRef.current?.click()}
         >
-          <span className="caption">+</span>
+          <Column align="center" justify="center" className="h-full">
+            <span className="caption">+</span>
+          </Column>
         </button>
       </Cluster>
       <input

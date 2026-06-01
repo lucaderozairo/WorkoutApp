@@ -70,7 +70,7 @@ export function CalendarLarge() {
                                     <span className="eyebrow" style={{ fontSize: 9 }}>{ev.month}</span>
                                     <span style={{ fontSize: 'var(--t-lg)', lineHeight: 1 }}>{ev.day}</span>
                                 </div>
-                                <div className="column compact" style={{ flex: 1 }}>
+                                <div className="column gap-1" style={{ flex: 1 }}>
                                     <Row justify="between" align="center">
                                         <span className="detail">{ev.title}</span>
                                         <span className={`pill ${ev.sport}`}>{ev.sport}</span>
