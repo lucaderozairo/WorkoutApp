@@ -1,4 +1,5 @@
 import { Row } from '../layout/Row';
+import { Text } from './Text';
 
 interface SwitchProps {
   checked: boolean;
@@ -30,7 +31,7 @@ export function Switch({ checked, onChange, disabled, size = 'md', label, classN
   return (
     <Row as="label" align="center" gap={3}>
       {btn}
-      <span className="caption">{label}</span>
+      <Text size="caption">{label}</Text>
     </Row>
   );
 }
