@@ -4,7 +4,7 @@ import { EXERCISES } from '@data/static/exercises';
 import type { ExerciseCategory } from '@features/training_log';
 import { EXERCISE_GROUPS, BT_OPTIONS } from '@features/training_log/projections/viewTypes';
 import { Row, Column, Cluster } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Surface, Button, Text, Badge, Chip } from '@ui/atoms';
 
 export interface ExercisePickerProps {
   onClose: () => void;
@@ -57,22 +57,21 @@ export function ExercisePicker({ onClose, onCommit }: ExercisePickerProps) {
     <Surface>
       <Column>
         <Row align="center" justify="between">
-          <h3 className="detail">Add Exercise</h3>
-          <button type="button" className="icon sm secondary" onClick={onClose}>
+          <Text as="h3" size="detail">Add Exercise</Text>
+          <Button type="button" variant="secondary" size="icon" onClick={onClose}>
             <X size={14} />
-          </button>
+          </Button>
         </Row>
 
         <Cluster>
           {BT_OPTIONS.map(bt => (
-            <button
+            <Chip
               key={bt}
-              type="button"
-              className={`chip${blockType === bt ? ' active' : ''}`}
+              active={blockType === bt}
               onClick={() => { setBlockType(bt); setMuscleGroup('All'); setPending([]); }}
             >
               {bt}
-            </button>
+            </Chip>
           ))}
         </Cluster>
 
@@ -85,49 +84,49 @@ export function ExercisePicker({ onClose, onCommit }: ExercisePickerProps) {
 
         <Cluster>
           {EXERCISE_GROUPS.map(g => (
-            <button
+            <Chip
               key={g}
-              type="button"
-              className={`chip${muscleGroup === g ? ' active' : ''}`}
+              active={muscleGroup === g}
               onClick={() => setMuscleGroup(g)}
             >
               {g}
-            </button>
+            </Chip>
           ))}
         </Cluster>
 
         {isMulti && (
-          <p className="caption faint">
+          <Text size="caption" color="faint">
             Select 2 or more exercises, then tap Add.
-          </p>
+          </Text>
         )}
 
         <Column>
           {groupKeys.map(grp => (
             <Column key={grp}>
-              <span className="eyebrow">{grp}</span>
+              <Text size="eyebrow">{grp}</Text>
               {filtered
                 .filter(ex => (ex.muscleGroup ?? (ex.category === 'cardio' ? 'Cardio' : 'Mobility')) === grp)
                 .map((ex, i, arr) => {
                   const isSelected = pending.includes(ex.name);
                   return (
-                    <button
+                    <Surface
                       key={i}
-                      type="button"
-                      className={`surface interactive${isSelected ? ' active' : ''}${i < arr.length - 1 ? ' bordered-bottom' : ''}`}
+                      interactive
+                      selected={isSelected}
                       onClick={() => handleSelect(ex.name)}
+                      className={i < arr.length - 1 ? 'bordered-bottom' : undefined}
                     >
                       <Row justify="between" align="center">
-                      <Column gap={1} align="start" className="grow">
-                        <span className="detail">{ex.name}</span>
-                        <span className="caption">{ex.muscle}</span>
-                      </Column>
-                      {isSelected
-                        ? <Check size={14} className="accent" />
-                        : <span className="badge"><span className="dot" />{ex.defaultEquip}</span>
-                      }
+                        <Column gap={1} align="start" className="grow">
+                          <Text size="detail">{ex.name}</Text>
+                          <Text size="caption">{ex.muscle}</Text>
+                        </Column>
+                        {isSelected
+                          ? <Check size={14} className="accent" />
+                          : <Badge dot>{ex.defaultEquip}</Badge>
+                        }
                       </Row>
-                    </button>
+                    </Surface>
                   );
                 })
               }
@@ -135,23 +134,23 @@ export function ExercisePicker({ onClose, onCommit }: ExercisePickerProps) {
           ))}
 
           {filtered.length === 0 && (
-            <p className="caption muted">No exercises found</p>
+            <Text size="caption" color="muted">No exercises found</Text>
           )}
 
           {isMulti && pending.length >= 2 && (
-            <button type="button" className="surface secondary" onClick={handleCommit}>
+            <Button variant="secondary" onClick={handleCommit}>
               Add {pending.length} exercises to {blockType}
-            </button>
+            </Button>
           )}
 
           {isMulti && pending.length === 1 && (
-            <p className="caption muted">Select at least one more exercise.</p>
+            <Text size="caption" color="muted">Select at least one more exercise.</Text>
           )}
 
           {!isMulti && (
-            <button type="button" className="secondary">
+            <Button variant="secondary">
               <Plus size={12} /> Create exercise
-            </button>
+            </Button>
           )}
         </Column>
       </Column>

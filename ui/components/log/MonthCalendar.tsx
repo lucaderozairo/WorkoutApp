@@ -6,7 +6,7 @@ import type { CombinedSession } from '@features/training_log/queries/calendarUti
 import { buildDateMap, getMonthGrid, toDateKey } from '@features/training_log/queries/calendarUtils';
 import { StrengthSessionItem, CardioSessionItem } from './SessionListItem';
 import { Row, Column } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Surface, Button, Text } from '@ui/atoms';
 
 interface Props {
   sessions: CombinedSession[];
@@ -58,15 +58,15 @@ export function MonthCalendar({ sessions, typeFilter, renderFilter }: Props) {
     <Column>
       <Surface pad="sm">
         <Row justify="between" align="center">
-          <button className="secondary icon sm" onClick={prev}>‹</button>
-          <strong>{monthLabel}</strong>
-          <button className="secondary icon sm" onClick={next}>›</button>
+          <Button variant="secondary" size="icon" onClick={prev}>‹</Button>
+          <Text bold>{monthLabel}</Text>
+          <Button variant="secondary" size="icon" onClick={next}>›</Button>
         </Row>
       </Surface>
 
       <Grid variant="cal">
         {WEEKDAY_LABELS.map((d, i) => (
-          <span key={i} className="caption text-center">{d}</span>
+          <Text key={i} size="caption" className="text-center">{d}</Text>
         ))}
       </Grid>
 
@@ -101,20 +101,20 @@ export function MonthCalendar({ sessions, typeFilter, renderFilter }: Props) {
           <Row justify="between" align="center" gap={1}>
             {selectedKey ? (
               <>
-                <button className="ghost sm" onClick={() => setSelectedKey(null)}>Back</button>
-                <span className="caption muted">
+                <Button variant="ghost" size="sm" onClick={() => setSelectedKey(null)}>Back</Button>
+                <Text size="caption" color="muted">
                   {new Date(selectedKey + 'T12:00:00').toLocaleDateString('en-GB', {
                     weekday: 'short', day: 'numeric', month: 'long',
                   })}
-                </span>
+                </Text>
               </>
             ) : (
-              <span className="caption muted">All sessions · {monthLabel}</span>
+              <Text size="caption" color="muted">All sessions · {monthLabel}</Text>
             )}
           </Row>
         </Surface>
         {displaySessions.length === 0 ? (
-          <p className="muted caption">No sessions {selectedKey ? 'this day' : 'this month'}.</p>
+          <Text size="caption" color="muted">No sessions {selectedKey ? 'this day' : 'this month'}.</Text>
         ) : (
           displaySessions.map((entry, i) =>
             entry.kind === 'strength'

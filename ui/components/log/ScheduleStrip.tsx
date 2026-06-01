@@ -1,10 +1,10 @@
-// ui/components/log/ScheduleStrip.tsx
 import { useState } from "react";
 import { Grid } from '@ui/layout';
 import { Row, Column } from '@ui/layout';
 import { useNavigate } from "react-router-dom";
 import type { ActivityHistoryItem } from "@features/training_log";
 import type { CardioSession } from "@features/cardio";
+import { Button, Text } from "@ui/atoms";
 
 function isoDate(d: Date): string {
   return d.toISOString().split("T")[0];
@@ -41,11 +41,7 @@ export function ScheduleStrip({
   today.setHours(0, 0, 0, 0);
   const todayIso = isoDate(today);
 
-  const sessionByDay = new Map<
-    string,
-    { sessionId: string; kind: "strength" | "cardio" }
-  >();
-  // Strength takes priority when both kinds exist on the same day
+  const sessionByDay = new Map<string, { sessionId: string; kind: "strength" | "cardio" }>();
   for (const s of strengthSessions) {
     const key = isoDate(new Date(s.startedAt));
     if (!sessionByDay.has(key))
@@ -65,19 +61,19 @@ export function ScheduleStrip({
   return (
     <Column gap={1}>
       <Row justify="between">
-        <span>{monthLabel}</span>
+        <Text>{monthLabel}</Text>
         <Row gap={1}>
-          <button
-            className="ghost sm"
-            onClick={() => setWeekOffset((w) => w - 1)}>
+          <Button variant="ghost" size="sm" onClick={() => setWeekOffset((w) => w - 1)}>
             ‹ prev
-          </button>
-          <button
-            className="ghost sm"
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => setWeekOffset((w) => w + 1)}
-            disabled={weekOffset >= 0}>
+            disabled={weekOffset >= 0}
+          >
             next ›
-          </button>
+          </Button>
         </Row>
       </Row>
 
@@ -95,13 +91,12 @@ export function ScheduleStrip({
               data-today={isToday ? "" : undefined}
               data-kind={meta?.kind}
               onClick={() => meta && navigate(`/sessions/${meta.sessionId}`)}
-              disabled={isFuture || (!meta && !isToday)}>
+              disabled={isFuture || (!meta && !isToday)}
+            >
               <span>{DAY_LABELS[i]}</span>
               <span>{day.getDate()}</span>
               {meta && !isToday && (
-                <span
-                  className={`dot ${meta.kind === "strength" ? "lift" : "run"}`}
-                />
+                <span className={`dot ${meta.kind === "strength" ? "lift" : "run"}`} />
               )}
             </button>
           );

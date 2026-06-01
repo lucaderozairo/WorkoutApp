@@ -6,6 +6,7 @@ import { useCommand } from '@ui/bindings';
 import { exportSessionEnvelope } from '@data/sources/local/persistence';
 import { exportSessionCsv, triggerDownload } from '@shared/utils/exportSession';
 import { Row, Column, Cluster, Spacer } from '@ui/layout';
+import { Button, Text, Textarea } from '@ui/atoms';
 
 const RPE_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const SUGGESTED_TAGS = ['push', 'pull', 'legs', 'upper', 'lower', 'full-body', 'heavy', 'light', 'deload'];
@@ -62,64 +63,65 @@ export function FinishSessionModal({ session, onClose, onFinished, onJumpToBlock
     <div role="dialog" aria-label="Finish session">
       <Column>
         <Row as="header" align="center" justify="between" gap={1}>
-          <h3>Finish session</h3>
-          <button type="button" className="ghost sm" onClick={onClose}>✕</button>
+          <Text as="h3">Finish session</Text>
+          <Button type="button" variant="ghost" size="sm" onClick={onClose}>✕</Button>
         </Row>
 
-        <p className="caption">
+        <Text size="caption">
           {session.segments.length} exercises · {totalSets} sets
-        </p>
+        </Text>
 
         <Column gap={1}>
-          <span className="caption">Review</span>
+          <Text size="caption">Review</Text>
           {session.segments.map(b => (
-            <button
+            <Button
               key={b.id}
               type="button"
-              className="ghost"
+              variant="ghost"
+              block
               onClick={() => { onJumpToBlock?.(b.id); onClose(); }}
             >
               <Row justify="between" align="center">
-                <span>{b.exerciseName}</span>
-                <span className="caption">{b.sets.length} sets</span>
+                <Text>{b.exerciseName}</Text>
+                <Text size="caption">{b.sets.length} sets</Text>
               </Row>
-            </button>
+            </Button>
           ))}
         </Column>
 
         <Column gap={1}>
-          <span className="caption">Session RPE</span>
+          <Text size="caption">Session RPE</Text>
           <Cluster gap={1}>
             {RPE_VALUES.map(n => (
-              <button
+              <Button
                 key={n}
                 type="button"
                 className={`pill${rpe === n ? ' primary' : ''}`}
                 onClick={() => setRpe(n)}
               >
                 {n}
-              </button>
+              </Button>
             ))}
           </Cluster>
         </Column>
 
         <Column gap={1}>
-          <span className="caption">Tags</span>
+          <Text size="caption">Tags</Text>
           <Cluster gap={1}>
             {SUGGESTED_TAGS.map(t => (
-              <button
+              <Button
                 key={t}
                 type="button"
                 className={`pill${tags.includes(t) ? ' primary' : ''}`}
                 onClick={() => toggleTag(t)}
               >
                 {t}
-              </button>
+              </Button>
             ))}
           </Cluster>
         </Column>
 
-        <textarea
+        <Textarea
           value={notes}
           onChange={e => setNotes(e.target.value)}
           placeholder="Session notes…"
@@ -128,15 +130,15 @@ export function FinishSessionModal({ session, onClose, onFinished, onJumpToBlock
 
         {finished ? (
           <Row gap={1} align="center">
-            <button type="button" className="secondary" onClick={handleExportJson}>Export JSON</button>
-            <button type="button" className="secondary" onClick={handleExportCsv}>Export CSV</button>
+            <Button type="button" variant="secondary" onClick={handleExportJson}>Export JSON</Button>
+            <Button type="button" variant="secondary" onClick={handleExportCsv}>Export CSV</Button>
             <Spacer />
-            <button type="button" className="primary" onClick={onClose}>Close</button>
+            <Button type="button" variant="primary" onClick={onClose}>Close</Button>
           </Row>
         ) : (
           <Row align="center" justify="between" gap={1}>
-            <button type="button" className="ghost" onClick={onClose}>Cancel</button>
-            <button type="button" className="primary" onClick={submit}>Finish</button>
+            <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
+            <Button type="button" variant="primary" onClick={submit}>Finish</Button>
           </Row>
         )}
       </Column>

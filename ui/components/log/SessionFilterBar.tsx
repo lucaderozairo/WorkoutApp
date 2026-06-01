@@ -1,5 +1,6 @@
 import type { TypeFilter } from '@features/training_log/queries/calendarUtils';
 export type { TypeFilter };
+import { Tabs } from '@ui/molecules';
 
 export type ViewMode = 'list' | 'month' | 'week';
 export type TimeRange = '7d' | '30d' | 'all';
@@ -27,6 +28,11 @@ export const DEFAULT_FILTERS: SessionFilters = {
   sort: 'newest',
 };
 
+const VIEW_TABS = [
+  { id: 'list', value: 'list', label: '≡ List' },
+  { id: 'month', value: 'month', label: '▦ Month' },
+  { id: 'week', value: 'week', label: '⬚ Week' },
+];
 
 export function SessionFilterBar({
   filters,
@@ -36,16 +42,10 @@ export function SessionFilterBar({
   onChange: (f: SessionFilters) => void;
 }) {
   return (
-    <div className="tabs">
-      {(['list', 'month', 'week'] as ViewMode[]).map(v => (
-        <button
-          key={v}
-          className={`tab${filters.view === v ? ' active' : ''}`}
-          onClick={() => onChange({ ...filters, view: v })}
-        >
-          {v === 'list' ? '≡ List' : v === 'month' ? '▦ Month' : '⬚ Week'}
-        </button>
-      ))}
-    </div>
+    <Tabs
+      value={filters.view}
+      onChange={v => onChange({ ...filters, view: v as ViewMode })}
+      items={VIEW_TABS}
+    />
   );
 }

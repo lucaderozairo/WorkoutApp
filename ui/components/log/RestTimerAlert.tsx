@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { viewStore } from '@data/projections/views';
 import { Row } from '@ui/layout';
+import { Surface, Button, Text, Badge } from '@ui/atoms';
 
 type Props = {
   initialSeconds: number;
@@ -63,24 +64,25 @@ export function RestTimerAlert({ initialSeconds, onSkip }: Props) {
   };
 
   return (
-    <div className="alert">
+    <Surface className="alert">
       <Row justify="between" align="center">
-        <span className="detail">Rest</span>
-        <span className={`badge caption ${done ? 'warning' : 'neutral'}`}>{mm}:{ss}</span>
+        <Text size="detail">Rest</Text>
+        <Badge tone={done ? 'warn' : 'plain'}>{mm}:{ss}</Badge>
         <Row>
-          <span className="sm caption ghost" onClick={restart}>Restart</span>
+          <Button variant="ghost" size="sm" onClick={restart}>Restart</Button>
           {!done && (
-            <span
-              className="sm caption ghost"
-              onClick={() => setRunning(r => !r)}
+            <Button
+              variant="ghost"
+              size="sm"
               aria-label={running ? 'Pause timer' : 'Resume timer'}
+              onClick={() => setRunning(r => !r)}
             >
               {running ? 'Pause' : 'Resume'}
-            </span>
+            </Button>
           )}
-          <span className="sm caption ghost" onClick={handleSkip}>Skip</span>
+          <Button variant="ghost" size="sm" onClick={handleSkip}>Skip</Button>
         </Row>
       </Row>
-    </div>
+    </Surface>
   );
 }
