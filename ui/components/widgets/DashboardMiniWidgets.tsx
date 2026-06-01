@@ -1,6 +1,6 @@
 import { ScoreRing, SleepStagesBar, SparklineArea, fmtMin } from '@ui/patterns/charts/domain-charts';
 import { Grid, Row, Column, Cluster, Spacer } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Surface, Text, Badge, Metric, Divider } from '@ui/atoms';
 import type { SleepSession } from '@features/readiness';
 import type { HealthMetricsView } from '@features/readiness';
 import type { Appointment } from '@features/scheduling';
@@ -43,8 +43,8 @@ export function SleepWidget({
   if (!session) {
     return (
       <Surface><Column gap={1} className="h-full">
-        <span className="caption">Sleep</span>
-        <span className="caption faint">No data</span>
+        <Text size="caption">Sleep</Text>
+        <Text size="caption" color="faint">No data</Text>
       </Column></Surface>
     );
   }
@@ -60,8 +60,8 @@ export function SleepWidget({
   if (size === '1x1') {
     return (
       <Surface><Column gap={1} className="h-full">
-        <span className="caption">Sleep</span>
-        <span className="metric lg">{session.score}</span>
+        <Text size="caption">Sleep</Text>
+        <Metric value={session.score} size="lg" />
       </Column></Surface>
     );
   }
@@ -70,13 +70,13 @@ export function SleepWidget({
     return (
       <Surface><Column gap={1} className="h-full">
         <Row justify="between" align="center">
-          <span className="caption">Sleep</span>
-          <span className={`badge ${badge.cls}`}>{badge.label}</span>
+          <Text size="caption">Sleep</Text>
+          <Badge className={badge.cls}>{badge.label}</Badge>
         </Row>
         <Row align="center">
-          <span className="metric">{session.score}<span className="muted">/ 100</span></span>
+          <Metric value={session.score} unit="/ 100" />
           <Spacer />
-          <span className="detail">{duration}</span>
+          <Text size="detail">{duration}</Text>
         </Row>
         <SleepStagesBar stages={session.stages} height={10} />
       </Column></Surface>
@@ -86,22 +86,22 @@ export function SleepWidget({
   return (
     <Surface><Column gap={1} className="h-full">
       <Row justify="between" align="center">
-        <span className="caption">Sleep</span>
-        <span className={`badge ${badge.cls}`}>{badge.label}</span>
+        <Text size="caption">Sleep</Text>
+        <Badge className={badge.cls}>{badge.label}</Badge>
       </Row>
       <Row align="center">
         <ScoreRing score={session.score} subtitle="score" size={72} />
         <Column gap={1} className="grow">
-          <span className="detail">{duration}</span>
-          <span className="caption faint">{debtLabel}</span>
+          <Text size="detail">{duration}</Text>
+          <Text size="caption" color="faint">{debtLabel}</Text>
         </Column>
       </Row>
       <SleepStagesBar stages={session.stages} height={10} />
       <Cluster gap={1}>
-        <span className="badge deep">Deep {fmtMin(session.stages.deep)}</span>
-        <span className="badge light">Light {fmtMin(session.stages.light)}</span>
-        <span className="badge rem">REM {fmtMin(session.stages.rem)}</span>
-        <span className="badge awake">Awake {fmtMin(session.stages.awake)}</span>
+        <Badge className="deep">Deep {fmtMin(session.stages.deep)}</Badge>
+        <Badge className="light">Light {fmtMin(session.stages.light)}</Badge>
+        <Badge className="rem">REM {fmtMin(session.stages.rem)}</Badge>
+        <Badge className="awake">Awake {fmtMin(session.stages.awake)}</Badge>
       </Cluster>
       {scoreHistory.length > 0 && (
         <SparklineArea
@@ -132,8 +132,8 @@ export function WeatherDashWidget({ size }: { size: WidgetSize }) {
     return (
       <Surface><Column gap={1} justify="center" align="center" className="h-full">
         <span className="emoji-sm">⛅</span>
-        <span className="metric">18<span className="muted">°C</span></span>
-        <span className="caption faint">Kingston</span>
+        <Metric value={18} unit="°C" />
+        <Text size="caption" color="faint">Kingston</Text>
       </Column></Surface>
     );
   }
@@ -142,23 +142,23 @@ export function WeatherDashWidget({ size }: { size: WidgetSize }) {
     return (
       <Surface><Column gap={1} className="h-full">
         <Row justify="between" align="center">
-          <span className="caption">Kingston, UK</span>
-          <span className="caption faint">15m ago</span>
+          <Text size="caption">Kingston, UK</Text>
+          <Text size="caption" color="faint">15m ago</Text>
         </Row>
         <Row align="center">
           <span className="emoji-md">⛅</span>
           <Column gap={1} className="grow">
-            <span className="metric sm">18<span className="muted">°</span></span>
-            <span className="caption faint">Partly Cloudy · Feels 16°</span>
+            <Metric value={18} unit="°" size="sm" />
+            <Text size="caption" color="faint">Partly Cloudy · Feels 16°</Text>
           </Column>
         </Row>
         <Row justify="between">
           {NEXT_HOURS.map(({ hour, icon, temp, rain }) => (
             <Column key={hour} gap={1} align="center">
-              <span className="mono caption">{hour}</span>
+              <Text size="caption" mono>{hour}</Text>
               <span>{icon}</span>
-              <span className="mono">{temp}°</span>
-              <span className="mono caption faint">{rain}%</span>
+              <Text mono>{temp}°</Text>
+              <Text size="caption" color="faint" mono>{rain}%</Text>
             </Column>
           ))}
         </Row>
@@ -169,57 +169,57 @@ export function WeatherDashWidget({ size }: { size: WidgetSize }) {
   return (
     <Surface><Column gap={1} className="h-full">
       <Row justify="between" align="center">
-        <span className="caption">Kingston, UK</span>
-        <span className="caption faint">15m ago</span>
+        <Text size="caption">Kingston, UK</Text>
+        <Text size="caption" color="faint">15m ago</Text>
       </Row>
       <Row justify="between" align="center">
         <Row align="center">
           <span className="emoji-lg">⛅</span>
           <Column gap={1}>
-            <span className="metric sm">18<span className="muted">°C</span></span>
-            <span className="caption faint">Partly Cloudy</span>
+            <Metric value={18} unit="°C" size="sm" />
+            <Text size="caption" color="faint">Partly Cloudy</Text>
           </Column>
         </Row>
         <Column gap={1} align="end">
-          <span className="caption">Feels like 16°</span>
-          <span className="caption faint">Humidity 62%</span>
+          <Text size="caption">Feels like 16°</Text>
+          <Text size="caption" color="faint">Humidity 62%</Text>
         </Column>
       </Row>
       <Row justify="between">
         {NEXT_HOURS.map(({ hour, icon, temp, rain }) => (
           <Column key={hour} gap={1} align="center">
-            <span className="mono caption">{hour}</span>
+            <Text size="caption" mono>{hour}</Text>
             <span>{icon}</span>
-            <span className="mono">{temp}°</span>
-            <span className="mono caption faint">{rain}%</span>
+            <Text mono>{temp}°</Text>
+            <Text size="caption" color="faint" mono>{rain}%</Text>
           </Column>
         ))}
       </Row>
       <Grid variant="tiles">
         <Column gap={1}>
-          <span className="caption faint">UV</span>
-          <span>4</span>
-          <span className="badge green">Mod.</span>
+          <Text size="caption" color="faint">UV</Text>
+          <Text>4</Text>
+          <Badge className="green">Mod.</Badge>
         </Column>
         <Column gap={1}>
-          <span className="caption faint">Wind</span>
-          <span>14</span>
-          <span className="badge blue">km/h</span>
+          <Text size="caption" color="faint">Wind</Text>
+          <Text>14</Text>
+          <Badge className="blue">km/h</Badge>
         </Column>
         <Column gap={1}>
-          <span className="caption faint">Rain</span>
-          <span>20%</span>
-          <span className="badge amber">Low</span>
+          <Text size="caption" color="faint">Rain</Text>
+          <Text>20%</Text>
+          <Badge className="amber">Low</Badge>
         </Column>
         <Column gap={1}>
-          <span className="caption faint">Vis.</span>
-          <span>12km</span>
-          <span className="badge green">Clear</span>
+          <Text size="caption" color="faint">Vis.</Text>
+          <Text>12km</Text>
+          <Badge className="green">Clear</Badge>
         </Column>
       </Grid>
       <Row justify="between" align="center" gap={1}>
-        <span className="caption">Run conditions — mild temp, low wind</span>
-        <span className="badge green">Go</span>
+        <Text size="caption">Run conditions — mild temp, low wind</Text>
+        <Badge className="green">Go</Badge>
       </Row>
     </Column></Surface>
   );
@@ -245,10 +245,10 @@ export function CalendarDashWidget({ size, appointments }: { size: WidgetSize; a
   if (size === '1x1') {
     return (
       <Surface><Column gap={1} justify="center" align="center" className="h-full">
-        <span className="metric lg">{today}</span>
-        <span className="caption faint">{monthName}</span>
+        <Metric value={today} size="lg" />
+        <Text size="caption" color="faint">{monthName}</Text>
         {appointments.length > 0 && (
-          <span className={`badge ${appointments.length > 0 ? 'blue' : ''}`}>{appointments.length} event{appointments.length !== 1 ? 's' : ''}</span>
+          <Badge className={appointments.length > 0 ? 'blue' : ''}>{appointments.length} event{appointments.length !== 1 ? 's' : ''}</Badge>
         )}
       </Column></Surface>
     );
@@ -258,16 +258,16 @@ export function CalendarDashWidget({ size, appointments }: { size: WidgetSize; a
     return (
       <Surface><Column gap={1} className="h-full">
         <Row justify="between" align="center">
-          <span className="caption">{now.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}</span>
+          <Text size="caption">{now.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}</Text>
         </Row>
         {appointments.length === 0 ? (
-          <span className="caption faint">Nothing scheduled today</span>
+          <Text size="caption" color="faint">Nothing scheduled today</Text>
         ) : (
           <Column gap={1}>
             {appointments.slice(0, 3).map(a => (
               <Row key={a.id} align="center" gap={1}>
                 <div className="dot bg-primary" />
-                <span className="caption grow">{a.title}</span>
+                <Text size="caption" className="grow">{a.title}</Text>
                 <time className="caption faint">
                   {new Date(a.scheduledAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
                 </time>
@@ -283,15 +283,15 @@ export function CalendarDashWidget({ size, appointments }: { size: WidgetSize; a
 
   return (
     <Surface><Column gap={1} className="h-full">
-      <span className="caption">{monthName} {year}</span>
+      <Text size="caption">{monthName} {year}</Text>
       <Grid variant="cal">
         {DAY_HEADERS.map(d => (
-          <div key={d} className="caption faint text-center">{d}</div>
+          <Text as="div" key={d} size="caption" color="faint" className="text-center">{d}</Text>
         ))}
         {cells.map((day, i) => (
-          <div key={i} className={`caption text-center${day === today ? ' badge blue' : ' faint'}`}>
+          <Text as="div" key={i} size="caption" className={`text-center${day === today ? ' badge blue' : ' faint'}`}>
             {day ?? ''}
-          </div>
+          </Text>
         ))}
       </Grid>
       {appointments.length > 0 && (
@@ -299,7 +299,7 @@ export function CalendarDashWidget({ size, appointments }: { size: WidgetSize; a
           {appointments.slice(0, 2).map(a => (
             <Row key={a.id} gap={1} align="center">
               <div className="dot bg-primary" />
-              <span className="caption grow">{a.title}</span>
+              <Text size="caption" className="grow">{a.title}</Text>
             </Row>
           ))}
         </Column>
@@ -316,9 +316,9 @@ export function ReadinessRecoveryWidget({ size, score, scoreClass }: { size: Wid
   if (size === '1x1') {
     return (
       <Surface><Column gap={1} className="h-full">
-        <span className="caption">Readiness</span>
-        <span className="metric lg">{score}</span>
-        <span className={`badge ${BADGE_CLASS[scoreClass]}`}>{RECOVERY_LABEL[scoreClass]}</span>
+        <Text size="caption">Readiness</Text>
+        <Metric value={score} size="lg" />
+        <Badge className={BADGE_CLASS[scoreClass]}>{RECOVERY_LABEL[scoreClass]}</Badge>
       </Column></Surface>
     );
   }
@@ -327,12 +327,12 @@ export function ReadinessRecoveryWidget({ size, score, scoreClass }: { size: Wid
     return (
       <Surface><Column gap={1} className="h-full">
         <Row justify="between" align="center">
-          <span className="caption">Readiness · Recovery</span>
-          <span className={`badge ${BADGE_CLASS[scoreClass]}`}>{RECOVERY_LABEL[scoreClass]}</span>
+          <Text size="caption">Readiness · Recovery</Text>
+          <Badge className={BADGE_CLASS[scoreClass]}>{RECOVERY_LABEL[scoreClass]}</Badge>
         </Row>
         <Row align="center">
-          <span className="metric lg grow">{score}</span>
-          <p className="detail faint">{RECOVERY_DETAIL[scoreClass]}</p>
+          <Metric value={score} size="lg" className="grow" />
+          <Text size="detail" color="faint">{RECOVERY_DETAIL[scoreClass]}</Text>
         </Row>
       </Column></Surface>
     );
@@ -341,14 +341,14 @@ export function ReadinessRecoveryWidget({ size, score, scoreClass }: { size: Wid
   return (
     <Surface><Column gap={1} className="h-full">
       <Row justify="between" align="center">
-        <span className="caption">Readiness · Recovery</span>
-        <span className={`badge ${BADGE_CLASS[scoreClass]}`}>{RECOVERY_LABEL[scoreClass]}</span>
+        <Text size="caption">Readiness · Recovery</Text>
+        <Badge className={BADGE_CLASS[scoreClass]}>{RECOVERY_LABEL[scoreClass]}</Badge>
       </Row>
       <Row align="center">
         <ScoreRing score={score} color={ringColor} subtitle="score" size={72} />
         <Column gap={1} className="grow">
-          <p className="detail">{RECOVERY_DETAIL[scoreClass]}</p>
-          <p className="caption faint">{RECOVERY_TIP[scoreClass]}</p>
+          <Text size="detail">{RECOVERY_DETAIL[scoreClass]}</Text>
+          <Text size="caption" color="faint">{RECOVERY_TIP[scoreClass]}</Text>
         </Column>
       </Row>
     </Column></Surface>
@@ -373,15 +373,15 @@ export function HeartStatsWidget({ size, bpm, hrv, history }: { size: WidgetSize
   if (size === '1x1') {
     return (
       <Surface><Column gap={1} className="h-full">
-        <span className="caption">Heart</span>
+        <Text size="caption">Heart</Text>
         <Row justify="between" align="center">
           <Column gap={1}>
-            <span className="metric">{bpm ?? '—'}<span className="muted">bpm</span></span>
-            <span className="caption faint">HR</span>
+            <Metric value={bpm ?? '—'} unit="bpm" />
+            <Text size="caption" color="faint">HR</Text>
           </Column>
           <Column gap={1} align="end">
-            <span className="metric">{hrv ?? '—'}<span className="muted">ms</span></span>
-            <span className="caption faint">HRV</span>
+            <Metric value={hrv ?? '—'} unit="ms" />
+            <Text size="caption" color="faint">HRV</Text>
           </Column>
         </Row>
       </Column></Surface>
@@ -391,19 +391,15 @@ export function HeartStatsWidget({ size, bpm, hrv, history }: { size: WidgetSize
   if (size === '2x1') {
     return (
       <Surface><Column gap={1} className="h-full">
-        <span className="caption">Heart</span>
+        <Text size="caption">Heart</Text>
         <Row justify="between" align="center">
           <Column gap={1}>
-            <Column gap={1}>
-              <span className="metric">{bpm ?? '—'}<span className="muted">bpm</span></span>
-            </Column>
-            <span className="caption faint">Resting HR</span>
+            <Metric value={bpm ?? '—'} unit="bpm" />
+            <Text size="caption" color="faint">Resting HR</Text>
           </Column>
           <Column gap={1} align="end">
-            <Column gap={1}>
-              <span className="metric">{hrv ?? '—'}<span className="muted">ms</span></span>
-            </Column>
-            <span className="caption faint">HRV</span>
+            <Metric value={hrv ?? '—'} unit="ms" />
+            <Text size="caption" color="faint">HRV</Text>
           </Column>
         </Row>
       </Column></Surface>
@@ -412,19 +408,15 @@ export function HeartStatsWidget({ size, bpm, hrv, history }: { size: WidgetSize
 
   return (
     <Surface><Column gap={1} className="h-full">
-      <span className="caption">Heart</span>
+      <Text size="caption">Heart</Text>
       <Row justify="between" align="center">
         <Column gap={1}>
-          <Column gap={1}>
-            <span className="metric">{bpm ?? '—'}<span className="muted">bpm</span></span>
-          </Column>
-          <span className="caption faint">Resting HR</span>
+          <Metric value={bpm ?? '—'} unit="bpm" />
+          <Text size="caption" color="faint">Resting HR</Text>
         </Column>
         <Column gap={1} align="end">
-          <Column gap={1}>
-            <span className="metric">{hrv ?? '—'}<span className="muted">ms</span></span>
-          </Column>
-          <span className="caption faint">HRV</span>
+          <Metric value={hrv ?? '—'} unit="ms" />
+          <Text size="caption" color="faint">HRV</Text>
         </Column>
       </Row>
       {hrData.length > 0 && (

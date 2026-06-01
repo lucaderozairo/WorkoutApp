@@ -7,44 +7,25 @@ import {
 import { ScoreRing, fmtMin, TOOLTIP_STYLE, TICK } from '@ui/patterns/charts/domain-charts';
 import type { SleepSession } from '@features/readiness';
 import { Row, Column, Spacer } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Surface, Text, Badge } from '@ui/atoms';
 
 type WidgetSize = '1x1' | '2x1' | '2x2';
 
-/*
-  Correct order:
-  0 = Awake
-  1 = Light
-  2 = Deep
-  3 = REM
-*/
 const STAGE_LABELS = ['Awake', 'Light', 'Deep', 'REM'] as const;
-
 const STAGE_PILLS = ['deep', 'light', 'rem', 'awake'] as const;
 const STAGE_KEYS  = ['deep', 'light', 'rem', 'awake'] as const;
 
 const STAGE_COLORS = [
-  'var(--color-sleep-awake)', // 0
-  'var(--color-sleep-light)', // 1
-  'var(--color-sleep-deep)',  // 2
-  'var(--color-sleep-rem)',   // 3
+  'var(--color-sleep-awake)',
+  'var(--color-sleep-light)',
+  'var(--color-sleep-deep)',
+  'var(--color-sleep-rem)',
 ] as const;
-
-/* ── Sleep bar builder ──────────────────────────────────────────────────────── */
 
 function buildSleepBar(session: SleepSession): Array<{ t: string; stage: number }> {
   const totalMin = Object.values(session.stages).reduce((a, b) => a + b, 0);
   const slots    = Math.ceil(totalMin / 15);
 
-  /*
-    Stage mapping:
-    0 = Awake
-    1 = Light
-    2 = Deep
-    3 = REM
-  */
-
-  // realistic sleep cycle
   const BASE = [
     1, 2, 2, 2, 1,
     1, 3, 3, 1, 2,
@@ -84,8 +65,6 @@ function buildSleepBar(session: SleepSession): Array<{ t: string; stage: number 
   return result;
 }
 
-/* ── Score helpers ──────────────────────────────────────────────────────────── */
-
 function scoreColor(score: number): string {
   if (score >= 80) return 'var(--ok)';
   if (score >= 60) return 'var(--warn)';
@@ -97,8 +76,6 @@ function scoreBadge(score: number) {
   if (score >= 60) return { label: 'OK', cls: 'amber' };
   return { label: 'Poor', cls: '' };
 }
-
-/* ── Component ──────────────────────────────────────────────────────────────── */
 
 export function SleepReviewWidget({
   size,
@@ -116,34 +93,30 @@ export function SleepReviewWidget({
   const badge = scoreBadge(session.score);
   const color = scoreColor(session.score);
 
-  /* 1x1 ───────────────────────────────────────────────────────────────────── */
-
   if (size === '1x1') {
     return (
       <Surface pad="sm">
         <Column align="center" justify="center" className="h-full">
-          <span className="eyebrow">Sleep</span>
-          <h2 className="mono">{session.score}</h2>
-          <span className="caption faint">{duration}</span>
-          <span className={`badge ${badge.cls}`}>{badge.label}</span>
+          <Text size="eyebrow">Sleep</Text>
+          <Text as="h2" mono>{session.score}</Text>
+          <Text size="caption" color="faint">{duration}</Text>
+          <Badge className={badge.cls}>{badge.label}</Badge>
         </Column>
       </Surface>
     );
   }
 
-  /* Shared stage rows ─────────────────────────────────────────────────────── */
-
   const stageRows = STAGE_KEYS.map((key, i) => (
     <Row key={key} gap={1} align="center" justify="between">
-      <span className={`pill ${STAGE_PILLS[i]}`}>
+      <Badge className={`pill ${STAGE_PILLS[i]}`}>
         {['Deep', 'Light', 'REM', 'Awake'][i]}
-      </span>
+      </Badge>
 
       <Spacer />
 
-      <span className="mono caption">
+      <Text size="caption" mono>
         {fmtMin(session.stages[key])}
-      </span>
+      </Text>
 
       <div>
         <ResponsiveContainer width="100%">
@@ -154,7 +127,6 @@ export function SleepReviewWidget({
           >
             <XAxis type="number" domain={[0, totalMin]} hide />
             <YAxis type="category" dataKey="name" hide />
-
             <Bar
               dataKey="v"
               fill={
@@ -175,22 +147,20 @@ export function SleepReviewWidget({
     </Row>
   ));
 
-  /* 2x1 ───────────────────────────────────────────────────────────────────── */
-
   if (size === '2x1') {
     return (
       <Surface pad="sm">
         <Column className="h-full">
           <Row justify="between" align="center">
-            <span className="eyebrow">Sleep</span>
-            <span className={`badge ${badge.cls}`}>{badge.label}</span>
+            <Text size="eyebrow">Sleep</Text>
+            <Badge className={badge.cls}>{badge.label}</Badge>
           </Row>
 
           <Row align="center">
-            <h2 className="mono">{session.score}</h2>
-            <span className="caption faint grow">
+            <Text as="h2" mono>{session.score}</Text>
+            <Text size="caption" color="faint" className="grow">
               &nbsp;· {duration}
-            </span>
+            </Text>
           </Row>
 
           {stageRows}
@@ -199,8 +169,6 @@ export function SleepReviewWidget({
     );
   }
 
-  /* 2x2 ───────────────────────────────────────────────────────────────────── */
-
   const sleepBar      = buildSleepBar(session);
   const labelInterval = Math.max(1, Math.floor(sleepBar.length / 6));
 
@@ -208,8 +176,8 @@ export function SleepReviewWidget({
     <Surface pad="sm">
       <Column className="h-full">
         <Row justify="between" align="center">
-          <span className="eyebrow">Sleep Review</span>
-          <span className={`badge ${badge.cls}`}>{badge.label}</span>
+          <Text size="eyebrow">Sleep Review</Text>
+          <Badge className={badge.cls}>{badge.label}</Badge>
         </Row>
 
         <Row align="center" justify="between">
@@ -231,7 +199,6 @@ export function SleepReviewWidget({
               axisLine={false}
               tickLine={false}
             />
-
             <YAxis
               type="number"
               domain={[0, 3]}
@@ -242,24 +209,15 @@ export function SleepReviewWidget({
               tickLine={false}
               width={50}
             />
-
             <Tooltip
               contentStyle={TOOLTIP_STYLE}
               formatter={(v: unknown) =>
                 [STAGE_LABELS[v as number] ?? '', 'Stage'] as [string, string]
               }
             />
-
-            <Bar
-              dataKey="stage"
-              radius={[2, 2, 0, 0]}
-              isAnimationActive={false}
-            >
+            <Bar dataKey="stage" radius={[2, 2, 0, 0]} isAnimationActive={false}>
               {sleepBar.map((entry, index) => (
-                <Cell
-                  key={index}
-                  fill={STAGE_COLORS[entry.stage]}
-                />
+                <Cell key={index} fill={STAGE_COLORS[entry.stage]} />
               ))}
             </Bar>
           </BarChart>

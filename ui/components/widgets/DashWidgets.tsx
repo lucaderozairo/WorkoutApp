@@ -9,7 +9,7 @@ import {
 import { Flame } from 'lucide-react';
 import { TOOLTIP_STYLE, TICK } from '@ui/patterns/charts/domain-charts';
 import { Grid, Row, Column } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Surface, Text, Badge, Metric } from '@ui/atoms';
 
 type WidgetSize = '1x1' | '2x1' | '2x2';
 
@@ -129,7 +129,7 @@ export function ReadinessWidget({ size }: { size: WidgetSize }) {
 
   if (size === '1x1') return (
     <Surface pad="sm"><Column justify="center" align="center" className="h-full">
-      <span className="eyebrow">Readiness</span>
+      <Text size="eyebrow">Readiness</Text>
       <MiniRing value={score} color={ringColor} size={72} />
     </Column></Surface>
   );
@@ -144,14 +144,14 @@ export function ReadinessWidget({ size }: { size: WidgetSize }) {
   return (
     <Surface pad="sm"><Column className="h-full">
       <Row justify="between" align="center">
-        <span className="eyebrow">Readiness</span>
-        <span className={`badge ${badge.cls}`}>{badge.label}</span>
+        <Text size="eyebrow">Readiness</Text>
+        <Badge className={badge.cls}>{badge.label}</Badge>
       </Row>
       <Row align="center">
         <MiniRing value={score} color={ringColor} size={ringSize} />
         <Column gap={1} className="grow">
-          <h3 className="mono">{score}</h3>
-          <span className="caption faint">out of 100</span>
+          <Text as="h3" mono>{score}</Text>
+          <Text size="caption" color="faint">out of 100</Text>
         </Column>
       </Row>
       {size === '2x2' && (
@@ -159,8 +159,8 @@ export function ReadinessWidget({ size }: { size: WidgetSize }) {
           {factors.map(({ label, val, max }) => (
             <Column key={label} gap={1}>
               <Row justify="between" align="center">
-                <span className="caption">{label}</span>
-                <span className="mono caption">{val}/{max}</span>
+                <Text size="caption">{label}</Text>
+                <Text size="caption" mono>{val}/{max}</Text>
               </Row>
               <MiniBar value={val} max={max} />
             </Column>
@@ -176,7 +176,7 @@ export function ReadinessWidget({ size }: { size: WidgetSize }) {
 export function SleepBreakdownWidget({ size }: { size: WidgetSize }) {
   return (
     <Surface pad="sm"><Column className="h-full">
-      <span className="eyebrow">Sleep Stages</span>
+      <Text size="eyebrow">Sleep Stages</Text>
       <div className="grow">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={MOCK.sleepHistory} barSize={10} margin={{ top: 4, right: 4, left: -28, bottom: 0 }}>
@@ -198,7 +198,7 @@ export function SleepBreakdownWidget({ size }: { size: WidgetSize }) {
 export function HRVWidget({ size }: { size: WidgetSize }) {
   return (
     <Surface pad="sm"><Column className="h-full">
-      <span className="eyebrow">HRV Trend</span>
+      <Text size="eyebrow">HRV Trend</Text>
       <div className="grow">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={MOCK.healthMetrics} margin={{ top: 4, right: 4, left: -28, bottom: 0 }}>
@@ -219,10 +219,10 @@ export function RestingHRWidget({ size }: { size: WidgetSize }) {
   const current = MOCK.healthMetrics[6].restingHr;
   return (
     <Surface pad="sm"><Column className="h-full">
-      <span className="eyebrow">Resting HR</span>
+      <Text size="eyebrow">Resting HR</Text>
       <Row align="center">
-        <h3 className="mono">{current}</h3>
-        <span className="caption faint">&nbsp;bpm</span>
+        <Text as="h3" mono>{current}</Text>
+        <Text size="caption" color="faint">&nbsp;bpm</Text>
       </Row>
       {size === '2x1' && (
         <div className="grow">
@@ -251,7 +251,7 @@ export function BodyBatteryWidget({ size: _ }: { size: WidgetSize }) {
   ];
   return (
     <Surface pad="sm"><Column justify="center" align="center" className="h-full">
-      <span className="eyebrow">Body Battery</span>
+      <Text size="eyebrow">Body Battery</Text>
       <PieChart width={100} height={56}>
         <Pie
           data={track}
@@ -265,8 +265,8 @@ export function BodyBatteryWidget({ size: _ }: { size: WidgetSize }) {
           {track.map((d, i) => <Cell key={i} fill={d.fill} />)}
         </Pie>
       </PieChart>
-      <h3 className="mono">{val}<span className="caption faint">%</span></h3>
-      <span className={`badge ${badge.cls}`}>{badge.label}</span>
+      <Text as="h3" mono>{val}<Text as="span" size="caption" color="faint">%</Text></Text>
+      <Badge className={badge.cls}>{badge.label}</Badge>
     </Column></Surface>
   );
 }
@@ -281,7 +281,7 @@ export function PlanAdherenceWidget({ size }: { size: WidgetSize }) {
 
   if (size === '1x1') return (
     <Surface pad="sm"><Column justify="center" align="center" className="h-full">
-      <span className="eyebrow">Adherence</span>
+      <Text size="eyebrow">Adherence</Text>
       <MiniRing value={pct} color={ringColor} size={72} />
     </Column></Surface>
   );
@@ -289,17 +289,19 @@ export function PlanAdherenceWidget({ size }: { size: WidgetSize }) {
   return (
     <Surface pad="sm"><Column className="h-full">
       <Row justify="between" align="center">
-        <span className="eyebrow">Plan Adherence</span>
-        <span className={`badge ${badge.cls}`}>{badge.label}</span>
+        <Text size="eyebrow">Plan Adherence</Text>
+        <Badge className={badge.cls}>{badge.label}</Badge>
       </Row>
       <Row align="center">
         <MiniRing value={pct} color={ringColor} size={80} />
         <Column gap={1} className="grow">
-          <h3 className="mono">{pct}<span className="caption faint">%</span></h3>
-          <span className="caption faint">adherence</span>
-          <Row align="center" gap={1} className="mono">{currentStreak} <Flame size={12} /></Row>
-          <span className="caption faint">day streak</span>
+          <Text as="h3" mono>{pct}<Text as="span" size="caption" color="faint">%</Text></Text>
+          <Text size="caption" color="faint">adherence</Text>
         </Column>
+      </Row>
+      <Row align="center" gap={1}>
+        <Row align="center" gap={1} className="mono caption">{currentStreak} <Flame size={12} /></Row>
+        <Text size="caption" color="faint">day streak</Text>
       </Row>
     </Column></Surface>
   );
@@ -310,7 +312,7 @@ export function PlanAdherenceWidget({ size }: { size: WidgetSize }) {
 export function WeeklyVolumeWidget({ size }: { size: WidgetSize }) {
   return (
     <Surface pad="sm"><Column className="h-full">
-      <span className="eyebrow">Weekly Volume</span>
+      <Text size="eyebrow">Weekly Volume</Text>
       <div className="grow">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={MOCK.weeklyVolume} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
@@ -331,16 +333,16 @@ export function ActivityFeedWidget({ size }: { size: WidgetSize }) {
   const items = size === '2x2' ? MOCK.activityFeed : MOCK.activityFeed.slice(0, 3);
   return (
     <Surface pad="sm"><Column className="h-full">
-      <span className="eyebrow">Recent Sessions</span>
+      <Text size="eyebrow">Recent Sessions</Text>
       <Column gap={1} className="grow scroll-y">
         {items.map((item, i) => (
           <Row key={i} align="center" gap={1} className="list-divider">
-            <span className={`pill ${item.type} plain`}>{item.type}</span>
+            <Badge className={`pill ${item.type} plain`}>{item.type}</Badge>
             <Column gap={1} className="grow">
-              <span className="detail truncate">{item.title}</span>
-              <span className="caption faint">{item.date}</span>
+              <Text size="detail" className="truncate">{item.title}</Text>
+              <Text size="caption" color="faint">{item.date}</Text>
             </Column>
-            <span className="mono caption">{item.metric}</span>
+            <Text size="caption" mono>{item.metric}</Text>
           </Row>
         ))}
       </Column>
@@ -354,7 +356,7 @@ export function ActiveGoalsWidget({ size }: { size: WidgetSize }) {
   const goals = size === '2x2' ? MOCK.activeGoals : MOCK.activeGoals.slice(0, 2);
   return (
     <Surface pad="sm"><Column className="h-full">
-      <span className="eyebrow">Active Goals</span>
+      <Text size="eyebrow">Active Goals</Text>
       <Column gap={1} className="grow scroll-y">
         {goals.map((g) => {
           const pct = Math.min(100, 'inverted' in g && g.inverted
@@ -364,8 +366,8 @@ export function ActiveGoalsWidget({ size }: { size: WidgetSize }) {
           return (
             <Column key={g.name} gap={1}>
               <Row justify="between" align="center">
-                <span className="detail">{g.name}</span>
-                <span className="mono caption">{g.current}/{g.target} {g.unit}</span>
+                <Text size="detail">{g.name}</Text>
+                <Text size="caption" mono>{g.current}/{g.target} {g.unit}</Text>
               </Row>
               <MiniBar value={pct} max={100} color={barColor} />
             </Column>
@@ -389,7 +391,7 @@ export function MacrosWidget({ size }: { size: WidgetSize }) {
 
   return (
     <Surface pad="sm"><Column className="h-full">
-      <span className="eyebrow">Macros</span>
+      <Text size="eyebrow">Macros</Text>
       <Row align="center">
         <PieChart width={pieSize} height={pieSize}>
           <Pie
@@ -405,12 +407,12 @@ export function MacrosWidget({ size }: { size: WidgetSize }) {
           </Pie>
         </PieChart>
         <Column gap={1} className="grow">
-          <span className="mono">{kcal}<span className="caption faint"> kcal</span></span>
+          <Text mono>{kcal}<Text as="span" size="caption" color="faint"> kcal</Text></Text>
           {macroData.map(d => (
             <Row key={d.name} align="center" gap={1}>
               <span className="dot" style={{ background: d.color, flexShrink: 0 }} />
-              <span className="caption grow">{d.name}</span>
-              <span className="mono caption">{d.value}g</span>
+              <Text size="caption" className="grow">{d.name}</Text>
+              <Text size="caption" mono>{d.value}g</Text>
             </Row>
           ))}
         </Column>
@@ -426,13 +428,13 @@ export function CaloriesWidget({ size: _ }: { size: WidgetSize }) {
   const pct = Math.round((kcal / target) * 100);
   return (
     <Surface pad="sm"><Column className="h-full">
-      <span className="eyebrow">Calories</span>
+      <Text size="eyebrow">Calories</Text>
       <Row align="center">
-        <h3 className="mono">{kcal}</h3>
-        <span className="caption faint">&nbsp;/ {target}</span>
+        <Text as="h3" mono>{kcal}</Text>
+        <Text size="caption" color="faint">&nbsp;/ {target}</Text>
       </Row>
       <MiniBar value={kcal} max={target} color="var(--c-nutrition)" />
-      <span className="caption faint">{pct}% of goal</span>
+      <Text size="caption" color="faint">{pct}% of goal</Text>
     </Column></Surface>
   );
 }
@@ -446,9 +448,9 @@ export function HabitsWidget({ size }: { size: WidgetSize }) {
   if (size === '1x1') {
     return (
       <Surface pad="sm"><Column justify="center" align="center" className="h-full">
-        <span className="eyebrow">Habits</span>
-        <h3 className="mono">{done}/{habits.length}</h3>
-        <span className="caption faint">done today</span>
+        <Text size="eyebrow">Habits</Text>
+        <Text as="h3" mono>{done}/{habits.length}</Text>
+        <Text size="caption" color="faint">done today</Text>
       </Column></Surface>
     );
   }
@@ -456,14 +458,14 @@ export function HabitsWidget({ size }: { size: WidgetSize }) {
   return (
     <Surface pad="sm"><Column className="h-full">
       <Row justify="between" align="center">
-        <span className="eyebrow">Today's Habits</span>
-        <span className="caption faint">{done}/{habits.length}</span>
+        <Text size="eyebrow">Today's Habits</Text>
+        <Text size="caption" color="faint">{done}/{habits.length}</Text>
       </Row>
       <Column gap={1} className="grow scroll-y">
         {habits.map((h, i) => (
           <Row key={i} align="center" gap={1} className="list-divider-sm">
-            <span className={`badge ${h.done ? 'green' : ''}`}>{h.done ? '✓' : '·'}</span>
-            <span className="detail grow">{h.name}</span>
+            <Badge className={h.done ? 'green' : ''}>{h.done ? '✓' : '·'}</Badge>
+            <Text size="detail" className="grow">{h.name}</Text>
             {h.streak > 0 && <Row align="center" gap={1} className="mono caption">{h.streak}<Flame size={11} /></Row>}
           </Row>
         ))}
@@ -477,15 +479,15 @@ export function HabitsWidget({ size }: { size: WidgetSize }) {
 export function MonthlyDistanceWidget({ size }: { size: WidgetSize }) {
   return (
     <Surface pad="sm"><Column className="h-full">
-      <span className="eyebrow">Monthly Distance</span>
+      <Text size="eyebrow">Monthly Distance</Text>
       <Row>
         <Row gap={1} align="center">
           <div className="dot run" />
-          <span className="caption">Run</span>
+          <Text size="caption">Run</Text>
         </Row>
         <Row gap={1} align="center">
           <div className="dot cycle" />
-          <span className="caption">Cycle</span>
+          <Text size="caption">Cycle</Text>
         </Row>
       </Row>
       <div className="grow">
@@ -511,12 +513,12 @@ export function InsightsWidget({ size }: { size: WidgetSize }) {
   const items = size === '2x2' ? MOCK.insights : MOCK.insights.slice(0, 2);
   return (
     <Surface pad="sm"><Column className="h-full">
-      <span className="eyebrow">Insights</span>
+      <Text size="eyebrow">Insights</Text>
       <Column gap={1} className="grow scroll-y">
         {items.map((ins, i) => (
           <Row key={i} gap={1} className="alert">
-            <span className={`badge ${SEVERITY_BADGE[ins.severity] ?? ''}`}>{ins.severity}</span>
-            <span className="detail grow">{ins.message}</span>
+            <Badge className={SEVERITY_BADGE[ins.severity] ?? ''}>{ins.severity}</Badge>
+            <Text size="detail" className="grow">{ins.message}</Text>
           </Row>
         ))}
       </Column>

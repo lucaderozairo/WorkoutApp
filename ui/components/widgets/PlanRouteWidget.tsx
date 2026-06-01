@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Column } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Surface, Button, Text } from '@ui/atoms';
 
 export function PlanRouteWidget() {
   const navigate = useNavigate();
@@ -17,9 +17,9 @@ export function PlanRouteWidget() {
   return (
     <Surface>
       <Column gap={1} justify="between" className="widget-1x1">
-        <span className="label">Plan a Route</span>
-        <p className="detail">Map out a run or ride before you go.</p>
-        <button  className='chip sm' onClick={handlePlan}>Open route planner</button>
+        <Text size="eyebrow">Plan a Route</Text>
+        <Text size="detail">Map out a run or ride before you go.</Text>
+        <Button variant="secondary" size="sm" onClick={handlePlan}>Open route planner</Button>
       </Column>
     </Surface>
   );

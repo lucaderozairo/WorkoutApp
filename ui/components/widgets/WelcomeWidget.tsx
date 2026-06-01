@@ -1,7 +1,7 @@
 import { useQuery } from '@ui/bindings';
 import { Flame } from 'lucide-react';
 import { Row, Column } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Surface, Text, Badge } from '@ui/atoms';
 
 interface WelcomeWidgetProps {
   workoutsThisWeek: number;
@@ -25,12 +25,12 @@ export function WelcomeWidget({ workoutsThisWeek, streak, scoreClass }: WelcomeW
   return (
     <Surface pad="sm" variant="ghost">
       <Column>
-        <span className="caption">{day} · {date}</span>
+        <Text size="caption">{day} · {date}</Text>
         <Row align="center" gap={1}>
-          <h2>{greeting}, {displayName}.</h2>
+          <Text as="h2">{greeting}, {displayName}.</Text>
         </Row>
         <Row align="center" gap={1}>
-          <p className="detail">{workoutLine}</p>
+          <Text size="detail">{workoutLine}</Text>
           {streak >= 2 && (
             <span className="badge caption" title={`${streak} day training streak`}>
               <Flame size={12} /> {streak}
