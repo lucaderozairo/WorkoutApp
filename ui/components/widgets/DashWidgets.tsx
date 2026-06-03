@@ -9,7 +9,8 @@ import {
 import { Flame } from 'lucide-react';
 import { TOOLTIP_STYLE, TICK } from '@ui/patterns/charts/domain-charts';
 import { Grid, Row, Column } from '@ui/layout';
-import { Surface, Text, Badge, Metric } from '@ui/atoms';
+import { Surface, Text, Metric } from '@ui/atoms';
+import { Badge } from '@ui/molecules';
 
 type WidgetSize = '1x1' | '2x1' | '2x2';
 
@@ -410,7 +411,7 @@ export function MacrosWidget({ size }: { size: WidgetSize }) {
           <Text mono>{kcal}<Text as="span" size="caption" color="faint"> kcal</Text></Text>
           {macroData.map(d => (
             <Row key={d.name} align="center" gap={1}>
-              <span className="dot" style={{ background: d.color, flexShrink: 0 }} />
+              <span className="dot shrink-0" style={{ '--dot-color': d.color } as React.CSSProperties} />
               <Text size="caption" className="grow">{d.name}</Text>
               <Text size="caption" mono>{d.value}g</Text>
             </Row>

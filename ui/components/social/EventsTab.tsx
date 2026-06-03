@@ -2,7 +2,8 @@ import { useQuery } from '@ui/bindings';
 import type { MockSocialEvent } from '@features/social';
 import { SPORT_MAP } from '@features/social/domain/constants';
 import { Row, Column } from '@ui/layout';
-import { Surface, Avatar, Button, Text } from '@ui/atoms';
+import { Surface, Avatar, Text } from '@ui/atoms';
+import { Button } from '@ui/molecules';
 
 export function EventsTab() {
   const mockEvents = (useQuery<MockSocialEvent[]>('social_events_mock') ?? []) as MockSocialEvent[];

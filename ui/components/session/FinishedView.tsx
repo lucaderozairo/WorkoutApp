@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Grid, Row, Column, Cluster, Spacer } from '@ui/layout';
-import { Surface, Button, Text, Badge, Divider } from '@ui/atoms';
+import { Surface, Text, Divider } from '@ui/atoms';
+import { Badge, Button } from '@ui/molecules';
 import { useNavigate } from 'react-router-dom';
 import { Download, FileText, Gauge, Image, MoreVertical, Share2, Tag, Trash2, X } from 'lucide-react';
 import type { ActivityView } from '@features/training_log';
@@ -226,8 +227,7 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
                   {b.type === 'single' ? (
                     <Row align="center" justify="between">
                       <Row gap={1} align="center" className="grow">
-                        {/* minWidth keeps column stable; no CSS utility available */}
-                        <span className="mono num caption muted" style={{ minWidth: 28, textAlign: 'center', fontWeight: 600 }}>{idx + 1}</span>
+                        <span className="mono num caption muted bold set-number">{idx + 1}</span>
                         <Text size="detail">{b.exercises[0].name}</Text>
                       </Row>
                     </Row>

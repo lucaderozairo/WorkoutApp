@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Download, MoreVertical, Pause, Play, Share2, Trash2, X } from 'lucide-react';
 import { Row, Column, Grid } from '@ui/layout';
-import { Surface, Button, Text } from '@ui/atoms';
+import { Surface, Text } from '@ui/atoms';
+import { Button } from '@ui/molecules';
 
 export interface SessionHeaderProps {
   name: string;
@@ -41,7 +42,7 @@ export function SessionHeader({
 
   return (
     <Column>
-      <Row align="center" justify="between" style={{ padding: 'var(--s-3) var(--s-4)', background: 'var(--surface-0)', borderBottom: '1px solid var(--line)' }}>
+      <Row align="center" justify="between" className="session-header-top">
         <Row gap={1}>
           <Text size="detail">{name}</Text>
         </Row>

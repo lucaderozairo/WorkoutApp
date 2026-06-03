@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
 import { App } from '@app/registry/App';
+import { bootstrapFeatures } from '@app/registry/bootstrap';
 import { viewStore } from '@data/projections/views';
 import { PERSISTED_KEYS, loadFromStorage, clearStorage, checkStorageQuota, saveCheckpointTimestamp, loadCheckpointTimestamp } from '@data/sources/local/persistence';
 import { clearEventDB } from '@data/sources/local/event-db';
@@ -28,6 +29,10 @@ window.addEventListener('unhandledrejection', (e) => {
 });
 
 (async () => {
+  // Deterministic, one-time wiring of all cross-feature policies/projections.
+  // Must run before persisted snapshots load (register* seeds empty viewStore state).
+  bootstrapFeatures();
+
   if (APP_MODE === 'github-pages' && !localStorage.getItem('workout-app:gh-initialized')) {
     clearStorage();
     try { await clearEventDB(); } catch { /* ignore */ }

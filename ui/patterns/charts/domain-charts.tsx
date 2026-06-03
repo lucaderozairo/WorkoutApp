@@ -208,7 +208,7 @@ export function SparklineArea({
         {showTooltip && (
           <Tooltip
             contentStyle={{ fontSize: 12 }}
-            formatter={(v: any) => [tooltipFormatter ? tooltipFormatter(Number(v)) : v, '']}
+            formatter={(v) => [tooltipFormatter ? tooltipFormatter(Number(v)) : v, '']}
           />
         )}
         <Area
@@ -388,12 +388,12 @@ export function SleepTrendChart({ trend }: { trend: WeeklySleepTrend[] }) {
           tickLine={false}
         />
         <Tooltip
-          formatter={(value: any, name: any) =>
+          formatter={(value, name) =>
             name === 'avgDurationMin'
               ? [fmtMin(value as number), 'Duration']
               : [value, 'Score']
           }
-          labelFormatter={(label: any) => (typeof label === 'string' ? label : '')}
+          labelFormatter={(label) => (typeof label === 'string' ? label : '')}
           contentStyle={TOOLTIP_STYLE}
         />
         <Line yAxisId="score" type="monotone" dataKey="avgScore"       stroke="var(--color-primary)"        dot={false} strokeWidth={2} isAnimationActive={false} />
@@ -555,8 +555,8 @@ export function HROverTimeChart({ points }: { points: GpsPoint[] }) {
         />
         <YAxis domain={['auto', 'auto']} tick={TICK} axisLine={false} tickLine={false} width={32} />
         <Tooltip
-          formatter={(v: any) => [`${v} bpm`, 'HR']}
-          labelFormatter={(v: any) => fmtDist(Number(v))}
+          formatter={(v) => [`${v} bpm`, 'HR']}
+          labelFormatter={(v) => fmtDist(Number(v))}
           contentStyle={{ background: 'var(--surface-1)', border: '1px solid var(--line-strong)', borderRadius: 'var(--r-sm)', fontSize: 12 }}
         />
         <Line type="monotone" dataKey="y" stroke="var(--c-cardio)" strokeWidth={1.5} dot={false} isAnimationActive={false} />
@@ -596,8 +596,8 @@ export function PaceOverTimeChart({ points }: { points: GpsPoint[] }) {
           width={40}
         />
         <Tooltip
-          formatter={(v: any) => [`${fmtPace(Number(v))}/km`, 'Pace']}
-          labelFormatter={(v: any) => fmtDist(Number(v))}
+          formatter={(v) => [`${fmtPace(Number(v))}/km`, 'Pace']}
+          labelFormatter={(v) => fmtDist(Number(v))}
           contentStyle={{ background: 'var(--surface-1)', border: '1px solid var(--line-strong)', borderRadius: 'var(--r-sm)', fontSize: 12 }}
         />
         <Line type="monotone" dataKey="y" stroke="var(--accent)" strokeWidth={1.5} dot={false} isAnimationActive={false} />
@@ -636,8 +636,8 @@ export function ElevationProfileChart({ points }: { points: GpsPoint[] }) {
         />
         <YAxis hide domain={['auto', 'auto']} />
         <Tooltip
-          formatter={(v: any) => [`${Math.round(Number(v))} m`, 'Elevation']}
-          labelFormatter={(v: any) => fmtDist(Number(v))}
+          formatter={(v) => [`${Math.round(Number(v))} m`, 'Elevation']}
+          labelFormatter={(v) => fmtDist(Number(v))}
           contentStyle={{ background: 'var(--surface-1)', border: '1px solid var(--line-strong)', borderRadius: 'var(--r-sm)', fontSize: 12 }}
         />
         <Area type="monotone" dataKey="y" stroke="var(--color-success)" strokeWidth={1.5} fill={`url(#${gradId})`} dot={false} isAnimationActive={false} />

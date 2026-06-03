@@ -130,7 +130,8 @@
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\Deroz01\\\\Documents\\\\Coding Projects\\\\Workout App\\\\workoutApp\\\\src\\\\ui\" -Recurse -ErrorAction SilentlyContinue)",
       "Bash(find \"c:\\\\\\\\Users\\\\\\\\Deroz01\\\\\\\\Documents\\\\\\\\Coding Projects\\\\\\\\Workout App\\\\\\\\workoutApp\" -name \"Grid.tsx\" -o -name \"GridItem.tsx\")",
       "Bash(cat ui/atoms/index.ts)",
-      "Bash(cat ui/molecules/index.ts)"
+      "Bash(cat ui/molecules/index.ts)",
+      "mcp__code-review-graph__get_architecture_overview_tool"
     ]
   },
   "enabledMcpjsonServers": [

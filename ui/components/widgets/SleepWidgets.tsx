@@ -2,7 +2,8 @@ import { ScoreRing, SleepStagesBar, fmtMin, PositiveNegativeChart, SparklineArea
 import type { PositiveNegativeEntry } from '@ui/patterns/charts/domain-charts';
 import type { SleepSession } from '@features/readiness';
 import { Row, Column, Cluster, Grid } from '@ui/layout';
-import { Surface, Text, Badge, Divider } from '@ui/atoms';
+import { Surface, Text, Divider } from '@ui/atoms';
+import { Badge } from '@ui/molecules';
 
 function scoreBadge(score: number): { label: string; color: string } {
   if (score >= 85) return { label: 'Good', color: 'green' };

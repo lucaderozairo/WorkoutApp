@@ -1,7 +1,8 @@
 ﻿import { useEffect, useRef, useState } from 'react';
 import { Download, Plus, Trash2 } from 'lucide-react';
 import { Row, Column } from '@ui/layout';
-import { Surface, Button, Text } from '@ui/atoms';
+import { Surface, Text } from '@ui/atoms';
+import { Button } from '@ui/molecules';
 import { useCommand } from '@ui/bindings';
 import {
   handleRemoveBlock,

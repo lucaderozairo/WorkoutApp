@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Grid, Column , Row } from '@ui/layout';
 import { Navigate } from 'react-router-dom';
-import { Button } from '@ui/atoms';
+
 import { SessionFilterBar } from '@ui/components/log/SessionFilterBar';
 import { WorkoutFilterBar } from '@ui/components/workout/WorkoutFilterBar';
 import { StrengthSessionItem, CardioSessionItem } from '@ui/components/log/SessionListItem';
@@ -12,7 +12,7 @@ import { WorkoutView } from '@ui/components/session/WorkoutView';
 import { FinishedView } from '@ui/components/session/FinishedView';
 import { SessionDetail } from '@ui/components/session/SessionDetail';
 import { ExercisePicker } from '@ui/components/log/ExercisePicker';
-import { ScreenHeader, Dialog } from '@ui/molecules';
+import { ScreenHeader, Dialog, Button } from '@ui/molecules';
 import { useLogScreen } from './useLogScreen';
 
 export function LogScreen() {

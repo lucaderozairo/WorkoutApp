@@ -4,7 +4,8 @@ import { Row, Column } from '@ui/layout';
 import { useNavigate } from "react-router-dom";
 import type { ActivityHistoryItem } from "@features/training_log";
 import type { CardioSession } from "@features/cardio";
-import { Button, Text } from "@ui/atoms";
+import { Text } from "@ui/atoms";
+import { Button } from "@ui/molecules";
 
 function isoDate(d: Date): string {
   return d.toISOString().split("T")[0];

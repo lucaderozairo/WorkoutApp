@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { AlertTriangle, MoreVertical, Trash2, X } from 'lucide-react';
 import { Row, Column, Cluster } from '@ui/layout';
-import { Surface, Button, Text, Badge, Chip, Divider } from '@ui/atoms';
+import { Surface, Text, Chip, Divider } from '@ui/atoms';
+import { Badge, Button } from '@ui/molecules';
 import { ExerciseSection } from './ExerciseSection';
 import { CardioEditor } from './CardioEditor';
 import { CommentLine } from './CommentLine';

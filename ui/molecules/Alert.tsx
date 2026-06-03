@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Button } from '@ui/atoms/Button';
+import { Button } from '@ui/molecules/Button';
 import { Surface } from '@ui/atoms/Surface';
 import { Row } from '@ui/layout/Row';
 import { Column } from '@ui/layout/Column';

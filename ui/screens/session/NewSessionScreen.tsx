@@ -6,9 +6,9 @@ import {
   todayDateString, useNewSession,
 } from './useNewSession';
 import { Plus, X } from 'lucide-react';
-import { ScreenHeader } from '@ui/molecules';
+import { ScreenHeader, Button, Input } from '@ui/molecules';
 import { Grid, Row, Column, Cluster } from '@ui/layout';
-import { Button, Input } from '@ui/atoms';
+
 
 function ActivityButton({ sport, selected, onSelect }: {
   sport: SportType;

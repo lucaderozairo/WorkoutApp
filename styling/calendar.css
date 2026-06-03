@@ -2,13 +2,11 @@
    CALENDAR — day cell grid
    ════════════════════════════════════════════ */
 .cal {
+  /* .day carries class="column gap-1" in markup — only calendar-specific rules here */
   & .day {
     padding: var(--s-1);
-    display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--s-1);
     font-size: var(--t-xs);
     border-radius: var(--r-sm);
     background: transparent;

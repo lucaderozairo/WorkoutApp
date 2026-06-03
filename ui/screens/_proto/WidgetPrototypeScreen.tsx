@@ -11,7 +11,8 @@ import {
 } from '@ui/components/widgets/DashWidgets';
 import { ChartContainer } from '@ui/patterns/charts/charts';
 import { Grid, Row, Column, Cluster } from '@ui/layout';
-import { Button, Surface, Text } from '@ui/atoms';
+import { Surface, Text } from '@ui/atoms';
+import { Button } from '@ui/molecules';
 import { useWidgetPrototype, type WidgetSize, type WidgetInstance, type WidgetDef } from './useWidgetPrototype';
 
 function useLastNightSession(): SleepSession | null {

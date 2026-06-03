@@ -9,8 +9,8 @@ import {
   List,
   UserCircle,
 } from "phosphor-react";
-import { Button, Surface, Text } from "@ui/atoms";
-import { Dropdown, NavItem, Popover } from "@ui/molecules";
+import { Surface, Text } from "@ui/atoms";
+import { Dropdown, NavItem, Popover, Button } from "@ui/molecules";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 
@@ -61,10 +61,10 @@ export function TabNavigation({
       <header className="menu">
         <Button
           variant="ghost"
-          leading={<Menu size={18} />}
           title="menu" 
+          size="md"
           onClick={onMenuToggle}>
-          {" "}
+          {<Menu size={18} />}
           <Text>Menu</Text>
         </Button>
       </header>

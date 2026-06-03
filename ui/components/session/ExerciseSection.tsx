@@ -7,7 +7,8 @@ import { getWarnings } from '@features/training_log/projections/mappers';
 import type { UIExercise, UICondition } from '@features/training_log/projections/viewTypes';
 import type { SetMode } from '@data/static/exercises';
 import { Row, Column } from '@ui/layout';
-import { Button, Text } from '@ui/atoms';
+import { Text } from '@ui/atoms';
+import { Button } from '@ui/molecules';
 
 export interface ExerciseSectionProps {
   ex: UIExercise;

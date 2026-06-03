@@ -1,4 +1,4 @@
-import type { Id, DomainEvent, Result } from '@shared/types';
+import type { DomainEvent } from '@shared/types';
 import { ok } from '@shared/types';
 import { inMemoryEventStore } from '@data/store';
 
@@ -12,11 +12,6 @@ export class AggregateRepository<TState, TEvent extends DomainEvent<string, obje
   constructor(initialState: TState, reducers: ReducerMap<TState, TEvent>) {
     this.initialState = initialState;
     this.reducers = reducers;
-  }
-
-  async load(_aggregateId: Id): Promise<TState> {
-    // For now, return initial state. In production, replay events from event store.
-    return this.initialState;
   }
 
   async save(events: TEvent[]): Promise<void> {

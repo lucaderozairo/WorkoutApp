@@ -59,6 +59,10 @@ export function useLogScreen() {
   const [sessionFilters, setSessionFilters] = useState<SessionFilters>(DEFAULT_FILTERS);
   const [deleteConfirm, setDeleteConfirm] = useState<{ kind: 'strength' | 'cardio'; id: string } | null>(null);
 
+  useEffect(() => {
+    if (routeSessionId) setDeleteConfirm(null);
+  }, [routeSessionId]);
+
   const exercisesBySession = useMemo(() => {
     const map = new Map<string, Set<string>>();
     if (sessionsState) {

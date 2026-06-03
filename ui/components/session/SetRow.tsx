@@ -3,7 +3,8 @@ import { Check, MessageSquare, MoreVertical, Pencil, Trash2, X } from 'lucide-re
 import type { UISet } from '@features/training_log/projections/viewTypes';
 import type { SetMode } from '@data/static/exercises';
 import { Row, Column, Cluster, Spacer } from '@ui/layout';
-import { Surface, Button, Text, Chip } from '@ui/atoms';
+import { Surface, Text, Chip } from '@ui/atoms';
+import { Button } from '@ui/molecules';
 
 export interface SetRowProps {
   num: number;
@@ -57,8 +58,7 @@ export function SetRow({
   return (
     <Column gap={1}>
       <Row align="center" justify="between">
-        {/* minWidth keeps the label column stable; no CSS utility available */}
-        <span className={`mono caption bold text-center ${labelColor}`} style={{ minWidth: 28 }}>
+        <span className={`mono caption bold text-center set-number ${labelColor}`}>
           {label}
         </span>
         <Row className="grow" align="center" gap={1}>

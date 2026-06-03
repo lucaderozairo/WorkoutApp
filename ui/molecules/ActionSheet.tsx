@@ -1,6 +1,6 @@
 import type { ReactNode, ToggleEvent } from 'react';
 import { useEffect, useRef } from 'react';
-import { Button } from '@ui/atoms/Button';
+import { Button } from '@ui/molecules/Button';
 import { Column } from '@ui/layout/Column';
 
 interface ActionSheetItem {

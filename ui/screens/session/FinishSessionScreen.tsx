@@ -1,8 +1,8 @@
 import type { ChangeEvent } from 'react';
 import { RPE_VALUES, SUGGESTED_TAGS, useFinishSession } from './useFinishSession';
 import { Grid, Row, Column, Spacer } from '@ui/layout';
-import { Button, Input, Textarea, Badge } from '@ui/atoms';
-import { ChipGroup, PhotoGallery, DetailRow } from '@ui/molecules';
+
+import { ChipGroup, PhotoGallery, DetailRow, Badge, Button, Input, Textarea } from '@ui/molecules';
 
 const canShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
 

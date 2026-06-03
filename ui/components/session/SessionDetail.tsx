@@ -14,21 +14,19 @@ import { ACTIVITY_ICONS, getActivityLabel } from '@ui/icons/activityIcons';
 import type { SportType } from '@features/training_log/domain/types';
 import { Carousel } from '@ui/components/shared/Carousel';
 import { Row, Column, Cluster, Grid } from '@ui/layout';
-import { Surface, Button, Text, Badge, Chip, Table, TableRow, TableCell } from '@ui/atoms';
-
-
-interface SampleCardioSession {
-  id: string;
-  sport: string;
-  title: string;
-  distanceMeters: number;
-  durationSeconds: number;
-  avgPacePerKm: number;
-  heartRate?: number;
-  elevationGain?: number;
-  power?: number;
-  createdAt: number;
-}
+import { Surface, Text, Chip, Table, TableRow, TableCell } from '@ui/atoms';
+import { Badge, Button } from '@ui/molecules';
+import {
+  type SampleCardioSession,
+  formatDuration,
+  formatPace,
+  sportColor,
+  isActivityHistoryItem,
+  isCardioSession,
+  isSampleCardioSession,
+  isActivityView,
+  isStrengthSet,
+} from './sessionDetailUtils';
 
 interface SessionDetailProps {
   session: ActivityView | ActivityHistoryItem | CardioSession | SampleCardioSession;
@@ -40,20 +38,6 @@ interface SessionDetailProps {
   asPage?: boolean;
 }
 
-function formatDuration(seconds: number): string {
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  if (h > 0) return `${h}h ${m}m`;
-  return `${m} min`;
-}
-
-function formatPace(secondsPerKm: number): string {
-  if (secondsPerKm <= 0) return '--:--';
-  const m = Math.floor(secondsPerKm / 60);
-  const s = Math.floor(secondsPerKm % 60);
-  return `${m}:${String(s).padStart(2, '0')}/km`;
-}
-
 function SportIcon({ sport, size }: { sport: string; size?: number }) {
   const def = ACTIVITY_ICONS[sport as SportType] ?? ACTIVITY_ICONS['other'];
   return <def.Icon size={size} />;
@@ -63,38 +47,6 @@ function CategoryIcon({ category, size }: { category: string; size?: number }) {
   const sport: SportType = category === 'cardio' ? 'run' : category === 'mobility' ? 'mobility' : 'strength';
   const { Icon } = ACTIVITY_ICONS[sport];
   return <Icon size={size} />;
-}
-
-function sportColor(sport: string): string {
-  switch (sport) {
-    case 'run': return 'run';
-    case 'cycle': return 'cycle';
-    case 'swim': return 'swim';
-    case 'row': return 'rowing';
-    default: return 'lift';
-  }
-}
-
-function isActivityHistoryItem(s: unknown): s is ActivityHistoryItem {
-  return typeof (s as ActivityHistoryItem).totalSets === 'number';
-}
-
-function isCardioSession(s: unknown): s is CardioSession {
-  const obj = s as Record<string, unknown>;
-  return typeof obj.sport === 'string' && 'distanceMeters' in obj && 'userId' in obj;
-}
-
-function isSampleCardioSession(s: unknown): s is SampleCardioSession {
-  const obj = s as Record<string, unknown>;
-  return typeof obj.sport === 'string' && 'distanceMeters' in obj && 'createdAt' in obj;
-}
-
-function isActivityView(s: unknown): s is ActivityView {
-  return Array.isArray((s as ActivityView).segments);
-}
-
-function isStrengthSet(s: SetEntry): s is StrengthSet {
-  return s.weightKg !== undefined || s.reps !== undefined;
 }
 
 /* ── Inline editable title ── */

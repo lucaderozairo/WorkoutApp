@@ -1,11 +1,11 @@
 import { useQuery } from '@ui/bindings';
 import { Grid, Row, Column } from '@ui/layout';
-import { Surface, Button, Text, Badge } from '@ui/atoms';
+import { Surface, Text } from '@ui/atoms';
+import { Badge, Button } from '@ui/molecules';
 import type { SportType } from '@features/training_log/domain/types';
 import type { MockCalendarEvent } from '@features/scheduling';
 
 const DAY_LABELS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'] as const;
-
 
 export function CalendarGrid({ year, month }: { year: number; month: number }) {
   const today = new Date();
@@ -33,16 +33,15 @@ export function CalendarGrid({ year, month }: { year: number; month: number }) {
         const primarySport = (workoutCalendar[day] ?? [])[0];
 
         return (
-          <button key={day} className="day" {...(isToday ? { 'data-today': '' } : {})}>
+          <button key={day} className="day column gap-1" {...(isToday ? { 'data-today': '' } : {})}>
             <span>{day}</span>
-            <span className={`dot ${primarySport ?? ''}`} style={primarySport ? undefined : { visibility: 'hidden' }} />
+            <span className={`dot ${primarySport ?? 'transparent'}`} />
           </button>
         );
       })}
     </Grid>
   );
 }
-
 
 export function CalendarLarge() {
   const today = new Date();
@@ -65,9 +64,8 @@ export function CalendarLarge() {
             <Surface key={ev.day}>
               <Row align="center" gap={1}>
                 <div>
-                  {/* fontSize: 9 is below the token scale — no atom covers this */}
-                  <span className="eyebrow" style={{ fontSize: 9 }}>{ev.month}</span>
-                  <span style={{ fontSize: 'var(--t-lg)', lineHeight: 1 }}>{ev.day}</span>
+                  <span className="eyebrow text-9">{ev.month}</span>
+                  <span className="lh-1" style={{ fontSize: 'var(--t-lg)' }}>{ev.day}</span>
                 </div>
                 <Column gap={1} className="grow">
                   <Row justify="between" align="center">

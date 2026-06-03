@@ -1,6 +1,7 @@
 import { ScoreRing, SleepStagesBar, SparklineArea, fmtMin } from '@ui/patterns/charts/domain-charts';
 import { Grid, Row, Column, Cluster, Spacer } from '@ui/layout';
-import { Surface, Text, Badge, Metric, Divider } from '@ui/atoms';
+import { Surface, Text, Metric, Divider } from '@ui/atoms';
+import { Badge } from '@ui/molecules';
 import type { SleepSession } from '@features/readiness';
 import type { HealthMetricsView } from '@features/readiness';
 import type { Appointment } from '@features/scheduling';
@@ -131,7 +132,7 @@ export function WeatherDashWidget({ size }: { size: WidgetSize }) {
   if (size === '1x1') {
     return (
       <Surface><Column gap={1} justify="center" align="center" className="h-full">
-        <span className="emoji-sm">⛅</span>
+        <span className="emoji sm">⛅</span>
         <Metric value={18} unit="°C" />
         <Text size="caption" color="faint">Kingston</Text>
       </Column></Surface>
@@ -146,7 +147,7 @@ export function WeatherDashWidget({ size }: { size: WidgetSize }) {
           <Text size="caption" color="faint">15m ago</Text>
         </Row>
         <Row align="center">
-          <span className="emoji-md">⛅</span>
+          <span className="emoji md">⛅</span>
           <Column gap={1} className="grow">
             <Metric value={18} unit="°" size="sm" />
             <Text size="caption" color="faint">Partly Cloudy · Feels 16°</Text>
@@ -174,7 +175,7 @@ export function WeatherDashWidget({ size }: { size: WidgetSize }) {
       </Row>
       <Row justify="between" align="center">
         <Row align="center">
-          <span className="emoji-lg">⛅</span>
+          <span className="emoji lg">⛅</span>
           <Column gap={1}>
             <Metric value={18} unit="°C" size="sm" />
             <Text size="caption" color="faint">Partly Cloudy</Text>

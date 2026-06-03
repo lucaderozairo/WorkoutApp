@@ -9,7 +9,8 @@ import { PostCard } from './PostCard';
 import { StrengthActivityCard, CardioActivityCard } from './ActivityPostCard';
 import { USER_ID, USER_NAME, USER_INITIALS } from '@features/social/domain/constants';
 import { Row } from '@ui/layout';
-import { Surface, Avatar, Button, Text } from '@ui/atoms';
+import { Surface, Avatar, Text } from '@ui/atoms';
+import { Button } from '@ui/molecules';
 
 type FeedItem =
   | { kind: 'post';     ts: number; data: PostWithMeta }

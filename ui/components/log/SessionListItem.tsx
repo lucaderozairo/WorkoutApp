@@ -5,7 +5,8 @@ import type { CardioSession } from "@features/cardio";
 import { EllipsisVertical } from "lucide-react";
 import { ACTIVITY_ICONS, getActivityLabel } from "@ui/icons/activityIcons";
 import { Carousel } from "../shared";
-import { Button, Surface, Text, Badge } from "@ui/atoms";
+import { Surface, Text } from "@ui/atoms";
+import { Badge, Button } from "@ui/molecules";
 import { Layer, Layered, Row, Column, Cluster } from "@ui/layout";
 
 function formatDuration(seconds: number): string {

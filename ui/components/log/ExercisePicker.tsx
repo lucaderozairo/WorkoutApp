@@ -4,7 +4,8 @@ import { EXERCISES } from '@data/static/exercises';
 import type { ExerciseCategory } from '@features/training_log';
 import { EXERCISE_GROUPS, BT_OPTIONS } from '@features/training_log/projections/viewTypes';
 import { Row, Column, Cluster } from '@ui/layout';
-import { Surface, Button, Text, Badge, Chip } from '@ui/atoms';
+import { Surface, Text, Chip } from '@ui/atoms';
+import { Badge, Button } from '@ui/molecules';
 
 export interface ExercisePickerProps {
   onClose: () => void;

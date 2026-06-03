@@ -15,36 +15,24 @@
   border-radius: var(--r-pill);
   white-space: nowrap;
 
+  /* Decorative dot composes the generic .dot atom; badge owns its color channel */
   & .dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--badge-color, var(--ink-faint));
+    --dot-size: 6px;
+    --dot-color: var(--badge-color, var(--ink-faint));
+    opacity: 1;
     flex-shrink: 0;
   }
 
   &.active { outline: 1.5px solid currentColor; font-weight: 600; }
 
-  /* Status */
+  /* Status (generic, project-agnostic) */
   &.ok     { --badge-color: var(--ok); }
   &.warn   { --badge-color: var(--warn); }
   &.bad    { --badge-color: var(--bad); }
   &.accent { background: var(--accent); color: var(--accent-ink); }
-  &.accent .dot { background: var(--accent-ink); }
+  &.accent .dot { --dot-color: var(--accent-ink); }
 
-  /* Sport / activity */
-  &.lift   { --badge-color: var(--c-strength); }
-  &.run    { --badge-color: var(--c-cardio); }
-  &.rowing { --badge-color: var(--c-recovery); }
-  &.cycle  { --badge-color: var(--c-nutrition); }
-  &.swim   { --badge-color: var(--c-water); }
-  &.mind   { --badge-color: var(--c-mind); }
-
-  /* Sleep stages */
-  &.awake  { --badge-color: var(--color-sleep-awake); }
-  &.light  { --badge-color: var(--color-sleep-light); }
-  &.deep   { --badge-color: var(--color-sleep-deep); }
-  &.rem    { --badge-color: var(--color-sleep-rem); }
+  /* Sport / sleep / domain colors live in @layer project (project-activity.css) */
 
   @media (max-width: 360px) { padding: var(--s-1) var(--s-2); }
 }
@@ -85,47 +73,22 @@
 }
 
 /* ════════════════════════════════════════════
-   DOT — sport/activity/status/pain indicator
+   DOT — generic colored indicator (irreducible atom)
+   Size via --dot-size, color via --dot-color. Zero domain knowledge —
+   sport/rarity/pain mappings live in @layer project (project-activity.css).
    ════════════════════════════════════════════ */
 .dot {
   display: inline-block;
-  width: var(--s-3);
-  height: var(--s-3);
+  width: var(--dot-size, var(--s-3));
+  height: var(--dot-size, var(--s-3));
   border-radius: 50%;
-  background: var(--dot, var(--ink-faint));
+  background: var(--dot-color, var(--ink-faint));
   opacity: 0.5;
 
-  &.active     { opacity: 1; background: var(--accent); }
-  &.lift       { opacity: 1; background: var(--c-strength); }
-  &.run        { opacity: 1; background: var(--c-cardio); }
-  &.cycle      { opacity: 1; background: var(--c-nutrition); }
-  &.swim       { opacity: 1; background: var(--c-water); }
-  &.rowing     { opacity: 1; background: var(--c-recovery); }
-  &.ink        { opacity: 1; background: var(--ink); }
+  &.active      { opacity: 1; background: var(--accent); }
+  &.ink         { opacity: 1; background: var(--ink); }
   &.transparent { opacity: 0; }
 
-  &.sm      { width: var(--s-2); height: var(--s-2); opacity: 1; }
+  &.sm      { --dot-size: var(--s-2); opacity: 1; }
   &.stretch { width: var(--s-4); border-radius: var(--s-2); }
-
-  /* Rarity */
-  &.common    { opacity: 1; background: var(--color-common); }
-  &.rare      { opacity: 1; background: var(--color-rare); }
-  &.epic      { opacity: 1; background: var(--color-epic); }
-  &.legendary { opacity: 1; background: var(--color-legendary); }
-
-  /* Pain scale — bordered dot with surface base */
-  &.pain {
-    width: 10px;
-    height: 10px;
-    opacity: 1;
-    background: var(--surface-2);
-    border: 1px solid var(--line-strong);
-    &[data-active="true"] { background: var(--bad); border-color: var(--bad); }
-  }
 }
-
-/* Rarity text colors */
-.color-common    { color: var(--color-common); }
-.color-rare      { color: var(--color-rare); }
-.color-epic      { color: var(--color-epic); }
-.color-legendary { color: var(--color-legendary); }

@@ -5,7 +5,8 @@ import type { Post } from '@features/social';
 import { timeAgo } from '@shared/utils/timeAgo';
 import { USER_ID, USER_NAME, SPORT_MAP } from '@features/social/domain/constants';
 import { Row, Column, Cluster } from '@ui/layout';
-import { Surface, Avatar, Text, Badge, Button } from '@ui/atoms';
+import { Surface, Avatar, Text } from '@ui/atoms';
+import { Badge, Button } from '@ui/molecules';
 
 export function PostCard({ post }: { post: Post & { sport?: string; group?: string; sessionName?: string } }) {
   const id = useId();

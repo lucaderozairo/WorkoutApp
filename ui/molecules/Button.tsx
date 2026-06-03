@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
-import { Spinner } from './Spinner';
-import { Icon } from './Icon';
+import { Spinner } from '../atoms/Spinner';
+import { Icon } from '../atoms/Icon';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'destructive';
 type Size = 'sm' | 'md' | 'lg' | 'icon';

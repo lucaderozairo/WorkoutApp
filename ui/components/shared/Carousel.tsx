@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Row, Column } from '@ui/layout';
-import { Surface, Button } from '@ui/atoms';
+import { Surface } from '@ui/atoms';
+import { Button } from '@ui/molecules';
 
 type Slide = string | { src: string; caption?: string };
 

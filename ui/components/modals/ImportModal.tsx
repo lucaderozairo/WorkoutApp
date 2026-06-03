@@ -3,7 +3,8 @@ import { parseGpsFile } from '@data/sources/files/gps';
 import type { GpsTrack } from '@data/sources/files/gps';
 import type { CardioSport } from '@features/cardio';
 import { Row, Column } from '@ui/layout';
-import { Surface, Button, Text, Badge, Slider, Textarea, Metric } from '@ui/atoms';
+import { Surface, Text, Metric } from '@ui/atoms';
+import { Badge, Button, Slider, Textarea } from '@ui/molecules';
 
 type ImportContext = 'new-session' | 'enrich-session' | 'standalone';
 

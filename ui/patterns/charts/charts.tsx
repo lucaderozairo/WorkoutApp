@@ -12,6 +12,15 @@ import {
     ResponsiveContainer, XAxis, YAxis,
 } from 'recharts';
 
+/** A single chart row. Shapes vary per chart type (x/y, a/b/c, subject/value, …),
+ *  so keys are open but values stay primitive — no `any`. */
+export type ChartDatum = Record<string, number | string | undefined>;
+
+// Note: recharts' custom `shape`/`content`/`activeBar` renderers are typed by the
+// library against precise internal prop types (ActiveShape<BarShapeProps>,
+// LabelContentType). Those callbacks keep `any` params — narrowing them fights
+// recharts' generics for no real safety gain (they only render presentational SVG).
+
 type TimelineOutcome = 'success' | 'error' | 'pending';
 type TimelineItem = { name: string; outcome: TimelineOutcome; firstCycle: [number, number]; secondCycle: [number, number] };
 
@@ -34,7 +43,7 @@ export function ChartContainer({
     axisShow = { x: true, y: true },
     fill = false,
 }: {
-    data?: any[];
+    data?: ChartDatum[];
     height?: number;
     chartType?: ChartType;
     color?: string;
@@ -59,7 +68,7 @@ export function ChartContainer({
 
 function ChartSelector({ chartType, data, color, axisShow }: {
     chartType: ChartType;
-    data: any[] | undefined;
+    data: ChartDatum[] | undefined;
     color: string;
     axisShow: { x: boolean; y: boolean };
 }) {
@@ -112,7 +121,7 @@ function ChartSelector({ chartType, data, color, axisShow }: {
                     {axisShow.y && <YAxis width={30} tick={tick} ticks={ticks} domain={[0, yMax]} />}
                     <Tooltip
                         contentStyle={{ background: 'var(--surface-1)', border: '1px solid var(--line-strong)', borderRadius: 'var(--r-sm)', fontSize: 'var(--t-xs)' }}
-                        formatter={(value: any, _name: any, props: any) => [`${value} kg × ${props.payload.reps} reps`]}
+                        formatter={(value, _name, props) => [`${value} kg × ${(props.payload as ChartDatum).reps} reps`]}
                     />
                 </BarChart>
             );
@@ -255,7 +264,7 @@ function ChartSelector({ chartType, data, color, axisShow }: {
             );
 
         case 'timeline': {
-            const td = (data ?? []) as TimelineItem[];
+            const td = (data ?? []) as unknown as TimelineItem[];
             const GanttBar = (props: any) => <Rectangle {...props} fill={timelineColor(props.outcome)} radius={4} />;
             const GanttBarActive = (props: any) => <Rectangle {...props} fill={timelineColor(props.outcome)} radius={4} stroke="var(--accent)" strokeWidth={2} />;
             return (
@@ -278,7 +287,7 @@ function ChartSelector({ chartType, data, color, axisShow }: {
                     <Bar dataKey="value" stackId="w" shape={(props: any) => {
                         const { x, y, width, height, index } = props;
                         const item = wf[index];
-                        const fill = item.raw >= 0 ? 'hsl(160,60%,50%)' : 'hsl(0,65%,55%)';
+                        const fill = Number(item?.raw) >= 0 ? 'hsl(160,60%,50%)' : 'hsl(0,65%,55%)';
                         return <rect x={x} y={y} width={width} height={height} fill={fill} rx={2} />;
                     }} />
                     {axisShow.x && <XAxis dataKey="name" tick={tick} />}

@@ -7,7 +7,7 @@ import { ChartContainer } from '@ui/patterns/charts/charts'
 import { useQuery } from '@ui/bindings'
 import type { HealthChartDef, HealthChartMap } from '@features/health'
 import { Row, Column, Cluster } from '@ui/layout'
-import { Text, Chip, Divider } from '@ui/atoms'
+import { Text, Chip, Divider } from '@ui/atoms';
 
 // ─── Types & Registry ───────────────────────────────────────────────────────
 

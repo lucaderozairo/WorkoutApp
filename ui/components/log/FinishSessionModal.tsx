@@ -6,7 +6,8 @@ import { useCommand } from '@ui/bindings';
 import { exportSessionEnvelope } from '@data/sources/local/persistence';
 import { exportSessionCsv, triggerDownload } from '@shared/utils/exportSession';
 import { Row, Column, Cluster, Spacer } from '@ui/layout';
-import { Button, Text, Textarea } from '@ui/atoms';
+import { Text } from '@ui/atoms';
+import { Button, Textarea } from '@ui/molecules';
 
 const RPE_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const SUGGESTED_TAGS = ['push', 'pull', 'legs', 'upper', 'lower', 'full-body', 'heavy', 'light', 'deload'];

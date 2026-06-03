@@ -31,7 +31,6 @@
 
   .content {
     grid-area: content;
-
     overflow-y: auto;
     min-height: 0;
 
@@ -45,25 +44,19 @@
 
   .menu {
     grid-area: menu;
-
     display: flex;
     align-items: center;
-
     padding: var(--s-2);
-
     background: var(--surface-1);
     border-bottom: 1px solid var(--line);
-
     z-index: var(--z-controls);
 
-    & button {
+    & button.ghost {
       display: flex;
       align-items: center;
       justify-content: flex-start;
       gap: var(--s-3);
-
       width: 100%;
-
       padding: var(--s-2) var(--s-4);
 
       border-radius: var(--s-3);

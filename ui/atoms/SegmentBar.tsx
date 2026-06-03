@@ -1,22 +1,25 @@
+import type { CSSProperties } from 'react';
+
 interface SegmentBarProps {
   value: number;
   max: number;
   segments?: number;
-  /** Sport/category accent applied to filled segments, e.g. 'run' | 'cycle' | 'strength'. */
-  variant?: string;
+  /** CSS custom-property token name for filled segments, e.g. 'c-cardio'. No domain vocabulary. */
+  color?: string;
   className?: string;
 }
 
 const DEFAULT_SEGMENTS = 14;
 
-export function SegmentBar({ value, max, segments = DEFAULT_SEGMENTS, variant, className }: SegmentBarProps) {
+export function SegmentBar({ value, max, segments = DEFAULT_SEGMENTS, color, className }: SegmentBarProps) {
   const filled = max > 0 ? Math.round((value / max) * segments) : 0;
   const wrapperClass = ['seg-bar', className ?? ''].filter(Boolean).join(' ');
+  const style = color ? ({ '--seg-color': `var(--${color})` } as CSSProperties) : undefined;
 
   return (
-    <div className={wrapperClass}>
+    <div className={wrapperClass} style={style}>
       {Array.from({ length: segments }, (_, i) => (
-        <div key={i} className={i < filled ? `seg filled${variant ? ` ${variant}` : ''}` : 'seg'} />
+        <div key={i} className={i < filled ? 'seg filled' : 'seg'} />
       ))}
     </div>
   );

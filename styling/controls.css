@@ -2,14 +2,20 @@
    SWITCH — toggle control
    ════════════════════════════════════════════ */
 .switch {
+  /* --sw-w/h: outer track; --sw-thumb: knob diameter; padding 2px each side */
+  --sw-w: 40px;
+  --sw-h: var(--s-5);       /* 24px */
+  --sw-thumb: 20px;
+  --sw-pad: 2px;
+
   display: inline-flex;
   align-items: center;
-  width: 40px;
-  height: 24px;
+  width: var(--sw-w);
+  height: var(--sw-h);
   border-radius: var(--r-pill);
   background: var(--surface-3);
   border: none;
-  padding: 2px;
+  padding: var(--sw-pad);
   cursor: pointer;
   transition: background var(--duration-short) var(--ease);
   flex-shrink: 0;
@@ -18,22 +24,23 @@
   &:disabled { opacity: 0.4; cursor: not-allowed; }
 
   & .thumb {
-    width: 20px;
-    height: 20px;
+    width: var(--sw-thumb);
+    height: var(--sw-thumb);
     border-radius: 50%;
     background: var(--surface-1);
     box-shadow: var(--shadow-1);
     transition: transform var(--duration-short) var(--ease);
   }
 
-  &[aria-checked="true"] .thumb { transform: translateX(16px); }
+  &[aria-checked="true"] .thumb {
+    /* travel = track - 2×pad - thumb */
+    transform: translateX(calc(var(--sw-w) - 2 * var(--sw-pad) - var(--sw-thumb)));
+  }
 
   &.sm {
-    width: 32px;
-    height: 20px;
-
-    & .thumb { width: 16px; height: 16px; }
-    &[aria-checked="true"] .thumb { transform: translateX(12px); }
+    --sw-w: 32px;
+    --sw-h: var(--s-4);     /* 20px (shared with --s-4) */
+    --sw-thumb: var(--s-4); /* 16px */
   }
 }
 

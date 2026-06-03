@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useQuery } from '@ui/bindings';
 import { viewStore } from '@data/projections/views';
 import { Row, Column } from '@ui/layout';
-import { Surface, Button, Text } from '@ui/atoms';
+import { Surface, Text } from '@ui/atoms';
+import { Button } from '@ui/molecules';
 
 export function EditDisplayNameWidget() {
   const displayName = useQuery<string>('display_name');

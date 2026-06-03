@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Grid, Row, Column, Cluster } from '@ui/layout';
-import { Button, Input, Badge, ProgressBar, Chip, Surface, Text } from '@ui/atoms';
+import { ProgressBar, Chip, Surface, Text } from '@ui/atoms';
+import { Badge, Button, Input } from '@ui/molecules';
 import { useCommand } from '@ui/bindings';
 import { handleCreatePlan } from '@features/training_plans';
 import type { TrainingPlan, PlanAdherence } from '@features/training_plans';
@@ -308,7 +309,7 @@ export function TrainingPlansScreen() {
             className="nowrap shrink-0"
             active={activeFilters.has(f.label)}
             onClick={() => toggleFilter(f.label)}
-            leading={<span className="dot sm" style={{ '--dot': f.color } as React.CSSProperties} />}
+            leading={<span className="dot sm" style={{ '--dot-color': f.color } as React.CSSProperties} />}
           >
             {f.label}
           </Chip>
@@ -324,7 +325,7 @@ export function TrainingPlansScreen() {
               <Cluster>
                 {LEGEND.map(l => (
                   <Row key={l.label} align="center" gap={1} className="caption">
-                    <span className="dot sm" style={{ '--dot': l.color } as React.CSSProperties} />
+                    <span className="dot sm" style={{ '--dot-color': l.color } as React.CSSProperties} />
                     <Text color="muted">{l.label}</Text>
                   </Row>
                 ))}

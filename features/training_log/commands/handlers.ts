@@ -42,28 +42,9 @@ import {
   sessionProjection,
   recentExercisesProjection,
 } from '../projections';
-import { registerProgressionPolicy } from '@features/progression';
-import { registerCoachingPolicy } from '@features/coaching';
-import { registerTrainingPlanProjections, registerAdherencePolicy } from '@features/training_plans';
-import { registerGoalProjections, registerGoalUpdatePolicy } from '@features/goals';
-import { registerHabitProjections, registerStreakMilestonePolicy } from '@features/habits';
-import { registerTrainingLoadProjection } from '@features/progress_analysis';
-import { registerBodyProjections, registerEquipmentMileagePolicy } from '@features/profile';
 
-// Register cross-feature policies
-registerProgressionPolicy();
-registerCoachingPolicy();
-registerTrainingPlanProjections();
-registerAdherencePolicy();
-registerGoalProjections();
-registerGoalUpdatePolicy();
-registerHabitProjections();
-registerStreakMilestonePolicy();
-registerTrainingLoadProjection();
-registerBodyProjections();
-registerEquipmentMileagePolicy();
-
-// Register projections
+// Cross-feature policies/projections are wired centrally in app/registry/bootstrap.ts.
+// This handler registers only training_log's own projections.
 projectionRegistry.register('sessions', sessionProjection);
 projectionRegistry.register('recent_exercises', recentExercisesProjection);
 

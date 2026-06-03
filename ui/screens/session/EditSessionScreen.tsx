@@ -2,8 +2,8 @@
 import { Grid, Row, Column } from '@ui/layout';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MoreVertical } from 'lucide-react';
-import { Button, Input, Textarea, Surface, Text } from '@ui/atoms';
-import { Dialog, ChipGroup, PhotoGallery } from '@ui/molecules';
+import { Surface, Text } from '@ui/atoms';
+import { Dialog, ChipGroup, PhotoGallery, Button, Input, Textarea } from '@ui/molecules';
 import { useQuery, useCommand } from '@ui/bindings';
 import type { ActivitiesState, ExerciseCategory } from '@features/training_log';
 import {

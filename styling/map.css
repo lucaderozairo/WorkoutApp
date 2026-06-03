@@ -20,8 +20,8 @@
   }
 
   .distance-marker-line {
-    width: 2px;
-    height: 10px;
+    width: var(--marker-line-w);
+    height: var(--marker-line-h);
     background: var(--ink);
     margin: 0 auto;
     flex-shrink: 0;
@@ -63,8 +63,8 @@
     box-shadow: var(--shadow-1);
   }
 
-  &.start .dot { background: #22c55e; }
-  &.end   .dot { background: #ef4444; }
+  &.start .dot { background: var(--ok); }
+  &.end   .dot { background: var(--bad); }
 }
 
 /* ── Leaflet map controls — isolation: isolate keeps Leaflet's z-indexes

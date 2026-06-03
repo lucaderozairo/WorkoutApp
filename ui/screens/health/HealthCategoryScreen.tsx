@@ -1,7 +1,7 @@
 import React from 'react'
 import { InjuriesView } from '@ui/components/health/InjuriesView'
 import { HealthChartsList } from '@ui/components/health/HealthChartsList'
-import { Surface } from '@ui/atoms'
+import { Surface } from '@ui/atoms';
 import { ScreenHeader } from '@ui/molecules'
 import { Grid } from '@ui/layout'
 import { useHealthCategory } from './useHealthCategory'

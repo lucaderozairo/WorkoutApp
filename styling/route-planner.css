@@ -15,7 +15,7 @@
 }
 
 .side-content {
-  width: 280px;
+  width: var(--panel-width);
   overflow-y: auto;
   overflow-x: hidden;
   padding: var(--s-3) var(--s-4);
@@ -99,7 +99,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--accent-ink);
   opacity: 0.45;
   transition: opacity 0.12s var(--ease);
 
@@ -121,7 +121,7 @@
   pointer-events: none;
 
   & > *    { pointer-events: auto; }
-  & .ghost { color: #fff; }
+  & .ghost { color: var(--accent-ink); }
 }
 
 /* ── Map control groups ── */

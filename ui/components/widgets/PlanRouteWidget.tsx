@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Column } from '@ui/layout';
-import { Surface, Button, Text } from '@ui/atoms';
+import { Surface, Text } from '@ui/atoms';
+import { Button } from '@ui/molecules';
 
 export function PlanRouteWidget() {
   const navigate = useNavigate();

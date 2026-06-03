@@ -82,6 +82,18 @@
   --nav-width: 150px;
   --nav-height: 60px;
 
+  /* ── Overlay / modal widths ── */
+  --modal-sm: 240px;
+  --modal-md: 280px;
+  --modal-lg: 360px;
+
+  /* ── Panel widths ── */
+  --panel-width: 280px;
+
+  /* ── Marker/icon dimensions ── */
+  --marker-line-w: 2px;
+  --marker-line-h: 10px;
+
   /* ── State layers ── */
   --state-hover: 0.08;
   --state-focus: 0.1;

@@ -2,8 +2,8 @@ import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine,
 } from 'recharts';
 import { CHART_H, TICK, TOOLTIP_STYLE } from '@ui/patterns/charts/domain-charts';
-import { Badge, Surface, Text, Table, TableCell, TableHead, TableRow } from '@ui/atoms';
-import { ScreenHeader } from '@ui/molecules';
+import { Surface, Text, Table, TableCell, TableHead, TableRow } from '@ui/atoms';
+import { ScreenHeader, Badge } from '@ui/molecules';
 import { Grid, Row } from '@ui/layout';
 import { formatDate, formatDateFull, useExerciseHistory } from './useExerciseHistory';
 

@@ -1,7 +1,8 @@
 import { useQuery } from '@ui/bindings';
 import { Flame } from 'lucide-react';
 import { Row, Column } from '@ui/layout';
-import { Surface, Text, Badge } from '@ui/atoms';
+import { Surface, Text } from '@ui/atoms';
+import { Badge } from '@ui/molecules';
 
 interface WelcomeWidgetProps {
   workoutsThisWeek: number;

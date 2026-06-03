@@ -1,7 +1,7 @@
 import { Row } from '@ui/layout/Row';
 import { Icon } from '@ui/atoms/Icon';
 import { Spinner } from '@ui/atoms/Spinner';
-import { Button } from '@ui/atoms/Button';
+import { Button } from '@ui/molecules/Button';
 
 interface SearchBarProps {
   value: string;

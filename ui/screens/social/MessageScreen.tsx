@@ -1,5 +1,6 @@
 import { Phone, Video } from "lucide-react";
-import { Avatar, Button, Surface } from '@ui/atoms';
+import { Avatar, Surface } from '@ui/atoms';
+import { Button } from '@ui/molecules';
 import { Column, Grid, Row } from '@ui/layout';
 import { useMessageScreen } from './useMessageScreen';
 

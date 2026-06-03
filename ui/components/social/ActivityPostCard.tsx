@@ -7,7 +7,8 @@ import { Carousel } from '../shared';
 import { timeAgo } from '@shared/utils/timeAgo';
 import { USER_NAME, USER_INITIALS } from '@features/social/domain/constants';
 import { Row, Column, Cluster } from '@ui/layout';
-import { Surface, Avatar, Text, Badge } from '@ui/atoms';
+import { Surface, Avatar, Text } from '@ui/atoms';
+import { Badge } from '@ui/molecules';
 
 const SPORT_AVATAR: Partial<Record<CardioSport, string>> = {
   run: 'run', cycle: 'cycle', swim: 'swim', row: 'rowing',

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { Surface } from '@ui/atoms/Surface';
+import { Skeleton } from '@ui/atoms/Skeleton';
 import { Column } from '@ui/layout/Column';
 import { Spacer } from '@ui/layout/Spacer';
 
@@ -19,8 +20,8 @@ export function WidgetCard({ label, footer, tight = false, loading = false, clas
         {label && <span className="eyebrow muted">{label}</span>}
         {loading ? (
           <Column className="grow">
-            <div className="sk" style={{ height: 48 }} />
-            <div className="sk" style={{ height: 24, width: '60%' }} />
+            <Skeleton size="block" />
+            <Skeleton size="line" short />
           </Column>
         ) : (
           <div className="grow">{children}</div>

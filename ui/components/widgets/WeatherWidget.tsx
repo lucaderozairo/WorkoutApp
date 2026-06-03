@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Grid, Row, Column } from '@ui/layout';
-import { Surface, Button, Text, Badge, Divider } from '@ui/atoms';
+import { Surface, Text, Divider } from '@ui/atoms';
+import { Badge, Button } from '@ui/molecules';
 import {
   ResponsiveContainer,
   ComposedChart, Bar, Line,

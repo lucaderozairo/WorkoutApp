@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Row, Column } from '@ui/layout';
-import { Surface, Button, Text, Table, TableRow, TableCell } from '@ui/atoms';
+import { Surface, Text, Table, TableRow, TableCell } from '@ui/atoms';
+import { Button } from '@ui/molecules';
 
 interface ShareModalProps {
   type: 'session' | 'workout' | 'run';

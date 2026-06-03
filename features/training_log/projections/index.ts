@@ -88,7 +88,6 @@ export interface ActivityHistoryItem {
   media?: string[];
 }
 
-
 // ─── Helpers ─────────────────────────────────────────────────
 
 function updateActivity(

@@ -1,0 +1,61 @@
+/* ════════════════════════════════════════════
+   PROJECT ACTIVITY MAPPING — domain → token
+   ════════════════════════════════════════════
+   The ONLY place fitness/health vocabulary (sports, sleep stages,
+   rarity tiers, pain) is allowed to touch the generic atoms.
+   Generic Badge / Dot / Avatar expose color via custom properties or
+   `background`; this sheet maps project concepts onto design tokens.
+   Lives in @layer project so it sits above atoms/molecules and any
+   future domain leak into the generic layers is a visible mistake. */
+
+/* ── Badge: sport / activity ── */
+.badge {
+  &.lift   { --badge-color: var(--c-strength); }
+  &.run    { --badge-color: var(--c-cardio); }
+  &.rowing { --badge-color: var(--c-recovery); }
+  &.cycle  { --badge-color: var(--c-nutrition); }
+  &.swim   { --badge-color: var(--c-water); }
+  &.mind   { --badge-color: var(--c-mind); }
+
+  /* ── Badge: sleep stages ── */
+  &.awake  { --badge-color: var(--color-sleep-awake); }
+  &.light  { --badge-color: var(--color-sleep-light); }
+  &.deep   { --badge-color: var(--color-sleep-deep); }
+  &.rem    { --badge-color: var(--color-sleep-rem); }
+}
+
+/* ── Dot: sport / activity ── */
+.dot {
+  &.lift   { opacity: 1; --dot-color: var(--c-strength); }
+  &.run    { opacity: 1; --dot-color: var(--c-cardio); }
+  &.cycle  { opacity: 1; --dot-color: var(--c-nutrition); }
+  &.swim   { opacity: 1; --dot-color: var(--c-water); }
+  &.rowing { opacity: 1; --dot-color: var(--c-recovery); }
+
+  /* ── Dot: rarity tiers ── */
+  &.common    { opacity: 1; --dot-color: var(--color-common); }
+  &.rare      { opacity: 1; --dot-color: var(--color-rare); }
+  &.epic      { opacity: 1; --dot-color: var(--color-epic); }
+  &.legendary { opacity: 1; --dot-color: var(--color-legendary); }
+
+  /* ── Dot: pain scale — bordered dot with surface base ── */
+  &.pain {
+    --dot-size: var(--s-2-5, 10px);
+    opacity: 1;
+    background: var(--surface-2);
+    border: 1px solid var(--line-strong);
+
+    &[data-active="true"] { background: var(--bad); border-color: var(--bad); }
+  }
+}
+
+/* ── Rarity text colors ── */
+.color-common    { color: var(--color-common); }
+.color-rare      { color: var(--color-rare); }
+.color-epic      { color: var(--color-epic); }
+.color-legendary { color: var(--color-legendary); }
+
+/* ── Avatar: project default portrait gradient ──
+   Generic .avatar ships a neutral gradient; this restores the
+   fitness-brand strength→mind look as a project-level override. */
+.avatar { background: linear-gradient(135deg, var(--c-strength), var(--c-mind)); }

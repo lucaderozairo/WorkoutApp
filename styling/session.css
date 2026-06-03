@@ -60,9 +60,22 @@
 /* ── Bottom banner — fixed overlay above nav (RestTimerAlert) ── */
 .bottom-banner {
   position: fixed;
-  bottom: calc(var(--nav-height, 56px) + var(--s-1, 12px));
+  bottom: calc(var(--nav-height) + var(--s-1));
   left: var(--s-2, 12px);
   right: var(--s-2, 12px);
   z-index: var(--z-fixed);
   overflow: hidden;
+}
+
+/* ── Session header top bar ── */
+.session-header-top {
+  padding: var(--s-3) var(--s-4);
+  background: var(--surface-0);
+  border-bottom: 1px solid var(--line);
+}
+
+/* ── Set index number — fixed-width centered column ── */
+.set-number {
+  min-width: var(--s-7);
+  text-align: center;
 }

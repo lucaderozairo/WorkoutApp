@@ -1,5 +1,5 @@
-import { Button } from '@ui/atoms';
-import { ScreenHeader, EmptyState } from '@ui/molecules';
+
+import { ScreenHeader, EmptyState, Button } from '@ui/molecules';
 import { Grid, Row } from '@ui/layout';
 import { useSavedRoutes } from './useSavedRoutes';
 
@@ -33,7 +33,7 @@ export function SavedRoutesScreen() {
               onClick={() => incoming.returnTo && handleSelect(route)}
             >
               <Row justify="between" align="center">
-                <span className="emoji-sm">{profileIcon(route.profile)}</span>
+                <span className="emoji sm">{profileIcon(route.profile)}</span>
                 {confirmDelete === route.id ? (
                   <Row gap={1}>
                     <Button variant="destructive" size="sm" onClick={e => { e.stopPropagation(); handleDelete(route.id); }}>Delete</Button>

@@ -72,10 +72,18 @@
 .clamp-2 { -webkit-line-clamp: 2; line-clamp: 2; }
 .clamp-3 { -webkit-line-clamp: 3; line-clamp: 3; }
 
-/* ── Emoji sizes ── */
-.emoji-sm { font-size: 28px; }
-.emoji-md { font-size: 32px; }
-.emoji-lg { font-size: 36px; }
+/* ── Emoji sizes — base class + nested modifiers (same pattern as .button.sm/.lg) ── */
+.emoji {
+  &.sm { font-size: 28px; }
+  &.md { font-size: 32px; }
+  &.lg { font-size: 36px; }
+}
+
+/* ── Sub-scale text (below token scale, used in compact calendar labels) ── */
+.text-9 { font-size: 9px; }
+
+/* ── Tight line height (single-figure display numerals) ── */
+.lh-1 { line-height: 1; }
 
 /* ── Chevron rotation ── */
 .chevron {
@@ -84,8 +92,8 @@
 }
 
 /* ── Responsive visibility ── */
-@media (max-width: 760px)  { .desktop-only { display: none; } }
-@media (min-width: 761px)  { .mobile-only  { display: none; } }
+@media (max-width: 599px)  { .desktop-only { display: none; } }
+@media (min-width: 600px)  { .mobile-only  { display: none; } }
 
 /* ════════════════════════════════════════════
    SPINNER
@@ -97,7 +105,7 @@
   border-radius: 50%;
   border: 2px solid var(--line);
   border-top-color: var(--accent);
-  animation: spin 0.7s linear infinite;
+  animation: spin var(--duration-medium) linear infinite;
   flex-shrink: 0;
 
   &.sm { width: 14px; height: 14px; }
@@ -122,12 +130,25 @@
     var(--sk)   75%,
     var(--sk)   100%
   );
+  /* 1400px = 2× max viewport width: ensures the highlight sweeps fully even on wide screens */
   background-size: 1400px 100%;
+  /* 2.2s = slow sweep so the highlight is readable; not a standard duration token */
   animation: shimmer 2.2s infinite linear;
   border-radius: var(--r-sm);
 
+  /* Size modifiers (consumed by the Skeleton atom) */
+  &.line  { height: var(--s-6); }
+  &.block { height: 3rem; }
+  &.short { width: 60%; }
+
+  /* Staggered shimmer — finite nth-child fallback (works everywhere) */
   &:nth-child(2n) { animation-delay: -0.4s; }
   &:nth-child(3n) { animation-delay: -0.8s; }
   &:nth-child(5n) { animation-delay: -1.2s; }
   &:nth-child(7n) { animation-delay: -1.6s; }
+
+  /* Unbounded stagger where supported (Chrome/Edge 138+, Safari 26.2+) */
+  @supports (animation-delay: calc(sibling-index() * 1s)) {
+    animation-delay: calc(sibling-index() * -0.4s);
+  }
 }

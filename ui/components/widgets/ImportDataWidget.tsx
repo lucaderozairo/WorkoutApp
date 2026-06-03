@@ -3,7 +3,8 @@ import { PERSISTED_KEYS } from '@data/sources/local/persistence';
 import { viewStore } from '@data/projections/views';
 import { importCsv, writeImportToStore } from '@shared/utils/importCsv';
 import { Column } from '@ui/layout';
-import { Surface, Button, Text } from '@ui/atoms';
+import { Surface, Text } from '@ui/atoms';
+import { Button } from '@ui/molecules';
 
 export function ImportDataWidget() {
   const inputRef = useRef<HTMLInputElement>(null);

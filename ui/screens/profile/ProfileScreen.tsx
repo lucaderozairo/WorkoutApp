@@ -1,21 +1,13 @@
-import {
-  registerBodyProjections,
-  registerEquipmentMileagePolicy,
-} from '@features/profile';
 import { ActivitiesTab } from '@ui/components/profile/ActivitiesTab';
 import { HealthOverviewTab } from '@ui/components/profile/HealthOverviewTab';
-import { Avatar, Badge, Surface } from '@ui/atoms';
+import { Avatar, Surface } from '@ui/atoms';
 import { Grid, Row, Column, Cluster } from '@ui/layout';
-import { StatTile, Tabs } from '@ui/molecules';
+import { StatTile, Tabs, Badge } from '@ui/molecules';
 import { useProfileScreen } from './useProfileScreen';
 import type { ProfileTab } from './useProfileScreen';
 import { Flame } from 'lucide-react';
 
-import '@features/progress_analysis';
-import '@features/readiness';
-
-registerBodyProjections();
-registerEquipmentMileagePolicy();
+// Feature policies/projections are registered centrally in app/registry/bootstrap.ts.
 
 const PROFILE_TABS: { id: ProfileTab; label: string }[] = [
   { id: 'health', label: 'Health' },

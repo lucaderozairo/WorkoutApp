@@ -47,10 +47,10 @@
   position: absolute;
   z-index: var(--layer-z, 1);
   pointer-events: none;
-}
 
   & > * {
-  pointer-events: auto;
+    pointer-events: auto;
+  }
 }
 
 .layer-pin-top-left {
@@ -157,7 +157,7 @@
 /* ── Flex layout primitives ── */
 
 /* Shared utilities — defined once via :is() to avoid duplication */
-:is(.row, .column) {
+:is(.row, .column, .cluster) {
   display: flex;
 
   /* gap scale — mirrors token scale directly (gap-{n} = --s-{n}) */
@@ -189,19 +189,12 @@
 .row    { flex-direction: row;    gap: var(--s-3); }
 .column { flex-direction: column; gap: var(--s-4); }
 
-/* .cluster: wrapping row for chips/tags — stays independent (different default gap, always wraps) */
+/* .cluster: wrapping row for chips/tags — stays independent (different default gap, always wraps).
+   Gap modifiers come from the shared :is(.row, .column, .cluster) rule above. */
 .cluster {
-  display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--s-2);
-
-  &.gap-0 { gap: 0; }
-  &.gap-1 { gap: var(--s-1); }
-  &.gap-2 { gap: var(--s-2); }
-  &.gap-3 { gap: var(--s-3); }
-  &.gap-4 { gap: var(--s-4); }
-  &.gap-5 { gap: var(--s-5); }
 }
 
 /* legacy aliases — partially purged; remaining usages in molecules/nav/buttons pending full removal */

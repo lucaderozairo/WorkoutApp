@@ -1,31 +1,40 @@
-/* Cascade layers — effective order (low → high priority):
-   reset < tokens < base < layout < components < utilities < overrides
-   (utilities win over components; Leaflet's !important rules isolated last) */
+/* Cascade layers — explicit atomic order (low → high priority):
+   reset < tokens < base < layout < atoms < molecules < patterns < project < utilities < overrides
+   The cascade layers mirror the component tiers (tokens → primitives(atoms/molecules)
+   → layouts → patterns → feature-ui/project). The atomic boundary is mechanical: a
+   domain-specific rule in atoms/molecules/patterns is a visible mistake. Project
+   vocabulary (sports, sleep, rarity) lives in @layer project; raw design values live
+   only in @layer tokens; Leaflet's !important rules are isolated last in overrides. */
+@layer reset, tokens, base, layout, atoms, molecules, patterns, project, utilities, overrides;
+
 @import "./reset.css"          layer(reset);
 @import "./tokens.css"         layer(tokens);
 @import "./typography.css"     layer(base);
+/* ── Layout primitives + app shell ── */
 @import "./layout.css"         layer(layout);
-@import "./nav.css"            layer(layout);
-@import "./surface.css"        layer(components);
-@import "./buttons.css"        layer(components);
-@import "./forms.css"          layer(components);
-/* ── Atoms ── */
-@import "./labels.css"         layer(components);
-@import "./avatar.css"         layer(components);
-@import "./metric.css"         layer(components);
-/* ── Molecules / patterns ── */
-@import "./controls.css"       layer(components);
-@import "./feedback.css"       layer(components);
-@import "./data-display.css"   layer(components);
-@import "./media.css"          layer(components);
-@import "./overlays.css"       layer(components);
-@import "./calendar.css"       layer(components);
-@import "./list.css"           layer(components);
-@import "./screen-header.css"  layer(components);
-@import "./session.css"        layer(components);
-/* ── Feature-level ── */
-@import "./containers.css"     layer(components);
-@import "./route-planner.css"  layer(components);
+@import "./nav.css"            layer(atoms);
+@import "./containers.css"     layer(layout);
+/* ── Atoms (irreducible, generic) ── */
+@import "./surface.css"        layer(atoms);
+@import "./buttons.css"        layer(atoms);
+@import "./forms.css"          layer(atoms);
+@import "./labels.css"         layer(atoms);
+@import "./avatar.css"         layer(atoms);
+@import "./metric.css"         layer(atoms);
+/* ── Molecules (generic compositions) ── */
+@import "./controls.css"       layer(molecules);
+@import "./feedback.css"       layer(molecules);
+@import "./data-display.css"   layer(molecules);
+@import "./media.css"          layer(molecules);
+@import "./overlays.css"       layer(molecules);
+@import "./list.css"           layer(molecules);
+@import "./screen-header.css"  layer(molecules);
+/* ── Project (fitness-specific components + domain→token mapping) ── */
+@import "./project-activity.css" layer(project);
+@import "./calendar.css"       layer(project);
+@import "./session.css"        layer(project);
+@import "./route-planner.css"  layer(project);
+/* ── Utilities + third-party overrides ── */
 @import "./utilities.css"      layer(utilities);
 @import "./map.css"            layer(overrides);
 

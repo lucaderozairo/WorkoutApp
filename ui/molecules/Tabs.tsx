@@ -1,4 +1,5 @@
-import type { ReactNode } from 'react';
+import type { ReactNode } from "react";
+import { Row } from "@ui/layout";
 
 export interface TabItem<T extends string> {
   id: T;
@@ -12,22 +13,29 @@ interface TabsProps<T extends string> {
   className?: string;
 }
 
-export function Tabs<T extends string>({ items, value, onChange, className }: TabsProps<T>) {
-  const classes = ['tabs', className].filter(Boolean).join(' ');
+export function Tabs<T extends string>({
+  items,
+  value,
+  onChange,
+  className,
+}: TabsProps<T>) {
+  const classes = ["tabs", className].filter(Boolean).join(" ");
   return (
-    <div className={classes} role="tablist">
-      {items.map(item => (
-        <button
-          key={item.id}
-          type="button"
-          role="tab"
-          aria-selected={value === item.id}
-          className={`tab${value === item.id ? ' active' : ''}`}
-          onClick={() => onChange(item.id)}
-        >
-          {item.label}
-        </button>
-      ))}
-    </div>
+      <Row
+        justify="between"
+        gap={0}
+        className={classes}
+        children={items.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            role="tab"
+            aria-selected={value === item.id}
+            className={`tab${value === item.id ? " active" : ""}`}
+            onClick={() => onChange(item.id)}>
+            {item.label}
+          </button>
+        ))}
+      />
   );
 }

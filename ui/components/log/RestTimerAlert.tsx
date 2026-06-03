@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { viewStore } from '@data/projections/views';
 import { Row } from '@ui/layout';
-import { Surface, Button, Text, Badge } from '@ui/atoms';
+import { Surface, Text } from '@ui/atoms';
+import { Badge, Button } from '@ui/molecules';
 
 type Props = {
   initialSeconds: number;

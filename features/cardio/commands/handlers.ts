@@ -18,27 +18,14 @@ import {
   monthlyCardioProjection,
   type RecentCardioView,
 } from "../projections";
-import {
-  registerGoalProjections,
-  registerGoalUpdatePolicy,
-} from "@features/goals";
-import { registerTrainingLoadProjection } from "@features/progress_analysis";
-import {
-  registerBodyProjections,
-  registerEquipmentMileagePolicy,
-} from "@features/profile";
 
-// Register projections
+// Cross-feature policies/projections are wired centrally in app/registry/bootstrap.ts.
+// This handler registers only cardio's own projections.
 projectionRegistry.register("recent_cardio_sessions", recentCardioProjection);
 projectionRegistry.register(
   "monthly_cardio_progression",
   monthlyCardioProjection,
 );
-registerGoalProjections();
-registerGoalUpdatePolicy();
-registerTrainingLoadProjection();
-registerBodyProjections();
-registerEquipmentMileagePolicy();
 
 function applyAndStore(events: CardioEvent[]): void {
   // Sync projection from the live state before applying. viewStore is preferred

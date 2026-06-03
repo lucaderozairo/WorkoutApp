@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { ChevronDown, Check, SlidersHorizontal, Search, X } from 'lucide-react';
 import type { SessionFilters, TypeFilter, ViewMode } from '@ui/components/log/SessionFilterBar';
 import { Row, Column, Cluster } from '@ui/layout';
-import { Surface, Button, Text, Chip } from '@ui/atoms';
+import { Surface, Text, Chip } from '@ui/atoms';
+import { Button } from '@ui/molecules';
 
 const DATE_OPTIONS: { key: SessionFilters['dateRange']; label: string }[] = [
   { key: 'all', label: 'All time' },

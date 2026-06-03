@@ -1,6 +1,7 @@
 import { useUndoToast } from './hooks/useUndoToast';
 import { Row } from '@ui/layout';
-import { Surface, Button, Text } from '@ui/atoms';
+import { Surface, Text } from '@ui/atoms';
+import { Button } from '@ui/molecules';
 
 export function UndoToast() {
   const { current, undo } = useUndoToast();

@@ -4,8 +4,8 @@ import { Surface } from '@ui/atoms/Surface';
 import { Row } from '@ui/layout/Row';
 import { createPortal } from 'react-dom';
 import { Column } from '@ui/layout/Column';
-import { Badge } from '@ui/atoms/Badge';
-import { Button } from '@ui/atoms/Button';
+import { Badge } from './Badge';
+import { Button } from '@ui/molecules/Button';
 
 type ToastVariant = 'success' | 'error' | 'info' | 'warn';
 

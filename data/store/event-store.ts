@@ -1,6 +1,5 @@
 import type { Id, DomainEvent } from '@shared/types';
 import type { EventStore } from '@shared/contracts';
-import { eventBus } from '@core/events';
 import { persistEvent, loadAllEvents } from '@data/sources/local/event-db';
 import { upcastEvent } from './upcasters';
 
@@ -44,8 +43,6 @@ class HybridEventStore implements EventStore {
     if (subs) {
       for (const handler of subs) handler(event);
     }
-
-    await eventBus.publish(event);
   }
 
   async readStream(aggregateId: Id): Promise<DomainEvent<string, object>[]> {

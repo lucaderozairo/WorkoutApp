@@ -38,7 +38,7 @@
 }
 
 .surface:has(> .exp-toggle:focus-visible) .exp-trigger {
-  outline: 2px solid var(--accent);
+  /* reset.css provides outline + offset; only override radius here */
   outline-offset: 2px;
   border-radius: 2px;
 }

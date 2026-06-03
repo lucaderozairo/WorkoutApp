@@ -18,7 +18,7 @@ export function PhotoGallery({ photos, onAdd, onRemove, label = 'Photos' }: Phot
         {photos.map((url, i) => (
           <div key={i} className="photo-thumb">
             <img src={url} alt="" />
-            <button type="button" className="ghost icon sm photo-del" onClick={() => onRemove(i)}>✕</button>
+            <button type="button" className="ghost icon sm" onClick={() => onRemove(i)}>✕</button>
           </div>
         ))}
         <button

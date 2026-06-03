@@ -1,5 +1,5 @@
 import { Row } from '../layout/Row';
-import { Text } from './Text';
+import { Text } from '../atoms/Text';
 
 interface SwitchProps {
   checked: boolean;

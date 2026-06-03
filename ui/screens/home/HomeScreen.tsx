@@ -10,39 +10,14 @@ import { WeatherWidget } from "@ui/components/widgets/WeatherWidget";
 import { GOAL_MINUTES } from "./dashboardUtils";
 import { PlanRouteWidget } from "@ui/components/widgets/PlanRouteWidget";
 import { EditDisplayNameWidget } from "@ui/components/widgets/EditDisplayNameWidget";
-import {
-  registerTrainingPlanProjections,
-  registerAdherencePolicy,
-} from "@features/training_plans";
-import { registerGoalProjections } from "@features/goals";
-import {
-  registerHabitProjections,
-  registerStreakMilestonePolicy,
-} from "@features/habits";
-import {
-  registerAchievementPolicies,
-  ACHIEVEMENT_DEFINITIONS,
-} from "@features/achievements";
+import { ACHIEVEMENT_DEFINITIONS } from "@features/achievements";
 import type { AchievementUnlockedPayload } from "@features/achievements";
 import { eventBus } from "@core/events/bus";
 import { useHomeScreen } from "./useHomeScreen";
+import { Surface, Text } from "@ui/atoms";
+import { Button } from "@ui/molecules";
 
-import "@features/training_log";
-import "@features/readiness";
-import "@features/conditions";
-import "@features/scheduling";
-import "@features/news_feed";
-import "@features/training_plans";
-import "@features/goals";
-import "@features/habits";
-import { Surface, Text, Button } from "@ui/atoms";
-
-registerTrainingPlanProjections();
-registerAdherencePolicy();
-registerGoalProjections();
-registerHabitProjections();
-registerStreakMilestonePolicy();
-registerAchievementPolicies();
+// Feature policies/projections are registered centrally in app/registry/bootstrap.ts.
 
 interface UnlockedToast {
   name: string;

@@ -6,7 +6,8 @@ import type { CombinedSession } from '@features/training_log/queries/calendarUti
 import { buildDateMap, getMonthGrid, toDateKey } from '@features/training_log/queries/calendarUtils';
 import { StrengthSessionItem, CardioSessionItem } from './SessionListItem';
 import { Row, Column } from '@ui/layout';
-import { Surface, Button, Text } from '@ui/atoms';
+import { Surface, Text } from '@ui/atoms';
+import { Button } from '@ui/molecules';
 
 interface Props {
   sessions: CombinedSession[];

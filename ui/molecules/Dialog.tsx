@@ -1,4 +1,4 @@
-import { Button } from '@ui/atoms/Button';
+import { Button } from '@ui/molecules/Button';
 import { Row } from '@ui/layout/Row';
 import { Modal } from './Modal';
 

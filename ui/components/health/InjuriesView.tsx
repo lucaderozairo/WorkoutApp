@@ -3,7 +3,8 @@ import { handleResolveInjury } from '@features/profile';
 import type { Id } from '@shared/types';
 import { HealthChartsList } from './HealthChartsList';
 import { Row, Column } from '@ui/layout';
-import { Surface, Text, Badge, Button } from '@ui/atoms';
+import { Surface, Text } from '@ui/atoms';
+import { Badge, Button } from '@ui/molecules';
 
 type InjuryView = { id: Id<'Injury'>; description: string; bodyPart: string; recordedAt: number };
 const USER_ID = 'user-001' as Id<'User'>;

@@ -18,12 +18,14 @@
 
 /* ── Modal sheet ── */
 .modal {
-  display: flex;
+  /* display:none here (molecules layer) wins over .surface { display:block } (atoms layer),
+     restoring the UA popover hiding that .surface would otherwise override. */
+  display: none;
   flex-direction: column;
   gap: var(--s-4);
   margin: auto auto 0;
   width: 100%;
-  max-width: 280px;
+  max-width: var(--modal-md);
   max-height: 80vh;
   overflow-y: auto;
   border-radius: var(--r-md) var(--r-md) 0 0;
@@ -34,9 +36,13 @@
     overlay var(--duration-medium) allow-discrete,
     display var(--duration-medium) allow-discrete;
 
-  &:popover-open { opacity: 1; transform: translateY(0); }
-  &.modal-sm { max-width: 240px; }
-  &.modal-lg { max-width: 360px; }
+  &:popover-open {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  &.modal-sm { max-width: var(--modal-sm); }
+  &.modal-lg { max-width: var(--modal-lg); }
 }
 @starting-style {
   .modal:popover-open { opacity: 0; transform: translateY(12px); }

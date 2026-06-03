@@ -23,9 +23,9 @@
   }
 
   & button {
-    background: rgba(0, 0, 0, 0.48);
-    color: #fff;
-    &:hover { background: rgba(0, 0, 0, 0.7); }
+    background: color-mix(in srgb, black, transparent 52%);
+    color: var(--accent-ink);
+    &:hover { background: color-mix(in srgb, black, transparent 30%); }
   }
 }
 
@@ -35,8 +35,8 @@
   left: 0;
   right: 0;
   padding: var(--s-2);
-  background: linear-gradient(to top, rgba(0,0,0,.6) 0%, transparent 100%);
-  color: #fff;
+  background: linear-gradient(to top, color-mix(in srgb, black, transparent 40%) 0%, transparent 100%);
+  color: var(--accent-ink);
   font-size: var(--t-xs);
   font-weight: 500;
   z-index: var(--z-content);
@@ -46,23 +46,26 @@
    PHOTO THUMB — fixed-size media thumbnail
    ════════════════════════════════════════════ */
 .photo-thumb {
-  position: relative;
+  display: grid;
   width: 80px;
   height: 80px;
   flex-shrink: 0;
   overflow: hidden;
   border-radius: var(--r-sm);
 
+  /* all children share one cell so the delete button overlays the image */
+  & > * { grid-area: 1 / 1; }
+
   & > img {
     width: 100%;
     height: 100%;
     object-fit: contain;
   }
-}
 
-.photo-del {
-  position: absolute;
-  top: var(--s-1);
-  right: var(--s-1);
-  background: var(--surface-1);
+  /* delete button pins to top-right via self-alignment — no position:absolute needed */
+  & > button {
+    place-self: start end;
+    margin: var(--s-1);
+    background: var(--surface-1);
+  }
 }

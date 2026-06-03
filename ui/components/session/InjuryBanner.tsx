@@ -3,7 +3,8 @@ import { AlertTriangle, ChevronDown, ChevronUp } from 'lucide-react';
 import type { UICondition } from '@features/training_log/projections/viewTypes';
 import { worstActiveCondition } from '@features/training_log/projections/mappers';
 import { Row, Column } from '@ui/layout';
-import { Surface, Text, Badge, Button } from '@ui/atoms';
+import { Surface, Text } from '@ui/atoms';
+import { Badge, Button } from '@ui/molecules';
 
 export function InjuryBanner({ conditions }: { conditions: UICondition[] }) {
   const [open, setOpen] = useState(false);

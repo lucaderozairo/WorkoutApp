@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useId } from 'react';
-import { Button } from '@ui/atoms/Button';
+import { Button } from '@ui/molecules/Button';
 
 interface DropdownItem {
   label: string;

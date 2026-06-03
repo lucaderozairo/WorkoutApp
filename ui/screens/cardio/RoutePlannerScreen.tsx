@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Grid, Row, Column, Cluster, Layer, Layered } from '@ui/layout';
-import { Button, Surface, Text } from '@ui/atoms';
+import { Surface, Text } from '@ui/atoms';
 import { RouteMap } from '@ui/components/workout/wizard/RouteMap';
-import { ScreenHeader } from '@ui/molecules';
+import { ScreenHeader, Button } from '@ui/molecules';
 import {
   BarChart2, Bookmark, ChevronLeft, ChevronRight, ChevronUp,
   Layers, Map, MapPin, Minus, Moon, Mountain,

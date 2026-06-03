@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
+import { Dot } from '../atoms/Dot';
 
 type Tone = 'ok' | 'warn' | 'bad' | 'accent' | 'plain';
 
@@ -12,6 +13,10 @@ interface BadgeProps {
   children?: ReactNode;
 }
 
+/**
+ * Badge — molecule: composes a Dot atom + label content.
+ * Not an atom (it is built from Dot), hence it lives in molecules/.
+ */
 export function Badge({ tone, color, dot = false, active = false, className, children }: BadgeProps) {
   const classes = [
     'badge',
@@ -26,7 +31,7 @@ export function Badge({ tone, color, dot = false, active = false, className, chi
 
   return (
     <span className={classes} style={style}>
-      {dot && <span className="dot" />}
+      {dot && <Dot />}
       {children}
     </span>
   );

@@ -7,7 +7,8 @@ import {
 import { ScoreRing, fmtMin, TOOLTIP_STYLE, TICK } from '@ui/patterns/charts/domain-charts';
 import type { SleepSession } from '@features/readiness';
 import { Row, Column, Spacer } from '@ui/layout';
-import { Surface, Text, Badge } from '@ui/atoms';
+import { Surface, Text } from '@ui/atoms';
+import { Badge } from '@ui/molecules';
 
 type WidgetSize = '1x1' | '2x1' | '2x2';
 
