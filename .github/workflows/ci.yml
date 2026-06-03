@@ -23,6 +23,12 @@ jobs:
       - name: Type check
         run: npx tsc --noEmit
 
+      - name: Lint (architecture boundaries)
+        run: npm run lint
+
+      - name: Lint CSS (token discipline)
+        run: npm run lint:css
+
       - name: Build
         run: npx vite build
 
