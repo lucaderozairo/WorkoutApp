@@ -51,6 +51,13 @@ export default tseslint.config(
       'boundaries/ignore': ['**/*.test.{ts,tsx}', '**/*.d.ts'],
     },
     rules: {
+      // Rules 6/7 — no inline styles. Ships as 'warn'; ratcheted to 'error' once
+      // existing usages are triaged. Dynamic CSS custom properties are the only
+      // allowed exception (keep an eslint-disable with justification).
+      'no-restricted-syntax': ['warn', {
+        selector: 'JSXAttribute[name.name="style"]',
+        message: 'No inline styles (Rules 6/7): use CSS classes + tokens. Dynamic CSS custom properties are the only allowed exception — add an eslint-disable with justification.',
+      }],
       'boundaries/element-types': ['error', {
         default: 'disallow',
         rules: [
