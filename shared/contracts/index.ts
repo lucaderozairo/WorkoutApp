@@ -31,3 +31,15 @@ export interface JobQueue<T = unknown> {
   enqueue(job: T): Promise<void>;
   dequeue(): Promise<T | null>;
 }
+
+// ChartType is a presentation-agnostic enum of chart kinds. It lives here as a
+// contract so the chart UI (ui/patterns/charts) and domains that describe how
+// their data should be rendered (e.g. health) can share it without the domain
+// depending on the UI layer.
+export type ChartType =
+  | 'bar' | 'line' | 'area' | 'composed'
+  | 'pie' | 'radar' | 'radialbar' | 'scatter'
+  | 'stacked-bar' | 'percent-area' | 'area-fill-value'
+  | 'positive-negative' | 'brush-bar' | 'timeline'
+  | 'waterfall' | 'banded'
+  | 'sets-bar';

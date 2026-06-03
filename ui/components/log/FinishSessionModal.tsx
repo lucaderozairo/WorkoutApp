@@ -3,6 +3,7 @@ import type { Id } from '@shared/types';
 import type { ActivityView } from '@features/training_log/projections';
 import { handleFinishSession, handleUpdateSessionNote, getActivityHistory } from '@features/training_log';
 import { useCommand } from '@ui/bindings';
+// eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
 import { exportSessionEnvelope } from '@data/sources/local/persistence';
 import { exportSessionCsv, triggerDownload } from '@shared/utils/exportSession';
 import { Row, Column, Cluster, Spacer } from '@ui/layout';

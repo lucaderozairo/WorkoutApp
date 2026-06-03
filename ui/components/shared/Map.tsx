@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+// eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
 import type { GpsTrack } from '@data/sources/files/gps';
 
 const PACE_ZONE_COLOURS = ['#60a5fa', '#34d399', '#fbbf24', '#f97316', '#ef4444'];

@@ -131,7 +131,17 @@
       "Bash(find \"c:\\\\\\\\Users\\\\\\\\Deroz01\\\\\\\\Documents\\\\\\\\Coding Projects\\\\\\\\Workout App\\\\\\\\workoutApp\" -name \"Grid.tsx\" -o -name \"GridItem.tsx\")",
       "Bash(cat ui/atoms/index.ts)",
       "Bash(cat ui/molecules/index.ts)",
-      "mcp__code-review-graph__get_architecture_overview_tool"
+      "mcp__code-review-graph__get_architecture_overview_tool",
+      "Bash(node -p \"require\\('./node_modules/eslint-import-resolver-typescript/package.json'\\).version\")",
+      "Bash(echo \"=== installed: $\\(node -p \"require\\('./node_modules/eslint-import-resolver-typescript/package.json'\\).version\"\\) ===\")",
+      "Bash(rm -f ui/atoms/__viol_test.tsx)",
+      "Bash(npx eslint *)",
+      "Bash(sed -i 's#/tmp/eslint.json#./.eslint-report.json#' /tmp/parse.js)",
+      "Bash(cp /tmp/parse.js ./.parse.js)",
+      "Bash(node ./.parse.js)",
+      "Bash(cp /tmp/parse.js ./.parse.cjs)",
+      "Bash(node ./.parse.cjs)",
+      "Bash(rm -f ./.parse.js ./.parse.cjs)"
     ]
   },
   "enabledMcpjsonServers": [

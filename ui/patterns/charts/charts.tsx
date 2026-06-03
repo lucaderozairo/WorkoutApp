@@ -27,13 +27,10 @@ type TimelineItem = { name: string; outcome: TimelineOutcome; firstCycle: [numbe
 const timelineColor = (outcome: TimelineOutcome) =>
     outcome === 'success' ? 'hsl(160,60%,50%)' : outcome === 'error' ? 'hsl(0,65%,55%)' : 'hsl(220,15%,55%)';
 
-export type ChartType =
-    | 'bar' | 'line' | 'area' | 'composed'
-    | 'pie' | 'radar' | 'radialbar' | 'scatter'
-    | 'stacked-bar' | 'percent-area' | 'area-fill-value'
-    | 'positive-negative' | 'brush-bar' | 'timeline'
-    | 'waterfall' | 'banded'
-    | 'sets-bar';
+// Canonical definition lives in shared/contracts; imported for local use and
+// re-exported so existing `@ui/patterns/charts/charts` consumers keep working.
+import type { ChartType } from '@shared/contracts';
+export type { ChartType };
 
 export function ChartContainer({
     data,

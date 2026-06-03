@@ -1,5 +1,5 @@
 import type { DomainEvent } from '@shared/types';
-import type { ChartType } from '@ui/patterns/charts/charts';
+import type { ChartType } from '@shared/contracts';
 
 export type HealthCategorySlug =
   | 'activity-mobility'
