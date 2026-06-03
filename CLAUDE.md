@@ -50,7 +50,7 @@ feature → another feature directly  (use shared/contracts instead)
 5. Only **tokens** contain design values.
 6. **No hardcoded** spacing, colours, radii, typography, shadows, or animation values.
 7. All styling is **token-driven** (`var(--space-md)`, never `12px`).
-8. **ESLint + Stylelint boundaries fail CI when violated.** *(Rule documented; enforcement is being built per `docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md` — `eslint-plugin-boundaries` for layer deps + `stylelint-declaration-strict-value` for token discipline. Not yet wired.)*
+8. **Lint enforces the architecture in CI.** Layer dependencies are an **error** (`eslint-plugin-boundaries`, CQRS-aware model in `eslint.config.js`) — any *new* cross-layer violation fails CI. Inline styles (`no-restricted-syntax`) and token discipline (`stylelint-declaration-strict-value` in `stylelint.config.js`) currently run as **warn** (tracked debt, don't block). Pre-existing cross-layer imports are baselined with `// eslint-disable … TODO(arch)` comments — grep for `TODO(arch)` / the lint warnings to find the cleanup backlog. See `docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md`.
 9. App and any future shells (`app/`) share the **same design system** — never fork it.
 10. **Project-specific UI never enters the design system.** `MapContainer`, `WorkoutChart`, `RoutePlanner`, etc. live in `ui/components/<domain>` or `features/<domain>`, not in `ui/atoms|molecules|layout|patterns`.
 
