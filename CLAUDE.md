@@ -1,3 +1,82 @@
+## Architecture (non-negotiable)
+
+This project follows a **layered design-system + feature + infrastructure** architecture.
+The folder structure is secondary; the **dependency rules below cannot be broken**.
+
+### Target layer vocabulary
+
+```
+tokens  →  primitives  →  layouts  →  patterns  →  features  →  screens/pages
+```
+
+Lower layers know nothing about higher layers. Domain knowledge enters only at `features`.
+
+### Current → target mapping (we are migrating toward the target names)
+
+| Target layer        | Current location(s)                                              |
+| ------------------- | ---------------------------------------------------------------- |
+| `tokens`            | `styling/tokens.css`, `styling/themes/`                          |
+| `primitives`        | `ui/atoms/` + `ui/molecules/`                                    |
+| `layouts`           | `ui/layout/` (`Row`, `Column`, `Grid`, `Cluster`, …)             |
+| `patterns`          | `ui/patterns/` (target home for SearchBar, EmptyState, StatTile, Toolbar — currently still in `ui/molecules/`) |
+| `features` (UI)     | `ui/components/{health,log,session,social,…}`                    |
+| `features` (logic)  | `features/<domain>/{commands,events,projections,queries,policies,domain}` (event-sourced / CQRS) |
+| `screens`/`pages`   | `ui/screens/`, `ui/navigation/`                                  |
+| `infrastructure`    | `data/{sources,repositories,store,projections}`, `core/`        |
+| cross-feature contracts | `shared/contracts/`                                          |
+
+### Dependency rules
+
+Allowed direction only (each layer may import from layers *below* it):
+
+```
+tokens ← primitives ← layouts ← patterns ← features ← screens/pages
+```
+
+Forbidden (these break reusability and must fail review):
+
+```
+primitives → features      layouts → features      patterns → features
+design-system → any feature store, API call, or domain type
+feature → another feature directly  (use shared/contracts instead)
+```
+
+### The ten rules
+
+1. Every visual element originates from a **primitive** (`ui/atoms` / `ui/molecules`). No raw styled `<div>`/`<button>` in features.
+2. **Layouts** (`ui/layout`) never contain business logic — pure composition only.
+3. **Patterns** never import features.
+4. **Features never import other features directly** — communicate via `shared/contracts` (and events / projections).
+5. Only **tokens** contain design values.
+6. **No hardcoded** spacing, colours, radii, typography, shadows, or animation values.
+7. All styling is **token-driven** (`var(--space-md)`, never `12px`).
+8. **ESLint + Stylelint boundaries fail CI when violated.** *(Rule documented; enforcement is being built per `docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md` — `eslint-plugin-boundaries` for layer deps + `stylelint-declaration-strict-value` for token discipline. Not yet wired.)*
+9. App and any future shells (`app/`) share the **same design system** — never fork it.
+10. **Project-specific UI never enters the design system.** `MapContainer`, `WorkoutChart`, `RoutePlanner`, etc. live in `ui/components/<domain>` or `features/<domain>`, not in `ui/atoms|molecules|layout|patterns`.
+
+### CSS conventions (see also memory: CSS conventions / nesting / fallbacks)
+
+- Token-driven values only; compose-first; semantic class names; **CSS nesting** via `&`; **zero inline `style=`**.
+- Variant styling uses `data-variant` / `data-*` attributes with nested selectors, e.g. `&[data-variant="primary"]`.
+- **Decided:** global semantic CSS files in `styling/` organized by CSS `@layer` — **not** per-component CSS Modules. Module hashing would break the global utility-class layout system (`ui/layout/_classes.ts`) and contradict semantic naming.
+- **`@layer` mirrors the component tiers** (the cascade *is* the atomic hierarchy). Declared in `styling/global.css`:
+  ```css
+  @layer reset, tokens, base, layout, atoms, molecules, patterns, project, utilities, overrides;
+  ```
+  Map: `tokens`→tokens · `atoms`/`molecules`→primitives · `layout`→layouts · `patterns`→patterns · `project`→feature-ui/domain.
+- **CSS dependency rule (mirror of the component rules):** raw design values live **only** in `@layer tokens`; domain vocabulary (sports, sleep, rarity, etc.) lives **only** in `@layer project`. A domain-specific rule in `atoms`/`molecules`/`patterns` is a defect. Each stylesheet is imported into its layer via `@import "./x.css" layer(<layer>)`.
+
+### Variant API for primitives
+
+Prefer a single component with variant props over many named components:
+
+```tsx
+<Button variant="primary" size="md" tone="success" loading />   // ✅
+PrimaryButton / SecondaryButton / DangerButton                  // ❌
+```
+
+---
+
 ## graphify
 
 This project has a graphify knowledge graph at graphify-out/.
