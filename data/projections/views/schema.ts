@@ -17,6 +17,13 @@
  *
  * Keys were enumerated by grepping every `viewStore.get<>`, `viewStore.set()`,
  * and `useQuery<>` call site across the live source tree.
+ *
+ * HOW TO ADD A KEY:
+ * 1. Find the canonical type in the owning feature's domain/ or projections/.
+ * 2. Import directly — never through a feature barrel (@features/<name> with no sub-path).
+ * 3. If no importable type exists, define a named inline interface here.
+ * 4. Add one entry in the matching feature section below.
+ * 5. Mock/dev-only keys go in the mock section at the bottom.
  */
 
 import type { Id } from '@shared/types';
@@ -109,6 +116,9 @@ import type {
 } from '@features/progress_analysis/domain/types';
 import type { DailyLoad } from '@features/progress_analysis/domain/trainingLoad';
 
+// ── profile ────────────────────────────────────────────────────────────-───
+import type { UnitSystem } from '@features/profile/domain/types';
+
 // ── profile (body tracking) ───────────────────────────────────────────-───
 import type {
   MeasurementEntry,
@@ -142,6 +152,29 @@ export interface BodyweightLogEntry {
   loggedAt: number;
 }
 
+/**
+ * `bodyweight_history` — date-indexed bodyweight entries for charting
+ * (features/profile/projections/body.ts · bodyweightHistoryProjection).
+ */
+export interface BodyweightHistoryEntry {
+  id: Id<'BodyweightEntry'>;
+  weightKg: number;
+  date: string;
+  loggedAt: number;
+}
+
+/** `profile` — current user profile snapshot (features/profile/projections/index.ts). */
+export interface ProfileView {
+  displayName: string;
+  email: string;
+  unitPreference: UnitSystem;
+}
+
+/** `preferences` — user unit preferences snapshot (features/profile/projections/index.ts). */
+export interface PreferencesView {
+  unitPreference: UnitSystem;
+}
+
 /** `cardio_hr_sessions` — heart-rate cardio samples for training-load (progress_analysis). */
 export interface CardioHrSession {
   avgHrBpm: number;
@@ -160,6 +193,8 @@ export type ViewRegistry = {
   sessions:                    ActivitiesState;
   /** Recently-used exercises, newest first. */
   recent_exercises:            RecentExercise[];
+  /** Currently-active session snapshot (features/training_log/commands/handlers). */
+  active_session:              ActivityView | null;
 
   // ── cardio ──────────────────────────────────────────────────────────--
   recent_cardio_sessions:      RecentCardioView;
@@ -187,7 +222,9 @@ export type ViewRegistry = {
 
   // ── insights ─────────────────────────────────────────────────────────-
   insights:                    Insight[];
+  // TODO: wired in features/insights — not yet live
   insights_by_sport:           Insight[];
+  // TODO: wired in features/insights — not yet live
   insights_by_exercise:        Insight[];
 
   // ── conditions ───────────────────────────────────────────────────────-
@@ -239,9 +276,15 @@ export type ViewRegistry = {
   training_load_series:        DailyLoad[];
   cardio_hr_sessions:          CardioHrSession[];
 
+  // ── profile ──────────────────────────────────────────────────────────-
+  /** User profile snapshot (features/profile/projections/index.ts). */
+  profile:                     ProfileView;
+  /** User preferences snapshot (features/profile/projections/index.ts). */
+  preferences:                 PreferencesView;
+
   // ── profile (body tracking) ──────────────────────────────────────────-
   bodyweight_log:              BodyweightLogEntry[];
-  bodyweight_history:          Array<{ id: string; weightKg: number; date: string; loggedAt: number }>;
+  bodyweight_history:          BodyweightHistoryEntry[];
   measurement_history:         MeasurementEntry[];
   equipment_list:              Equipment[];
 
@@ -261,6 +304,23 @@ export type ViewRegistry = {
   rest_timer_state:            SavedRestTimerView | null;
   /** Live rest-timer state (seconds remaining + exercise name); null when no timer running. */
   rest_timer:                  { seconds: number; exerciseName: string } | null;
+
+  // ── mock / dev-only ──────────────────────────────────────────────────-
+  // These keys are written by data/mock/seed.ts and read only by mock/sample screens.
+  social_posts_mock:           unknown;
+  social_events_mock:          unknown;
+  social_groups_mock:          unknown;
+  nutrition_entries_mock:      unknown;
+  profile_achievements:        unknown;
+  profile_goals:               unknown;
+  profile_shared_sessions:     unknown;
+  profile_health:              unknown;
+  profile_nutrition:           unknown;
+  calendar_upcoming:           unknown;
+  workout_calendar:            unknown;
+  messages_calls:              unknown;
+  messages_chats:              unknown;
+  workout_injuries:            unknown;
 };
 
 /** Every valid ViewStore key, derived from the registry. */
