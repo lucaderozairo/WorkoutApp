@@ -259,8 +259,8 @@ export type ViewRegistry = {
   wapp_recent_sports:          string[];
   /** Persisted rest-timer snapshot. */
   rest_timer_state:            SavedRestTimerView | null;
-  /** Live rest-timer remaining seconds; null when no timer running. */
-  rest_timer:                  number | null;
+  /** Live rest-timer state (seconds remaining + exercise name); null when no timer running. */
+  rest_timer:                  { seconds: number; exerciseName: string } | null;
 };
 
 /** Every valid ViewStore key, derived from the registry. */
