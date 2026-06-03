@@ -1,7 +1,7 @@
 // Public contract for the coaching feature.
 
 // Domain types consumed by data/projections and screens.
-export type { CoachingInsight, InsightType } from './domain/types';
+export type { CoachingInsight, InsightType, CoachingState } from './domain/types';
 
 // Commands this feature accepts.
-export type { DismissInsight } from './commands/handlers';
+export type { DismissInsight } from './domain/types';
