@@ -4,7 +4,7 @@ import type { ViewRegistry } from './schema';
 
 class ViewStore {
   private state = new Map<string, unknown>();
-  private listeners = new Map<string, Set<() => void>>();
+  private listeners = new Map<string, Set<(v: unknown) => void>>();
 
   // Typed overload: infers the value type from the registry key.
   get<K extends keyof ViewRegistry>(key: K): ViewRegistry[K] | undefined;
@@ -27,7 +27,7 @@ class ViewStore {
     }
     const subs = this.listeners.get(key);
     if (subs) {
-      for (const fn of subs) fn();
+      for (const fn of subs) fn(value);
     }
   }
 
@@ -36,10 +36,10 @@ class ViewStore {
   // Legacy fallback: no-arg callback (existing internal usage in ui/bindings).
   subscribe(key: string, fn: () => void): () => void;
   subscribe(key: string, fn: (v?: unknown) => void): () => void {
-    const subs = this.listeners.get(key) ?? new Set<() => void>();
-    subs.add(fn as () => void);
+    const subs = this.listeners.get(key) ?? new Set<(v: unknown) => void>();
+    subs.add(fn);
     this.listeners.set(key, subs);
-    return () => { subs.delete(fn as () => void); };
+    return () => { subs.delete(fn); };
   }
 }
 

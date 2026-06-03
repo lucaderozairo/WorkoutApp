@@ -17,10 +17,8 @@ export function useQuery<K extends keyof ViewRegistry>(key: K): ViewRegistry[K] 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- legacy overload, callers will be migrated (TODO arch)
 export function useQuery<T = unknown>(key: string): T | null;
 export function useQuery(key: string): unknown {
-  // eslint-disable-next-line react-hooks/rules-of-hooks -- overload wrapper, single impl body
   const [data, setData] = useState<unknown>(() => viewStore.get(key as keyof ViewRegistry) ?? null);
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks -- overload wrapper, single impl body
   useEffect(() => {
     // Sync on mount in case the view was set before this component rendered
     const current = viewStore.get(key as keyof ViewRegistry) ?? null;
