@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useState, lazy, Suspense } from "react";
 import { ErrorBoundaryRoot } from "@core/errors";
 import { Grid } from "@ui/layout";
+import { Toaster } from "@ui/molecules";
 import { TabNavigation } from "@ui/screens/TabNavigation";
 import { SettingsModal } from "@ui/components/modals/SettingsModal";
 import { StorageWarningBanner } from "@ui/components/ux/StorageWarningBanner";
@@ -99,8 +100,9 @@ export function App() {
 
   const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <ErrorBoundaryRoot>
-      <Grid className="layout web" gap={0}>
+    <Toaster>
+      <ErrorBoundaryRoot>
+        <Grid className="layout web" gap={0}>
         <TabNavigation
           onOpenSettings={openSettings}
           menuOpen={menuOpen}
@@ -166,7 +168,8 @@ export function App() {
             </Routes>
           </Suspense>
         </main>
-      </Grid>
-    </ErrorBoundaryRoot>
+        </Grid>
+      </ErrorBoundaryRoot>
+    </Toaster>
   );
 }
