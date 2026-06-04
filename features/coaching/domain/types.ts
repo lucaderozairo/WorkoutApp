@@ -15,3 +15,8 @@ export interface CoachingInsight {
 export interface CoachingState {
   insights: CoachingInsight[];
 }
+
+export interface DismissInsight {
+  type: 'DismissInsight';
+  insightId: string;
+}

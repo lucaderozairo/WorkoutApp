@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AlertTriangle, ChevronDown, ChevronUp } from 'lucide-react';
-import type { UICondition } from '@features/training_log/projections/viewTypes';
+import type { UICondition } from '@features/training_log/contract';
 import { worstActiveCondition } from '@features/training_log/projections/mappers';
 import { Row, Column } from '@ui/layout';
 import { Surface, Text } from '@ui/atoms';

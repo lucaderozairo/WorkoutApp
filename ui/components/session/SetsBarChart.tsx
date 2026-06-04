@@ -1,5 +1,5 @@
 ﻿import ChartContainer from '@ui/patterns/charts/charts';
-import type { UISet } from '@features/training_log/projections/viewTypes';
+import type { UISet } from '@features/training_log/contract';
 
 export function SetsBarChart({ sets }: { sets?: UISet[] }) {
   if (!sets?.length) return null;

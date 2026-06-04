@@ -1,7 +1,7 @@
 import { useState, useId } from 'react';
 import { useCommand } from '@ui/bindings';
 import { handleLikePost, handleCommentOnPost } from '@features/social';
-import type { Post } from '@features/social';
+import type { Post } from '@features/social/contract';
 import { timeAgo } from '@shared/utils/timeAgo';
 import { USER_ID, USER_NAME, SPORT_MAP } from '@features/social/domain/constants';
 import { Row, Column, Cluster } from '@ui/layout';

@@ -15,7 +15,7 @@ import { IoMdLocate } from 'react-icons/io';
 import { PiLineSegments } from 'react-icons/pi';
 import type { IconType } from 'react-icons';
 import { formatPace } from '@features/planning';
-import type { SavedRoute } from '@features/planning';
+import type { SavedRoute } from '@features/planning/contract';
 import {
   useRoutePlanner,
   BASE_LAYERS, ACTIVITIES, PACE_PRESETS, PACE_FACTORS, SURFACES,

@@ -1,8 +1,12 @@
 import { parseCsv } from './csv';
+// eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
 import { viewStore } from '@data/projections/views';
-import type { ActivityView, ActivitiesState, SegmentView } from '@features/training_log';
-import type { SetEntry } from '@features/training_log/domain/types';
-import type { CardioSession } from '@features/cardio/domain/types';
+// eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
+import type { ActivityView, ActivitiesState, SegmentView } from '@features/training_log/contract';
+// eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
+import type { SetEntry } from '@features/training_log/contract';
+// eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
+import type { CardioSession } from '@features/cardio/contract';
 import type { Id } from '@shared/types';
 
 const EXPORT_HEADERS = [

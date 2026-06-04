@@ -1,4 +1,5 @@
 import { Map } from '../shared/Map';
+// eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
 import type { GpsTrack } from '@data/sources/files/gps';
 import type { Id } from '@shared/types';
 import { Surface } from '@ui/atoms';

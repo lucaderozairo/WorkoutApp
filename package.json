@@ -10,6 +10,8 @@
     "host": "vite --host",
     "test": "vitest run",
     "test:watch": "vitest",
+    "lint": "eslint .",
+    "lint:css": "stylelint \"styling/**/*.css\"",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
@@ -28,15 +30,25 @@
     "recharts": "^3.8.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/leaflet": "^1.9.21",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",
+    "eslint": "^9.39.4",
+    "eslint-import-resolver-typescript": "^4.4.5",
+    "eslint-plugin-boundaries": "^5.4.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "gh-pages": "^6.3.0",
+    "globals": "^17.6.0",
     "jsdom": "^29.1.1",
+    "stylelint": "^16.26.1",
+    "stylelint-config-standard": "^36.0.1",
+    "stylelint-declaration-strict-value": "^1.11.1",
     "typescript": "^6.0.3",
+    "typescript-eslint": "^8.60.1",
     "vite": "^8.0.14",
     "vitest": "^4.1.7"
   }

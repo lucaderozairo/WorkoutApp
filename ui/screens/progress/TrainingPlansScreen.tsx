@@ -4,10 +4,10 @@ import { ProgressBar, Chip, Surface, Text } from '@ui/atoms';
 import { Badge, Button, Input } from '@ui/molecules';
 import { useCommand } from '@ui/bindings';
 import { handleCreatePlan } from '@features/training_plans';
-import type { TrainingPlan, PlanAdherence } from '@features/training_plans';
-import type { PlannedSession } from '@features/planning';
+import type { TrainingPlan, PlanAdherence } from '@features/training_plans/contract';
+import type { PlannedSession } from '@features/planning/contract';
 import { CalendarGrid } from '@ui/components/widgets/CalendarWidgets';
-import type { SportType } from '@features/training_log/domain/types';
+import type { SportType } from '@features/training_log/contract';
 import {
   useTrainingPlans,
   USER_ID, FILTERS, LEGEND, SPORT_COLOR, SPORT_LABEL, SPORT_TITLE, DOW_SHORT,
