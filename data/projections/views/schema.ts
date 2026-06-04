@@ -33,8 +33,8 @@ import type {
   ActivitiesState,
   ActivityView,
   RecentExercise,
+  UICondition,
 } from '@features/training_log/contract';
-import type { UICondition } from '@features/training_log/contract';
 
 // ── cardio ────────────────────────────────────────────────────────────────
 import type {

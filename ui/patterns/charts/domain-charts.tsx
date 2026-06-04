@@ -10,9 +10,9 @@ import {
   ReferenceLine,
 } from 'recharts';
 // eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
-import type { WeeklySleepTrend } from '@features/readiness';
+import type { WeeklySleepTrend } from '@features/readiness/contract';
 // eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
-import type { DailyLoad } from '@features/progress_analysis';
+import type { DailyLoad } from '@features/progress_analysis/contract';
 // eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
 import type { GpsPoint } from '@data/sources/files/gps';
 // eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
