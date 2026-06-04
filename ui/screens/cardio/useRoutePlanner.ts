@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useQuery } from '@ui/bindings';
 import { handleSaveRoute, formatPace, parsePace } from '@features/planning';
-import type { SavedRoute } from '@features/planning';
+import type { SavedRoute } from '@features/planning/contract';
 import { totalDistanceKm, haversineKm } from '@ui/components/workout/wizard/RouteMap';
 import type { MapCanvasHandle } from '@ui/components/workout/wizard/RouteMap';
 

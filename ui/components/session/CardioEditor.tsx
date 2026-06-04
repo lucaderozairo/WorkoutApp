@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Surface, Text } from '@ui/atoms';
 import { Grid, Row, Column } from '@ui/layout';
-import type { UICardioSet } from '@features/training_log/projections/viewTypes';
+import type { UICardioSet } from '@features/training_log/contract';
 
 export const CARDIO_FIELDS: Array<{
   key: keyof UICardioSet;

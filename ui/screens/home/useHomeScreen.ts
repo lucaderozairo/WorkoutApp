@@ -1,11 +1,11 @@
 ﻿import { useEffect, useMemo } from 'react';
 import { useQuery, useCommand } from '@ui/bindings';
-import type { TodayReadinessView, SleepEntryView } from '@features/readiness';
-import type { ActivitiesState } from '@features/training_log';
+import type { TodayReadinessView, SleepEntryView } from '@features/readiness/contract';
+import type { ActivitiesState } from '@features/training_log/contract';
 import { getActivityHistory } from '@features/training_log';
 import { handleRefreshConditions } from '@features/conditions';
-import type { WeatherCondition, SuitabilityEntry } from '@features/conditions';
-import type { Appointment } from '@features/scheduling';
+import type { WeatherCondition, SuitabilityEntry } from '@features/conditions/contract';
+import type { Appointment } from '@features/scheduling/contract';
 import { sleepEntryToSession } from '@features/readiness/queries';
 import { GOAL_MINUTES, DAY_LABELS } from './dashboardUtils';
 

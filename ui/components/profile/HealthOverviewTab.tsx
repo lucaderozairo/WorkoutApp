@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { Search } from 'lucide-react'
 import { ChartContainer } from '@ui/patterns/charts/charts'
 import { useQuery } from '@ui/bindings'
-import type { HealthChartDef, HealthChartMap } from '@features/health'
+import type { HealthChartDef, HealthChartMap } from '@features/health/contract'
 import { Row, Column, Cluster } from '@ui/layout'
 import { Text, Chip, Divider } from '@ui/atoms';
 

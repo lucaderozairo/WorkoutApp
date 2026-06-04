@@ -5,7 +5,7 @@ import { MoreVertical } from 'lucide-react';
 import { Surface, Text } from '@ui/atoms';
 import { Dialog, ChipGroup, PhotoGallery, Button, Input, Textarea } from '@ui/molecules';
 import { useQuery, useCommand } from '@ui/bindings';
-import type { ActivitiesState, ExerciseCategory } from '@features/training_log';
+import type { ActivitiesState, ExerciseCategory } from '@features/training_log/contract';
 import {
   handleDeleteSession,
   handleAddBlock, handleAddToSuperset, handleSetBlockType,
@@ -14,13 +14,13 @@ import {
   handleUpdateSessionNote,
   handleUpdateSessionDetails,
 } from '@features/training_log';
-import type { CardioSession } from '@features/cardio';
+import type { CardioSession } from '@features/cardio/contract';
 import { handleUpdateCardioSession, handleDeleteCardioSession } from '@features/cardio';
 import { WorkoutView } from '@ui/components/session/WorkoutView';
 import { ExercisePicker } from '@ui/components/log/ExercisePicker';
 import { RPE_VALUES, SUGGESTED_TAGS } from './useFinishSession';
 import { UndoToastProvider } from '@ui/components/log';
-import type { UICondition } from '@features/training_log/projections/viewTypes';
+import type { UICondition } from '@features/training_log/contract';
 import { BT_OPTIONS } from '@features/training_log/projections/viewTypes';
 import { cryptoIdGenerator } from '@core/id-generator';
 

@@ -33,20 +33,20 @@ import type {
   ActivitiesState,
   ActivityView,
   RecentExercise,
-} from '@features/training_log/projections';
-import type { UICondition } from '@features/training_log/projections/viewTypes';
+} from '@features/training_log/contract';
+import type { UICondition } from '@features/training_log/contract';
 
 // ── cardio ────────────────────────────────────────────────────────────────
 import type {
   RecentCardioView,
   MonthlyCardioEntry,
-} from '@features/cardio/projections';
+} from '@features/cardio/contract';
 
 // ── progression ─────────────────────────────────────────────────────────-─
-import type { ProgressionState } from '@features/progression/domain/types';
+import type { ProgressionState } from '@features/progression/contract';
 
 // ── health ──────────────────────────────────────────────────────────────-─
-import type { HealthChartMap } from '@features/health/domain/types';
+import type { HealthChartMap } from '@features/health/contract';
 
 // ── readiness ─────────────────────────────────────────────────────────-───
 import type {
@@ -55,75 +55,75 @@ import type {
   HealthMetricsView,
   RestingHRView,
   SubjectiveRPEView,
-} from '@features/readiness/domain/reducers';
+} from '@features/readiness/contract';
 
 // ── coaching ──────────────────────────────────────────────────────────-───
-import type { CoachingInsight } from '@features/coaching/domain/types';
+import type { CoachingInsight } from '@features/coaching/contract';
 
 // ── insights ──────────────────────────────────────────────────────────-───
-import type { Insight } from '@features/insights/domain/types';
+import type { Insight } from '@features/insights/contract';
 
 // ── conditions ────────────────────────────────────────────────────────-───
 import type {
   WeatherCondition,
   SuitabilityEntry,
-} from '@features/conditions/domain/types';
+} from '@features/conditions/contract';
 
 // ── scheduling ────────────────────────────────────────────────────────-───
 import type {
   Appointment,
   ScheduledEvent,
-} from '@features/scheduling/domain/types';
+} from '@features/scheduling/contract';
 
 // ── news_feed ─────────────────────────────────────────────────────────-───
-import type { Headline, Deal } from '@features/news_feed/domain/types';
+import type { Headline, Deal } from '@features/news_feed/contract';
 
 // ── goals ─────────────────────────────────────────────────────────────-───
-import type { Goal } from '@features/goals/domain/types';
+import type { Goal } from '@features/goals/contract';
 
 // ── habits ────────────────────────────────────────────────────────────-───
-import type { Habit } from '@features/habits/domain/types';
+import type { Habit } from '@features/habits/contract';
 
 // ── achievements ──────────────────────────────────────────────────────-───
-import type { UserAchievement } from '@features/achievements/domain/types';
+import type { UserAchievement } from '@features/achievements/contract';
 
 // ── training_plans ────────────────────────────────────────────────────-───
 import type {
   TrainingPlan,
   PlanAdherence,
-} from '@features/training_plans/domain/types';
+} from '@features/training_plans/contract';
 
 // ── planning ──────────────────────────────────────────────────────────-───
 import type {
   PlannedSession,
   SavedRoute,
   SavedTemplate,
-} from '@features/planning/domain/types';
+} from '@features/planning/contract';
 
 // ── social ────────────────────────────────────────────────────────────-───
-import type { Post } from '@features/social/domain/types';
+import type { Post } from '@features/social/contract';
 
 // ── nutrition ─────────────────────────────────────────────────────────-───
-import type { NutritionEntryView } from '@features/nutrition/domain/reducers';
+import type { NutritionEntryView } from '@features/nutrition/contract';
 
 // ── stretching ────────────────────────────────────────────────────────-───
-import type { StretchingSessionView } from '@features/stretching/domain/reducers';
+import type { StretchingSessionView } from '@features/stretching/contract';
 
 // ── progress_analysis ─────────────────────────────────────────────────-───
 import type {
   PersonalRecord,
   ChartAnnotation,
-} from '@features/progress_analysis/domain/types';
-import type { DailyLoad } from '@features/progress_analysis/domain/trainingLoad';
+} from '@features/progress_analysis/contract';
+import type { DailyLoad } from '@features/progress_analysis/contract';
 
 // ── profile ────────────────────────────────────────────────────────────-───
-import type { UnitSystem } from '@features/profile/domain/types';
+import type { UnitSystem } from '@features/profile/contract';
 
 // ── profile (body tracking) ───────────────────────────────────────────-───
 import type {
   MeasurementEntry,
   Equipment,
-} from '@features/profile/domain/body';
+} from '@features/profile/contract';
 
 /**
  * Inline shapes for keys whose type does NOT live in a feature domain/projection

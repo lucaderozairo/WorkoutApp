@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Grid } from '@ui/layout';
 import { Row, Column } from '@ui/layout';
 import { useNavigate } from "react-router-dom";
-import type { ActivityHistoryItem } from "@features/training_log";
-import type { CardioSession } from "@features/cardio";
+import type { ActivityHistoryItem } from "@features/training_log/contract";
+import type { CardioSession } from "@features/cardio/contract";
 import { Text } from "@ui/atoms";
 import { Button } from "@ui/molecules";
 

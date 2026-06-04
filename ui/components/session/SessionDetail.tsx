@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import type { ActivityView, ActivityHistoryItem } from '@features/training_log';
-import type { CardioSession } from '@features/cardio';
+import type { ActivityView, ActivityHistoryItem } from '@features/training_log/contract';
+import type { CardioSession } from '@features/cardio/contract';
 import { handleImportGpsTrack, handleUpdateCardioSession } from '@features/cardio';
-import type { SetEntry, StrengthSet } from '@features/training_log/domain/types';
+import type { SetEntry, StrengthSet } from '@features/training_log/contract';
 // eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
 import type { GpsTrack } from '@data/sources/files/gps';
 import { SessionGpsPreview } from './SessionGpsPreview';
@@ -12,7 +12,7 @@ import { HROverTimeChart, PaceOverTimeChart, ElevationProfileChart, KmSplitsTabl
 import ChartContainer from '@ui/patterns/charts/charts';
 import { ChevronLeft, Pencil, Share2, Image, MapPin, HeartPulse, TrendingUp, Mountain, Timer, Trophy, Heart, MessageCircle } from 'lucide-react';
 import { ACTIVITY_ICONS, getActivityLabel } from '@ui/icons/activityIcons';
-import type { SportType } from '@features/training_log/domain/types';
+import type { SportType } from '@features/training_log/contract';
 import { Carousel } from '@ui/components/shared/Carousel';
 import { Row, Column, Cluster, Grid } from '@ui/layout';
 import { Surface, Text, Chip, Table, TableRow, TableCell } from '@ui/atoms';

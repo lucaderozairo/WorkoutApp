@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { getProgressionForExercise } from '@features/progression';
-import type { VolumeEntry } from '@features/progression/domain/types';
+import type { VolumeEntry } from '@features/progression/contract';
 
 export interface LastPerformance {
   date: string;

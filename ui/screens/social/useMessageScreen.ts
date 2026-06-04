@@ -1,5 +1,5 @@
 import { useQuery } from '@ui/bindings';
-import type { MockUpcomingCall, MockRecentMessage } from '@features/messaging';
+import type { MockUpcomingCall, MockRecentMessage } from '@features/messaging/contract';
 
 export function useMessageScreen() {
   const calls = (useQuery<MockUpcomingCall[]>('messages_calls') ?? []) as MockUpcomingCall[];

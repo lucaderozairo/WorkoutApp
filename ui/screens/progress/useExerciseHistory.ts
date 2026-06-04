@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@ui/bindings';
-import type { ProgressionState, VolumeEntry } from '@features/progression';
+import type { ProgressionState, VolumeEntry } from '@features/progression/contract';
 
 const SESSION_GAP = 2;
 

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import type { ActivityView, ActivitiesState } from '@features/training_log';
+import type { ActivityView, ActivitiesState } from '@features/training_log/contract';
 import {
   handleFinishSession, handleUpdateSessionNote,
   handleRenameSession, handleUpdateSessionStartTime, handleUpdateSessionDetails,

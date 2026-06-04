@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Grid } from '@ui/layout';
 import type { ReactNode } from 'react';
 import type { TypeFilter } from './SessionFilterBar';
-import type { CombinedSession } from '@features/training_log/queries/calendarUtils';
+import type { CombinedSession } from '@features/training_log/contract';
 import { buildDateMap, getMonthGrid, toDateKey } from '@features/training_log/queries/calendarUtils';
 import { StrengthSessionItem, CardioSessionItem } from './SessionListItem';
 import { Row, Column } from '@ui/layout';

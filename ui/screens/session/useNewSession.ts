@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCommand, useQuery } from '@ui/bindings';
 import { handleStartSession, handleAddBlock } from '@features/training_log';
-import type { SavedTemplate } from '@features/planning';
+import type { SavedTemplate } from '@features/planning/contract';
 
 import { defaultSessionName } from '@features/planning/domain/utils';
-import type { SportType } from '@features/training_log/domain/types';
+import type { SportType } from '@features/training_log/contract';
 import type { Id } from '@shared/types';
 import { viewStore } from '@data/projections/views';
 

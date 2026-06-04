@@ -2,8 +2,8 @@ import { useQuery } from '@ui/bindings';
 import { Grid, Row, Column } from '@ui/layout';
 import { Surface, Text } from '@ui/atoms';
 import { Badge, Button } from '@ui/molecules';
-import type { SportType } from '@features/training_log/domain/types';
-import type { MockCalendarEvent } from '@features/scheduling';
+import type { SportType } from '@features/training_log/contract';
+import type { MockCalendarEvent } from '@features/scheduling/contract';
 
 const DAY_LABELS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'] as const;
 
