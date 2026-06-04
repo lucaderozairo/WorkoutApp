@@ -52,7 +52,7 @@ const MOBILE_TABS: { id: SidePanel; label: string }[] = [
 export function RoutePlannerScreen() {
   const {
     mapRef, navigate, waypoints, setWaypoints, setRoutedKm,
-    routeName, setRouteName, mode, undoCount, redoCount,
+    routeName, setRouteName, mode, setMode, undoCount, redoCount,
     baseLayerId, searchQuery, setSearchQuery, searchBusy, searchError,
     sideOpen, setSideOpen, snap, setSnap,
     activity, setActivity, paceSecondsPerKm, setPaceSecondsPerKm,
@@ -102,7 +102,7 @@ export function RoutePlannerScreen() {
               variant="ghost"
               size="sm"
               className={mode === m ? 'active' : undefined}
-              onClick={() => mapRef.current?.setMode(m)}
+              onClick={() => setMode(m)}
               aria-label={m.charAt(0).toUpperCase() + m.slice(1)}
             >
               {m === 'select' ? <MousePointer2 size={14} />
@@ -160,7 +160,7 @@ export function RoutePlannerScreen() {
               key={m}
               variant="ghost"
               className={mode === m ? 'active' : undefined}
-              onClick={() => mapRef.current?.setMode(m)}
+              onClick={() => setMode(m)}
               aria-label={m.charAt(0).toUpperCase() + m.slice(1)}
             >
               {m === 'select' ? <MousePointer2 size={14} />
@@ -250,7 +250,7 @@ export function RoutePlannerScreen() {
               profile={profile}
               onRoutedDistanceChange={setRoutedKm}
               mode={mode}
-              onModeChange={() => { }}
+              onModeChange={setMode}
               onUndoRedoChange={handleUndoRedo}
               baseLayerId={baseLayerId}
               showDistanceMarkers={false}
