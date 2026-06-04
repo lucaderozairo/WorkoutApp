@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { Column, Grid, GridItem, Row } from "@ui/layout";
 import { SleepLarge } from "@ui/components/widgets/SleepWidgets";
@@ -25,16 +25,9 @@ import type { AchievementUnlockedPayload } from "@features/achievements/contract
 import { eventBus } from "@core/events/bus";
 import { useHomeScreen } from "./useHomeScreen";
 import { Surface, Text } from "@ui/atoms";
-import { Button } from "@ui/molecules";
-import { Trophy, X } from "phosphor-react";
+import { Button, Modal, useToast } from "@ui/molecules";
 
 // Feature policies/projections are registered centrally in app/registry/bootstrap.ts.
-
-interface UnlockedToast {
-  name: string;
-  rarity: string;
-  description: string;
-}
 
 type WidgetId =
   | "readiness" | "activity_feed" | "active_goals" | "insights"
@@ -90,16 +83,16 @@ export function HomeScreen() {
   } = useHomeScreen();
 
   const navigate = useNavigate();
-  const [toast, setToast] = useState<UnlockedToast | null>(null);
+  const toast = useToast();
   const [activeWidgets, setActiveWidgets] = useState<WidgetId[]>(DEFAULT_WIDGETS);
-  const editRef = useRef<HTMLDialogElement>(null);
+  const [editOpen, setEditOpen] = useState(false);
 
   useEffect(() => {
     const token = eventBus.subscribe("AchievementUnlocked", (event) => {
       const payload = event.payload as AchievementUnlockedPayload;
       const def = ACHIEVEMENT_DEFINITIONS.find((d) => d.id === payload.achievementId);
       if (def) {
-        setToast({ name: def.name, rarity: def.rarity, description: def.description });
+        toast.info(`Achievement unlocked: ${def.name}`);
       }
     });
     return () => token.unsubscribe();
@@ -192,7 +185,7 @@ export function HomeScreen() {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => editRef.current?.showModal()}
+          onClick={() => setEditOpen(true)}
         >
           Edit widgets
         </Button>
@@ -213,62 +206,27 @@ export function HomeScreen() {
       </Grid>
 
       {/* Edit widgets panel */}
-      <dialog
-        ref={editRef}
-        className="modal-dialog"
-        onClick={(e) => { if (e.target === editRef.current) editRef.current?.close(); }}
+      <Modal
+        open={editOpen}
+        onClose={() => setEditOpen(false)}
+        title="Edit widgets"
+        size="md"
+        footer={<Button variant="ghost" onClick={() => setEditOpen(false)}>Done</Button>}
       >
-        <Column>
-          <Row justify="between" align="center">
-            <Text as="h3">Edit widgets</Text>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => editRef.current?.close()}
-              aria-label="Close"
-            >
-              <X size={16} />
-            </Button>
-          </Row>
-          <Column gap={1}>
-            {WIDGET_DEFS.map((def) => (
-              <Row key={def.id} align="center" justify="between" className="list-divider-sm">
-                <Text size="detail">{def.label}</Text>
-                <input
-                  type="checkbox"
-                  checked={activeWidgets.includes(def.id)}
-                  onChange={(e) => toggleWidget(def.id, e.target.checked)}
-                  aria-label={`Show ${def.label}`}
-                />
-              </Row>
-            ))}
-          </Column>
-        </Column>
-      </dialog>
-
-      {/* Achievement toast — fixed overlay, outside layout flow */}
-      {toast && (
-        <div className="toast" role="status" aria-live="polite">
-          <Surface>
-            <Row align="center">
-              <Trophy size={20} weight="fill" aria-hidden="true" />
-              <Column gap={1} className="grow">
-                <Text size="detail">Achievement unlocked: {toast.name}</Text>
-                <Text size="caption" color="faint">{toast.description}</Text>
-              </Column>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={() => setToast(null)}
-                aria-label="Dismiss"
-              >
-                <X size={14} />
-              </Button>
+        <Column gap={1}>
+          {WIDGET_DEFS.map((def) => (
+            <Row key={def.id} align="center" justify="between" className="list-divider-sm">
+              <Text size="detail">{def.label}</Text>
+              <input
+                type="checkbox"
+                checked={activeWidgets.includes(def.id)}
+                onChange={(e) => toggleWidget(def.id, e.target.checked)}
+                aria-label={`Show ${def.label}`}
+              />
             </Row>
-          </Surface>
-        </div>
-      )}
+          ))}
+        </Column>
+      </Modal>
     </Column>
   );
 }
