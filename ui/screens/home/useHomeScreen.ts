@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import { useQuery, useCommand } from '@ui/bindings';
-import type { TodayReadinessView } from '@features/readiness';
-import type { TrainingDashboardView } from '@features/training_log/projections/dashboard';
-import type { SleepTrendView } from '@features/readiness/projections/sleepTrend';
+import type { TodayReadinessView } from '@features/readiness/contract';
+import type { TrainingDashboardView } from '@features/training_log/contract';
+import type { SleepTrendView } from '@features/readiness/contract';
 import { handleRefreshConditions } from '@features/conditions';
-import type { WeatherCondition, SuitabilityEntry } from '@features/conditions';
-import type { Appointment } from '@features/scheduling';
+import type { WeatherCondition, SuitabilityEntry } from '@features/conditions/contract';
+import type { Appointment } from '@features/scheduling/contract';
 
 export function useHomeScreen() {
   const readiness = useQuery<TodayReadinessView>('today_readiness');

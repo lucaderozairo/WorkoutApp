@@ -35,7 +35,7 @@ import type {
   RecentExercise,
   UICondition,
 } from '@features/training_log/contract';
-import type { TrainingDashboardView } from '@features/training_log/projections/dashboard';
+import type { TrainingDashboardView } from '@features/training_log/contract';
 
 // ── cardio ────────────────────────────────────────────────────────────────
 import type {
@@ -57,7 +57,7 @@ import type {
   RestingHRView,
   SubjectiveRPEView,
 } from '@features/readiness/contract';
-import type { SleepTrendView } from '@features/readiness/projections/sleepTrend';
+import type { SleepTrendView } from '@features/readiness/contract';
 
 // ── coaching ──────────────────────────────────────────────────────────-───
 import type { CoachingInsight } from '@features/coaching/contract';
