@@ -2,8 +2,8 @@
 import { eventBus } from '@core/events/bus';
 import { viewStore } from '@data/projections/views';
 import type { DomainEvent } from '@shared/types';
-// eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
-import type { SessionFinishedPayload } from '@features/training_log/domain/types';
+import { TrainingLogEvents } from '@features/training_log/contract';
+import type { SessionFinishedPayload } from '@features/training_log/contract';
 import type { TrainingPlan, PlannedSessionCompletedPayload } from '../domain/types';
 import { TrainingPlansEvents } from '../contract';
 
@@ -25,7 +25,7 @@ export function registerAdherencePolicy(): void {
   registered = true;
 
   eventBus.subscribe<DomainEvent<'SessionFinished', SessionFinishedPayload>>(
-    'SessionFinished',
+    TrainingLogEvents.SessionFinished,
     async (event) => {
       const plan = viewStore.get<TrainingPlan | null>('active_plan');
       if (!plan) return;
