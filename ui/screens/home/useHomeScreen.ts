@@ -1,20 +1,17 @@
-﻿import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useQuery, useCommand } from '@ui/bindings';
-import type { TodayReadinessView, SleepEntryView } from '@features/readiness/contract';
-import type { ActivitiesState } from '@features/training_log/contract';
-import { getActivityHistory } from '@features/training_log';
+import type { TodayReadinessView } from '@features/readiness';
+import type { TrainingDashboardView } from '@features/training_log/projections/dashboard';
+import type { SleepTrendView } from '@features/readiness/projections/sleepTrend';
 import { handleRefreshConditions } from '@features/conditions';
-import type { WeatherCondition, SuitabilityEntry } from '@features/conditions/contract';
-import type { Appointment } from '@features/scheduling/contract';
-import { sleepEntryToSession } from '@features/readiness/queries';
-import { GOAL_MINUTES, DAY_LABELS } from './dashboardUtils';
+import type { WeatherCondition, SuitabilityEntry } from '@features/conditions';
+import type { Appointment } from '@features/scheduling';
 
 export function useHomeScreen() {
   const readiness = useQuery<TodayReadinessView>('today_readiness');
-  const sessionsState = useQuery<ActivitiesState>('sessions');
-  const history = useMemo(() => getActivityHistory(), [sessionsState]);
+  const dashboard = useQuery<TrainingDashboardView>('training_log_dashboard');
+  const sleepTrend = useQuery<SleepTrendView>('sleep_trend');
   const allAppointments = (useQuery<Appointment[]>('appointments_by_date') ?? []) as Appointment[];
-  const sleepHistory = (useQuery<SleepEntryView[]>('sleep_history') ?? []) as SleepEntryView[];
   const _conditions = useQuery<WeatherCondition>('current_conditions');
   const _suitability = (useQuery<SuitabilityEntry[]>('suitability_by_sport') ?? []) as SuitabilityEntry[];
   const { dispatch: refreshConditions } = useCommand(handleRefreshConditions);
@@ -35,45 +32,13 @@ export function useHomeScreen() {
     a => a.scheduledAt >= startOfToday.getTime() && a.scheduledAt <= endOfToday.getTime()
   );
 
-  const startOfWeek = new Date();
-  startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
-  startOfWeek.setHours(0, 0, 0, 0);
-  const workoutsThisWeek = history.filter(s => new Date(s.startedAt) >= startOfWeek).length;
-
-  // Consecutive training days ending today (or yesterday if not yet trained today)
-  const streak = useMemo(() => {
-    const trained = new Set(history.map(s => new Date(s.startedAt).toLocaleDateString()));
-    const cursor = new Date();
-    if (!trained.has(cursor.toLocaleDateString())) cursor.setDate(cursor.getDate() - 1);
-    let count = 0;
-    while (trained.has(cursor.toLocaleDateString())) {
-      count++;
-      cursor.setDate(cursor.getDate() - 1);
-    }
-    return count;
-  }, [history]);
-
-  const sleepWeek = sleepHistory.slice(0, 7).reverse().map(sleepEntryToSession);
-  const lastNight = sleepWeek.length > 0 ? sleepWeek[sleepWeek.length - 1] : null;
-  const weeklyTrend = sleepWeek.map(session => {
-    const totalMinutes = Math.floor((session.end.getTime() - session.start.getTime()) / 60_000);
-    return {
-      day: DAY_LABELS[session.end.getDay()],
-      value: Math.round(((totalMinutes - GOAL_MINUTES) / 60) * 10) / 10,
-    };
-  });
-  const scoreHistory = sleepWeek.map(s => ({
-    x: s.end.toLocaleDateString(undefined, { weekday: 'short' }),
-    y: s.score,
-  }));
-
   return {
-    workoutsThisWeek,
-    streak,
+    workoutsThisWeek: dashboard?.workoutsThisWeek ?? 0,
+    streak: dashboard?.streak ?? 0,
     scoreClass,
-    lastNight,
-    weeklyTrend,
-    scoreHistory,
-    isFirstRun: history.length === 0,
+    lastNight: sleepTrend?.lastNight ?? null,
+    weeklyTrend: sleepTrend?.weeklyTrend ?? [],
+    scoreHistory: sleepTrend?.scoreHistory ?? [],
+    isFirstRun: (dashboard?.totalSessions ?? 0) === 0,
   };
 }

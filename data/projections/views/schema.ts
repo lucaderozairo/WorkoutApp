@@ -35,6 +35,7 @@ import type {
   RecentExercise,
   UICondition,
 } from '@features/training_log/contract';
+import type { TrainingDashboardView } from '@features/training_log/projections/dashboard';
 
 // ── cardio ────────────────────────────────────────────────────────────────
 import type {
@@ -56,6 +57,7 @@ import type {
   RestingHRView,
   SubjectiveRPEView,
 } from '@features/readiness/contract';
+import type { SleepTrendView } from '@features/readiness/projections/sleepTrend';
 
 // ── coaching ──────────────────────────────────────────────────────────-───
 import type { CoachingInsight } from '@features/coaching/contract';
@@ -195,6 +197,8 @@ export type ViewRegistry = {
   recent_exercises:            RecentExercise[];
   /** Currently-active session snapshot (features/training_log/commands/handlers). */
   active_session:              ActivityView | null;
+  /** Dashboard summary: streak + workoutsThisWeek (features/training_log/projections/dashboard). */
+  training_log_dashboard:      TrainingDashboardView;
 
   // ── cardio ──────────────────────────────────────────────────────────--
   recent_cardio_sessions:      RecentCardioView;
@@ -215,6 +219,8 @@ export type ViewRegistry = {
   subjective_rpe_history:      SubjectiveRPEView[];
   /** Rolling RPE values used by coaching insight generation. */
   session_rpe_history:         number[];
+  /** Derived sleep trend for the last 7 days (features/readiness/projections/sleepTrend). */
+  sleep_trend:                 SleepTrendView;
 
   // ── coaching ─────────────────────────────────────────────────────────-
   active_insights:             CoachingInsight[];

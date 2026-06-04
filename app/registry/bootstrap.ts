@@ -39,6 +39,8 @@ import { registerHabitProjections, registerStreakMilestonePolicy } from '@featur
 import { registerTrainingLoadProjection } from '@features/progress_analysis';
 import { registerBodyProjections, registerEquipmentMileagePolicy } from '@features/profile';
 import { registerAchievementPolicies } from '@features/achievements';
+import { registerTrainingDashboardProjection } from '@features/training_log/projections/dashboard';
+import { registerSleepTrendProjection } from '@features/readiness/projections/sleepTrend';
 
 let booted = false;
 
@@ -58,4 +60,6 @@ export function bootstrapFeatures(): void {
   registerBodyProjections();
   registerEquipmentMileagePolicy();
   registerAchievementPolicies();
+  registerTrainingDashboardProjection();
+  registerSleepTrendProjection();
 }
