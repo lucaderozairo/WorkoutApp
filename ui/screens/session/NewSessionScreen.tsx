@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ACTIVITY_ICONS } from '@ui/icons/activityIcons';
-import type { SportType } from '@features/training_log/contract';
+import type { SportType } from '@features/training_log/domain/types';
 import {
   PINNED_ACTIVITIES, MORE_CATEGORIES, ROUTE_ACTIVITIES,
   todayDateString, useNewSession,

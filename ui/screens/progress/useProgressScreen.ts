@@ -1,12 +1,12 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useCommand } from '@ui/bindings';
-import type { ActivityHistoryItem, ActivitiesState } from '@features/training_log/contract';
+import type { ActivityHistoryItem, ActivitiesState } from '@features/training_log';
 import { getActivityHistory } from '@features/training_log';
-import type { CardioSport, RecentCardioView } from '@features/cardio/contract';
-import type { Insight } from '@features/insights/contract';
+import type { CardioSport, RecentCardioView } from '@features/cardio';
+import type { Insight } from '@features/insights';
 import type { Id } from '@shared/types';
-import type { ProgressionState } from '@features/progression/contract';
+import type { ProgressionState } from '@features/progression';
 import {
   handleAddAnnotation,
   handleDeleteAnnotation,

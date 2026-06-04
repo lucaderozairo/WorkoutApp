@@ -1,22 +1,14 @@
 ﻿import { useQuery } from '@ui/bindings';
-import type { SleepEntryView, SleepSession } from '@features/readiness/contract';
+import type { SleepEntryView, SleepSession } from '@features/readiness';
 import { sleepEntryToSession } from '@features/readiness/queries';
 import { SleepReviewWidget } from '@ui/components/widgets/SleepReviewWidget';
 import { WeatherDashWidget, CalendarDashWidget } from '@ui/components/widgets/DashboardMiniWidgets';
-import { ReadinessWidget }       from '@ui/components/widgets/ReadinessWidget';
-import { SleepBreakdownWidget }  from '@ui/components/widgets/SleepBreakdownWidget';
-import { HRVWidget }             from '@ui/components/widgets/HRVWidget';
-import { RestingHRWidget }       from '@ui/components/widgets/RestingHRWidget';
-import { BodyBatteryWidget }     from '@ui/components/widgets/BodyBatteryWidget';
-import { PlanAdherenceWidget }   from '@ui/components/widgets/PlanAdherenceWidget';
-import { WeeklyVolumeWidget }    from '@ui/components/widgets/WeeklyVolumeWidget';
-import { ActivityFeedWidget }    from '@ui/components/widgets/ActivityFeedWidget';
-import { ActiveGoalsWidget }     from '@ui/components/widgets/ActiveGoalsWidget';
-import { MacrosWidget }          from '@ui/components/widgets/MacrosWidget';
-import { CaloriesWidget }        from '@ui/components/widgets/CaloriesWidget';
-import { HabitsWidget }          from '@ui/components/widgets/HabitsWidget';
-import { MonthlyDistanceWidget } from '@ui/components/widgets/MonthlyDistanceWidget';
-import { InsightsWidget }        from '@ui/components/widgets/InsightsWidget';
+import {
+  ReadinessWidget, SleepBreakdownWidget, HRVWidget, RestingHRWidget,
+  BodyBatteryWidget, PlanAdherenceWidget, WeeklyVolumeWidget,
+  ActivityFeedWidget, ActiveGoalsWidget, MacrosWidget, CaloriesWidget,
+  HabitsWidget, MonthlyDistanceWidget, InsightsWidget,
+} from '@ui/components/widgets/DashWidgets';
 import { ChartContainer } from '@ui/patterns/charts/charts';
 import { Grid, Row, Column, Cluster } from '@ui/layout';
 import { Surface, Text } from '@ui/atoms';

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useQuery } from '@ui/bindings';
 import { getPlanAdherence } from '@features/training_plans';
-import type { TrainingPlan, PlanAdherence } from '@features/training_plans/contract';
-import type { PlannedSession } from '@features/planning/contract';
-import type { SportType } from '@features/training_log/contract';
+import type { TrainingPlan, PlanAdherence } from '@features/training_plans';
+import type { PlannedSession } from '@features/planning';
+import type { SportType } from '@features/training_log/domain/types';
 import type { Id } from '@shared/types';
 
 export type CalView = 'month' | 'week' | 'day';

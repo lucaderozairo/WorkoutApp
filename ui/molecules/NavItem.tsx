@@ -18,7 +18,7 @@ export function NavItem({ to, label, Icon, iconSize = 18, title }: NavItemProps)
           <span className="icon">
             <Icon size={iconSize} weight={isActive ? 'fill' : 'regular'} />
           </span>
-          <Text size="detail">{label}</Text>
+          {label && <Text size="detail">{label}</Text>} 
         </>
       )}
     </NavLink>

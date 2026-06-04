@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@ui/bindings';
-import type { UnitSystem } from '@features/profile/contract';
-import type { StatsSummary } from '@features/progress_analysis/contract';
+import type { UnitSystem } from '@features/profile';
+import type { StatsSummary } from '@features/progress_analysis';
 
 type ProfileView = { displayName: string; email: string; unitPreference: UnitSystem };
 export type ProfileTab = 'activities' | 'health';

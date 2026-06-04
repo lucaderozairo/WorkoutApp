@@ -7,11 +7,13 @@ import {
   Gear,
   House,
   List,
+  MapTrifold,
   UserCircle,
 } from "phosphor-react";
 import { Surface, Text } from "@ui/atoms";
 import { Dropdown, NavItem, Popover, Button } from "@ui/molecules";
-import { Menu } from "lucide-react";
+import { Spacer, Row } from "@ui/layout";
+import { PanelLeft } from "lucide-react";
 import { useState } from "react";
 
 const GITHUB_PAGES_PATHS = new Set(["/home", "/sessions", "/profile"]);
@@ -23,7 +25,7 @@ const allDesktopTabs: { label: string; path: string; Icon: PhosphorIcon }[] = [
   // { label: 'Progress', path: '/progress', Icon: ChartLine },
   { label: "Social", path: "/social", Icon: Compass },
   { label: "Messages", path: "/messages", Icon: Chat },
-  { label: "Profile", path: "/profile", Icon: UserCircle },
+  { label: "Routes", path: "/plan-route", Icon: MapTrifold },
 ];
 
 const allMobileTabs: { label: string; path: string; Icon: PhosphorIcon }[] = [
@@ -59,13 +61,9 @@ export function TabNavigation({
   return (
     <>
       <header className="menu">
-        <Button
-          variant="ghost"
-          title="menu" 
-          size="md"
-          onClick={onMenuToggle}>
-          {<Menu size={18} />}
-          <Text>Menu</Text>
+        <Button variant="ghost" title="Menu" size="md" onClick={onMenuToggle}>
+          {<PanelLeft size={16} />}
+          {menuOpen && <Text>Menu</Text>}
         </Button>
       </header>
       <nav className={`navbar ${menuOpen ? "open" : ""}`}>
@@ -73,25 +71,36 @@ export function TabNavigation({
           <NavItem
             key={path}
             to={path}
-            label={label}
+            title={label}
+            label={`${menuOpen ? label : ""}`}
             Icon={Icon}
-            iconSize={18}
+            iconSize={16}
           />
         ))}
-        <NavItem to="/settings" label="Settings" Icon={Gear} iconSize={18} />
+        <Spacer />
+
+        <NavItem
+          to="/profile"
+          title="Profile"
+          label={`${menuOpen ? "Profile" : ""}`}
+          Icon={UserCircle}
+          iconSize={16}
+        />
+
+        <NavItem
+          to="/settings"
+          label={`${menuOpen ? "Settings" : ""}`}
+          title="Settings"
+          Icon={Gear}
+          iconSize={16}
+        />
       </nav>
 
       {/* Header — top bar */}
       <header className="header">
-        {onOpenSettings && (
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onOpenSettings}
-            title="Settings">
-            <Gear size={20} />
-          </Button>
-        )}
+        <Row children={<>
+          <Button variant="primary" children={"Login"}/>
+          </>} />
       </header>
 
       {/* App bar — mobile bottom tab bar */}
