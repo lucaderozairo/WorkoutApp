@@ -1,5 +1,6 @@
 import { Surface, Text } from '@ui/atoms';
-import { ScreenHeader, EmptyState } from '@ui/molecules';
+import { ScreenHeader } from '@ui/molecules';
+import { EmptyState } from '@ui/patterns';
 import { Grid } from '@ui/layout';
 import { useNotificationsScreen } from './useNotificationsScreen';
 
