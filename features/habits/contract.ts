@@ -32,11 +32,11 @@ import type {
 
 /** All event-bus topics this feature publishes, namespaced to prevent collisions. */
 export const HabitsEvents = {
-  HabitCreated:       'habits/HabitCreated',
-  HabitCompleted:     'habits/HabitCompleted',
-  HabitStreakBroken:  'habits/HabitStreakBroken',
-  HabitDeleted:       'habits/HabitDeleted',
-  AchievementUnlocked: 'habits/AchievementUnlocked',
+  HabitCreated:       'HabitCreated',
+  HabitCompleted:     'HabitCompleted',
+  HabitStreakBroken:  'HabitStreakBroken',
+  HabitDeleted:       'HabitDeleted',
+  AchievementUnlocked: 'AchievementUnlocked',
 } as const;
 
 export type HabitsEventPayloads = {

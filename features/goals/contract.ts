@@ -31,10 +31,10 @@ import type {
 
 /** All event-bus topics this feature publishes, namespaced to prevent collisions. */
 export const GoalsEvents = {
-  GoalCreated:         'goals/GoalCreated',
-  GoalProgressUpdated: 'goals/GoalProgressUpdated',
-  GoalCompleted:       'goals/GoalCompleted',
-  GoalDeleted:         'goals/GoalDeleted',
+  GoalCreated:         'GoalCreated',
+  GoalProgressUpdated: 'GoalProgressUpdated',
+  GoalCompleted:       'GoalCompleted',
+  GoalDeleted:         'GoalDeleted',
 } as const;
 
 export type GoalsEventPayloads = {

@@ -53,10 +53,10 @@ import type {
 
 /** All event-bus topics this feature publishes, namespaced to prevent collisions. */
 export const ProfileEvents = {
-  BodyweightLogged:         'profile/BodyweightLogged',
-  MeasurementLogged:        'profile/MeasurementLogged',
-  EquipmentAdded:           'profile/EquipmentAdded',
-  EquipmentMileageUpdated:  'profile/EquipmentMileageUpdated',
+  BodyweightLogged:         'BodyweightLogged',
+  MeasurementLogged:        'MeasurementLogged',
+  EquipmentAdded:           'EquipmentAdded',
+  EquipmentMileageUpdated:  'EquipmentMileageUpdated',
 } as const;
 
 export type ProfileEventPayloads = {

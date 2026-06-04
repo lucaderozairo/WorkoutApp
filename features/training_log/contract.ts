@@ -57,7 +57,7 @@ import type { SessionFinishedPayload } from './domain/types';
 
 /** All event-bus topics this feature publishes, namespaced to prevent collisions. */
 export const TrainingLogEvents = {
-  SessionFinished: 'training_log/SessionFinished',
+  SessionFinished: 'SessionFinished',
 } as const;
 
 export type TrainingLogEventPayloads = {

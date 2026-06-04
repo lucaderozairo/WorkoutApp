@@ -23,7 +23,7 @@ import type { CardioSessionRecordedPayload } from './domain/types';
 
 /** All event-bus topics this feature publishes, namespaced to prevent collisions. */
 export const CardioEvents = {
-  CardioSessionRecorded: 'cardio/CardioSessionRecorded',
+  CardioSessionRecorded: 'CardioSessionRecorded',
 } as const;
 
 export type CardioEventPayloads = {

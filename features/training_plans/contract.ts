@@ -40,11 +40,11 @@ import type {
 
 /** All event-bus topics this feature publishes, namespaced to prevent collisions. */
 export const TrainingPlansEvents = {
-  PlanCreated:               'training_plans/PlanCreated',
-  PlanUpdated:               'training_plans/PlanUpdated',
-  DayAssigned:               'training_plans/DayAssigned',
-  PlanDeleted:               'training_plans/PlanDeleted',
-  PlannedSessionCompleted:   'training_plans/PlannedSessionCompleted',
+  PlanCreated:               'PlanCreated',
+  PlanUpdated:               'PlanUpdated',
+  DayAssigned:               'DayAssigned',
+  PlanDeleted:               'PlanDeleted',
+  PlannedSessionCompleted:   'PlannedSessionCompleted',
 } as const;
 
 export type TrainingPlansEventPayloads = {
