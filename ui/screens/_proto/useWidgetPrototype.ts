@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 
-export type WidgetSize = '1x1' | '2x1' | '2x2';
+import type { WidgetSize } from '@ui/components/widgets/widgetPrimitives';
+export type { WidgetSize };
 export interface WidgetInstance { id: string; size: WidgetSize; }
 export interface WidgetDef {
   id: string;
