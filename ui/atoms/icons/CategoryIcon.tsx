@@ -1,6 +1,6 @@
 import React from 'react';
 import { ACTIVITY_ICONS } from '@ui/icons/activityIcons';
-import type { SportType } from '@features/training_log/domain/types';
+import type { SportType } from '@shared/types';
 
 interface CategoryIconProps {
   category: string;
