@@ -2,6 +2,7 @@ import { eventBus } from '@core/events/bus';
 import { viewStore } from '@data/projections/views';
 import type { DomainEvent } from '@shared/types';
 import type { Equipment, EquipmentMileageUpdatedPayload } from '../domain/body';
+import { ProfileEvents } from '../contract';
 
 let registered = false;
 
@@ -22,7 +23,7 @@ export function registerEquipmentMileagePolicy(): void {
         deltaKm,
       };
       await eventBus.publish({
-        type: 'EquipmentMileageUpdated',
+        type: ProfileEvents.EquipmentMileageUpdated,
         aggregateId: item.id,
         aggregateType: 'Equipment',
         timestamp: Date.now(),

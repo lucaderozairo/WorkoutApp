@@ -2,6 +2,7 @@ import { eventBus } from '@core/events/bus';
 import { systemClock } from '@core/clock';
 import { generateId } from '@shared/utils';
 import type { Id } from '@shared/types';
+import { ProfileEvents } from '../contract';
 import type {
   LogMeasurement,
   AddEquipment,
@@ -22,7 +23,7 @@ export async function handleLogMeasurement(cmd: LogMeasurement): Promise<Id<'Mea
     loggedAt: systemClock.now(),
   };
   await eventBus.publish({
-    type: 'MeasurementLogged',
+    type: ProfileEvents.MeasurementLogged,
     aggregateId: entryId,
     aggregateType: 'Measurement',
     timestamp: payload.loggedAt,
@@ -43,7 +44,7 @@ export async function handleAddEquipment(cmd: AddEquipment): Promise<Id<'Equipme
     addedAt: systemClock.now(),
   };
   await eventBus.publish({
-    type: 'EquipmentAdded',
+    type: ProfileEvents.EquipmentAdded,
     aggregateId: equipmentId,
     aggregateType: 'Equipment',
     timestamp: payload.addedAt,

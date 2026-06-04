@@ -1,5 +1,6 @@
 import type { Result } from '@shared/types';
 import { ok, err } from '@shared/types';
+import { ProfileEvents } from '../contract';
 import type {
   UpdateProfile,
   SetUnitPreference,
@@ -119,6 +120,6 @@ export async function handleLogBodyweight(cmd: LogBodyweight): Promise<Result<vo
   await repository.save(events);
   events.forEach(e => bodyweightProjection.apply(e));
   viewStore.set('bodyweight_log', bodyweightProjection.getState());
-  await eventBus.publish(events[0]);
+  await eventBus.publish({ ...events[0], type: ProfileEvents.BodyweightLogged });
   return ok(undefined);
 }

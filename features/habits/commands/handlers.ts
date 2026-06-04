@@ -3,6 +3,7 @@ import { systemClock } from '@core/clock';
 import { generateId } from '@shared/utils';
 import { viewStore } from '@data/projections/views';
 import type { Id } from '@shared/types';
+import { HabitsEvents } from '../contract';
 import type {
   Habit,
   CreateHabit,
@@ -34,7 +35,7 @@ export async function handleCreateHabit(cmd: CreateHabit): Promise<Id<'Habit'>> 
     createdAt: systemClock.now(),
   };
   await eventBus.publish({
-    type: 'HabitCreated',
+    type: HabitsEvents.HabitCreated,
     aggregateId: habitId,
     aggregateType: 'Habit',
     timestamp: systemClock.now(),
@@ -60,7 +61,7 @@ export async function handleLogHabitCompletion(cmd: LogHabitCompletion): Promise
       brokenDate: today,
     };
     await eventBus.publish({
-      type: 'HabitStreakBroken',
+      type: HabitsEvents.HabitStreakBroken,
       aggregateId: cmd.habitId,
       aggregateType: 'Habit',
       timestamp: systemClock.now(),
@@ -76,7 +77,7 @@ export async function handleLogHabitCompletion(cmd: LogHabitCompletion): Promise
     newStreak,
   };
   await eventBus.publish({
-    type: 'HabitCompleted',
+    type: HabitsEvents.HabitCompleted,
     aggregateId: cmd.habitId,
     aggregateType: 'Habit',
     timestamp: systemClock.now(),
@@ -88,7 +89,7 @@ export async function handleLogHabitCompletion(cmd: LogHabitCompletion): Promise
 export async function handleDeleteHabit(cmd: DeleteHabit): Promise<void> {
   const payload: HabitDeletedPayload = { habitId: cmd.habitId };
   await eventBus.publish({
-    type: 'HabitDeleted',
+    type: HabitsEvents.HabitDeleted,
     aggregateId: cmd.habitId,
     aggregateType: 'Habit',
     timestamp: systemClock.now(),

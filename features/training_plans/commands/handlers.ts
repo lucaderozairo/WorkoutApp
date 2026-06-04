@@ -3,6 +3,7 @@ import { eventBus } from '@core/events/bus';
 import { generateId } from '@shared/utils';
 import { systemClock } from '@core/clock';
 import type { Id } from '@shared/types';
+import { TrainingPlansEvents } from '../contract';
 import type {
   CreatePlan, UpdatePlan, AssignWorkoutToDay, DeletePlan,
   PlanCreatedPayload, PlanUpdatedPayload, DayAssignedPayload,
@@ -32,7 +33,7 @@ export async function handleCreatePlan(cmd: CreatePlan): Promise<Id<'Plan'>> {
     createdAt: systemClock.now(),
   };
   await eventBus.publish({
-    type: 'PlanCreated',
+    type: TrainingPlansEvents.PlanCreated,
     aggregateId: planId,
     aggregateType: 'TrainingPlan',
     timestamp: systemClock.now(),
@@ -50,7 +51,7 @@ export async function handleUpdatePlan(cmd: UpdatePlan): Promise<void> {
     durationWeeks: cmd.durationWeeks,
   };
   await eventBus.publish({
-    type: 'PlanUpdated',
+    type: TrainingPlansEvents.PlanUpdated,
     aggregateId: cmd.planId,
     aggregateType: 'TrainingPlan',
     timestamp: systemClock.now(),
@@ -67,7 +68,7 @@ export async function handleAssignWorkoutToDay(cmd: AssignWorkoutToDay): Promise
     assignment: cmd.assignment,
   };
   await eventBus.publish({
-    type: 'DayAssigned',
+    type: TrainingPlansEvents.DayAssigned,
     aggregateId: cmd.planId,
     aggregateType: 'TrainingPlan',
     timestamp: systemClock.now(),
@@ -79,7 +80,7 @@ export async function handleAssignWorkoutToDay(cmd: AssignWorkoutToDay): Promise
 export async function handleDeletePlan(cmd: DeletePlan): Promise<void> {
   const payload: PlanDeletedPayload = { planId: cmd.planId };
   await eventBus.publish({
-    type: 'PlanDeleted',
+    type: TrainingPlansEvents.PlanDeleted,
     aggregateId: cmd.planId,
     aggregateType: 'TrainingPlan',
     timestamp: systemClock.now(),

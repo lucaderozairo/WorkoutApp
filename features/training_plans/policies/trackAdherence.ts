@@ -5,6 +5,7 @@ import type { DomainEvent } from '@shared/types';
 // eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
 import type { SessionFinishedPayload } from '@features/training_log/domain/types';
 import type { TrainingPlan, PlannedSessionCompletedPayload } from '../domain/types';
+import { TrainingPlansEvents } from '../contract';
 
 /** Returns 'YYYY-MM-DD' for a unix-ms timestamp. */
 function toISODate(ms: number): string {
@@ -52,7 +53,7 @@ export function registerAdherencePolicy(): void {
         sessionId: event.payload.sessionId,
       };
       await eventBus.publish({
-        type: 'PlannedSessionCompleted',
+        type: TrainingPlansEvents.PlannedSessionCompleted,
         aggregateId: plan.id,
         aggregateType: 'TrainingPlan',
         timestamp: now,
