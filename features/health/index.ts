@@ -11,6 +11,5 @@ export type {
 
 export { healthChartsProjection } from './projections';
 
-export { getHealthCharts, getHealthChartsForCategory } from './queries';
 
 export { handleSeedHealthCharts } from './commands/handlers';
