@@ -17,3 +17,15 @@ export type { CardioSport, CardioSession, SessionComment } from './domain/types'
 
 // Projection / view-model types consumed by screens and widgets.
 export type { RecentCardioView, MonthlyCardioEntry } from './projections';
+
+// ─── Typed event manifest ────────────────────────────────────
+import type { CardioSessionRecordedPayload } from './domain/types';
+
+/** All event-bus topics this feature publishes, namespaced to prevent collisions. */
+export const CardioEvents = {
+  CardioSessionRecorded: 'cardio/CardioSessionRecorded',
+} as const;
+
+export type CardioEventPayloads = {
+  [CardioEvents.CardioSessionRecorded]: CardioSessionRecordedPayload;
+};

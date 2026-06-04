@@ -51,3 +51,15 @@ export type {
 
 // Calendar helper types consumed by log/calendar components.
 export type { CombinedSession, TypeFilter } from './queries/calendarUtils';
+
+// ─── Typed event manifest ────────────────────────────────────
+import type { SessionFinishedPayload } from './domain/types';
+
+/** All event-bus topics this feature publishes, namespaced to prevent collisions. */
+export const TrainingLogEvents = {
+  SessionFinished: 'training_log/SessionFinished',
+} as const;
+
+export type TrainingLogEventPayloads = {
+  [TrainingLogEvents.SessionFinished]: SessionFinishedPayload;
+};
