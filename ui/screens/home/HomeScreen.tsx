@@ -11,7 +11,7 @@ import { GOAL_MINUTES } from "./dashboardUtils";
 import { PlanRouteWidget } from "@ui/components/widgets/PlanRouteWidget";
 import { EditDisplayNameWidget } from "@ui/components/widgets/EditDisplayNameWidget";
 import { ACHIEVEMENT_DEFINITIONS } from "@features/achievements";
-import type { AchievementUnlockedPayload } from "@features/achievements";
+import type { AchievementUnlockedPayload } from "@features/achievements/contract";
 import { eventBus } from "@core/events/bus";
 import { useHomeScreen } from "./useHomeScreen";
 import { Surface, Text } from "@ui/atoms";
