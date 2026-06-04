@@ -31,7 +31,7 @@ import type {
 } from './domain/types';
 
 /** All event-bus topics this feature publishes, namespaced to prevent collisions. */
-export const HabitEvents = {
+export const HabitsEvents = {
   HabitCreated:       'habits/HabitCreated',
   HabitCompleted:     'habits/HabitCompleted',
   HabitStreakBroken:  'habits/HabitStreakBroken',
@@ -39,10 +39,10 @@ export const HabitEvents = {
   AchievementUnlocked: 'habits/AchievementUnlocked',
 } as const;
 
-export type HabitEventPayloads = {
-  [HabitEvents.HabitCreated]:        HabitCreatedPayload;
-  [HabitEvents.HabitCompleted]:      HabitCompletedPayload;
-  [HabitEvents.HabitStreakBroken]:   HabitStreakBrokenPayload;
-  [HabitEvents.HabitDeleted]:        HabitDeletedPayload;
-  [HabitEvents.AchievementUnlocked]: HabitAchievementUnlockedPayload;
+export type HabitsEventPayloads = {
+  [HabitsEvents.HabitCreated]:        HabitCreatedPayload;
+  [HabitsEvents.HabitCompleted]:      HabitCompletedPayload;
+  [HabitsEvents.HabitStreakBroken]:   HabitStreakBrokenPayload;
+  [HabitsEvents.HabitDeleted]:        HabitDeletedPayload;
+  [HabitsEvents.AchievementUnlocked]: HabitAchievementUnlockedPayload;
 };

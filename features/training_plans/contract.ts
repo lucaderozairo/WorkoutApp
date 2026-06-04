@@ -39,7 +39,7 @@ import type {
 } from './domain/types';
 
 /** All event-bus topics this feature publishes, namespaced to prevent collisions. */
-export const TrainingPlanEvents = {
+export const TrainingPlansEvents = {
   PlanCreated:               'training_plans/PlanCreated',
   PlanUpdated:               'training_plans/PlanUpdated',
   DayAssigned:               'training_plans/DayAssigned',
@@ -47,10 +47,10 @@ export const TrainingPlanEvents = {
   PlannedSessionCompleted:   'training_plans/PlannedSessionCompleted',
 } as const;
 
-export type TrainingPlanEventPayloads = {
-  [TrainingPlanEvents.PlanCreated]:             PlanCreatedPayload;
-  [TrainingPlanEvents.PlanUpdated]:             PlanUpdatedPayload;
-  [TrainingPlanEvents.DayAssigned]:             DayAssignedPayload;
-  [TrainingPlanEvents.PlanDeleted]:             PlanDeletedPayload;
-  [TrainingPlanEvents.PlannedSessionCompleted]: PlannedSessionCompletedPayload;
+export type TrainingPlansEventPayloads = {
+  [TrainingPlansEvents.PlanCreated]:             PlanCreatedPayload;
+  [TrainingPlansEvents.PlanUpdated]:             PlanUpdatedPayload;
+  [TrainingPlansEvents.DayAssigned]:             DayAssignedPayload;
+  [TrainingPlansEvents.PlanDeleted]:             PlanDeletedPayload;
+  [TrainingPlansEvents.PlannedSessionCompleted]: PlannedSessionCompletedPayload;
 };

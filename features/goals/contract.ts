@@ -30,16 +30,16 @@ import type {
 } from './domain/types';
 
 /** All event-bus topics this feature publishes, namespaced to prevent collisions. */
-export const GoalEvents = {
+export const GoalsEvents = {
   GoalCreated:         'goals/GoalCreated',
   GoalProgressUpdated: 'goals/GoalProgressUpdated',
   GoalCompleted:       'goals/GoalCompleted',
   GoalDeleted:         'goals/GoalDeleted',
 } as const;
 
-export type GoalEventPayloads = {
-  [GoalEvents.GoalCreated]:         GoalCreatedPayload;
-  [GoalEvents.GoalProgressUpdated]: GoalProgressUpdatedPayload;
-  [GoalEvents.GoalCompleted]:       GoalCompletedPayload;
-  [GoalEvents.GoalDeleted]:         GoalDeletedPayload;
+export type GoalsEventPayloads = {
+  [GoalsEvents.GoalCreated]:         GoalCreatedPayload;
+  [GoalsEvents.GoalProgressUpdated]: GoalProgressUpdatedPayload;
+  [GoalsEvents.GoalCompleted]:       GoalCompletedPayload;
+  [GoalsEvents.GoalDeleted]:         GoalDeletedPayload;
 };
