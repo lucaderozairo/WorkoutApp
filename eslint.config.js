@@ -37,6 +37,9 @@ export default tseslint.config(
         el('feature-ui',     'ui/components/**'),
         el('screens',        'ui/screens/**'),
         el('screens',        'ui/navigation/**'),
+        // The public type surface of a feature. Listed BEFORE feature-logic so
+        // `features/<x>/contract.ts` classifies as feature-contract, not feature-logic.
+        el('feature-contract', 'features/*/contract.{ts,tsx}', { capture: ['feature'] }),
         el('feature-logic',  'features/*/**', { capture: ['feature'] }),
         el('core',           'core/**'),
         el('read-models',    'data/projections/**'),
@@ -65,14 +68,26 @@ export default tseslint.config(
           { from: ['core'],          allow: ['core', 'shared'] },
           { from: ['shared'],        allow: ['shared', 'core'] },
           { from: ['read-models'],   allow: ['read-models', 'data-io', 'core', 'shared'] },
+          // The ViewRegistry (data/projections/views/schema.ts) is the typed seam
+          // between infrastructure and feature view-models. It may reference a
+          // feature's published TYPE contract only — never its runtime internals.
+          { from: ['read-models'],   importKind: 'type', allow: ['read-models', 'data-io', 'core', 'shared', 'feature-contract'] },
           { from: ['data-io'],       allow: ['data-io', 'read-models', 'core', 'shared'] },
           { from: ['fixtures'],      allow: ['fixtures', 'feature-logic', 'read-models', 'data-io', 'core', 'shared'] },
-          { from: ['feature-logic'], allow: ['core', 'read-models', 'data-io', 'shared', ['feature-logic', { feature: '${from.feature}' }]] },
+          // A feature's contract re-exports its own feature's public types only.
+          { from: ['feature-contract'], allow: ['core', 'read-models', 'data-io', 'shared', ['feature-logic', { feature: '${from.feature}' }], ['feature-contract', { feature: '${from.feature}' }]] },
+          { from: ['feature-logic'], allow: ['core', 'read-models', 'data-io', 'shared', ['feature-logic', { feature: '${from.feature}' }], ['feature-contract', { feature: '${from.feature}' }]] },
           { from: ['primitives'],    allow: ['primitives', 'layouts', 'core', 'shared'] },
           { from: ['layouts'],       allow: ['primitives', 'layouts', 'core', 'shared'] },
           { from: ['patterns'],      allow: ['primitives', 'layouts', 'patterns', 'read-models', 'core', 'shared'] },
-          { from: ['feature-ui'],    allow: ['primitives', 'layouts', 'patterns', 'feature-ui', 'feature-logic', 'read-models', 'core', 'shared'] },
-          { from: ['screens'],       allow: ['primitives', 'layouts', 'patterns', 'feature-ui', 'screens', 'feature-logic', 'read-models', 'core', 'shared'] },
+          // feature-ui / screens consume a feature ONLY through its contract for
+          // TYPE imports (Rule 4 / contract discipline). Runtime values (command
+          // handlers, queries) still come from feature-logic — contract.ts is
+          // type-only — so a separate importKind:'value' rule permits those.
+          { from: ['feature-ui'],    allow: ['primitives', 'layouts', 'patterns', 'feature-ui', 'feature-contract', 'read-models', 'core', 'shared'] },
+          { from: ['feature-ui'],    importKind: 'value', allow: ['primitives', 'layouts', 'patterns', 'feature-ui', 'feature-contract', 'feature-logic', 'read-models', 'core', 'shared'] },
+          { from: ['screens'],       allow: ['primitives', 'layouts', 'patterns', 'feature-ui', 'screens', 'feature-contract', 'read-models', 'core', 'shared'] },
+          { from: ['screens'],       importKind: 'value', allow: ['primitives', 'layouts', 'patterns', 'feature-ui', 'screens', 'feature-contract', 'feature-logic', 'read-models', 'core', 'shared'] },
           { from: ['app'],           allow: ['*'] },
         ],
       }],
