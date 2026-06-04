@@ -25,3 +25,6 @@ export type {
   RestingHRView,
   SubjectiveRPEView,
 } from './projections';
+
+// Sleep trend view-model types consumed by screens and infrastructure.
+export type { SleepTrendView, WeeklyTrendEntry, SleepScorePoint } from './projections/sleepTrend';

@@ -75,3 +75,6 @@ export const subjectiveRPEProjection = new ProjectionBuilder<
     SubjectiveRPELogged: applySubjectiveRPELogged,
   }
 );
+
+export type { SleepTrendView, WeeklyTrendEntry, SleepScorePoint } from './sleepTrend';
+export { registerSleepTrendProjection } from './sleepTrend';

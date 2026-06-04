@@ -1,10 +1,8 @@
 import { eventBus } from "@core/events/bus";
 import { viewStore } from "@data/projections/views";
 import type { DomainEvent } from "@shared/types";
-// eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
-import type { SessionFinishedPayload } from "@features/training_log/domain/types";
-// eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
-import type { ProgressionState } from "@features/progression/domain/types";
+import type { SessionFinishedPayload } from "@features/training_log/contract";
+import type { ProgressionState } from "@features/progression/contract";
 import {
   makeTrainingLoadInsight,
   makePlateauInsight,

@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@ui/bindings';
-import type { ActivitiesState, ActivityView } from '@features/training_log/contract';
-import type { CardioSession, RecentCardioView } from '@features/cardio/contract';
+import type { ActivitiesState, ActivityView } from '@features/training_log';
+import type { CardioSession, RecentCardioView } from '@features/cardio';
 // eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
 import { exportSessionEnvelope } from '@data/sources/local/persistence';
 import { triggerDownload } from '@shared/utils/csv';

@@ -1,9 +1,10 @@
 import { useState, useId } from 'react';
 import { Grid, Row, Column } from '@ui/layout';
 import { useNavigate } from 'react-router-dom';
-import type { ActivityHistoryItem } from '@features/training_log/contract';
-import type { CardioSession, CardioSport } from '@features/cardio/contract';
-import { EmptyState, Tabs, StatTile, DetailRow, Alert, Badge, Button } from '@ui/molecules';
+import type { ActivityHistoryItem } from '@features/training_log';
+import type { CardioSession, CardioSport } from '@features/cardio';
+import { Tabs, DetailRow, Alert, Badge, Button } from '@ui/molecules';
+import { EmptyState, StatTile } from '@ui/patterns';
 import { Surface, Text, SegmentBar } from '@ui/atoms';
 import { SparklineArea } from '@ui/patterns/charts/domain-charts';
 import { ShareModal } from '@ui/components/modals/ShareModal';

@@ -6,6 +6,7 @@ import type {
   DeleteCardioSession,
   CardioEvent,
 } from "../domain/types";
+import { CardioEvents } from "../contract";
 import { cryptoIdGenerator } from "@core/id-generator";
 import { systemClock } from "@core/clock";
 import { eventBus } from "@core/events/bus";
@@ -77,7 +78,7 @@ export async function handleRecordCardioSession(
 
   // Notify other features via event bus
   await eventBus.publish({
-    type: "CardioSessionRecorded",
+    type: CardioEvents.CardioSessionRecorded,
     aggregateId: cmd.userId,
     aggregateType: "User",
     timestamp: systemClock.now(),

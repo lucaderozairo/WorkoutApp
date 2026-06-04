@@ -9,8 +9,8 @@ import {
   handleUpdateSessionStartTime,
   getActivityHistory,
 } from '@features/training_log';
-import type { ActivityView, ActivitiesState, ActivityHistoryItem, ExerciseCategory } from '@features/training_log/contract';
-import type { RecentCardioView, CardioSession } from '@features/cardio/contract';
+import type { ActivityView, ActivitiesState, ActivityHistoryItem, ExerciseCategory } from '@features/training_log';
+import type { RecentCardioView, CardioSession } from '@features/cardio';
 import { handleDeleteCardioSession } from '@features/cardio';
 import { toDateKey } from '@features/training_log/queries/calendarUtils';
 import { DEFAULT_FILTERS } from '@ui/components/log/SessionFilterBar';
@@ -18,7 +18,7 @@ import type { SessionFilters } from '@ui/components/log/SessionFilterBar';
 import type { Id } from '@shared/types';
 import { cryptoIdGenerator } from '@core/id-generator';
 import { useSessionTimer } from '@ui/components/log';
-import type { UICondition } from '@features/training_log/contract';
+import type { UICondition } from '@features/training_log/projections/viewTypes';
 import { BT_OPTIONS } from '@features/training_log/projections/viewTypes';
 
 export type CombinedEntry =

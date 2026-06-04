@@ -1,5 +1,6 @@
 import type { Result } from '@shared/types';
 import { ok, err } from '@shared/types';
+import { TrainingLogEvents } from '../contract';
 import type {
   StartSession,
   AddBlock,
@@ -228,7 +229,7 @@ export async function handleFinishSession(cmd: FinishSession): Promise<Result<vo
 
   // Notify other features via event bus with enriched payload
   await eventBus.publish({
-    type: 'SessionFinished',
+    type: TrainingLogEvents.SessionFinished,
     aggregateId: cmd.sessionId,
     aggregateType: 'Session',
     timestamp: finishedAt,

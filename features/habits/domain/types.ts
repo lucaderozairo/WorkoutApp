@@ -64,3 +64,11 @@ export interface DeleteHabit {
 }
 
 export type HabitCommand = CreateHabit | LogHabitCompletion | DeleteHabit;
+
+// Published by the streak-milestone policy on behalf of this feature.
+// Mirrors the achievements domain shape to avoid a cross-feature import.
+export interface HabitAchievementUnlockedPayload {
+  userId: Id<'User'>;
+  achievementId: string;
+  unlockedAt: number;
+}

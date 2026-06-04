@@ -1,5 +1,5 @@
 ﻿import { useQuery } from '@ui/bindings';
-import type { SleepEntryView, SleepSession } from '@features/readiness/contract';
+import type { SleepEntryView, SleepSession } from '@features/readiness';
 import { sleepEntryToSession } from '@features/readiness/queries';
 import { SleepReviewWidget } from '@ui/components/widgets/SleepReviewWidget';
 import { WeatherDashWidget, CalendarDashWidget } from '@ui/components/widgets/DashboardMiniWidgets';

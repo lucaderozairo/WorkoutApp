@@ -101,6 +101,9 @@ export {
   recentExercisesProjection,
 } from './projections';
 
+export type { TrainingDashboardView } from './projections/dashboard';
+export { registerTrainingDashboardProjection } from './projections/dashboard';
+
 export type {
   UISet,
   UICardioSet,

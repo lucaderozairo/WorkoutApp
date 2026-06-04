@@ -16,6 +16,24 @@ export type DomainEvent<TType extends string = string, TPayload = unknown> = {
 
 export type ExerciseCategory = 'strength' | 'cardio' | 'mobility';
 
+export type SportType =
+  // Outdoor endurance
+  | 'run' | 'cycle' | 'swim' | 'row' | 'hike' | 'ski' | 'snowboard'
+  | 'kayak' | 'surf' | 'climb'
+  // Gym cardio machines — continuous effort (use StrengthSegment + sets for intervals)
+  | 'ski_erg' | 'assault_bike' | 'air_bike' | 'concept2_rower'
+  | 'treadmill' | 'stair_climber' | 'elliptical'
+  // Gym / structured
+  | 'strength' | 'hiit' | 'yoga' | 'stretch' | 'mobility' | 'boxing'
+  // Named multi-sport events
+  | 'triathlon' | 'duathlon' | 'hyrox' | 'obstacle_course'
+  // Generic multi-sport — combining two or more sports without a named event format
+  | 'multi'
+  // Internal / structural
+  | 'transition'
+  // Catch-all — pair with Activity.customSport for the label
+  | 'other';
+
 
 export interface Result<T, E = string> {
   ok: boolean;

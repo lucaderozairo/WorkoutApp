@@ -1,9 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import type { ActivityView, ActivityHistoryItem } from '@features/training_log/contract';
-import type { CardioSession } from '@features/cardio/contract';
+import type { ActivityView, ActivityHistoryItem } from '@features/training_log';
+import type { CardioSession } from '@features/cardio';
 import { handleImportGpsTrack, handleUpdateCardioSession } from '@features/cardio';
-import type { SetEntry, StrengthSet } from '@features/training_log/contract';
+import type { SetEntry, StrengthSet } from '@features/training_log/domain/types';
 // eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
 import type { GpsTrack } from '@data/sources/files/gps';
 import { SessionGpsPreview } from './SessionGpsPreview';
@@ -11,12 +11,14 @@ import { ImportModal } from '../modals/ImportModal';
 import { HROverTimeChart, PaceOverTimeChart, ElevationProfileChart, KmSplitsTable } from '@ui/patterns/charts/domain-charts';
 import ChartContainer from '@ui/patterns/charts/charts';
 import { ChevronLeft, Pencil, Share2, Image, MapPin, HeartPulse, TrendingUp, Mountain, Timer, Trophy, Heart, MessageCircle } from 'lucide-react';
-import { ACTIVITY_ICONS, getActivityLabel } from '@ui/icons/activityIcons';
-import type { SportType } from '@features/training_log/contract';
+import { getActivityLabel } from '@ui/icons/activityIcons';
+import type { SportType } from '@features/training_log/domain/types';
 import { Carousel } from '@ui/components/shared/Carousel';
 import { Row, Column, Cluster, Grid } from '@ui/layout';
 import { Surface, Text, Chip, Table, TableRow, TableCell } from '@ui/atoms';
-import { Badge, Button } from '@ui/molecules';
+import { Badge, Button, EditableTitle } from '@ui/molecules';
+import { SportIcon } from '@ui/atoms/icons/SportIcon';
+import { CategoryIcon } from '@ui/atoms/icons/CategoryIcon';
 import {
   type SampleCardioSession,
   formatDuration,
@@ -37,67 +39,6 @@ interface SessionDetailProps {
   onExportJson?: () => void;
   onExportCsv?: () => void;
   asPage?: boolean;
-}
-
-function SportIcon({ sport, size }: { sport: string; size?: number }) {
-  const def = ACTIVITY_ICONS[sport as SportType] ?? ACTIVITY_ICONS['other'];
-  return <def.Icon size={size} />;
-}
-
-function CategoryIcon({ category, size }: { category: string; size?: number }) {
-  const sport: SportType = category === 'cardio' ? 'run' : category === 'mobility' ? 'mobility' : 'strength';
-  const { Icon } = ACTIVITY_ICONS[sport];
-  return <Icon size={size} />;
-}
-
-/* ── Inline editable title ── */
-
-function EditableTitle({
-  value,
-  onSave,
-  placeholder,
-  level = 'h2',
-}: {
-  value: string;
-  onSave: (v: string) => void;
-  placeholder: string;
-  level?: 'h1' | 'h2';
-}) {
-  const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState(value);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  function startEdit() {
-    setDraft(value);
-    setEditing(true);
-    setTimeout(() => inputRef.current?.select(), 0);
-  }
-
-  function commit() {
-    setEditing(false);
-    if (draft.trim() !== value) onSave(draft.trim());
-  }
-
-  if (editing) {
-    return (
-      <input
-        ref={inputRef}
-        className="input"
-        value={draft}
-        onChange={e => setDraft(e.target.value)}
-        onBlur={commit}
-        onKeyDown={e => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') setEditing(false); }}
-        autoFocus
-      />
-    );
-  }
-
-  const Tag = level;
-  return (
-    <Tag className="interactive" onClick={startEdit} title="Click to edit">
-      {value || <Text as="span" color="faint">{placeholder}</Text>}
-    </Tag>
-  );
 }
 
 /* ── Social bar ── */

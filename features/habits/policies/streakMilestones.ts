@@ -2,6 +2,7 @@ import { eventBus } from '@core/events/bus';
 import { systemClock } from '@core/clock';
 import type { DomainEvent } from '@shared/types';
 import type { HabitCompletedPayload } from '../domain/types';
+import { HabitsEvents } from '../contract';
 
 const STREAK_MILESTONES = [7, 30, 100] as const;
 
@@ -16,7 +17,7 @@ export function registerStreakMilestonePolicy(): void {
     if (!(STREAK_MILESTONES as readonly number[]).includes(newStreak)) return;
 
     await eventBus.publish({
-      type: 'AchievementUnlocked',
+      type: HabitsEvents.AchievementUnlocked,
       aggregateId: userId,
       aggregateType: 'User',
       timestamp: systemClock.now(),

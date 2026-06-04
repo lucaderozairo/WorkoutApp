@@ -2,6 +2,10 @@ import { eventBus } from '@core/events/bus';
 import { viewStore } from '@data/projections/views';
 import { handleCheckAchievements } from '../commands/handlers';
 import type { SessionSnapshot, CardioSnapshot } from '../domain/types';
+import { TrainingLogEvents } from '@features/training_log/contract';
+import type { ActivitiesState, ActivityView } from '@features/training_log/contract';
+import { CardioEvents } from '@features/cardio/contract';
+import type { RecentCardioView } from '@features/cardio/contract';
 
 /**
  * Achievement policies react to domain events from other features.
@@ -9,39 +13,16 @@ import type { SessionSnapshot, CardioSnapshot } from '../domain/types';
  * features communicate through events, never direct imports.
  */
 
-/** Local mirrors of view types — avoids importing from other features. */
-interface SessionBlock {
-  exerciseCategory: string;
-  sets: Array<{ type: string; isPR?: boolean }>;
-}
-
-interface SessionView {
-  status: string;
-  name: string;
-  startedAt: number | null;
-  blocks: SessionBlock[];
-}
-
-interface SessionsState {
-  byId: Record<string, SessionView>;
-  activeId: string | null;
-}
-
-interface CardioSessionView {
-  sport: string;
-  distanceMeters: number;
-}
-
 function buildSnapshots(): { sessions: SessionSnapshot[]; cardio: CardioSnapshot[] } {
-  const sessionsState = viewStore.get<SessionsState>('sessions') ?? { byId: {}, activeId: null };
+  const sessionsState = viewStore.get<ActivitiesState>('sessions') ?? { byId: {}, activeId: null };
   const sessionHistory = Object.values(sessionsState.byId)
-    .filter((s): s is SessionView & { startedAt: number } => s.status === 'finished' && s.startedAt != null);
-  const cardioView = viewStore.get<{ sessions: CardioSessionView[] }>('recent_cardio_sessions');
+    .filter((s): s is ActivityView & { startedAt: number } => s.status === 'finished' && s.startedAt != null);
+  const cardioView = viewStore.get<RecentCardioView>('recent_cardio_sessions');
 
   const sessions: SessionSnapshot[] = sessionHistory.map(s => ({
-    category: s.blocks.some(b => b.exerciseCategory === 'cardio') ? 'cardio' : 'strength',
+    category: s.segments.some(seg => seg.exerciseCategory === 'cardio') ? 'cardio' : 'strength',
     name: s.name,
-    hasPR: s.blocks.some(b => b.sets.some(set => set.type === 'strength' && set.isPR)),
+    hasPR: s.segments.some(seg => seg.sets.some(set => set.isPR === true)),
     startedAt: s.startedAt,
   }));
 
@@ -59,7 +40,7 @@ function buildSnapshots(): { sessions: SessionSnapshot[]; cardio: CardioSnapshot
  */
 export function registerAchievementPolicies(): void {
   // When a training session finishes, check achievements
-  eventBus.subscribe('SessionFinished', async () => {
+  eventBus.subscribe(TrainingLogEvents.SessionFinished, async () => {
     const { sessions, cardio } = buildSnapshots();
     await handleCheckAchievements({
       type: 'CheckAchievements',
@@ -70,7 +51,7 @@ export function registerAchievementPolicies(): void {
   });
 
   // When a cardio session is recorded, check achievements
-  eventBus.subscribe('CardioSessionRecorded', async () => {
+  eventBus.subscribe(CardioEvents.CardioSessionRecorded, async () => {
     const { sessions, cardio } = buildSnapshots();
     await handleCheckAchievements({
       type: 'CheckAchievements',

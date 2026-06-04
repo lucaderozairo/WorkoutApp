@@ -1,5 +1,6 @@
 
-import { ScreenHeader, EmptyState, Button } from '@ui/molecules';
+import { ScreenHeader, Button } from '@ui/molecules';
+import { EmptyState } from '@ui/patterns';
 import { Grid, Row } from '@ui/layout';
 import { useSavedRoutes } from './useSavedRoutes';
 

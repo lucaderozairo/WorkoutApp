@@ -76,7 +76,13 @@ export default tseslint.config(
           { from: ['fixtures'],      allow: ['fixtures', 'feature-logic', 'read-models', 'data-io', 'core', 'shared'] },
           // A feature's contract re-exports its own feature's public types only.
           { from: ['feature-contract'], allow: ['core', 'read-models', 'data-io', 'shared', ['feature-logic', { feature: '${from.feature}' }], ['feature-contract', { feature: '${from.feature}' }]] },
+          // feature-logic (handlers, policies, projections) imports same-feature internals.
+          // Policies also cross-feature contracts for event subscriptions:
+          //   - TYPE imports for payload/state types from peer feature contracts
+          //   - VALUE imports for typed event-name manifest constants (e.g. TrainingLogEvents)
           { from: ['feature-logic'], allow: ['core', 'read-models', 'data-io', 'shared', ['feature-logic', { feature: '${from.feature}' }], ['feature-contract', { feature: '${from.feature}' }]] },
+          { from: ['feature-logic'], importKind: 'type',  allow: ['feature-contract'] },
+          { from: ['feature-logic'], importKind: 'value', allow: ['core', 'read-models', 'data-io', 'shared', ['feature-logic', { feature: '${from.feature}' }], 'feature-contract'] },
           { from: ['primitives'],    allow: ['primitives', 'layouts', 'core', 'shared'] },
           { from: ['layouts'],       allow: ['primitives', 'layouts', 'core', 'shared'] },
           { from: ['patterns'],      allow: ['primitives', 'layouts', 'patterns', 'read-models', 'core', 'shared'] },

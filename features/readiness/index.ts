@@ -58,3 +58,6 @@ export {
 } from './queries';
 
 export type { SleepSession } from './domain/mock-types';
+
+export type { SleepTrendView, WeeklyTrendEntry, SleepScorePoint } from './projections/sleepTrend';
+export { registerSleepTrendProjection } from './projections/sleepTrend';

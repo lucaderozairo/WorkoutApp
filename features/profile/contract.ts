@@ -42,3 +42,26 @@ export type {
   MockLoggedHealth,
   MockProfileNutrition,
 } from './domain/mock-types';
+
+// ─── Typed event manifest ────────────────────────────────────
+import type { BodyweightLoggedPayload } from './domain/types';
+import type {
+  MeasurementLoggedPayload,
+  EquipmentAddedPayload,
+  EquipmentMileageUpdatedPayload,
+} from './domain/body';
+
+/** All event-bus topics this feature publishes, namespaced to prevent collisions. */
+export const ProfileEvents = {
+  BodyweightLogged:         'BodyweightLogged',
+  MeasurementLogged:        'MeasurementLogged',
+  EquipmentAdded:           'EquipmentAdded',
+  EquipmentMileageUpdated:  'EquipmentMileageUpdated',
+} as const;
+
+export type ProfileEventPayloads = {
+  [ProfileEvents.BodyweightLogged]:        BodyweightLoggedPayload;
+  [ProfileEvents.MeasurementLogged]:       MeasurementLoggedPayload;
+  [ProfileEvents.EquipmentAdded]:          EquipmentAddedPayload;
+  [ProfileEvents.EquipmentMileageUpdated]: EquipmentMileageUpdatedPayload;
+};
