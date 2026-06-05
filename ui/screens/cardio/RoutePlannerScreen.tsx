@@ -14,7 +14,7 @@ import { MdDirectionsBike, MdDirectionsRun, MdDirectionsWalk, MdHiking } from 'r
 import { IoMdLocate } from 'react-icons/io';
 import { PiLineSegments } from 'react-icons/pi';
 import type { IconType } from 'react-icons';
-import {ArrowSquareRight, ArrowSquareLeft} from 'phosphor-react';
+import {ArrowSquareRight} from 'phosphor-react';
 import { formatPace } from '@features/planning';
 import type { SavedRoute } from '@features/planning/contract';
 import {
@@ -546,7 +546,7 @@ function PlanPanel({
             <Button
               variant="ghost"
               size="sm"
-              className={perSegEnabled ? 'active' : undefined}
+              active={perSegEnabled}
               onClick={() => setPerSegEnabled(v => !v)}
               aria-pressed={perSegEnabled}
             >
