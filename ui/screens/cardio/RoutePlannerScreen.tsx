@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Grid, Row, Column, Cluster, Layer, Layered } from '@ui/layout';
 import { Surface, Text } from '@ui/atoms';
 import { RouteMap } from '@ui/components/workout/wizard/RouteMap';
-import { ScreenHeader, Button } from '@ui/molecules';
+import { ScreenHeader, Button, Input, Slider } from '@ui/molecules';
+import { SearchBar } from '@ui/patterns/common/SearchBar';
 import {
   BarChart2, Bookmark, ChevronLeft, ChevronRight, ChevronUp,
   Layers, Map, MapPin, Minus, Moon, Mountain,
@@ -122,19 +123,18 @@ export function RoutePlannerScreen() {
             <RotateCw size={14} />
           </Button>
           <Row align="center" gap={1} className="grow">
-            <input
-              className="input grow"
-              placeholder="Search a place, address, or lat/lng…"
+            <SearchBar
               value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              onKeyDown={e => { if (e.key === 'Enter') void handleSearch(); }}
+              onChange={setSearchQuery}
+              placeholder="Search a place, address, or lat/lng…"
+              onSubmit={() => void handleSearch()}
             />
             {searchBusy && <Text size="caption" color="muted">Searching…</Text>}
             {searchError && <Text size="caption" color="faint">{searchError}</Text>}
           </Row>
           {isStandalone && (
-            <input
-              className="input grow"
+            <Input
+              className="grow"
               placeholder="Route name…"
               value={routeName}
               onChange={e => setRouteName(e.target.value)}
@@ -356,8 +356,7 @@ export function RoutePlannerScreen() {
           </div>
 
           {isStandalone && (
-            <input
-              className="input"
+            <Input
               placeholder="Route name…"
               value={routeName}
               onChange={e => setRouteName(e.target.value)}
@@ -511,21 +510,15 @@ function PlanPanel({
         <Text as="h3" mono>{formatPace(paceSecondsPerKm)}</Text>
         <Text size="caption" color="muted">min/km</Text>
       </Row>
-      <input
-        className="input sm"
+      <Input
+        className="sm"
         placeholder="m:ss"
         value={paceInput}
         onChange={e => setPaceInput(e.target.value)}
         onBlur={e => applyPaceInput(e.target.value)}
         onKeyDown={e => { if (e.key === 'Enter') applyPaceInput((e.target as HTMLInputElement).value); }}
       />
-      <input
-        type="range"
-        min={120}
-        max={540}
-        value={paceSecondsPerKm}
-        onChange={e => setPaceSecondsPerKm(Number(e.target.value))}
-      />
+      <Slider min={120} max={540} value={paceSecondsPerKm} onChange={v => setPaceSecondsPerKm(v)} />
       <Cluster className="gap-1">
         {PACE_PRESETS.map(p => (
           <Button key={p} variant="ghost" size="sm" active={pacePreset === p} className="pad-sm"
@@ -556,8 +549,8 @@ function PlanPanel({
           {perSegEnabled && segmentDistances.map((dist, idx) => (
             <Row key={idx} align="center" gap={1}>
               <Text size="caption" color="muted" className="grow">Seg {idx + 1} — {dist.toFixed(2)} km</Text>
-              <input
-                className="input sm"
+              <Input
+                className="sm"
                 placeholder={formatPace(paceSecondsPerKm)}
                 value={segmentInputs[idx] ?? ''}
                 onChange={e => applySegmentPaceInput(idx, e.target.value)}
