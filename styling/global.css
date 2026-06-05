@@ -34,6 +34,7 @@
 @import "./calendar.css"       layer(project);
 @import "./session.css"        layer(project);
 @import "./route-planner.css"  layer(project);
+@import "./training-plans.css" layer(project);
 /* ── Utilities + third-party overrides ── */
 @import "./utilities.css"      layer(utilities);
 @import "./map.css"            layer(overrides);

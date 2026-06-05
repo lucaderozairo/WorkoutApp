@@ -1,0 +1,49 @@
+/* ── Schedule event block (training plan calendar tiles) ── */
+/* Token reference:
+   radius  — --r-sm (8px)
+   spacing — --s-2 (8px) / --s-3 (12px)
+   sport colours (from tokens.css):
+     run    → --c-cardio    (#ef4a4a)   aliased as --color-run
+     bike   → --c-nutrition (#6fbf73)   aliased as --color-cycle
+     swim   → --c-water     (#4dc8f0)   aliased as --color-swim
+     lift   → --c-strength  (#e8785a)   aliased as --color-lift
+   Default border uses --accent for unknown sport values.
+*/
+.schedule-event-block {
+  border-radius: var(--r-sm);
+  padding: var(--s-2) var(--s-3);
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+
+  &[data-sport="run"] {
+    border-left-color: var(--c-cardio);
+    background: color-mix(in srgb, var(--c-cardio) 12%, transparent);
+  }
+
+  &[data-sport="bike"],
+  &[data-sport="cycle"] {
+    border-left-color: var(--c-nutrition);
+    background: color-mix(in srgb, var(--c-nutrition) 12%, transparent);
+  }
+
+  &[data-sport="swim"] {
+    border-left-color: var(--c-water);
+    background: color-mix(in srgb, var(--c-water) 12%, transparent);
+  }
+
+  &[data-sport="lift"],
+  &[data-sport="strength"] {
+    border-left-color: var(--c-strength);
+    background: color-mix(in srgb, var(--c-strength) 12%, transparent);
+  }
+
+  &[data-sport="cardio"] {
+    border-left-color: var(--c-cardio);
+    background: color-mix(in srgb, var(--c-cardio) 12%, transparent);
+  }
+
+  &[data-sport="recovery"] {
+    border-left-color: var(--c-recovery);
+    background: color-mix(in srgb, var(--c-recovery) 12%, transparent);
+  }
+}
