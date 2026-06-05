@@ -7,13 +7,14 @@ import {
   BarChart2, Bookmark, ChevronLeft, ChevronRight, ChevronUp,
   Layers, Map, MapPin, Minus, Moon, Mountain,
   MousePointer2, Navigation, Pencil, Plus,
-  RotateCcw, RotateCw, Satellite, Save, Scissors, Trash2, X,
+  RotateCcw, RotateCw, Satellite, Save, Scissors, Trash2, X
 } from 'lucide-react';
 import { ChartContainer } from '@ui/patterns/charts/charts';
 import { MdDirectionsBike, MdDirectionsRun, MdDirectionsWalk, MdHiking } from 'react-icons/md';
 import { IoMdLocate } from 'react-icons/io';
 import { PiLineSegments } from 'react-icons/pi';
 import type { IconType } from 'react-icons';
+import {ArrowSquareRight, ArrowSquareLeft} from 'phosphor-react';
 import { formatPace } from '@features/planning';
 import type { SavedRoute } from '@features/planning/contract';
 import {
@@ -25,6 +26,9 @@ import {
   type PacePreset,
   type SurfaceKey,
 } from './useRoutePlanner';
+import { MapControlButton } from '@ui/components/route-planner/MapControlButton';
+import { SideRailItem } from '@ui/components/route-planner/SideRailItem';
+import { ActivityChip } from '@ui/components/route-planner/ActivityChip';
 
 type SidePanel = 'plan' | 'pins' | 'stats' | 'saved';
 
@@ -101,7 +105,7 @@ export function RoutePlannerScreen() {
               key={m}
               variant="ghost"
               size="sm"
-              className={mode === m ? 'active' : undefined}
+              active={mode === m}
               onClick={() => setMode(m)}
               aria-label={m.charAt(0).toUpperCase() + m.slice(1)}
             >
@@ -159,7 +163,7 @@ export function RoutePlannerScreen() {
             <Button
               key={m}
               variant="ghost"
-              className={mode === m ? 'active' : undefined}
+              active={mode === m}
               onClick={() => setMode(m)}
               aria-label={m.charAt(0).toUpperCase() + m.slice(1)}
             >
@@ -175,20 +179,113 @@ export function RoutePlannerScreen() {
       {/* ── TWO-PANE AREA ── */}
       <Row className="gap-0 grow clip">
 
+        
+
+        {/* Map column */}
+        <Column gap={0} className="grow">
+          <Layered className="grow column">
+            <RouteMap
+              ref={mapRef}
+              waypoints={waypoints}
+              onChange={setWaypoints}
+              profile={profile}
+              onRoutedDistanceChange={setRoutedKm}
+              mode={mode}
+              onModeChange={setMode}
+              onUndoRedoChange={handleUndoRedo}
+              baseLayerId={baseLayerId}
+              showDistanceMarkers={false}
+            />
+            {/* Zoom + fit + locate */}
+
+            <Layer pin="top-left" z="controls" gap={1}>
+              <Surface pad="sm" data-map-group>
+                <Column gap={1}>
+                  <MapControlButton onClick={() => mapRef.current?.zoomIn()} aria-label="Zoom in"><Plus size={10} /></MapControlButton>
+                  <MapControlButton onClick={() => mapRef.current?.zoomOut()} aria-label="Zoom out"><Minus size={10} /></MapControlButton>
+                </Column>
+              </Surface>
+              <Surface pad="sm" data-map-group>
+                <Column gap={1}>
+                  {layerPickerOpen ? (
+                    <>
+                      {BASE_LAYERS.map(l => (
+                        <MapControlButton key={l.id} active={baseLayerId === l.id}
+                          onClick={() => { handleLayerSwitch(l.id); setLayerPickerOpen(false); }} aria-label={l.label}>
+                          {l.id === 'plain' ? <Map size={10} />
+                            : l.id === 'dark' ? <Moon size={10} />
+                              : l.id === 'topo' ? <Mountain size={10} />
+                                : <Satellite size={10} />}
+                        </MapControlButton>
+                      ))}
+                      <MapControlButton onClick={() => setLayerPickerOpen(false)} aria-label="Close"><Layers size={10} /></MapControlButton>
+                    </>
+                  ) : (
+                    <MapControlButton onClick={() => setLayerPickerOpen(true)} aria-label="Layers"><Layers size={10} /></MapControlButton>
+                  )}
+                </Column>
+              </Surface>
+            </Layer>
+            <Layer pin="top-right" z="controls" gap={1}>
+              <Surface pad="sm" data-map-group>
+                <Column gap={1}>
+                  <MapControlButton onClick={() => mapRef.current?.fitRoute()} aria-label="Fit route"><PiLineSegments size={10} /></MapControlButton>
+                  <MapControlButton onClick={() => mapRef.current?.locate()} aria-label="Locate me"><IoMdLocate size={10} /></MapControlButton>
+                </Column>
+              </Surface>
+            </Layer>
+          </Layered>
+                  
+          {/* Desktop elevation panel */}
+          <div className="desktop-only">
+            <div data-elevation-panel className="shrink-0">
+              <Button
+                variant="ghost"
+                className="block gap-1"
+                onClick={() => setElevOpen(v => !v)}
+                aria-expanded={elevOpen}
+                aria-label="Toggle elevation profile"
+              >
+                <ChevronUp size={14} className={elevOpen ? 'chevron open' : 'chevron'} />
+                <Text size="eyebrow" className="nowrap">Elevation</Text>
+                <div className="grow" data-mini-chart>
+                  <svg viewBox="0 0 400 40" preserveAspectRatio="none">
+                    <path d={`${elevD} L400,40 L0,40 Z`} fill="var(--accent)" opacity="0.12" />
+                    <path d={elevD} fill="none" stroke="var(--accent)" strokeWidth="1.5" />
+                  </svg>
+                </div>
+                <Text size="caption" color="muted" className="nowrap">
+                  {displayKm > 0 ? `+${gain}m gain · −${loss}m loss` : '—'}
+                </Text>
+              </Button>
+              {elevOpen && (
+                <div data-chart>
+                  <ChartContainer
+                    data={elevPoints}
+                    chartType="area"
+                    color="var(--accent)"
+                    height={100}
+                    axisShow={{ x: true, y: false }}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        </Column>
         {/* Sidebar: icon rail + collapsible content panel */}
         <div className={`side${sideOpen ? '' : ' collapsed'}`}>
           <div className="side-rail">
+            <Button
+              children={<ArrowSquareRight size={18}/>}/>
             {RAIL_ITEMS.map(item => (
-              <button
+              <SideRailItem
                 key={item.id}
-                className={`side-rail-item${sidePanel === item.id && sideOpen ? ' active' : ''}`}
+                id={item.id}
+                label={item.label}
+                icon={item.icon}
+                active={sidePanel === item.id && sideOpen}
                 onClick={() => handleRailClick(item.id)}
-                aria-label={item.label}
-                aria-pressed={sidePanel === item.id && sideOpen}
-              >
-                {item.icon}
-                <span>{item.label}</span>
-              </button>
+              />
             ))}
           </div>
           {sideOpen && (
@@ -239,129 +336,22 @@ export function RoutePlannerScreen() {
             </div>
           )}
         </div>
-
-        {/* Map column */}
-        <Column gap={0} className="grow">
-          <Layered className="grow column">
-            <RouteMap
-              ref={mapRef}
-              waypoints={waypoints}
-              onChange={setWaypoints}
-              profile={profile}
-              onRoutedDistanceChange={setRoutedKm}
-              mode={mode}
-              onModeChange={setMode}
-              onUndoRedoChange={handleUndoRedo}
-              baseLayerId={baseLayerId}
-              showDistanceMarkers={false}
-            />
-            {/* Zoom + fit + locate */}
-
-            <Layer pin="top-left" z="controls" gap={1}>
-              <Surface pad="sm" data-map-group>
-                <Column gap={1}>
-                  <button className="ghost sm" onClick={() => mapRef.current?.zoomIn()} aria-label="Zoom in" data-map-btn><Plus size={10} /></button>
-                  <button className="ghost sm" onClick={() => mapRef.current?.zoomOut()} aria-label="Zoom out" data-map-btn><Minus size={10} /></button>
-                </Column>
-              </Surface>
-              <Surface pad="sm" data-map-group>
-                <Column gap={1}>
-                  {layerPickerOpen ? (
-                    <>
-                      {BASE_LAYERS.map(l => (
-                        <button
-                          key={l.id}
-                          className={`ghost icon sm${baseLayerId === l.id ? ' active' : ''}`}
-                          onClick={() => { handleLayerSwitch(l.id); setLayerPickerOpen(false); }}
-                          aria-label={l.label}
-                          data-map-btn
-                        >
-                          {l.id === 'plain' ? <Map size={10} />
-                            : l.id === 'dark' ? <Moon size={10} />
-                              : l.id === 'topo' ? <Mountain size={10} />
-                                : <Satellite size={10} />}
-                        </button>
-                      ))}
-                      <button className="ghost icon sm" onClick={() => setLayerPickerOpen(false)} aria-label="Close" data-map-btn>
-                        <Layers size={10} />
-                      </button>
-                    </>
-                  ) : (
-                    <button className="ghost icon sm" onClick={() => setLayerPickerOpen(true)} aria-label="Layers" data-map-btn>
-                      <Layers size={10} />
-                    </button>
-                  )}
-                </Column>
-              </Surface>
-            </Layer>
-            <Layer pin="top-right" z="controls" gap={1}>
-              <Surface pad="sm" data-map-group>
-                <Column gap={1}>
-                  <button className="ghost icon sm" onClick={() => mapRef.current?.fitRoute()} aria-label="Fit route" data-map-btn><PiLineSegments size={10} /></button>
-                  <button className="ghost icon sm" onClick={() => mapRef.current?.locate()} aria-label="Locate me" data-map-btn><IoMdLocate size={10} /></button>
-                </Column>
-              </Surface>
-            </Layer>
-          </Layered>
-
-          {/* Desktop elevation panel */}
-          <div className="desktop-only">
-            <div data-elevation-panel className="shrink-0">
-              <Button
-                variant="ghost"
-                className="block gap-1"
-                onClick={() => setElevOpen(v => !v)}
-                aria-expanded={elevOpen}
-                aria-label="Toggle elevation profile"
-              >
-                <ChevronUp size={14} className={elevOpen ? 'chevron open' : 'chevron'} />
-                <Text size="eyebrow" className="nowrap">Elevation</Text>
-                <div className="grow" data-mini-chart>
-                  <svg viewBox="0 0 400 40" preserveAspectRatio="none">
-                    <path d={`${elevD} L400,40 L0,40 Z`} fill="var(--accent)" opacity="0.12" />
-                    <path d={elevD} fill="none" stroke="var(--accent)" strokeWidth="1.5" />
-                  </svg>
-                </div>
-                <Text size="caption" color="muted" className="nowrap">
-                  {displayKm > 0 ? `+${gain}m gain · −${loss}m loss` : '—'}
-                </Text>
-              </Button>
-              {elevOpen && (
-                <div data-chart>
-                  <ChartContainer
-                    data={elevPoints}
-                    chartType="area"
-                    color="var(--accent)"
-                    height={100}
-                    axisShow={{ x: true, y: false }}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-        </Column>
       </Row>
 
       {/* ── MOBILE BOTTOM SHEET ── */}
       <div className="bottom-sheet" data-snap={snap}>
-        <button
-          className="handle"
+        <Button variant="ghost" className="handle"
           onClick={() => setSnap(s => s === 'peek' ? 'mid' : s === 'mid' ? 'full' : 'peek')}
           aria-label="Toggle sheet"
         />
         <div className="body column grow scroll-y">
           <div className="tabs shrink-0">
             {MOBILE_TABS.map(tab => (
-              <button
-                key={tab.id}
-                className={`tab${sidePanel === tab.id ? ' active' : ''}`}
-                onClick={() => {
-                  setSidePanel(tab.id);
-                  if (snap === 'peek') setSnap('mid');
-                }}
+              <Button key={tab.id} variant="ghost" active={sidePanel === tab.id} className="tab"
+                onClick={() => { setSidePanel(tab.id); if (snap === 'peek') setSnap('mid'); }}
               >
                 {tab.label}
-              </button>
+              </Button>
             ))}
           </div>
 
@@ -453,19 +443,16 @@ function PlanPanel({
       <Text size="eyebrow">Activity</Text>
       <Grid cols={4}>
         {ACTIVITIES.map(a => {
-          const Icon = ACTIVITY_ICON_MAP[a.id];
+          const ActivityIcon = ACTIVITY_ICON_MAP[a.id];
           return (
-            <button
+            <ActivityChip
               key={a.id}
-              data-id={a.id}
-              className={`activity-chip column gap-1 align-center${activity === a.id ? ' active' : ''}`}
+              id={a.id}
+              label={a.label}
+              dot={<span data-id={a.id} className="activity-dot"><ActivityIcon size={10} /></span>}
+              active={activity === a.id}
               onClick={() => setActivity(a.id)}
-            >
-              <span data-id={a.id} className="activity-dot">
-                <Icon size={10} />
-              </span>
-              <Text size="caption">{a.label}</Text>
-            </button>
+            />
           );
         })}
       </Grid>
@@ -541,14 +528,13 @@ function PlanPanel({
       />
       <Cluster className="gap-1">
         {PACE_PRESETS.map(p => (
-          <button
-            key={p}
-            className={`sm column pad-sm${pacePreset === p ? ' active' : ''}`}
-            onClick={() => handlePacePreset(p)}
-          >
-            <span>{p.charAt(0).toUpperCase() + p.slice(1)}</span>
-            <span className="caption faint">{formatPace(paceForPreset(p))}</span>
-          </button>
+          <Button key={p} variant="ghost" size="sm" active={pacePreset === p} className="pad-sm"
+            onClick={() => handlePacePreset(p)}>
+            <Column gap={0} align="center">
+              <Text>{p.charAt(0).toUpperCase() + p.slice(1)}</Text>
+              <Text size="caption" color="faint">{formatPace(paceForPreset(p))}</Text>
+            </Column>
+          </Button>
         ))}
       </Cluster>
 
@@ -719,11 +705,8 @@ function SavedPanel({ profileFilteredRoutes, handleLoadSavedRoute, navigate }: S
         <Text size="caption" color="faint">No saved routes for this activity.</Text>
       ) : (
         profileFilteredRoutes.map(route => (
-          <button
-            key={route.id}
-            className="surface pad-sm flat interactive"
-            onClick={() => handleLoadSavedRoute(route)}
-          >
+          <Surface key={route.id} as="button" variant="flat" pad="sm" interactive
+            onClick={() => handleLoadSavedRoute(route)}>
             <Row align="center" gap={1}>
             <span className={`dot ${route.profile === 'bike' ? 'cycle' : 'run'}`} />
             <Column gap={1} className="grow">
@@ -732,7 +715,7 @@ function SavedPanel({ profileFilteredRoutes, handleLoadSavedRoute, navigate }: S
             </Column>
             <ChevronRight size={12} className="faint" />
             </Row>
-          </button>
+          </Surface>
         ))
       )}
       <Button

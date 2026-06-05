@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 type SurfaceVariant = 'default' | 'plain' | 'flat' | 'accent' | 'ghost';
 type SurfacePad = 'md' | 'sm' | 'none';
-type SurfaceAs = 'div' | 'section' | 'article' | 'aside' | 'nav' | 'header' | 'footer' | 'main';
+type SurfaceAs = 'div' | 'section' | 'article' | 'aside' | 'nav' | 'header' | 'footer' | 'main' | 'button';
 
 interface SurfaceProps {
   variant?: SurfaceVariant;
