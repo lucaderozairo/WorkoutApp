@@ -9,6 +9,28 @@
      lift   → --c-strength  (#e8785a)   aliased as --color-lift
    Default border uses --accent for unknown sport values.
 */
+/* ── Day circle (week-view date header) ── */
+.day-circle {
+  width: var(--s-6);
+  height: var(--s-6);
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+}
+
+/* ── Time-slot grid row ── */
+.time-slot-grid {
+  margin-top: var(--s-2);
+}
+
+/* ── Dashed outline button modifier ── */
+.dashed {
+  border-style: dashed;
+}
+
 .schedule-event-block {
   border-radius: var(--r-sm);
   padding: var(--s-2) var(--s-3);

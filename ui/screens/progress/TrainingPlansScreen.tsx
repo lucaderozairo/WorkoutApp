@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Grid, Row, Column, Cluster } from '@ui/layout';
 import { ProgressBar, Chip, Surface, Text } from '@ui/atoms';
 import { Badge, Button, Input } from '@ui/molecules';
+import { ScheduleEventBlock } from '@ui/components/training-plans/ScheduleEventBlock';
 import { useCommand } from '@ui/bindings';
 import { handleCreatePlan } from '@features/training_plans';
 import type { TrainingPlan, PlanAdherence } from '@features/training_plans';
@@ -88,57 +89,33 @@ function WeekView({ anchor, workoutCalendar }: { anchor: Date; workoutCalendar: 
     return {};
   };
 
-  const gridStyle: React.CSSProperties = {
-    display: 'grid',
-    gridTemplateColumns: '40px repeat(7, 1fr)',
-    gap: 2,
-  };
-
-  const eventBlockStyle = (sport: SportType): React.CSSProperties => ({
-    background: 'var(--accent-soft)',
-    borderRadius: 4,
-    padding: '4px 6px',
-    fontSize: 10,
-    fontWeight: 500,
-    color: 'var(--accent)',
-    borderLeft: `2px solid var(--accent)`,
-  });
-
-  const circleBase: React.CSSProperties = {
-    width: 28, height: 28,
-    borderRadius: 'var(--r-sm)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontFamily: 'var(--font-mono)',
-    fontSize: 'var(--t-xs)',
-  };
-
   return (
     <Surface>
       <Column gap={1}>
       {/* Day headers */}
-      <div style={gridStyle}>
+      <Grid cols="40px repeat(7, 1fr)" gap={1}>
         <span />
         {days.map((d, i) => (
-          <div key={i} className="column gap-1" style={{ alignItems: 'center', gap: 2 }}>
-            <span className="mono" style={{ fontSize: 9, color: 'var(--ink-faint)' }}>{DOW_SHORT[i]}</span>
-            <span style={{ ...circleBase, ...dayCircleStyle(d, i) }}>{d.getDate()}</span>
-          </div>
+          <Column key={i} gap={1} align="center">
+            <Text mono size="caption" color="faint">{DOW_SHORT[i]}</Text>
+            <span className="day-circle" style={dayCircleStyle(d, i)}>{d.getDate()}</span>
+          </Column>
         ))}
-      </div>
+      </Grid>
 
       {/* Time slots */}
       {eventsByDow.size === 0 ? (
-        <p className="caption muted" style={{ marginTop: 'var(--s-2)' }}>No scheduled events this week.</p>
+        <Text as="p" size="caption" color="muted">No scheduled events this week.</Text>
       ) : (
-        <div style={{ ...gridStyle, marginTop: 'var(--s-2)' }}>
-          <span className="mono" style={{ fontSize: 9, color: 'var(--ink-faint)', paddingTop: 4 }}>18:00</span>
+        <Grid cols="40px repeat(7, 1fr)" gap={1} className="time-slot-grid">
+          <Text mono size="caption" color="faint">18:00</Text>
           {days.map((_, i) => {
             const sport = eventsByDow.get(i);
             return sport
-              ? <div key={i} style={eventBlockStyle(sport)}>{SPORT_TITLE[sport]}</div>
+              ? <ScheduleEventBlock key={i} sport={sport} title={SPORT_TITLE[sport] ?? sport} subtitle="" />
               : <span key={i} />;
           })}
-        </div>
+        </Grid>
       )}
       </Column>
     </Surface>
@@ -168,20 +145,17 @@ function DayView({ anchor, workoutCalendar }: { anchor: Date; workoutCalendar: R
           <Column gap={1}>
             <Text size="eyebrow">18:00</Text>
             {sports.map((sport, i) => (
-              <div key={i} style={{
-                background: 'var(--accent-soft)',
-                borderRadius: 'var(--r-sm)',
-                padding: 'var(--s-3)',
-                borderLeft: '3px solid var(--accent)',
-              }}>
-                <span style={{ fontWeight: 600, fontSize: 'var(--t-sm)', display: 'block' }}>{SPORT_TITLE[sport]}</span>
-                <span className="muted" style={{ display: 'block', fontSize: 'var(--t-xs)' }}>{SPORT_LABEL[sport]} · ~55 min est.</span>
-              </div>
+              <ScheduleEventBlock
+                key={i}
+                sport={sport}
+                title={SPORT_TITLE[sport] ?? sport}
+                subtitle={`${SPORT_LABEL[sport] ?? sport} · ~55 min est.`}
+              />
             ))}
           </Column>
         )}
 
-        <Button variant="ghost" style={{ width: '100%', borderStyle: 'dashed' }}>+ Add event</Button>
+        <Button variant="ghost" block className="dashed">+ Add event</Button>
       </Column>
     </Surface>
   );
