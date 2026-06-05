@@ -9,6 +9,7 @@ interface TextProps {
   mono?: boolean;
   bold?: boolean;
   truncate?: boolean;
+  nowrap?: boolean;
   as?: ElementType;
   className?: string;
   children: ReactNode;
@@ -35,6 +36,7 @@ export function Text({
   mono = false,
   bold = false,
   truncate = false,
+  nowrap = false,
   as: Tag = 'span',
   className,
   children,
@@ -45,6 +47,7 @@ export function Text({
     mono     ? 'mono'     : '',
     bold     ? 'bold'     : '',
     truncate ? 'truncate' : '',
+    nowrap   ? 'nowrap'   : '',
     className,
   ].filter(Boolean).join(' ');
 
