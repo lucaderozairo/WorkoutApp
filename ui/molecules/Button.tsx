@@ -3,7 +3,7 @@ import { Spinner } from '../atoms/Spinner';
 import { Icon } from '../atoms/Icon';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'destructive';
-type Size = 'sm' | 'md' | 'lg' | 'icon';
+type Size = 'sm' | 'md' | 'lg' | 'icon' | 'icon-sm';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
@@ -13,6 +13,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
   success?: boolean;
   block?: boolean;
+  active?: boolean;
   children?: ReactNode;
 }
 
@@ -24,10 +25,11 @@ const VARIANT_CLASS: Record<Variant, string> = {
 };
 
 const SIZE_CLASS: Record<Size, string> = {
-  sm:   'sm',
-  md:   '',
-  lg:   'lg',
-  icon: 'icon',
+  sm:      'sm',
+  md:      '',
+  lg:      'lg',
+  icon:    'icon',
+  'icon-sm': 'icon sm',
 };
 
 export function Button({
@@ -38,6 +40,7 @@ export function Button({
   loading = false,
   success = false,
   block = false,
+  active = false,
   disabled,
   className,
   children,
@@ -47,6 +50,7 @@ export function Button({
     VARIANT_CLASS[variant],
     SIZE_CLASS[size],
     block ? 'block' : '',
+    active ? 'active' : '',
     className,
   ].filter(Boolean).join(' ');
 
