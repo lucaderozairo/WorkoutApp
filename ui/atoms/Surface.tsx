@@ -11,6 +11,8 @@ interface SurfaceProps {
   selected?: boolean;
   as?: SurfaceAs;
   role?: string;
+  'aria-expanded'?: boolean | 'true' | 'false';
+  'aria-label'?: string;
   className?: string;
   children: ReactNode;
   onClick?: () => void;
@@ -37,6 +39,8 @@ export function Surface({
   selected = false,
   as: Tag = 'div',
   role,
+  'aria-expanded': ariaExpanded,
+  'aria-label': ariaLabel,
   className,
   children,
   onClick,
@@ -51,7 +55,13 @@ export function Surface({
   ].filter(Boolean).join(' ');
 
   return (
-    <Tag className={classes} role={role} onClick={onClick}>
+    <Tag
+      className={classes}
+      role={role}
+      aria-expanded={ariaExpanded}
+      aria-label={ariaLabel}
+      onClick={onClick}
+    >
       {children}
     </Tag>
   );

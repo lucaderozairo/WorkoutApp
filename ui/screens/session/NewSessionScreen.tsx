@@ -7,6 +7,7 @@ import {
 } from './useNewSession';
 import { Plus, X } from 'lucide-react';
 import { ScreenHeader, Button, Input } from '@ui/molecules';
+import { Surface, Text } from '@ui/atoms';
 import { Grid, Row, Column, Cluster } from '@ui/layout';
 
 
@@ -17,13 +18,13 @@ function ActivityButton({ sport, selected, onSelect }: {
 }) {
   const { label, Icon } = ACTIVITY_ICONS[sport];
   return (
-    <button
-      className={`column align-center surface card${selected === sport ? ' active' : ''}`}
-      onClick={() => onSelect(sport)}
-    >
-      <Icon size={22} />
-      <span className="caption">{label}</span>
-    </button>
+    <Surface as="button" selected={selected === sport} interactive className="card"
+      onClick={() => onSelect(sport)}>
+      <Column align="center">
+        <Icon size={22} />
+        <Text size="caption">{label}</Text>
+      </Column>
+    </Surface>
   );
 }
 
@@ -54,14 +55,13 @@ export function NewSessionScreen() {
         {PINNED_ACTIVITIES.map(sport => (
           <ActivityButton key={sport} sport={sport} selected={selected} onSelect={setSelected} />
         ))}
-        <button
-          className={`column surface card gap-1 align-center${showMore ? ' active' : ''}`}
-          onClick={() => setShowMore(v => !v)}
-          aria-expanded={showMore}
-        >
-          <h2>{showMore ? <X /> : <Plus />}</h2>
-          <span className="caption">More</span>
-        </button>
+        <Surface as="button" selected={showMore} interactive className="card"
+          onClick={() => setShowMore(v => !v)} aria-expanded={showMore}>
+          <Column gap={1} align="center">
+            {showMore ? <X /> : <Plus />}
+            <Text size="caption">More</Text>
+          </Column>
+        </Surface>
       </Row>
 
       {/* Expandable "More" grid */}
@@ -69,7 +69,7 @@ export function NewSessionScreen() {
         <Column gap={1}>
           {MORE_CATEGORIES.map(cat => (
             <Column key={cat.label} gap={1}>
-              <p className="eyebrow">{cat.label}</p>
+              <Text as="p" size="eyebrow">{cat.label}</Text>
               <Cluster gap={1}>
                 {cat.sports.map(sport => (
                   <ActivityButton key={sport} sport={sport} selected={selected} onSelect={sport => { setSelected(sport); setShowMore(false); }} />
@@ -97,17 +97,13 @@ export function NewSessionScreen() {
           {showTemplates && (
             <Column gap={1}>
               {savedTemplates.map(t => (
-                <button
-                  key={t.id}
-                  type="button"
-                  className={`surface pad-sm interactive${pendingTemplate?.id === t.id ? ' active' : ''}`}
-                  onClick={() => { handleLoadTemplate(t); setShowTemplates(false); }}
-                >
+                <Surface key={t.id} as="button" pad="sm" selected={pendingTemplate?.id === t.id} interactive
+                  onClick={() => { handleLoadTemplate(t); setShowTemplates(false); }}>
                   <Row justify="between" align="center">
-                    <span className="detail">{t.name}</span>
-                    <span className="caption">{t.exercises.length} exercises</span>
+                    <Text size="detail">{t.name}</Text>
+                    <Text size="caption">{t.exercises.length} exercises</Text>
                   </Row>
-                </button>
+                </Surface>
               ))}
             </Column>
           )}

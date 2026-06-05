@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { Grid, Column , Row } from '@ui/layout';
+import { Surface, Text } from '@ui/atoms';
 import { Navigate } from 'react-router-dom';
 
 import { SessionFilterBar } from '@ui/components/log/SessionFilterBar';
@@ -66,14 +67,14 @@ export function LogScreen() {
           />
 
           {activeSession && (
-            <button className="surface interactive" onClick={() => navigate(`/sessions/${activeSession.id}`)}>
+            <Surface as="button" interactive onClick={() => navigate(`/sessions/${activeSession.id}`)}>
               <Row justify="between" align="center">
-              <Column gap={1} align="start">
-                <span className="detail">{activeSession.name}</span>
-                <span className="caption">{activeSession.startedAt ? `${new Date(activeSession.startedAt).toLocaleDateString()} — tap to continue` : 'Not started — tap to continue'}</span>
-              </Column>
+                <Column gap={1} align="start">
+                  <Text size="detail">{activeSession.name}</Text>
+                  <Text size="caption">{activeSession.startedAt ? `${new Date(activeSession.startedAt).toLocaleDateString()} — tap to continue` : 'Not started — tap to continue'}</Text>
+                </Column>
               </Row>
-            </button>
+            </Surface>
           )}
 
           <SessionFilterBar filters={sessionFilters} onChange={setSessionFilters} />
@@ -118,10 +119,10 @@ export function LogScreen() {
 
           {sessionFilters.view === 'list' && (
             filteredSessions.length === 0
-              ? <p className="caption">No sessions found</p>
+              ? <Text as="p" size="caption">No sessions found</Text>
               : sessionsByYear.map(({ year, entries }) => (
                   <Column key={year}>
-                    <p className="eyebrow">{year}</p>
+                    <Text as="p" size="eyebrow">{year}</Text>
                     {entries.map(entry =>
                       entry.kind === 'strength'
                         ? <StrengthSessionItem
