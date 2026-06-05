@@ -340,6 +340,7 @@ export function RoutePlannerScreen() {
       </Row>
 
       {/* ── MOBILE BOTTOM SHEET ── */}
+      {/* bottom-sheet: raw div retained — data-snap drives CSS snap behavior, pending grid-first refactor */}
       <div className="bottom-sheet" data-snap={snap}>
         <Button variant="ghost" className="handle"
           onClick={() => setSnap(s => s === 'peek' ? 'mid' : s === 'mid' ? 'full' : 'peek')}
