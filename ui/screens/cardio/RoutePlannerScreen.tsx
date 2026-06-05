@@ -98,7 +98,7 @@ export function RoutePlannerScreen() {
     <Surface variant="ghost" className="pad-sm grow gap-0 column clip full-bleed">
 
       {/* ── DESKTOP TOP TOOLBAR ── */}
-      <div className="desktop-only">
+      <Row className="desktop-only">
         <Surface pad="sm">
           <Row align="center" gap={1} className="shrink-0">
           {(['select', 'add', 'split', 'delete'] as EditMode[]).map(m => (
@@ -116,10 +116,10 @@ export function RoutePlannerScreen() {
                     : <Trash2 size={14} />}
             </Button>
           ))}
-          <Button variant="ghost" size="icon" className="sm" disabled={undoCount === 0} onClick={() => mapRef.current?.undo()} aria-label="Undo">
+          <Button variant="ghost" size="icon-sm" disabled={undoCount === 0} onClick={() => mapRef.current?.undo()} aria-label="Undo">
             <RotateCcw size={14} />
           </Button>
-          <Button variant="ghost" size="icon" className="sm" disabled={redoCount === 0} onClick={() => mapRef.current?.redo()} aria-label="Redo">
+          <Button variant="ghost" size="icon-sm" disabled={redoCount === 0} onClick={() => mapRef.current?.redo()} aria-label="Redo">
             <RotateCw size={14} />
           </Button>
           <Row align="center" gap={1} className="grow">
@@ -145,15 +145,15 @@ export function RoutePlannerScreen() {
           </Button>
           </Row>
         </Surface>
-      </div>
+      </Row>
 
       {/* ── MOBILE HEADER ── */}
-      <div className="mobile-only column gap-1">
+      <Column gap={1} className="mobile-only">
         <ScreenHeader
           title="Route Planner"
           back={handleBack}
           primary={
-            <Button variant="ghost" size="icon" className="sm" disabled={undoCount === 0} onClick={() => mapRef.current?.undo()} aria-label="Undo">
+            <Button variant="ghost" size="icon-sm" disabled={undoCount === 0} onClick={() => mapRef.current?.undo()} aria-label="Undo">
               <RotateCcw size={16} />
             </Button>
           }
@@ -174,7 +174,7 @@ export function RoutePlannerScreen() {
             </Button>
           ))}
         </Row>
-      </div>
+      </Column>
 
       {/* ── TWO-PANE AREA ── */}
       <Row className="gap-0 grow clip">
@@ -237,29 +237,30 @@ export function RoutePlannerScreen() {
           </Layered>
                   
           {/* Desktop elevation panel */}
-          <div className="desktop-only">
-            <div data-elevation-panel className="shrink-0">
+          <Row className="desktop-only">
+            <Column className="shrink-0" data-elevation-panel>
               <Button
                 variant="ghost"
-                className="block gap-1"
+                block
+                className="gap-1"
                 onClick={() => setElevOpen(v => !v)}
                 aria-expanded={elevOpen}
                 aria-label="Toggle elevation profile"
               >
                 <ChevronUp size={14} className={elevOpen ? 'chevron open' : 'chevron'} />
-                <Text size="eyebrow" className="nowrap">Elevation</Text>
-                <div className="grow" data-mini-chart>
+                <Text size="eyebrow" nowrap>Elevation</Text>
+                <Column className="grow" data-mini-chart>
                   <svg viewBox="0 0 400 40" preserveAspectRatio="none">
                     <path d={`${elevD} L400,40 L0,40 Z`} fill="var(--accent)" opacity="0.12" />
                     <path d={elevD} fill="none" stroke="var(--accent)" strokeWidth="1.5" />
                   </svg>
-                </div>
-                <Text size="caption" color="muted" className="nowrap">
+                </Column>
+                <Text size="caption" color="muted" nowrap>
                   {displayKm > 0 ? `+${gain}m gain · −${loss}m loss` : '—'}
                 </Text>
               </Button>
               {elevOpen && (
-                <div data-chart>
+                <Column data-chart>
                   <ChartContainer
                     data={elevPoints}
                     chartType="area"
@@ -267,14 +268,14 @@ export function RoutePlannerScreen() {
                     height={100}
                     axisShow={{ x: true, y: false }}
                   />
-                </div>
+                </Column>
               )}
-            </div>
-          </div>
+            </Column>
+          </Row>
         </Column>
         {/* Sidebar: icon rail + collapsible content panel */}
-        <div className={`side${sideOpen ? '' : ' collapsed'}`}>
-          <div className="side-rail">
+        <Row className={`side${sideOpen ? '' : ' collapsed'}`}>
+          <Column className="side-rail">
             <Button
               children={<ArrowSquareRight size={18}/>}/>
             {RAIL_ITEMS.map(item => (
@@ -287,12 +288,12 @@ export function RoutePlannerScreen() {
                 onClick={() => handleRailClick(item.id)}
               />
             ))}
-          </div>
+          </Column>
           {sideOpen && (
-            <div className="side-content column gap-1">
+            <Column gap={1} className="side-content">
               <Row align="center" justify="between">
                 <Text size="eyebrow">{panelSubtitle}</Text>
-                <Button variant="ghost" size="icon" className="sm" onClick={() => setSideOpen(false)} aria-label="Collapse sidebar">
+                <Button variant="ghost" size="icon-sm" onClick={() => setSideOpen(false)} aria-label="Collapse sidebar">
                   <ChevronLeft size={16} />
                 </Button>
               </Row>
@@ -333,9 +334,9 @@ export function RoutePlannerScreen() {
                 handleLoadSavedRoute={handleLoadSavedRoute}
                 navigate={navigate}
               />}
-            </div>
+            </Column>
           )}
-        </div>
+        </Row>
       </Row>
 
       {/* ── MOBILE BOTTOM SHEET ── */}
@@ -344,8 +345,8 @@ export function RoutePlannerScreen() {
           onClick={() => setSnap(s => s === 'peek' ? 'mid' : s === 'mid' ? 'full' : 'peek')}
           aria-label="Toggle sheet"
         />
-        <div className="body column grow scroll-y">
-          <div className="tabs shrink-0">
+        <Column className="grow scroll-y">
+          <Row className="tabs shrink-0">
             {MOBILE_TABS.map(tab => (
               <Button key={tab.id} variant="ghost" active={sidePanel === tab.id} className="tab"
                 onClick={() => { setSidePanel(tab.id); if (snap === 'peek') setSnap('mid'); }}
@@ -353,7 +354,7 @@ export function RoutePlannerScreen() {
                 {tab.label}
               </Button>
             ))}
-          </div>
+          </Row>
 
           {isStandalone && (
             <Input
@@ -402,7 +403,7 @@ export function RoutePlannerScreen() {
             handleLoadSavedRoute={handleLoadSavedRoute}
             navigate={navigate}
           />}
-        </div>
+        </Column>
       </div>
     </Surface>
   );
@@ -455,7 +456,7 @@ function PlanPanel({
           );
         })}
       </Grid>
-      <Button variant="ghost" size="sm" className="block" disabled aria-label="More activities coming soon">
+      <Button variant="ghost" size="sm" block disabled aria-label="More activities coming soon">
         <Row gap={1} align="center" justify="center">
           <Plus size={12} />
           <span>Other activity</span>
@@ -590,8 +591,7 @@ function PinsPanel({ waypoints, handleDeleteWaypoint, segmentDistances }: PinsPa
             </Column>
             <Button
               variant="ghost"
-              size="icon"
-              className="sm"
+              size="icon-sm"
               onClick={() => handleDeleteWaypoint(idx)}
               aria-label="Remove waypoint"
             >
@@ -618,10 +618,10 @@ function StatsPanel({ surfaceMix, displayKm, gain, loss, waypoints, timeStr }: S
     <Column gap={1}>
 
       <Text size="eyebrow">Surface Mix</Text>
-      <div className="surface-mix-bar">
+      <Row className="surface-mix-bar">
         {SURFACES.map(s =>
           surfaceMix[s.key] > 0 ? (
-            <div
+            <span
               key={s.key}
               className="surface-mix-segment"
               data-surface={s.key}
@@ -630,7 +630,7 @@ function StatsPanel({ surfaceMix, displayKm, gain, loss, waypoints, timeStr }: S
             />
           ) : null
         )}
-      </div>
+      </Row>
       <Cluster className="gap-1">
         {SURFACES.filter(s => surfaceMix[s.key] > 0).map(s => (
           <Row key={s.key} align="center" gap={1}>
