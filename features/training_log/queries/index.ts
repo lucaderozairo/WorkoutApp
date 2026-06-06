@@ -8,18 +8,18 @@ import type {
 } from '../projections';
 
 export function getActiveSession(): ActivityView | null {
-  const state = viewStore.get<ActivitiesState>('sessions');
+  const state = viewStore.get('sessions');
   if (!state?.activeId) return null;
   return state.byId[state.activeId] ?? null;
 }
 
 export function getActivity(activityId: Id<'Activity'>): ActivityView | undefined {
-  const state = viewStore.get<ActivitiesState>('sessions');
+  const state = viewStore.get('sessions');
   return state?.byId[activityId];
 }
 
 export function getActivityHistory(): ActivityHistoryItem[] {
-  const state = viewStore.get<ActivitiesState>('sessions');
+  const state = viewStore.get('sessions');
   if (!state) return [];
   return Object.values(state.byId)
     .filter(a => a.status === 'finished' && a.startedAt != null)
@@ -53,7 +53,7 @@ function deriveHistoryItem(a: ActivityView): ActivityHistoryItem {
 }
 
 export function getRecentExercises(limit?: number): RecentExercise[] {
-  const all = viewStore.get<RecentExercise[]>('recent_exercises') ?? [];
+  const all = viewStore.get('recent_exercises') ?? [];
   return typeof limit === 'number' ? all.slice(0, limit) : all;
 }
 

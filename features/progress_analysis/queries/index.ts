@@ -23,7 +23,7 @@ export interface ActivityFeedEntry {
 }
 
 export function getPersonalRecords(): PersonalRecord[] {
-  return viewStore.get<PersonalRecord[]>('personal_records') ?? [];
+  return viewStore.get('personal_records') ?? [];
 }
 
 export function getStatsSummary(): StatsSummary {
@@ -79,6 +79,6 @@ export function getActivityFeed(): ActivityFeedEntry[] {
 }
 
 export function getAnnotations(exerciseName: string): ChartAnnotation[] {
-  const all = viewStore.get<Record<string, ChartAnnotation[]>>('chart_annotations') ?? {};
+  const all = viewStore.get('chart_annotations') ?? {};
   return all[exerciseName] ?? [];
 }
