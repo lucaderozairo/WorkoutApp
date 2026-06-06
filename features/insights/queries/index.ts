@@ -3,7 +3,7 @@ import type { Insight } from '../domain/types';
 import type { Id } from '@shared/types';
 
 export function getInsights(): Insight[] {
-  return viewStore.get<Insight[]>('insights') ?? [];
+  return viewStore.get('insights') ?? [];
 }
 
 export function getInsightsForSport(sport: string): Insight[] {
