@@ -1,6 +1,6 @@
 import { eventBus } from '@core/events/bus';
 import { viewStore } from '@data/projections/views';
-import type { DomainEvent } from '@shared/types';
+import { CardioEvents } from '@features/cardio/contract';
 import type { Equipment, EquipmentMileageUpdatedPayload } from '../domain/body';
 import { ProfileEvents } from '../contract';
 
@@ -10,9 +10,7 @@ export function registerEquipmentMileagePolicy(): void {
   if (registered) return;
   registered = true;
 
-  eventBus.subscribe<
-    DomainEvent<'CardioSessionRecorded', { distanceMeters: number }>
-  >('CardioSessionRecorded', async (event) => {
+  eventBus.subscribe(CardioEvents.CardioSessionRecorded, async (event) => {
     const deltaKm = (event.payload.distanceMeters ?? 0) / 1000;
     if (deltaKm <= 0) return;
 

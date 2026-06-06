@@ -1,7 +1,9 @@
 import { eventBus } from '@core/events/bus';
 import { viewStore } from '@data/projections/views';
-import type { DomainEvent } from '@shared/types';
-import type { SessionFinishedPayload, SetEntry } from '@features/training_log/contract';
+import { TrainingLogEvents } from '@features/training_log/contract';
+import type { SetEntry } from '@features/training_log/contract';
+import { CardioEvents } from '@features/cardio/contract';
+import { ProfileEvents } from '@features/profile/contract';
 import type { Goal, GoalMetric } from '../domain/types';
 import { handleUpdateGoalProgress } from '../commands/handlers';
 
@@ -20,7 +22,7 @@ export function registerGoalUpdatePolicy(): void {
   if (registered) return;
   registered = true;
 
-  eventBus.subscribe<DomainEvent<'SessionFinished', SessionFinishedPayload>>('SessionFinished', async (event) => {
+  eventBus.subscribe(TrainingLogEvents.SessionFinished, async (event) => {
     const summaries = event.payload.exerciseSummaries;
 
     for (const goal of goalsForMetric('sessions')) {
@@ -52,9 +54,7 @@ export function registerGoalUpdatePolicy(): void {
     }
   });
 
-  eventBus.subscribe<
-    DomainEvent<'CardioSessionRecorded', { distanceMeters: number }>
-  >('CardioSessionRecorded', async (event) => {
+  eventBus.subscribe(CardioEvents.CardioSessionRecorded, async (event) => {
     const distanceKm = (event.payload.distanceMeters ?? 0) / 1000;
     for (const goal of goalsForMetric('sessions')) {
       await handleUpdateGoalProgress({ type: 'UpdateGoalProgress', goalId: goal.id, delta: 1 });
@@ -66,7 +66,7 @@ export function registerGoalUpdatePolicy(): void {
     }
   });
 
-  eventBus.subscribe<DomainEvent<'BodyweightLogged', { weightKg: number }>>('BodyweightLogged', async (event) => {
+  eventBus.subscribe(ProfileEvents.BodyweightLogged, async (event) => {
     const currentWeight = event.payload.weightKg;
     for (const goal of goalsForMetric('bodyweight_kg')) {
       await handleUpdateGoalProgress({
