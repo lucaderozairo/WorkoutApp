@@ -1,6 +1,5 @@
 import type { Result } from '@shared/types';
 import { ok, err } from '@shared/types';
-import { TrainingLogEvents } from '../contract';
 import type {
   StartSession,
   AddBlock,
@@ -34,11 +33,9 @@ import type {
 import type { ActivityView, ActivitiesState } from '../projections';
 import { cryptoIdGenerator } from '@core/id-generator';
 import { systemClock } from '@core/clock';
-import { eventBus } from '@core/events/bus';
-import { AggregateRepository } from '@data/repositories';
+import { eventRepository } from '@data/event-repository';
 import { projectionRegistry } from '@data/projections/builders';
 import { viewStore } from '@data/projections/views';
-import { trainingLogReducers, initialActivityLogState } from '../domain/reducers';
 import {
   sessionProjection,
   recentExercisesProjection,
@@ -49,10 +46,6 @@ import {
 projectionRegistry.register('sessions', sessionProjection);
 projectionRegistry.register('recent_exercises', recentExercisesProjection);
 
-const repository = new AggregateRepository(
-  initialActivityLogState,
-  trainingLogReducers
-);
 
 export function applyAll(events: TrainingLogEvent[]): void {
   events.forEach(e => {
@@ -84,7 +77,7 @@ export async function handleStartSession(cmd: StartSession): Promise<Result<{ se
     },
   }];
 
-  await repository.save(events);
+  await eventRepository.commit(events);
   applyAll(events);
   return ok({ sessionId });
 }
@@ -114,7 +107,7 @@ export async function handleAddBlock(cmd: AddBlock): Promise<Result<void, string
     },
   }];
 
-  await repository.save(events);
+  await eventRepository.commit(events);
   applyAll(events);
   return ok(undefined);
 }
@@ -148,7 +141,7 @@ export async function handleLogStrengthSet(cmd: LogStrengthSet): Promise<Result<
     },
   }];
 
-  await repository.save(events);
+  await eventRepository.commit(events);
   applyAll(events);
   return ok(undefined);
 }
@@ -182,7 +175,7 @@ export async function handleLogCardioSet(cmd: LogCardioSet): Promise<Result<void
     },
   }];
 
-  await repository.save(events);
+  await eventRepository.commit(events);
   applyAll(events);
   return ok(undefined);
 }
@@ -222,20 +215,10 @@ export async function handleFinishSession(cmd: FinishSession): Promise<Result<vo
     payload: enrichedPayload,
   }];
 
-  await repository.save(events);
+  await eventRepository.commit(events);
   // sessionProjection.SessionFinished marks status='finished', sets finishedAt, rpe, tags
   // session_history is derived at query time from sessions.byId — no manual push needed
   applyAll(events);
-
-  // Notify other features via event bus with enriched payload
-  await eventBus.publish({
-    type: TrainingLogEvents.SessionFinished,
-    aggregateId: cmd.sessionId,
-    aggregateType: 'Session',
-    timestamp: finishedAt,
-    version: 1,
-    payload: enrichedPayload,
-  });
 
   return ok(undefined);
 }
@@ -250,7 +233,7 @@ export async function handleDeleteSession(cmd: DeleteSession): Promise<Result<vo
     payload: { sessionId: cmd.sessionId },
   }];
 
-  await repository.save(events);
+  await eventRepository.commit(events);
   // sessionProjection.SessionDeleted removes from byId — getSessionHistory() auto-excludes it
   applyAll(events);
   return ok(undefined);
@@ -266,7 +249,7 @@ export async function handleUpdateBlockNote(cmd: UpdateBlockNote): Promise<Resul
     payload: { sessionId: cmd.sessionId, blockId: cmd.blockId, notes: cmd.notes },
   }];
 
-  await repository.save(events);
+  await eventRepository.commit(events);
   applyAll(events);
   return ok(undefined);
 }
@@ -281,7 +264,7 @@ export async function handleChangeSetType(cmd: ChangeSetType): Promise<Result<vo
     payload: { sessionId: cmd.sessionId, blockId: cmd.blockId, setNumber: cmd.setNumber, setType: cmd.setType },
   }];
 
-  await repository.save(events);
+  await eventRepository.commit(events);
   applyAll(events);
   return ok(undefined);
 }
@@ -298,7 +281,7 @@ export async function handleLogRPE(cmd: LogRPE): Promise<Result<void, string>> {
     payload: { sessionId: cmd.sessionId, blockId: cmd.blockId, setNumber: cmd.setNumber, rpe: cmd.rpe },
   }];
 
-  await repository.save(events);
+  await eventRepository.commit(events);
   applyAll(events);
   return ok(undefined);
 }
@@ -313,7 +296,7 @@ export async function handleToggleSetFailed(cmd: ToggleSetFailed): Promise<Resul
     payload: { sessionId: cmd.sessionId, blockId: cmd.blockId, setNumber: cmd.setNumber, failed: cmd.failed },
   }];
 
-  await repository.save(events);
+  await eventRepository.commit(events);
   applyAll(events);
   return ok(undefined);
 }
@@ -328,7 +311,7 @@ export async function handleSetBlockType(cmd: SetBlockType): Promise<Result<void
     payload: { sessionId: cmd.sessionId, blockId: cmd.blockId, blockType: cmd.blockType },
   }];
 
-  await repository.save(events);
+  await eventRepository.commit(events);
   applyAll(events);
   return ok(undefined);
 }
@@ -345,13 +328,13 @@ export async function handleSetBlockRounds(cmd: SetBlockRounds): Promise<Result<
     payload: { sessionId: cmd.sessionId, blockId: cmd.blockId, rounds: cmd.rounds },
   }];
 
-  await repository.save(events);
+  await eventRepository.commit(events);
   applyAll(events);
   return ok(undefined);
 }
 
 async function commit(events: TrainingLogEvent[]): Promise<Result<void, string>> {
-  await repository.save(events);
+  await eventRepository.commit(events);
   applyAll(events);
   return ok(undefined);
 }
