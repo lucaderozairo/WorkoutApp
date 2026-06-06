@@ -3,7 +3,7 @@ import type { Id } from '@shared/types';
 import type { Habit } from '../domain/types';
 
 export function getHabitsToday(): Habit[] {
-  return viewStore.get<Habit[]>('habits_today') ?? [];
+  return viewStore.get('habits_today') ?? [];
 }
 
 export function getHabitById(habitId: Id<'Habit'>): Habit | undefined {
