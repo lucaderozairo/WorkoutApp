@@ -1,9 +1,8 @@
-import { eventBus } from '@core/events/bus';
+import { eventRepository } from '@data/event-repository';
 import { systemClock } from '@core/clock';
 import { generateId } from '@shared/utils';
 import { viewStore } from '@data/projections/views';
 import type { Id } from '@shared/types';
-import { GoalsEvents } from '../contract';
 import type {
   Goal,
   CreateGoal,
@@ -16,15 +15,15 @@ import type {
   GoalDeletedPayload,
 } from '../domain/types';
 
-function publishGoalEvent<TPayload extends object>(type: typeof GoalsEvents[keyof typeof GoalsEvents], aggregateId: Id, payload: TPayload): Promise<void> {
-  return eventBus.publish({
+function publishGoalEvent<TPayload extends object>(type: string, aggregateId: Id, payload: TPayload): Promise<void> {
+  return eventRepository.commit([{
     type,
     aggregateId,
     aggregateType: 'Goal',
     timestamp: systemClock.now(),
     version: 1,
     payload,
-  });
+  }]);
 }
 
 export async function handleCreateGoal(cmd: CreateGoal): Promise<Id<'Goal'>> {
@@ -39,7 +38,7 @@ export async function handleCreateGoal(cmd: CreateGoal): Promise<Id<'Goal'>> {
     deadline: cmd.deadline,
     createdAt: systemClock.now(),
   };
-  await publishGoalEvent(GoalsEvents.GoalCreated, goalId, payload);
+  await publishGoalEvent('GoalCreated', goalId, payload);
   return goalId;
 }
 
@@ -54,14 +53,14 @@ export async function handleUpdateGoalProgress(cmd: UpdateGoalProgress): Promise
     current,
     delta: cmd.delta,
   };
-  await publishGoalEvent(GoalsEvents.GoalProgressUpdated, cmd.goalId, progressPayload);
+  await publishGoalEvent('GoalProgressUpdated', cmd.goalId, progressPayload);
 
   if (current >= goal.target && !goal.completed) {
     const completedPayload: GoalCompletedPayload = {
       goalId: cmd.goalId,
       completedAt: systemClock.now(),
     };
-    await publishGoalEvent(GoalsEvents.GoalCompleted, cmd.goalId, completedPayload);
+    await publishGoalEvent('GoalCompleted', cmd.goalId, completedPayload);
   }
 }
 
@@ -70,10 +69,10 @@ export async function handleCompleteGoal(cmd: CompleteGoal): Promise<void> {
     goalId: cmd.goalId,
     completedAt: systemClock.now(),
   };
-  await publishGoalEvent(GoalsEvents.GoalCompleted, cmd.goalId, payload);
+  await publishGoalEvent('GoalCompleted', cmd.goalId, payload);
 }
 
 export async function handleDeleteGoal(cmd: DeleteGoal): Promise<void> {
   const payload: GoalDeletedPayload = { goalId: cmd.goalId };
-  await publishGoalEvent(GoalsEvents.GoalDeleted, cmd.goalId, payload);
+  await publishGoalEvent('GoalDeleted', cmd.goalId, payload);
 }
