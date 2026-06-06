@@ -3,7 +3,7 @@ import { ok, err } from '@shared/types';
 import type { PlanSession, DeletePlannedSession, SaveRoute, DeleteSavedRoute, SaveTemplate, DeleteSavedTemplate, PlanningEvent, PlannedSession, SavedRoute, SavedTemplate } from '../domain/types';
 import { cryptoIdGenerator } from '@core/id-generator';
 import { systemClock } from '@core/clock';
-import { inMemoryEventStore } from '@data/store';
+import { eventRepository } from '@data/event-repository';
 import { viewStore } from '@data/projections/views';
 import { plannedSessionsProjection, savedRoutesProjection, savedTemplatesProjection } from '../projections';
 
@@ -47,7 +47,7 @@ export async function handlePlanSession(cmd: PlanSession): Promise<Result<void, 
     payload: plan,
   };
 
-  await inMemoryEventStore.append(event);
+  await eventRepository.commit([event]);
   applyAndStore([event]);
   return ok(undefined);
 }
@@ -74,7 +74,7 @@ export async function handleSaveRoute(cmd: SaveRoute): Promise<Result<void, stri
     payload: route,
   };
 
-  await inMemoryEventStore.append(event);
+  await eventRepository.commit([event]);
   applyAndStore([event]);
   return ok(undefined);
 }
@@ -92,7 +92,7 @@ export async function handleDeleteSavedRoute(cmd: DeleteSavedRoute): Promise<Res
     payload: { routeId: cmd.routeId },
   };
 
-  await inMemoryEventStore.append(event);
+  await eventRepository.commit([event]);
   applyAndStore([event]);
   return ok(undefined);
 }
@@ -118,7 +118,7 @@ export async function handleSaveTemplate(cmd: SaveTemplate): Promise<Result<void
     payload: template,
   };
 
-  await inMemoryEventStore.append(event);
+  await eventRepository.commit([event]);
   applyAndStore([event]);
   return ok(undefined);
 }
@@ -136,7 +136,7 @@ export async function handleDeleteSavedTemplate(cmd: DeleteSavedTemplate): Promi
     payload: { templateId: cmd.templateId },
   };
 
-  await inMemoryEventStore.append(event);
+  await eventRepository.commit([event]);
   applyAndStore([event]);
   return ok(undefined);
 }
@@ -154,7 +154,7 @@ export async function handleDeletePlannedSession(cmd: DeletePlannedSession): Pro
     payload: { planId: cmd.planId },
   };
 
-  await inMemoryEventStore.append(event);
+  await eventRepository.commit([event]);
   applyAndStore([event]);
   return ok(undefined);
 }

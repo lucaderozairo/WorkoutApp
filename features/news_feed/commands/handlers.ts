@@ -3,7 +3,7 @@ import { ok } from '@shared/types';
 import type { RefreshFeed, MarkArticleRead, NewsFeedEvent } from '../domain/types';
 import { cryptoIdGenerator } from '@core/id-generator';
 import { systemClock } from '@core/clock';
-import { inMemoryEventStore } from '@data/store';
+import { eventRepository } from '@data/event-repository';
 import { viewStore } from '@data/projections/views';
 import { headlinesProjection, dealsProjection } from '../projections';
 import { fetchNews } from '@data/sources/remote/news';
@@ -38,8 +38,7 @@ export async function handleRefreshFeed(_cmd: RefreshFeed): Promise<Result<void,
     payload: { deals },
   };
 
-  await inMemoryEventStore.append(headlinesEvent);
-  await inMemoryEventStore.append(dealsEvent);
+  await eventRepository.commit([headlinesEvent, dealsEvent]);
   applyAndStore([headlinesEvent, dealsEvent]);
   return ok(undefined);
 }
@@ -54,7 +53,7 @@ export async function handleMarkArticleRead(cmd: MarkArticleRead): Promise<Resul
     payload: { articleId: cmd.articleId },
   };
 
-  await inMemoryEventStore.append(event);
+  await eventRepository.commit([event]);
   applyAndStore([event]);
   return ok(undefined);
 }

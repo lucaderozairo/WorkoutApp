@@ -1,4 +1,4 @@
-import { inMemoryEventStore } from '@data/store';
+import { eventRepository } from '@data/event-repository';
 import { viewStore } from '@data/projections/views';
 import { cryptoIdGenerator } from '@core/id-generator';
 import { systemClock } from '@core/clock';
@@ -20,7 +20,7 @@ export async function emitPRAchieved(exerciseId: Id<'Exercise'>, sport: string |
     version: 1,
     payload: { insightId: cryptoIdGenerator.next<'Insight'>(), exerciseId, sport, message },
   };
-  await inMemoryEventStore.append(event);
+  await eventRepository.commit([event]);
   applyAndStore([event]);
 }
 
@@ -33,7 +33,7 @@ export async function emitPlateauDetected(exerciseId: Id<'Exercise'>, message: s
     version: 1,
     payload: { insightId: cryptoIdGenerator.next<'Insight'>(), exerciseId, message },
   };
-  await inMemoryEventStore.append(event);
+  await eventRepository.commit([event]);
   applyAndStore([event]);
 }
 
@@ -46,7 +46,7 @@ export async function emitVolumeSpike(sport: string | undefined, message: string
     version: 1,
     payload: { insightId: cryptoIdGenerator.next<'Insight'>(), sport, message },
   };
-  await inMemoryEventStore.append(event);
+  await eventRepository.commit([event]);
   applyAndStore([event]);
 }
 
@@ -59,7 +59,7 @@ export async function emitFrequencyDrop(sport: string | undefined, message: stri
     version: 1,
     payload: { insightId: cryptoIdGenerator.next<'Insight'>(), sport, message },
   };
-  await inMemoryEventStore.append(event);
+  await eventRepository.commit([event]);
   applyAndStore([event]);
 }
 
@@ -72,6 +72,6 @@ export async function emitOvertrainingRisk(message: string): Promise<void> {
     version: 1,
     payload: { insightId: cryptoIdGenerator.next<'Insight'>(), message },
   };
-  await inMemoryEventStore.append(event);
+  await eventRepository.commit([event]);
   applyAndStore([event]);
 }

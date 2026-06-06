@@ -2,7 +2,7 @@ import type { Result, Id } from '@shared/types';
 import { ok } from '@shared/types';
 import type { RefreshConditions, ConditionsEvent, SuitabilityEntry } from '../domain/types';
 import { systemClock } from '@core/clock';
-import { inMemoryEventStore } from '@data/store';
+import { eventRepository } from '@data/event-repository';
 import { viewStore } from '@data/projections/views';
 import { currentConditionsProjection, suitabilityProjection } from '../projections';
 import { fetchWeather, computeSuitability } from '@data/sources/remote/weather';
@@ -39,8 +39,7 @@ export async function handleRefreshConditions(_cmd: RefreshConditions): Promise<
     payload: { suitability },
   };
 
-  await inMemoryEventStore.append(forecastEvent);
-  await inMemoryEventStore.append(suitabilityEvent);
+  await eventRepository.commit([forecastEvent, suitabilityEvent]);
   applyAndStore([forecastEvent, suitabilityEvent]);
   return ok(undefined);
 }

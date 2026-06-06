@@ -2,7 +2,7 @@ import type { Result, Id } from '@shared/types';
 import { ok } from '@shared/types';
 import type { SeedHealthCharts, HealthEvent } from '../domain/types';
 import { systemClock } from '@core/clock';
-import { inMemoryEventStore } from '@data/store';
+import { eventRepository } from '@data/event-repository';
 import { viewStore } from '@data/projections/views';
 import { healthChartsProjection } from '../projections';
 
@@ -21,7 +21,7 @@ export async function handleSeedHealthCharts(cmd: SeedHealthCharts): Promise<Res
     payload: { charts: cmd.charts },
   };
 
-  await inMemoryEventStore.append(event);
+  await eventRepository.commit([event]);
   applyAndStore([event]);
   return ok(undefined);
 }

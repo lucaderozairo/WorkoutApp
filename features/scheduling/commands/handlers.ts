@@ -3,7 +3,7 @@ import { ok, err } from '@shared/types';
 import type { AddAppointment, UpdateAppointment, DeleteAppointment, ReorderAppointments, JoinEvent, LeaveEvent, SchedulingEvent } from '../domain/types';
 import { cryptoIdGenerator } from '@core/id-generator';
 import { systemClock } from '@core/clock';
-import { inMemoryEventStore } from '@data/store';
+import { eventRepository } from '@data/event-repository';
 import { viewStore } from '@data/projections/views';
 import { appointmentsByDateProjection, joinedEventsProjection } from '../projections';
 
@@ -36,7 +36,7 @@ export async function handleAddAppointment(cmd: AddAppointment): Promise<Result<
     },
   };
 
-  await inMemoryEventStore.append(event);
+  await eventRepository.commit([event]);
   applyAndStore([event]);
   return ok(undefined);
 }
@@ -57,7 +57,7 @@ export async function handleUpdateAppointment(cmd: UpdateAppointment): Promise<R
     },
   };
 
-  await inMemoryEventStore.append(event);
+  await eventRepository.commit([event]);
   applyAndStore([event]);
   return ok(undefined);
 }
@@ -72,7 +72,7 @@ export async function handleDeleteAppointment(cmd: DeleteAppointment): Promise<R
     payload: { appointmentId: cmd.appointmentId },
   };
 
-  await inMemoryEventStore.append(event);
+  await eventRepository.commit([event]);
   applyAndStore([event]);
   return ok(undefined);
 }
@@ -87,7 +87,7 @@ export async function handleReorderAppointments(cmd: ReorderAppointments): Promi
     payload: { orderedIds: cmd.orderedIds },
   };
 
-  await inMemoryEventStore.append(event);
+  await eventRepository.commit([event]);
   applyAndStore([event]);
   return ok(undefined);
 }
@@ -109,7 +109,7 @@ export async function handleJoinEvent(cmd: JoinEvent): Promise<Result<void, stri
     },
   };
 
-  await inMemoryEventStore.append(event);
+  await eventRepository.commit([event]);
   applyAndStore([event]);
   return ok(undefined);
 }
@@ -124,7 +124,7 @@ export async function handleLeaveEvent(cmd: LeaveEvent): Promise<Result<void, st
     payload: { eventId: cmd.eventId },
   };
 
-  await inMemoryEventStore.append(event);
+  await eventRepository.commit([event]);
   applyAndStore([event]);
   return ok(undefined);
 }
