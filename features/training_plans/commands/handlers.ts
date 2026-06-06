@@ -1,9 +1,8 @@
 // features/training_plans/commands/handlers.ts
-import { eventBus } from '@core/events/bus';
+import { eventRepository } from '@data/event-repository';
 import { generateId } from '@shared/utils';
 import { systemClock } from '@core/clock';
 import type { Id } from '@shared/types';
-import { TrainingPlansEvents } from '../contract';
 import type {
   CreatePlan, UpdatePlan, AssignWorkoutToDay, DeletePlan,
   PlanCreatedPayload, PlanUpdatedPayload, DayAssignedPayload,
@@ -32,14 +31,14 @@ export async function handleCreatePlan(cmd: CreatePlan): Promise<Id<'Plan'>> {
     weeks: buildInitialWeeks(cmd.durationWeeks),
     createdAt: systemClock.now(),
   };
-  await eventBus.publish({
-    type: TrainingPlansEvents.PlanCreated,
+  await eventRepository.commit([{
+    type: 'PlanCreated',
     aggregateId: planId,
     aggregateType: 'TrainingPlan',
     timestamp: systemClock.now(),
     version: 1,
     payload,
-  });
+  }]);
   return planId;
 }
 
@@ -50,14 +49,14 @@ export async function handleUpdatePlan(cmd: UpdatePlan): Promise<void> {
     startDate: cmd.startDate,
     durationWeeks: cmd.durationWeeks,
   };
-  await eventBus.publish({
-    type: TrainingPlansEvents.PlanUpdated,
+  await eventRepository.commit([{
+    type: 'PlanUpdated',
     aggregateId: cmd.planId,
     aggregateType: 'TrainingPlan',
     timestamp: systemClock.now(),
     version: 1,
     payload,
-  });
+  }]);
 }
 
 export async function handleAssignWorkoutToDay(cmd: AssignWorkoutToDay): Promise<void> {
@@ -67,24 +66,24 @@ export async function handleAssignWorkoutToDay(cmd: AssignWorkoutToDay): Promise
     dayOfWeek: cmd.dayOfWeek,
     assignment: cmd.assignment,
   };
-  await eventBus.publish({
-    type: TrainingPlansEvents.DayAssigned,
+  await eventRepository.commit([{
+    type: 'DayAssigned',
     aggregateId: cmd.planId,
     aggregateType: 'TrainingPlan',
     timestamp: systemClock.now(),
     version: 1,
     payload,
-  });
+  }]);
 }
 
 export async function handleDeletePlan(cmd: DeletePlan): Promise<void> {
   const payload: PlanDeletedPayload = { planId: cmd.planId };
-  await eventBus.publish({
-    type: TrainingPlansEvents.PlanDeleted,
+  await eventRepository.commit([{
+    type: 'PlanDeleted',
     aggregateId: cmd.planId,
     aggregateType: 'TrainingPlan',
     timestamp: systemClock.now(),
     version: 1,
     payload,
-  });
+  }]);
 }
