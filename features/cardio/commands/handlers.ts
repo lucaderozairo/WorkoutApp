@@ -6,11 +6,9 @@ import type {
   DeleteCardioSession,
   CardioEvent,
 } from "../domain/types";
-import { CardioEvents } from "../contract";
 import { cryptoIdGenerator } from "@core/id-generator";
 import { systemClock } from "@core/clock";
-import { eventBus } from "@core/events/bus";
-import { inMemoryEventStore } from "@data/store";
+import { eventRepository } from "@data/event-repository";
 import { projectionRegistry } from "@data/projections/builders";
 import { viewStore } from "@data/projections/views";
 import { loadFromStorage } from "@data/sources/local/persistence";
@@ -73,26 +71,8 @@ export async function handleRecordCardioSession(
     },
   ];
 
-  for (const e of events) await inMemoryEventStore.append(e);
+  await eventRepository.commit(events);
   applyAndStore(events);
-
-  // Notify other features via event bus
-  await eventBus.publish({
-    type: CardioEvents.CardioSessionRecorded,
-    aggregateId: cmd.userId,
-    aggregateType: "User",
-    timestamp: systemClock.now(),
-    version: 1,
-    payload: {
-      sessionId,
-      userId: cmd.userId,
-      sport: cmd.sport,
-      durationSeconds: cmd.durationSeconds,
-      distanceMeters: cmd.distanceMeters,
-      notes: cmd.notes,
-      recordedAt: systemClock.now(),
-    },
-  });
 
   return ok(undefined);
 }
@@ -119,7 +99,7 @@ export async function handleUpdateCardioSession(
     },
   ];
 
-  for (const e of events) await inMemoryEventStore.append(e);
+  await eventRepository.commit(events);
   applyAndStore(events);
   return ok(undefined);
 }
@@ -138,7 +118,7 @@ export async function handleDeleteCardioSession(
     },
   ];
 
-  for (const e of events) await inMemoryEventStore.append(e);
+  await eventRepository.commit(events);
   applyAndStore(events);
   return ok(undefined);
 }
@@ -187,7 +167,7 @@ export async function handleImportGpsTrack(
     },
   ];
 
-  for (const e of events) await inMemoryEventStore.append(e);
+  await eventRepository.commit(events);
   applyAndStore(events);
   return ok(undefined);
 }
