@@ -1,4 +1,5 @@
 import type { DomainEvent } from '@shared/types';
+import type { EventManifest } from '@shared/contracts/event-manifest';
 
 export type EventHandler<E extends DomainEvent<string, object>> = (event: E) => void | Promise<void>;
 
@@ -49,6 +50,23 @@ class EventBusImpl {
 
     return Promise.resolve();
   }
+
+  // Typed overload: for policies subscribing to manifest events.
+  // The handler parameter is automatically narrowed to DomainEvent<K, EventManifest[K]>.
+  subscribe<K extends keyof EventManifest>(
+    eventType: K,
+    handler: EventHandler<DomainEvent<K, EventManifest[K]>>,
+    options?: SubscriptionOptions,
+  ): SubscriptionToken;
+
+  // Legacy overload: for feature projections subscribing to their own events.
+  // Keep the existing signature exactly — projections and anything that is not in
+  // the manifest continues to use this path.
+  subscribe<E extends DomainEvent<string, object>>(
+    eventType: string,
+    handler: EventHandler<E>,
+    options?: SubscriptionOptions,
+  ): SubscriptionToken;
 
   subscribe<E extends DomainEvent<string, object>>(
     eventType: string,
