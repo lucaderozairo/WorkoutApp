@@ -13,7 +13,7 @@ export interface AchievementView {
 }
 
 export function getAchievements(): AchievementView[] {
-  const userAchievements = viewStore.get<UserAchievement[]>('user_achievements') ?? [];
+  const userAchievements = viewStore.get('user_achievements') ?? [];
 
   return ACHIEVEMENT_DEFINITIONS.map(def => {
     const user = userAchievements.find(a => a.achievementId === def.id);
@@ -30,7 +30,7 @@ export function getAchievements(): AchievementView[] {
 }
 
 export function getUnlockedCount(): number {
-  const userAchievements = viewStore.get<UserAchievement[]>('user_achievements') ?? [];
+  const userAchievements = viewStore.get('user_achievements') ?? [];
   return userAchievements.filter(a => a.unlockedAt).length;
 }
 
