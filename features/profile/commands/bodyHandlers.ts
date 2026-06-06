@@ -1,8 +1,7 @@
-import { eventBus } from '@core/events/bus';
+import { eventRepository } from '@data/event-repository';
 import { systemClock } from '@core/clock';
 import { generateId } from '@shared/utils';
 import type { Id } from '@shared/types';
-import { ProfileEvents } from '../contract';
 import type {
   LogMeasurement,
   AddEquipment,
@@ -22,14 +21,14 @@ export async function handleLogMeasurement(cmd: LogMeasurement): Promise<Id<'Mea
     date: cmd.date,
     loggedAt: systemClock.now(),
   };
-  await eventBus.publish({
-    type: ProfileEvents.MeasurementLogged,
+  await eventRepository.commit([{
+    type: 'MeasurementLogged',
     aggregateId: entryId,
     aggregateType: 'Measurement',
     timestamp: payload.loggedAt,
     version: 1,
     payload,
-  });
+  }]);
   return entryId;
 }
 
@@ -43,13 +42,13 @@ export async function handleAddEquipment(cmd: AddEquipment): Promise<Id<'Equipme
     retirementDistanceKm: cmd.retirementDistanceKm,
     addedAt: systemClock.now(),
   };
-  await eventBus.publish({
-    type: ProfileEvents.EquipmentAdded,
+  await eventRepository.commit([{
+    type: 'EquipmentAdded',
     aggregateId: equipmentId,
     aggregateType: 'Equipment',
     timestamp: payload.addedAt,
     version: 1,
     payload,
-  });
+  }]);
   return equipmentId;
 }

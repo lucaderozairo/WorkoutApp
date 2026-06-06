@@ -1,6 +1,5 @@
 import type { Result } from '@shared/types';
 import { ok, err } from '@shared/types';
-import { ProfileEvents } from '../contract';
 import type {
   UpdateProfile,
   SetUnitPreference,
@@ -11,9 +10,7 @@ import type {
 } from '../domain/types';
 import { cryptoIdGenerator } from '@core/id-generator';
 import { systemClock } from '@core/clock';
-import { eventBus } from '@core/events/bus';
-import { AggregateRepository } from '@data/repositories';
-import { profileReducers, initialProfileState } from '../domain/reducers';
+import { eventRepository } from '@data/event-repository';
 import { projectionRegistry } from '@data/projections/builders';
 import { profileProjection, activeInjuriesProjection, preferencesProjection, bodyweightProjection } from '../projections';
 import { viewStore } from '@data/projections/views';
@@ -23,8 +20,6 @@ projectionRegistry.register('profile', profileProjection);
 projectionRegistry.register('active_injuries', activeInjuriesProjection);
 projectionRegistry.register('preferences', preferencesProjection);
 projectionRegistry.register('bodyweight_log', bodyweightProjection);
-
-const repository = new AggregateRepository(initialProfileState, profileReducers);
 
 // ─── Command Handlers ────────────────────────────────────────
 
@@ -44,7 +39,7 @@ export async function handleUpdateProfile(cmd: UpdateProfile): Promise<Result<vo
     },
   }];
 
-  await repository.save(events);
+  await eventRepository.commit(events);
   return ok(undefined);
 }
 
@@ -58,7 +53,7 @@ export async function handleSetUnitPreference(cmd: SetUnitPreference): Promise<R
     payload: { units: cmd.units },
   }];
 
-  await repository.save(events);
+  await eventRepository.commit(events);
   return ok(undefined);
 }
 
@@ -81,7 +76,7 @@ export async function handleRecordInjury(cmd: RecordInjury): Promise<Result<void
     },
   }];
 
-  await repository.save(events);
+  await eventRepository.commit(events);
   return ok(undefined);
 }
 
@@ -95,7 +90,7 @@ export async function handleResolveInjury(cmd: ResolveInjury): Promise<Result<vo
     payload: { injuryId: cmd.injuryId },
   }];
 
-  await repository.save(events);
+  await eventRepository.commit(events);
   return ok(undefined);
 }
 
@@ -117,9 +112,8 @@ export async function handleLogBodyweight(cmd: LogBodyweight): Promise<Result<vo
     },
   }];
 
-  await repository.save(events);
+  await eventRepository.commit(events);
   events.forEach(e => bodyweightProjection.apply(e));
   viewStore.set('bodyweight_log', bodyweightProjection.getState());
-  await eventBus.publish({ ...events[0], type: ProfileEvents.BodyweightLogged });
   return ok(undefined);
 }
