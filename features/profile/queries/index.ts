@@ -17,7 +17,7 @@ export function getPreferences(): { unitPreference: UnitSystem } | null {
 }
 
 export function getBodyweightLog(): BodyweightEntry[] {
-  const entries = viewStore.get<Array<{ id: Id<'BodyweightEntry'>; weightKg: number; loggedAt: number }>>('bodyweight_log') ?? [];
+  const entries = viewStore.get('bodyweight_log') ?? [];
   return entries.map(e => ({
     id: e.id,
     userId: '' as Id<'User'>,
