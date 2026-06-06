@@ -1,8 +1,7 @@
 import { eventBus } from '@core/events/bus';
 import { eventRepository } from '@data/event-repository';
 import { systemClock } from '@core/clock';
-import type { DomainEvent } from '@shared/types';
-import type { HabitCompletedPayload } from '../domain/types';
+import { HabitsEvents } from '../contract';
 
 const STREAK_MILESTONES = [7, 30, 100] as const;
 
@@ -12,7 +11,7 @@ export function registerStreakMilestonePolicy(): void {
   if (registered) return;
   registered = true;
 
-  eventBus.subscribe<DomainEvent<'HabitCompleted', HabitCompletedPayload>>('HabitCompleted', async (event) => {
+  eventBus.subscribe(HabitsEvents.HabitCompleted, async (event) => {
     const { newStreak, userId } = event.payload;
     if (!(STREAK_MILESTONES as readonly number[]).includes(newStreak)) return;
 

@@ -1,7 +1,6 @@
 import { eventBus } from '@core/events/bus';
 import { viewStore } from '@data/projections/views';
-import type { DomainEvent } from '@shared/types';
-import type { SessionFinishedPayload } from '@features/training_log/contract';
+import { TrainingLogEvents } from '@features/training_log/contract';
 import { computeVolumeEntry, detectPlateau } from '../domain/compute';
 import type { ProgressionState } from '../domain/types';
 
@@ -11,9 +10,7 @@ export function registerProgressionPolicy(): void {
   if (registered) return;
   registered = true;
 
-  eventBus.subscribe<DomainEvent<'SessionFinished', SessionFinishedPayload>>(
-    'SessionFinished',
-    (event) => {
+  eventBus.subscribe(TrainingLogEvents.SessionFinished, (event) => {
       if (event.type !== 'SessionFinished') return;
       const { exerciseSummaries, sessionId, finishedAt } = event.payload;
       const date = new Date(finishedAt).toISOString().slice(0, 10);
@@ -40,6 +37,5 @@ export function registerProgressionPolicy(): void {
       }
 
       viewStore.set('exercise_progressions', updated);
-    },
-  );
+  });
 }

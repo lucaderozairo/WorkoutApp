@@ -1,7 +1,6 @@
 import { eventBus } from "@core/events/bus";
 import { viewStore } from "@data/projections/views";
-import type { DomainEvent } from "@shared/types";
-import type { SessionFinishedPayload } from "@features/training_log/contract";
+import { TrainingLogEvents } from "@features/training_log/contract";
 import type { ProgressionState } from "@features/progression/contract";
 import {
   makeTrainingLoadInsight,
@@ -16,9 +15,7 @@ export function registerCoachingPolicy(): void {
   if (registered) return;
   registered = true;
 
-  eventBus.subscribe<DomainEvent<"SessionFinished", SessionFinishedPayload>>(
-    "SessionFinished",
-    (event) => {
+  eventBus.subscribe(TrainingLogEvents.SessionFinished, (event) => {
       if (event.type !== "SessionFinished") return;
 
       // 1. Training load insight
@@ -62,6 +59,5 @@ export function registerCoachingPolicy(): void {
             ?.adherenceRate ?? 0.9,
       });
       if (deloadInsight) addInsight(deloadInsight);
-    },
-  );
+  });
 }

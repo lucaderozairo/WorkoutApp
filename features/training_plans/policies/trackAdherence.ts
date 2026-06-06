@@ -2,9 +2,7 @@
 import { eventBus } from '@core/events/bus';
 import { eventRepository } from '@data/event-repository';
 import { viewStore } from '@data/projections/views';
-import type { DomainEvent } from '@shared/types';
 import { TrainingLogEvents } from '@features/training_log/contract';
-import type { SessionFinishedPayload } from '@features/training_log/contract';
 import type { TrainingPlan, PlannedSessionCompletedPayload } from '../domain/types';
 import { TrainingPlansEvents } from '../contract';
 
@@ -25,9 +23,7 @@ export function registerAdherencePolicy(): void {
   if (registered) return;
   registered = true;
 
-  eventBus.subscribe<DomainEvent<'SessionFinished', SessionFinishedPayload>>(
-    TrainingLogEvents.SessionFinished,
-    async (event) => {
+  eventBus.subscribe(TrainingLogEvents.SessionFinished, async (event) => {
       const plan = viewStore.get<TrainingPlan | null>('active_plan');
       if (!plan) return;
 
@@ -61,6 +57,6 @@ export function registerAdherencePolicy(): void {
         version: 1,
         payload,
       }]);
-    }
-  );
+  });
+
 }
