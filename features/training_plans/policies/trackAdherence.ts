@@ -1,5 +1,6 @@
 // features/training_plans/policies/trackAdherence.ts
 import { eventBus } from '@core/events/bus';
+import { eventRepository } from '@data/event-repository';
 import { viewStore } from '@data/projections/views';
 import type { DomainEvent } from '@shared/types';
 import { TrainingLogEvents } from '@features/training_log/contract';
@@ -52,14 +53,14 @@ export function registerAdherencePolicy(): void {
         date: todayIso,
         sessionId: event.payload.sessionId,
       };
-      await eventBus.publish({
+      await eventRepository.commit([{
         type: TrainingPlansEvents.PlannedSessionCompleted,
         aggregateId: plan.id,
         aggregateType: 'TrainingPlan',
         timestamp: now,
         version: 1,
         payload,
-      });
+      }]);
     }
   );
 }

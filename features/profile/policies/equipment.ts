@@ -1,8 +1,8 @@
 import { eventBus } from '@core/events/bus';
+import { eventRepository } from '@data/event-repository';
 import { viewStore } from '@data/projections/views';
 import type { DomainEvent } from '@shared/types';
 import type { Equipment, EquipmentMileageUpdatedPayload } from '../domain/body';
-import { ProfileEvents } from '../contract';
 
 let registered = false;
 
@@ -22,14 +22,14 @@ export function registerEquipmentMileagePolicy(): void {
         equipmentId: item.id,
         deltaKm,
       };
-      await eventBus.publish({
-        type: ProfileEvents.EquipmentMileageUpdated,
+      await eventRepository.commit([{
+        type: 'EquipmentMileageUpdated',
         aggregateId: item.id,
         aggregateType: 'Equipment',
         timestamp: Date.now(),
         version: 1,
         payload,
-      });
+      }]);
     }
   });
 }

@@ -1,8 +1,8 @@
 import { eventBus } from '@core/events/bus';
+import { eventRepository } from '@data/event-repository';
 import { systemClock } from '@core/clock';
 import type { DomainEvent } from '@shared/types';
 import type { HabitCompletedPayload } from '../domain/types';
-import { HabitsEvents } from '../contract';
 
 const STREAK_MILESTONES = [7, 30, 100] as const;
 
@@ -16,8 +16,8 @@ export function registerStreakMilestonePolicy(): void {
     const { newStreak, userId } = event.payload;
     if (!(STREAK_MILESTONES as readonly number[]).includes(newStreak)) return;
 
-    await eventBus.publish({
-      type: HabitsEvents.AchievementUnlocked,
+    await eventRepository.commit([{
+      type: 'AchievementUnlocked',
       aggregateId: userId,
       aggregateType: 'User',
       timestamp: systemClock.now(),
@@ -27,6 +27,6 @@ export function registerStreakMilestonePolicy(): void {
         achievementId: `habit_streak_${newStreak}`,
         unlockedAt: systemClock.now(),
       },
-    });
+    }]);
   });
 }
