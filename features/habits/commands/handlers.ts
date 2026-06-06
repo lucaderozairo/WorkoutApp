@@ -1,9 +1,8 @@
-import { eventBus } from '@core/events/bus';
+import { eventRepository } from '@data/event-repository';
 import { systemClock } from '@core/clock';
 import { generateId } from '@shared/utils';
 import { viewStore } from '@data/projections/views';
 import type { Id } from '@shared/types';
-import { HabitsEvents } from '../contract';
 import type {
   Habit,
   CreateHabit,
@@ -34,14 +33,14 @@ export async function handleCreateHabit(cmd: CreateHabit): Promise<Id<'Habit'>> 
     frequency: cmd.frequency,
     createdAt: systemClock.now(),
   };
-  await eventBus.publish({
-    type: HabitsEvents.HabitCreated,
+  await eventRepository.commit([{
+    type: 'HabitCreated',
     aggregateId: habitId,
     aggregateType: 'Habit',
     timestamp: systemClock.now(),
     version: 1,
     payload,
-  });
+  }]);
   return habitId;
 }
 
@@ -60,14 +59,14 @@ export async function handleLogHabitCompletion(cmd: LogHabitCompletion): Promise
       userId: cmd.userId,
       brokenDate: today,
     };
-    await eventBus.publish({
-      type: HabitsEvents.HabitStreakBroken,
+    await eventRepository.commit([{
+      type: 'HabitStreakBroken',
       aggregateId: cmd.habitId,
       aggregateType: 'Habit',
       timestamp: systemClock.now(),
       version: 1,
       payload: brokenPayload,
-    });
+    }]);
   }
 
   const completedPayload: HabitCompletedPayload = {
@@ -76,24 +75,24 @@ export async function handleLogHabitCompletion(cmd: LogHabitCompletion): Promise
     completedDate: today,
     newStreak,
   };
-  await eventBus.publish({
-    type: HabitsEvents.HabitCompleted,
+  await eventRepository.commit([{
+    type: 'HabitCompleted',
     aggregateId: cmd.habitId,
     aggregateType: 'Habit',
     timestamp: systemClock.now(),
     version: 1,
     payload: completedPayload,
-  });
+  }]);
 }
 
 export async function handleDeleteHabit(cmd: DeleteHabit): Promise<void> {
   const payload: HabitDeletedPayload = { habitId: cmd.habitId };
-  await eventBus.publish({
-    type: HabitsEvents.HabitDeleted,
+  await eventRepository.commit([{
+    type: 'HabitDeleted',
     aggregateId: cmd.habitId,
     aggregateType: 'Habit',
     timestamp: systemClock.now(),
     version: 1,
     payload,
-  });
+  }]);
 }
