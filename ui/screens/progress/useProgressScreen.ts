@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useCommand } from '@ui/bindings';
 import type { ActivityHistoryItem, ActivitiesState } from '@features/training_log';
@@ -27,9 +27,12 @@ export function useProgressScreen() {
 
   const sessionsState = useQuery<ActivitiesState>('sessions');
   const history = useMemo(() => getActivityHistory(), [sessionsState]);
-  const progressions = (useQuery<ProgressionState>('exercise_progressions') ?? {}) as ProgressionState;
-  const exerciseList = Object.values(progressions).sort((a, b) =>
-    a.exerciseName.localeCompare(b.exerciseName)
+  const progressionsRaw = useQuery<ProgressionState>('exercise_progressions');
+  const exerciseList = useMemo(
+    () => Object.values(progressionsRaw ?? {}).toSorted((a, b) =>
+      a.exerciseName.localeCompare(b.exerciseName)
+    ),
+    [progressionsRaw],
   );
 
   const sessionsByType = useMemo(() => {
@@ -41,13 +44,25 @@ export function useProgressScreen() {
   }, [history]);
 
   const insights = (useQuery<Insight[]>('insights') ?? []) as Insight[];
-  const allCardio = ((useQuery<RecentCardioView>('recent_cardio_sessions') ?? { sessions: [] }) as RecentCardioView).sessions;
+  const recentCardioRaw = useQuery<RecentCardioView>('recent_cardio_sessions');
+  const allCardio = useMemo(
+    () => (recentCardioRaw as RecentCardioView | null)?.sessions ?? [],
+    [recentCardioRaw],
+  );
 
-  const totalSets = history.reduce((acc, s) => acc + s.totalSets, 0);
-  const prCount = history.filter(s => s.hasPR).length;
+  const { totalSets, prCount } = useMemo(() => ({
+    totalSets: history.reduce((acc, s) => acc + s.totalSets, 0),
+    prCount: history.filter(s => s.hasPR).length,
+  }), [history]);
 
-  const visibleCardioSports = Array.from(new Set(allCardio.map(s => s.sport))) as CardioSport[];
-  const cardioBySport = (sport: CardioSport) => allCardio.filter(s => s.sport === sport);
+  const visibleCardioSports = useMemo(
+    () => Array.from(new Set(allCardio.map(s => s.sport))) as CardioSport[],
+    [allCardio],
+  );
+  const cardioBySport = useCallback(
+    (sport: CardioSport) => allCardio.filter(s => s.sport === sport),
+    [allCardio],
+  );
 
   const { dispatch: dispatchAddAnnotation } = useCommand(handleAddAnnotation);
   const { dispatch: dispatchDeleteAnnotation } = useCommand(handleDeleteAnnotation);
@@ -70,11 +85,20 @@ export function useProgressScreen() {
     await dispatchDeleteAnnotation({ type: 'DeleteAnnotation', annotationId });
   }
 
-  const allAnnotations = annExercise ? getAnnotations(annExercise) : [];
+  const allAnnotations = useMemo(
+    () => (annExercise ? getAnnotations(annExercise) : []),
+    [annExercise],
+  );
 
-  const sportsToShow: CardioSport[] = sportFilter === 'all' || sportFilter === 'strength'
-    ? visibleCardioSports
-    : (visibleCardioSports.includes(sportFilter as CardioSport) ? [sportFilter as CardioSport] : []);
+  const sportsToShow = useMemo<CardioSport[]>(
+    () =>
+      sportFilter === 'all' || sportFilter === 'strength'
+        ? visibleCardioSports
+        : visibleCardioSports.includes(sportFilter as CardioSport)
+          ? [sportFilter as CardioSport]
+          : [],
+    [sportFilter, visibleCardioSports],
+  );
 
   return {
     navigate,
