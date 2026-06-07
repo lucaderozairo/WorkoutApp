@@ -27,6 +27,9 @@ type TimelineItem = { name: string; outcome: TimelineOutcome; firstCycle: [numbe
 const timelineColor = (outcome: TimelineOutcome) =>
     outcome === 'success' ? 'hsl(160,60%,50%)' : outcome === 'error' ? 'hsl(0,65%,55%)' : 'hsl(220,15%,55%)';
 
+const GanttBar = (props: any) => <Rectangle {...props} fill={timelineColor(props.outcome)} radius={4} />;
+const GanttBarActive = (props: any) => <Rectangle {...props} fill={timelineColor(props.outcome)} radius={4} stroke="var(--accent)" strokeWidth={2} />;
+
 // Canonical definition lives in shared/contracts; imported for local use and
 // re-exported so existing `@ui/patterns/charts/charts` consumers keep working.
 import type { ChartType } from '@shared/contracts';
@@ -262,8 +265,6 @@ function ChartSelector({ chartType, data, color, axisShow }: {
 
         case 'timeline': {
             const td = (data ?? []) as unknown as TimelineItem[];
-            const GanttBar = (props: any) => <Rectangle {...props} fill={timelineColor(props.outcome)} radius={4} />;
-            const GanttBarActive = (props: any) => <Rectangle {...props} fill={timelineColor(props.outcome)} radius={4} stroke="var(--accent)" strokeWidth={2} />;
             return (
                 <BarChart layout="vertical" data={td} margin={margin}>
                     <CartesianGrid strokeDasharray="2 2" horizontal={false} />
