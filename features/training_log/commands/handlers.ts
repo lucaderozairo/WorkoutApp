@@ -33,7 +33,7 @@ import type {
 import type { ActivityView, ActivitiesState } from '../projections';
 import { cryptoIdGenerator } from '@core/id-generator';
 import { systemClock } from '@core/clock';
-import { eventRepository } from '@data/event-repository';
+import { defineCommand } from '@data/define-command';
 import { projectionRegistry } from '@data/projections/builders';
 import { viewStore } from '@data/projections/views';
 import {
@@ -52,9 +52,28 @@ export function applyAll(events: TrainingLogEvent[]): void {
     sessionProjection.apply(e);
     recentExercisesProjection.apply(e);
   });
-  viewStore.set('sessions', sessionProjection.getState());
+  const sessions = sessionProjection.getState();
+  viewStore.set('sessions', sessions);
+  viewStore.set('active_session', sessions.activeId ? sessions.byId[sessions.activeId] ?? null : null);
   viewStore.set('recent_exercises', recentExercisesProjection.getState());
 }
+
+const commitTrainingLogEvents = defineCommand<TrainingLogEvent[], Result<void, string>>({
+  execute: async (events) => {
+    applyAll(events);
+    return { events, result: ok(undefined) };
+  },
+});
+
+const commitSessionStartedEvents = defineCommand<
+  { events: TrainingLogEvent[]; sessionId: string },
+  Result<{ sessionId: string }, string>
+>({
+  execute: async ({ events, sessionId }) => {
+    applyAll(events);
+    return { events, result: ok({ sessionId }) };
+  },
+});
 
 // ─── Command Handlers ────────────────────────────────────────
 
@@ -77,9 +96,7 @@ export async function handleStartSession(cmd: StartSession): Promise<Result<{ se
     },
   }];
 
-  await eventRepository.commit(events);
-  applyAll(events);
-  return ok({ sessionId });
+  return commitSessionStartedEvents({ events, sessionId });
 }
 
 export async function handleAddBlock(cmd: AddBlock): Promise<Result<void, string>> {
@@ -107,9 +124,7 @@ export async function handleAddBlock(cmd: AddBlock): Promise<Result<void, string
     },
   }];
 
-  await eventRepository.commit(events);
-  applyAll(events);
-  return ok(undefined);
+  return commitTrainingLogEvents(events);
 }
 
 export async function handleLogStrengthSet(cmd: LogStrengthSet): Promise<Result<void, string>> {
@@ -141,9 +156,7 @@ export async function handleLogStrengthSet(cmd: LogStrengthSet): Promise<Result<
     },
   }];
 
-  await eventRepository.commit(events);
-  applyAll(events);
-  return ok(undefined);
+  return commitTrainingLogEvents(events);
 }
 
 export async function handleLogCardioSet(cmd: LogCardioSet): Promise<Result<void, string>> {
@@ -175,9 +188,7 @@ export async function handleLogCardioSet(cmd: LogCardioSet): Promise<Result<void
     },
   }];
 
-  await eventRepository.commit(events);
-  applyAll(events);
-  return ok(undefined);
+  return commitTrainingLogEvents(events);
 }
 
 export async function handleFinishSession(cmd: FinishSession): Promise<Result<void, string>> {
@@ -215,12 +226,9 @@ export async function handleFinishSession(cmd: FinishSession): Promise<Result<vo
     payload: enrichedPayload,
   }];
 
-  await eventRepository.commit(events);
   // sessionProjection.SessionFinished marks status='finished', sets finishedAt, rpe, tags
   // session_history is derived at query time from sessions.byId — no manual push needed
-  applyAll(events);
-
-  return ok(undefined);
+  return commitTrainingLogEvents(events);
 }
 
 export async function handleDeleteSession(cmd: DeleteSession): Promise<Result<void, string>> {
@@ -233,10 +241,8 @@ export async function handleDeleteSession(cmd: DeleteSession): Promise<Result<vo
     payload: { sessionId: cmd.sessionId },
   }];
 
-  await eventRepository.commit(events);
   // sessionProjection.SessionDeleted removes from byId — getSessionHistory() auto-excludes it
-  applyAll(events);
-  return ok(undefined);
+  return commitTrainingLogEvents(events);
 }
 
 export async function handleUpdateBlockNote(cmd: UpdateBlockNote): Promise<Result<void, string>> {
@@ -249,9 +255,7 @@ export async function handleUpdateBlockNote(cmd: UpdateBlockNote): Promise<Resul
     payload: { sessionId: cmd.sessionId, blockId: cmd.blockId, notes: cmd.notes },
   }];
 
-  await eventRepository.commit(events);
-  applyAll(events);
-  return ok(undefined);
+  return commitTrainingLogEvents(events);
 }
 
 export async function handleChangeSetType(cmd: ChangeSetType): Promise<Result<void, string>> {
@@ -264,9 +268,7 @@ export async function handleChangeSetType(cmd: ChangeSetType): Promise<Result<vo
     payload: { sessionId: cmd.sessionId, blockId: cmd.blockId, setNumber: cmd.setNumber, setType: cmd.setType },
   }];
 
-  await eventRepository.commit(events);
-  applyAll(events);
-  return ok(undefined);
+  return commitTrainingLogEvents(events);
 }
 
 export async function handleLogRPE(cmd: LogRPE): Promise<Result<void, string>> {
@@ -281,9 +283,7 @@ export async function handleLogRPE(cmd: LogRPE): Promise<Result<void, string>> {
     payload: { sessionId: cmd.sessionId, blockId: cmd.blockId, setNumber: cmd.setNumber, rpe: cmd.rpe },
   }];
 
-  await eventRepository.commit(events);
-  applyAll(events);
-  return ok(undefined);
+  return commitTrainingLogEvents(events);
 }
 
 export async function handleToggleSetFailed(cmd: ToggleSetFailed): Promise<Result<void, string>> {
@@ -296,9 +296,7 @@ export async function handleToggleSetFailed(cmd: ToggleSetFailed): Promise<Resul
     payload: { sessionId: cmd.sessionId, blockId: cmd.blockId, setNumber: cmd.setNumber, failed: cmd.failed },
   }];
 
-  await eventRepository.commit(events);
-  applyAll(events);
-  return ok(undefined);
+  return commitTrainingLogEvents(events);
 }
 
 export async function handleSetBlockType(cmd: SetBlockType): Promise<Result<void, string>> {
@@ -311,9 +309,7 @@ export async function handleSetBlockType(cmd: SetBlockType): Promise<Result<void
     payload: { sessionId: cmd.sessionId, blockId: cmd.blockId, blockType: cmd.blockType },
   }];
 
-  await eventRepository.commit(events);
-  applyAll(events);
-  return ok(undefined);
+  return commitTrainingLogEvents(events);
 }
 
 export async function handleSetBlockRounds(cmd: SetBlockRounds): Promise<Result<void, string>> {
@@ -328,15 +324,11 @@ export async function handleSetBlockRounds(cmd: SetBlockRounds): Promise<Result<
     payload: { sessionId: cmd.sessionId, blockId: cmd.blockId, rounds: cmd.rounds },
   }];
 
-  await eventRepository.commit(events);
-  applyAll(events);
-  return ok(undefined);
+  return commitTrainingLogEvents(events);
 }
 
 async function commit(events: TrainingLogEvent[]): Promise<Result<void, string>> {
-  await eventRepository.commit(events);
-  applyAll(events);
-  return ok(undefined);
+  return commitTrainingLogEvents(events);
 }
 
 export async function handleRemoveSet(cmd: RemoveSet): Promise<Result<void, string>> {
