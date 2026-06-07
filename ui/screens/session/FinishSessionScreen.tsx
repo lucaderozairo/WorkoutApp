@@ -57,9 +57,14 @@ export function FinishSessionScreen() {
         <Input label="Date" type="date" value={date} onChange={e => setDate(e.target.value)} />
         <Input label="Start time" type="time" value={startTime} onChange={e => setStartTime(e.target.value)} />
         <Input label="End time" type="time" value={endTime} onChange={e => setEndTime(e.target.value)} />
-        {startTimestamp && (
-          <Input label="Duration" type="time" disabled value={(() => { if (!durationMs || durationMs <= 0) return '00:00'; const m = Math.floor(durationMs / 60000); const h = Math.floor(m / 60); return `${String(h).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`; })()} />
-        )}
+        {startTimestamp != null ? (
+          <Input label="Duration" type="time" disabled value={(() => {
+            if (!durationMs || durationMs <= 0) return '00:00';
+            const m = Math.floor(durationMs / 60000);
+            const h = Math.floor(m / 60);
+            return `${String(h).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+          })()} />
+        ) : null}
       </Grid>
 
       <Column gap={1}>

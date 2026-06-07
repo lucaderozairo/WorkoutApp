@@ -88,8 +88,10 @@ export function useFinishSession() {
   const { dispatch: updateDetails } = useCommand(handleUpdateSessionDetails);
   const { dispatch: saveTemplate } = useCommand(handleSaveTemplate);
 
-  const startTimestamp = date && startTime ? new Date(`${date}T${startTime}`).getTime() : null;
-  const endTimestampRaw = date && endTime ? new Date(`${date}T${endTime}`).getTime() : null;
+  const rawTs = date && startTime ? new Date(`${date}T${startTime}`).getTime() : NaN;
+  const startTimestamp = Number.isFinite(rawTs) ? rawTs : null;
+  const rawEndTs = date && endTime ? new Date(`${date}T${endTime}`).getTime() : NaN;
+  const endTimestampRaw = Number.isFinite(rawEndTs) ? rawEndTs : null;
   const endTimestamp = finished ? (finishedAtRef.current ?? Date.now()) : (endTimestampRaw ?? now);
   const durationMs = startTimestamp && endTimestamp > startTimestamp ? endTimestamp - startTimestamp : 0;
 
