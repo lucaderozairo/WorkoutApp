@@ -28,13 +28,15 @@ function scoreBadge(score: number) {
   return { label: 'Poor', cls: '' };
 }
 
+const EMPTY_SCORE_HISTORY: Array<{ x: string; y: number }> = [];
+
 // ── Sleep ────────────────────────────────────────────────────────────────────
 
 export function SleepWidget({
   size,
   session,
   goalMinutes = 480,
-  scoreHistory = [],
+  scoreHistory = EMPTY_SCORE_HISTORY,
 }: {
   size: WidgetSize;
   session: SleepSession | null;
