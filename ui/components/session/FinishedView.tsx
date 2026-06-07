@@ -143,8 +143,8 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
               <Text size="eyebrow">Tags</Text>
             </Row>
             <Cluster>
-              {session.tags.map((t, i) => (
-                <Badge key={i} dot>{t}</Badge>
+              {session.tags.map((t) => (
+                <Badge key={t} dot>{t}</Badge>
               ))}
             </Cluster>
           </Column>
@@ -204,11 +204,11 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
                       <Text size="detail">{ex.name}</Text>
                     </Row>
                     <Grid cols={4}>
-                      {CARDIO_FIELDS.map((f, i) => {
+                      {CARDIO_FIELDS.map((f) => {
                         const raw = ex.cardioSet?.[f.key] as number | undefined;
                         const display = raw != null && raw > 0 ? f.toDisplay(raw) : '—';
                         return (
-                          <Column key={i} gap={1} align="center">
+                          <Column key={f.key} gap={1} align="center">
                             <Text size="eyebrow">{f.label}</Text>
                             <Text size="detail" mono className="num">
                               {display}
