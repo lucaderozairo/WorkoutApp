@@ -217,7 +217,8 @@ export type TrainingLogEvent =
   | DomainEvent<'BlockAddedToSuperset', BlockAddedToSupersetPayload>
   | DomainEvent<'BlockLeftSuperset', BlockLeftSupersetPayload>
   | DomainEvent<'BlockRemoved', BlockRemovedPayload>
-  | DomainEvent<'SessionUpdated', SessionUpdatedPayload>;
+  | DomainEvent<'SessionUpdated', SessionUpdatedPayload>
+  | DomainEvent<'SessionImported', SessionImportedPayload>;
 
 export interface SessionStartedPayload {
   sessionId: Id<'Activity'>;
@@ -373,6 +374,23 @@ export interface SessionUpdatedPayload {
   rpe?: number | null;
   tags?: string[];
   media?: string[];
+}
+
+export interface SessionImportedPayload {
+  sessionId: Id<'Activity'>;
+  name: string;
+  startedAt: number;
+  finishedAt: number;
+  notes: string;
+  primarySport: string;
+  segments: Array<{
+    id: Id<'Segment'>;
+    exerciseName: string;
+    exerciseCategory: string;
+    sets: SetEntry[];
+    notes?: string;
+    order: number;
+  }>;
 }
 
 // ─── Commands ────────────────────────────────────────────────
@@ -558,6 +576,24 @@ export interface UpdateSessionDetails {
   media?: string[];
 }
 
+/** Bundles all finish-session edits into one atomic command. */
+export interface FinishSessionWithDetails {
+  type: 'FinishSessionWithDetails';
+  sessionId: Id<'Activity'>;
+  name?: string;
+  startedAt?: number;
+  finishedAt?: number;
+  notes?: string;
+  sessionRpe?: number;
+  tags?: string[];
+  media?: string[];
+}
+
+export interface ImportSession {
+  type: 'ImportSession';
+  parsedData: import('@shared/utils/importCsv').ParsedCsvData;
+}
+
 export type TrainingLogCommand =
   | StartSession
   | AddBlock
@@ -582,4 +618,6 @@ export type TrainingLogCommand =
   | AddToSuperset
   | LeaveSuperset
   | RemoveBlock
-  | UpdateSessionDetails;
+  | UpdateSessionDetails
+  | FinishSessionWithDetails
+  | ImportSession;

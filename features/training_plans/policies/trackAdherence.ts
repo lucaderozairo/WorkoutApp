@@ -3,7 +3,7 @@ import { eventBus } from '@core/events/bus';
 import { eventRepository } from '@data/event-repository';
 import { viewStore } from '@data/projections/views';
 import { TrainingLogEvents } from '@features/training_log/contract';
-import type { TrainingPlan, PlannedSessionCompletedPayload } from '../domain/types';
+import type { PlannedSessionCompletedPayload } from '../domain/types';
 import { TrainingPlansEvents } from '../contract';
 
 /** Returns 'YYYY-MM-DD' for a unix-ms timestamp. */
@@ -24,39 +24,38 @@ export function registerAdherencePolicy(): void {
   registered = true;
 
   eventBus.subscribe(TrainingLogEvents.SessionFinished, async (event) => {
-      const plan = viewStore.get<TrainingPlan | null>('active_plan');
-      if (!plan) return;
+    const plan = viewStore.get('active_plan');
+    if (!plan) return;
 
-      const now = event.payload.finishedAt;
-      const todayIso = toISODate(now);
-      const todayDow = toDayOfWeek(now);
+    const now = event.payload.finishedAt;
+    const todayIso = toISODate(now);
+    const todayDow = toDayOfWeek(now);
 
-      // Which week is today relative to plan start?
-      const startMs = new Date(plan.startDate).getTime();
-      const diffDays = Math.floor((now - startMs) / 86_400_000);
-      if (diffDays < 0) return; // session before plan started
-      const weekIndex = Math.floor(diffDays / 7);
-      if (weekIndex >= plan.durationWeeks) return; // plan finished
+    // Which week is today relative to plan start?
+    const startMs = new Date(plan.startDate).getTime();
+    const diffDays = Math.floor((now - startMs) / 86_400_000);
+    if (diffDays < 0) return; // session before plan started
+    const weekIndex = Math.floor(diffDays / 7);
+    if (weekIndex >= plan.durationWeeks) return; // plan finished
 
-      const week = plan.weeks[weekIndex];
-      if (!week) return;
+    const week = plan.weeks[weekIndex];
+    if (!week) return;
 
-      const planDay = week.days.find(d => d.dayOfWeek === todayDow);
-      if (!planDay || planDay.assignment.type === 'rest') return;
+    const planDay = week.days.find(d => d.dayOfWeek === todayDow);
+    if (!planDay || planDay.assignment.type === 'rest') return;
 
-      const payload: PlannedSessionCompletedPayload = {
-        planId: plan.id,
-        date: todayIso,
-        sessionId: event.payload.sessionId,
-      };
-      await eventRepository.commit([{
-        type: TrainingPlansEvents.PlannedSessionCompleted,
-        aggregateId: plan.id,
-        aggregateType: 'TrainingPlan',
-        timestamp: now,
-        version: 1,
-        payload,
-      }]);
+    const payload: PlannedSessionCompletedPayload = {
+      planId: plan.id,
+      date: todayIso,
+      sessionId: event.payload.sessionId,
+    };
+    await eventRepository.commit([{
+      type: TrainingPlansEvents.PlannedSessionCompleted,
+      aggregateId: plan.id,
+      aggregateType: 'TrainingPlan',
+      timestamp: now,
+      version: 1,
+      payload,
+    }]);
   });
-
 }

@@ -1,4 +1,5 @@
-import type { CardioEvent, CardioSession, CardioSport } from "../domain/types";
+import type { Id } from '@shared/types';
+import type { CardioEvent, CardioSession, CardioSport, CardioSessionImportedPayload } from "../domain/types";
 import { ProjectionBuilder } from "@data/projections/builders";
 import { cardioReducers, initialCardioState } from "../domain/reducers";
 
@@ -53,6 +54,30 @@ export const recentCardioProjection = new ProjectionBuilder<
       );
       return { sessions: state.sessions };
     },
+
+    CardioSessionImported: (view, event) => {
+      if (event.type !== 'CardioSessionImported') return view;
+      const p = event.payload as CardioSessionImportedPayload;
+      return {
+        sessions: [
+          {
+            id: p.sessionId,
+            userId: 'imported' as Id<'User'>,
+            sport: p.sport as CardioSession['sport'],
+            title: p.title,
+            startedAt: p.startedAt,
+            durationSeconds: p.durationSeconds,
+            distanceMeters: p.distanceMeters,
+            notes: p.notes,
+            comments: [],
+            media: [],
+            location: undefined,
+            routeId: null,
+          },
+          ...view.sessions,
+        ],
+      };
+    },
   },
 );
 
@@ -93,6 +118,36 @@ export const monthlyCardioProjection = new ProjectionBuilder<
   },
   CardioSessionDeleted: (entries) => entries,
   CardioSessionUpdated: (entries) => entries,
+  CardioSessionImported: (entries, event) => {
+    if (event.type !== 'CardioSessionImported') return entries;
+    const p = event.payload as CardioSessionImportedPayload;
+    const month = new Date(event.timestamp).toISOString().slice(0, 7);
+    const existing = entries.find(
+      (e) => e.sport === p.sport && e.month === month,
+    );
+    if (existing) {
+      return entries.map((e) =>
+        e.sport === p.sport && e.month === month
+          ? {
+              ...e,
+              totalDistanceMeters: e.totalDistanceMeters + p.distanceMeters,
+              totalDurationSeconds: e.totalDurationSeconds + p.durationSeconds,
+              sessionCount: e.sessionCount + 1,
+            }
+          : e,
+      );
+    }
+    return [
+      ...entries,
+      {
+        sport: p.sport as CardioSport,
+        month,
+        totalDistanceMeters: p.distanceMeters,
+        totalDurationSeconds: p.durationSeconds,
+        sessionCount: 1,
+      },
+    ];
+  },
 });
 
 export { initialCardioState };

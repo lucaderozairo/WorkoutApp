@@ -37,7 +37,8 @@ export type CardioEvent =
   | DomainEvent<"CardioSessionRecorded", CardioSessionRecordedPayload>
   | DomainEvent<"CardioSessionUpdated", CardioSessionUpdatedPayload>
   | DomainEvent<"CardioSessionDeleted", CardioSessionDeletedPayload>
-  | DomainEvent<"GpsTrackImported", GpsTrackImportedPayload>;
+  | DomainEvent<"GpsTrackImported", GpsTrackImportedPayload>
+  | DomainEvent<"CardioSessionImported", CardioSessionImportedPayload>;
 
 export interface CardioSessionRecordedPayload {
   sessionId: Id<"CardioSession">;
@@ -91,6 +92,16 @@ export interface DeleteCardioSession {
 export interface GpsTrackImportedPayload {
   sessionId: Id<"CardioSession">;
   track: GpsTrack;
+}
+
+export interface CardioSessionImportedPayload {
+  sessionId: Id<"CardioSession">;
+  sport: string;
+  title: string;
+  startedAt: number;
+  durationSeconds: number;
+  distanceMeters: number;
+  notes: string;
 }
 
 export interface ImportGpsTrack {

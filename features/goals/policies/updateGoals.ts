@@ -8,7 +8,7 @@ import type { Goal, GoalMetric } from '../domain/types';
 import { handleUpdateGoalProgress } from '../commands/handlers';
 
 function goalsForMetric(metric: GoalMetric): Goal[] {
-  const goals = viewStore.get<Goal[]>('active_goals') ?? [];
+  const goals = viewStore.get('active_goals') ?? [];
   return goals.filter((goal) => goal.metric === metric && !goal.completed);
 }
 

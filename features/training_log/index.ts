@@ -50,6 +50,7 @@ export type {
   LeaveSuperset,
   RemoveBlock,
   UpdateSessionDetails,
+  FinishSessionWithDetails,
 } from './domain/types';
 
 export type {
@@ -87,6 +88,7 @@ export {
   handleLeaveSuperset,
   handleRemoveBlock,
   handleUpdateSessionDetails,
+  handleFinishSessionWithDetails,
 } from './commands/handlers';
 
 export {

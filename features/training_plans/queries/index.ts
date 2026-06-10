@@ -4,11 +4,11 @@ import type { TrainingPlan, PlanAdherence } from '../domain/types';
 import type { Id } from '@shared/types';
 
 export function getActivePlan(): TrainingPlan | null {
-  return viewStore.get<TrainingPlan | null>('active_plan') ?? null;
+  return viewStore.get('active_plan') ?? null;
 }
 
 export function getPlanList(): TrainingPlan[] {
-  return viewStore.get<TrainingPlan[]>('plan_list') ?? [];
+  return viewStore.get('plan_list') ?? [];
 }
 
 export function getPlanById(planId: Id<'Plan'>): TrainingPlan | undefined {
@@ -16,5 +16,5 @@ export function getPlanById(planId: Id<'Plan'>): TrainingPlan | undefined {
 }
 
 export function getPlanAdherence(): PlanAdherence | null {
-  return viewStore.get<PlanAdherence>('plan_adherence') ?? null;
+  return viewStore.get('plan_adherence') ?? null;
 }

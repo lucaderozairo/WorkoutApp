@@ -2,7 +2,7 @@ import { viewStore } from '@data/projections/views';
 import type { Appointment, ScheduledEvent } from '../domain/types';
 
 export function getAppointments(): Appointment[] {
-  return viewStore.get<Appointment[]>('appointments_by_date') ?? [];
+  return viewStore.get('appointments_by_date') ?? [];
 }
 
 export function getScheduleForDay(dateMs: number): Appointment[] {
@@ -15,5 +15,5 @@ export function getScheduleForDay(dateMs: number): Appointment[] {
 }
 
 export function getJoinedEvents(): ScheduledEvent[] {
-  return viewStore.get<ScheduledEvent[]>('joined_events') ?? [];
+  return viewStore.get('joined_events') ?? [];
 }

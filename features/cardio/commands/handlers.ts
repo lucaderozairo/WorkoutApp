@@ -11,11 +11,9 @@ import { systemClock } from "@core/clock";
 import { defineCommand } from "@data/define-command";
 import { projectionRegistry } from "@data/projections/builders";
 import { viewStore } from "@data/projections/views";
-import { loadFromStorage } from "@data/sources/local/persistence";
 import {
   recentCardioProjection,
   monthlyCardioProjection,
-  type RecentCardioView,
 } from "../projections";
 
 // Cross-feature policies/projections are wired centrally in app/registry/bootstrap.ts.
@@ -26,30 +24,16 @@ projectionRegistry.register(
   monthlyCardioProjection,
 );
 
-function applyAndStore(events: CardioEvent[]): void {
-  // Sync projection from the live state before applying. viewStore is preferred
-  // (most up-to-date), but falls back to localStorage in case viewStore was
-  // reset by HMR or hasn't been populated yet (e.g. seed bypassed the projection).
-  const liveCardio =
-    viewStore.get<RecentCardioView>("recent_cardio_sessions") ??
-    loadFromStorage<RecentCardioView>("recent_cardio_sessions");
-  if (liveCardio) recentCardioProjection.setState(liveCardio);
-
-  events.forEach((e) => {
-    recentCardioProjection.apply(e);
-    monthlyCardioProjection.apply(e);
-  });
-  viewStore.set("recent_cardio_sessions", recentCardioProjection.getState());
-  viewStore.set(
-    "monthly_cardio_progression",
-    monthlyCardioProjection.getState(),
-  );
-}
+const cardioProjectionSlots = [
+  { key: "recent_cardio_sessions", projection: recentCardioProjection },
+  { key: "monthly_cardio_progression", projection: monthlyCardioProjection },
+] as const;
 
 export const handleRecordCardioSession = defineCommand<RecordCardioSession, Result<void, string>>({
-  execute: async (cmd) => {
-    if (cmd.durationSeconds < 1) return { events: [], result: err("Duration must be at least 1 second") };
-    if (cmd.distanceMeters < 0) return { events: [], result: err("Distance must be non-negative") };
+  projections: cardioProjectionSlots,
+  execute: async (cmd, ctx) => {
+    if (cmd.durationSeconds < 1) return err("Duration must be at least 1 second");
+    if (cmd.distanceMeters < 0) return err("Distance must be non-negative");
 
     const sessionId = cmd.sessionId ?? cryptoIdGenerator.next<"CardioSession">();
     const events: CardioEvent[] = [
@@ -70,14 +54,14 @@ export const handleRecordCardioSession = defineCommand<RecordCardioSession, Resu
       },
     ];
 
-    applyAndStore(events);
-
-    return { events, result: ok(undefined) };
+    await ctx.commit(events);
+    return ok(undefined);
   },
 });
 
 export const handleUpdateCardioSession = defineCommand<UpdateCardioSession, Result<void, string>>({
-  execute: async (cmd) => {
+  projections: cardioProjectionSlots,
+  execute: async (cmd, ctx) => {
     const events: CardioEvent[] = [
       {
         type: "CardioSessionUpdated",
@@ -97,13 +81,14 @@ export const handleUpdateCardioSession = defineCommand<UpdateCardioSession, Resu
       },
     ];
 
-    applyAndStore(events);
-    return { events, result: ok(undefined) };
+    await ctx.commit(events);
+    return ok(undefined);
   },
 });
 
 export const handleDeleteCardioSession = defineCommand<DeleteCardioSession, Result<void, string>>({
-  execute: async (cmd) => {
+  projections: cardioProjectionSlots,
+  execute: async (cmd, ctx) => {
     const events: CardioEvent[] = [
       {
         type: "CardioSessionDeleted",
@@ -115,8 +100,8 @@ export const handleDeleteCardioSession = defineCommand<DeleteCardioSession, Resu
       },
     ];
 
-    applyAndStore(events);
-    return { events, result: ok(undefined) };
+    await ctx.commit(events);
+    return ok(undefined);
   },
 });
 
@@ -148,7 +133,8 @@ export async function handleUpdateCardioSessionFull(cmd: {
 }
 
 export const handleImportGpsTrack = defineCommand<import("../domain/types").ImportGpsTrack, Result<void, string>>({
-  execute: async (cmd) => {
+  projections: cardioProjectionSlots,
+  execute: async (cmd, ctx) => {
     const events: CardioEvent[] = [
       {
         type: "GpsTrackImported",
@@ -163,7 +149,7 @@ export const handleImportGpsTrack = defineCommand<import("../domain/types").Impo
       },
     ];
 
-    applyAndStore(events);
-    return { events, result: ok(undefined) };
+    await ctx.commit(events);
+    return ok(undefined);
   },
 });

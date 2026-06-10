@@ -25,6 +25,7 @@ import type {
   LeaveSuperset,
   RemoveBlock,
   UpdateSessionDetails,
+  FinishSessionWithDetails,
   TrainingLogEvent,
   ExerciseSummary,
   SetEntry,
@@ -493,4 +494,91 @@ export async function handleUpdateSessionDetails(cmd: UpdateSessionDetails): Pro
       ...(cmd.media !== undefined ? { media: cmd.media } : {}),
     },
   }]);
+}
+
+export async function handleFinishSessionWithDetails(
+  cmd: FinishSessionWithDetails,
+): Promise<Result<void, string>> {
+  const sessionsState = viewStore.get<ActivitiesState>('sessions');
+  const session = sessionsState?.byId[cmd.sessionId];
+  if (!session) return err(`Session ${cmd.sessionId} not found`);
+
+  const exerciseSummaries: ExerciseSummary[] = session.segments
+    .filter(seg => seg.exerciseCategory === 'strength')
+    .map(seg => ({
+      exerciseName: seg.exerciseName,
+      exerciseCategory: seg.exerciseCategory,
+      sets: seg.sets.filter((s): s is SetEntry => !s.isWarmup),
+    }))
+    .filter(s => s.sets.length > 0);
+
+  const events: TrainingLogEvent[] = [];
+
+  if (cmd.notes !== undefined && cmd.notes !== session.notes) {
+    events.push({
+      type: 'SessionNoteUpdated',
+      aggregateId: cmd.sessionId,
+      aggregateType: 'Session',
+      timestamp: systemClock.now(),
+      version: 1,
+      payload: { sessionId: cmd.sessionId, notes: cmd.notes },
+    });
+  }
+
+  events.push({
+    type: 'SessionFinished',
+    aggregateId: cmd.sessionId,
+    aggregateType: 'Session',
+    timestamp: systemClock.now(),
+    version: 1,
+    payload: {
+      sessionId: cmd.sessionId,
+      finishedAt: cmd.finishedAt ?? systemClock.now(),
+      ...(cmd.sessionRpe !== undefined ? { sessionRpe: cmd.sessionRpe } : {}),
+      ...(cmd.tags !== undefined ? { tags: cmd.tags } : {}),
+      exerciseSummaries,
+    },
+  });
+
+  if (cmd.name !== undefined && cmd.name !== session.name) {
+    events.push({
+      type: 'SessionRenamed',
+      aggregateId: cmd.sessionId,
+      aggregateType: 'Session',
+      timestamp: systemClock.now(),
+      version: 1,
+      payload: { sessionId: cmd.sessionId, name: cmd.name },
+    });
+  }
+
+  if (cmd.startedAt !== undefined && cmd.startedAt !== session.startedAt) {
+    events.push({
+      type: 'SessionStartTimeUpdated',
+      aggregateId: cmd.sessionId,
+      aggregateType: 'Session',
+      timestamp: systemClock.now(),
+      version: 1,
+      payload: { sessionId: cmd.sessionId, startedAt: cmd.startedAt },
+    });
+  }
+
+  const hasDetails = cmd.finishedAt !== undefined || cmd.sessionRpe !== undefined || cmd.tags !== undefined || (cmd.media && cmd.media.length > 0);
+  if (hasDetails) {
+    events.push({
+      type: 'SessionUpdated',
+      aggregateId: cmd.sessionId,
+      aggregateType: 'Session',
+      timestamp: systemClock.now(),
+      version: 1,
+      payload: {
+        sessionId: cmd.sessionId,
+        ...(cmd.finishedAt !== undefined ? { finishedAt: cmd.finishedAt } : {}),
+        ...(cmd.sessionRpe !== undefined ? { rpe: cmd.sessionRpe } : {}),
+        ...(cmd.tags !== undefined ? { tags: cmd.tags } : {}),
+        ...(cmd.media !== undefined ? { media: cmd.media } : {}),
+      },
+    });
+  }
+
+  return commitTrainingLogEvents(events);
 }

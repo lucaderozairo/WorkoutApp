@@ -3,9 +3,8 @@ import { viewStore } from '@data/projections/views';
 import { handleCheckAchievements } from '../commands/handlers';
 import type { SessionSnapshot, CardioSnapshot } from '../domain/types';
 import { TrainingLogEvents } from '@features/training_log/contract';
-import type { ActivitiesState, ActivityView } from '@features/training_log/contract';
+import type { ActivityView } from '@features/training_log/contract';
 import { CardioEvents } from '@features/cardio/contract';
-import type { RecentCardioView } from '@features/cardio/contract';
 
 /**
  * Achievement policies react to domain events from other features.
@@ -14,10 +13,10 @@ import type { RecentCardioView } from '@features/cardio/contract';
  */
 
 function buildSnapshots(): { sessions: SessionSnapshot[]; cardio: CardioSnapshot[] } {
-  const sessionsState = viewStore.get<ActivitiesState>('sessions') ?? { byId: {}, activeId: null };
+  const sessionsState = viewStore.get('sessions') ?? { byId: {}, activeId: null };
   const sessionHistory = Object.values(sessionsState.byId)
     .filter((s): s is ActivityView & { startedAt: number } => s.status === 'finished' && s.startedAt != null);
-  const cardioView = viewStore.get<RecentCardioView>('recent_cardio_sessions');
+  const cardioView = viewStore.get('recent_cardio_sessions');
 
   const sessions: SessionSnapshot[] = sessionHistory.map(s => ({
     category: s.segments.some(seg => seg.exerciseCategory === 'cardio') ? 'cardio' : 'strength',

@@ -2,7 +2,6 @@ import { eventBus } from '@core/events/bus';
 import { viewStore } from '@data/projections/views';
 import { TrainingLogEvents } from '@features/training_log/contract';
 import { computeVolumeEntry, detectPlateau } from '../domain/compute';
-import type { ProgressionState } from '../domain/types';
 
 let registered = false;
 
@@ -15,8 +14,8 @@ export function registerProgressionPolicy(): void {
       const { exerciseSummaries, sessionId, finishedAt } = event.payload;
       const date = new Date(finishedAt).toISOString().slice(0, 10);
 
-      const current = viewStore.get<ProgressionState>('exercise_progressions') ?? {};
-      const updated: ProgressionState = { ...current };
+      const current = viewStore.get('exercise_progressions') ?? {};
+      const updated = { ...current };
 
       for (const summary of exerciseSummaries) {
         const existing = updated[summary.exerciseName] ?? {

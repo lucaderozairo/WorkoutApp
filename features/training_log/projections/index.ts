@@ -8,6 +8,7 @@ import type {
   ActivityPartner,
   SportType,
   ActivityStatus,
+  SessionImportedPayload,
 } from '../domain/types';
 import { ProjectionBuilder } from '@data/projections/builders';
 
@@ -369,6 +370,35 @@ export const sessionProjection = new ProjectionBuilder<ActivitiesState, Training
         ...(p.tags !== undefined ? { tags: p.tags } : {}),
         ...(p.media !== undefined ? { media: p.media } : {}),
       }));
+    },
+
+    SessionImported: (state, event) => {
+      if (event.type !== 'SessionImported') return state;
+      const p = event.payload as SessionImportedPayload;
+      return {
+        ...state,
+        byId: {
+          ...state.byId,
+          [p.sessionId]: {
+            id: p.sessionId,
+            name: p.name,
+            primarySport: p.primarySport as SportType,
+            status: 'finished' as const,
+            startedAt: p.startedAt,
+            finishedAt: p.finishedAt,
+            segments: p.segments.map(seg => ({
+              id: seg.id,
+              exerciseName: seg.exerciseName,
+              exerciseCategory: seg.exerciseCategory as ExerciseCategory,
+              sets: seg.sets,
+              notes: '',
+              order: seg.order,
+            })),
+            notes: p.notes,
+            sources: [],
+          },
+        },
+      };
     },
   }
 );
