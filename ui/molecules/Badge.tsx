@@ -30,6 +30,7 @@ export function Badge({ tone, color, dot = false, active = false, className, chi
     : undefined;
 
   return (
+    // eslint-disable-next-line no-restricted-syntax -- Dynamic CSS custom property keeps badge color token-driven without domain classes.
     <span className={classes} style={style}>
       {dot && <Dot />}
       {children}

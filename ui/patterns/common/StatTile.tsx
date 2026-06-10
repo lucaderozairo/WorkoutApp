@@ -11,7 +11,7 @@ interface StatTileProps {
 
 export function StatTile({ value, unit, label, className }: StatTileProps) {
   return (
-    <Surface variant="flat" pad="sm" className={['grow', 'q-tile', className].filter(Boolean).join(' ')}>
+    <Surface variant="flat" pad="sm" className={['min-w-0', 'q-tile', className].filter(Boolean).join(' ')}>
       <Column gap={1} align="center">
         <span className="mono detail">
           {value}

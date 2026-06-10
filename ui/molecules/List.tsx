@@ -31,7 +31,7 @@ export function ListItem({ leading, trailing, label, sublabel, interactive = fal
       <Row align="center">
         {leading && <span className="list-leading">{leading}</span>}
         {(label || sublabel) && (
-          <Column className="grow">
+          <Column className="min-w-0">
             {label && <span>{label}</span>}
             {sublabel && <span className="caption muted">{sublabel}</span>}
           </Column>

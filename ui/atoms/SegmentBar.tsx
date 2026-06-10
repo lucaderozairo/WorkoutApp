@@ -17,6 +17,7 @@ export function SegmentBar({ value, max, segments = DEFAULT_SEGMENTS, color, cla
   const style = color ? ({ '--seg-color': `var(--${color})` } as CSSProperties) : undefined;
 
   return (
+    // eslint-disable-next-line no-restricted-syntax -- Dynamic CSS custom property keeps segment color tokenized while caller owns meaning.
     <div className={wrapperClass} style={style}>
       {Array.from({ length: segments }, (_, i) => (
         <div key={i} className={i < filled ? 'seg filled' : 'seg'} />

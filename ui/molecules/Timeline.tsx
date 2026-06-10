@@ -18,7 +18,7 @@ export function TimelineItem({ time, dot, title, description, trailing, children
         <div className="timeline-dot">{dot ?? <span className="dot accent" />}</div>
         <div className="timeline-line" />
       </Column>
-      <Column className="grow">
+      <Column className="min-w-0">
         <Row justify="between" align="center">
           <Column gap={0}>
             {title && <span>{title}</span>}

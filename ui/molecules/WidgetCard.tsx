@@ -19,12 +19,12 @@ export function WidgetCard({ label, footer, tight = false, loading = false, clas
       <Column className="h-full">
         {label && <span className="eyebrow muted">{label}</span>}
         {loading ? (
-          <Column className="grow">
+          <Column className="min-w-0">
             <Skeleton size="block" />
             <Skeleton size="line" short />
           </Column>
         ) : (
-          <div className="grow">{children}</div>
+          <div className="min-w-0">{children}</div>
         )}
         {footer && <><Spacer />{footer}</>}
       </Column>

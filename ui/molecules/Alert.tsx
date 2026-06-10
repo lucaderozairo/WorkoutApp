@@ -36,7 +36,7 @@ export function Alert({ variant, title, message, dismissible = false, onDismiss,
   return (
     <Surface variant={SURFACE_VARIANT[variant]} className={extra} role="alert">
       <Row align="center">
-        <Column className="grow">
+        <Column className="min-w-0">
           {title && <strong>{title}</strong>}
           <span className="caption">{message}</span>
         </Column>

@@ -21,7 +21,7 @@ export function SearchBar({ value, onChange, placeholder = 'Search…', loading 
         type="search"
         value={value}
         placeholder={placeholder}
-        className="grow"
+        className="min-w-0"
         onChange={e => onChange(e.target.value)}
         onKeyDown={e => { if (e.key === 'Enter') onSubmit?.(); }}
       />

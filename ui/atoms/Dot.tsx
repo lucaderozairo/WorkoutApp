@@ -17,5 +17,6 @@ export function Dot({ color, size = 'md', active = false, className }: DotProps)
     .filter(Boolean)
     .join(' ');
   const style = color ? ({ '--dot-color': `var(--${color})` } as CSSProperties) : undefined;
+  // eslint-disable-next-line no-restricted-syntax -- Dynamic CSS custom property keeps the generic atom token-driven without domain classes.
   return <span className={classes} style={style} />;
 }

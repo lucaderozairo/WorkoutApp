@@ -1,4 +1,4 @@
-import { useState, useCallback, createContext, useContext, useRef } from 'react';
+import { useState, useCallback, createContext, useContext, useMemo, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { Surface } from '@ui/atoms/Surface';
 import { Row } from '@ui/layout/Row';
@@ -52,12 +52,12 @@ export function Toaster({ children }: { children: ReactNode }) {
     setTimeout(() => dismiss(id), opts?.duration ?? 3000);
   }, [dismiss]);
 
-  const api: ToastAPI = {
+  const api: ToastAPI = useMemo(() => ({
     success: (m, o) => add('success', m, o),
     error: (m, o) => add('error', m, o),
     info: (m, o) => add('info', m, o),
     warn: (m, o) => add('warn', m, o),
-  };
+  }), [add]);
 
   return (
     <ToastContext.Provider value={api}>
@@ -68,7 +68,7 @@ export function Toaster({ children }: { children: ReactNode }) {
             <Surface key={t.id} className="toast">
               <Row align="center">
                 <Badge tone={BADGE_VARIANT[t.variant]} dot />
-                <span className="grow">{t.message}</span>
+                <span className="min-w-0">{t.message}</span>
                 <Button variant="ghost" size="icon" onClick={() => dismiss(t.id)} aria-label="Dismiss">×</Button>
               </Row>
             </Surface>

@@ -11,7 +11,7 @@ interface TrendItemProps {
 export function TrendItem({ label, value, trailing, className }: TrendItemProps) {
   return (
     <Row align="center" className={['trend-item', className].filter(Boolean).join(' ')}>
-      <div className="grow">{label}</div>
+      <div className="min-w-0">{label}</div>
       <span className="caption muted">{value}</span>
       {trailing}
     </Row>
