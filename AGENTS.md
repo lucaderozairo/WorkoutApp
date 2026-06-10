@@ -108,3 +108,5 @@ python3 -c "from graphify.watch import _rebuild_code; from pathlib import Path; 
 - `LAYER_RULES.md` — dependency rules
 - `TABS.md` — tab → feature → query mapping
 - `app/navigation/router.md` — full route table
+
+@RTK.md

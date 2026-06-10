@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "code-review-graph status --json",
+            "command": "code-review-graph status",
             "timeout": 3000
           }
         ]

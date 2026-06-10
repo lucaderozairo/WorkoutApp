@@ -5,6 +5,7 @@ import { Shell } from "@ui/layout";
 import { TabNavigation } from "@ui/screens/TabNavigation";
 import { SettingsModal } from "@ui/components/modals/SettingsModal";
 import { StorageWarningBanner } from "@ui/components/ux/StorageWarningBanner";
+import { Toaster } from "@ui/molecules";
 import { APP_MODE } from "@config/app-mode";
 import "@features/training_log";
 import "@features/planning";
@@ -99,76 +100,78 @@ export function App() {
 
   const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <ErrorBoundaryRoot>
-      <Shell
-        mode="web"
-        menu={(
-          <TabNavigation
-            onOpenSettings={openSettings}
-            menuOpen={menuOpen}
-            onMenuToggle={() => setMenuOpen((v) => !v)}
-            onMenuClose={() => setMenuOpen(false)}
-          />
-        )}
-      >
-        <StorageWarningBanner />
-        {showSettings && (
-          <SettingsModal onClose={() => setShowSettings(false)} />
-        )}
-        <Suspense fallback={null}>
-          <Routes>
-            <Route path="/" element={<Navigate to="/home" replace />} />
-            <Route path="/home" element={<HomeScreen />} />
-            <Route path="/sessions" element={<LogScreen />} />
-            <Route path="/sessions/:sessionId" element={<LogScreen />} />
-            <Route
-              path="/sessions/:sessionId/summary"
-              element={<FinishSessionScreen />}
+    <Toaster>
+      <ErrorBoundaryRoot>
+        <Shell
+          mode="web"
+          menu={(
+            <TabNavigation
+              onOpenSettings={openSettings}
+              menuOpen={menuOpen}
+              onMenuToggle={() => setMenuOpen((v) => !v)}
+              onMenuClose={() => setMenuOpen(false)}
             />
-            <Route
-              path="/sessions/:sessionId/edit"
-              element={<EditSessionScreen />}
-            />
-            <Route path="/sessions/new" element={<NewSessionScreen />} />
-            <Route
-              path="/log"
-              element={<Navigate to="/sessions" replace />}
-            />
-            <Route
-              path="/log/:sessionId"
-              element={<Navigate to="/sessions/:sessionId" replace />}
-            />
-            <Route
-              path="/new-session"
-              element={<Navigate to="/sessions/new" replace />}
-            />
-            {APP_MODE !== "github-pages" && (
-              <>
-                {/* <Route path="/schedule" element={<TrainingPlansScreen />} /> */}
-                {/* <Route path="/progress" element={<ProgressScreen onOpenSettings={openSettings} />} /> */}
-                <Route path="/social" element={<SocialScreen />} />
-                <Route path="/messages" element={<MessageScreen />} />
-                <Route path="/widgets" element={<WidgetPrototypeScreen />} />
-              </>
-            )}
-            <Route
-              path="/exercise/:exerciseName"
-              element={<ExerciseHistoryScreen />}
-            />
-            <Route path="/weather" element={<WeatherScreen />} />
-            <Route path="/profile" element={<ProfileScreen />} />
-            <Route
-              path="/profile/health/:category"
-              element={<HealthCategoryScreen />}
-            />
-            <Route path="/settings" element={<SettingsScreen />} />
-            <Route path="/notifications" element={<NotificationsScreen />} />
-            <Route path="/plan-route" element={<RoutePlannerScreen />} />
-            <Route path="/saved-routes" element={<SavedRoutesScreen />} />
-            <Route path="*" element={<Navigate to="/home" replace />} />
-          </Routes>
-        </Suspense>
-      </Shell>
-    </ErrorBoundaryRoot>
+          )}
+        >
+          <StorageWarningBanner />
+          {showSettings && (
+            <SettingsModal onClose={() => setShowSettings(false)} />
+          )}
+          <Suspense fallback={null}>
+            <Routes>
+              <Route path="/" element={<Navigate to="/home" replace />} />
+              <Route path="/home" element={<HomeScreen />} />
+              <Route path="/sessions" element={<LogScreen />} />
+              <Route path="/sessions/:sessionId" element={<LogScreen />} />
+              <Route
+                path="/sessions/:sessionId/summary"
+                element={<FinishSessionScreen />}
+              />
+              <Route
+                path="/sessions/:sessionId/edit"
+                element={<EditSessionScreen />}
+              />
+              <Route path="/sessions/new" element={<NewSessionScreen />} />
+              <Route
+                path="/log"
+                element={<Navigate to="/sessions" replace />}
+              />
+              <Route
+                path="/log/:sessionId"
+                element={<Navigate to="/sessions/:sessionId" replace />}
+              />
+              <Route
+                path="/new-session"
+                element={<Navigate to="/sessions/new" replace />}
+              />
+              {APP_MODE !== "github-pages" && (
+                <>
+                  {/* <Route path="/schedule" element={<TrainingPlansScreen />} /> */}
+                  {/* <Route path="/progress" element={<ProgressScreen onOpenSettings={openSettings} />} /> */}
+                  <Route path="/social" element={<SocialScreen />} />
+                  <Route path="/messages" element={<MessageScreen />} />
+                  <Route path="/widgets" element={<WidgetPrototypeScreen />} />
+                </>
+              )}
+              <Route
+                path="/exercise/:exerciseName"
+                element={<ExerciseHistoryScreen />}
+              />
+              <Route path="/weather" element={<WeatherScreen />} />
+              <Route path="/profile" element={<ProfileScreen />} />
+              <Route
+                path="/profile/health/:category"
+                element={<HealthCategoryScreen />}
+              />
+              <Route path="/settings" element={<SettingsScreen />} />
+              <Route path="/notifications" element={<NotificationsScreen />} />
+              <Route path="/plan-route" element={<RoutePlannerScreen />} />
+              <Route path="/saved-routes" element={<SavedRoutesScreen />} />
+              <Route path="*" element={<Navigate to="/home" replace />} />
+            </Routes>
+          </Suspense>
+        </Shell>
+      </ErrorBoundaryRoot>
+    </Toaster>
   );
 }
