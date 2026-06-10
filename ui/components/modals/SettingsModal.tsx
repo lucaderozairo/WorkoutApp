@@ -14,7 +14,7 @@ import { importCsv, writeImportToStore } from '@shared/utils/importCsv';
 import { exportAllSessionsCsv } from '@shared/utils/exportCsv';
 import { triggerDownload } from '@shared/utils/csv';
 import { getActivityHistory } from '@features/training_log';
-import type { CardioSession } from '@features/cardio/contract';
+import type { CardioSession } from '@features/cardio/domain/types';
 import { Row, Column } from '@ui/layout';
 import { Surface, Text } from '@ui/atoms';
 import { Button, Switch } from '@ui/molecules';

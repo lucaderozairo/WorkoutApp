@@ -5,7 +5,7 @@ import {
 } from 'recharts';
 
 import { ScoreRing, fmtMin, TOOLTIP_STYLE, TICK } from '@ui/patterns/charts/domain-charts';
-import type { SleepSession } from '@features/readiness/contract';
+import type { SleepSession } from '@features/readiness';
 import { Row, Column, Spacer } from '@ui/layout';
 import { Surface, Text } from '@ui/atoms';
 import { Badge } from '@ui/molecules';

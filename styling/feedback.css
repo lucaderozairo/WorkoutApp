@@ -7,3 +7,58 @@
   background: var(--surface-2);
   border: 1px solid var(--line);
 }
+
+/* ── Toast stack — fixed container + item animation via nesting ── */
+.toast-stack {
+  position: fixed;
+  bottom: calc(var(--nav-height) + var(--s-3));
+  inset-inline: var(--s-4);
+  max-width: var(--modal-md);
+  margin-inline: auto;
+  z-index: var(--z-fixed);
+
+  & .toast {
+    @starting-style { opacity: 0; transform: translateY(6px); }
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity var(--duration-medium) var(--ease),
+      transform var(--duration-medium) var(--ease),
+      display var(--duration-medium) allow-discrete;
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+}
+
+.loading-state {
+  text-align: center;
+
+  & h3 {
+    margin: 0;
+  }
+
+  & p {
+    max-width: 44ch;
+    margin: 0;
+  }
+}
+
+.loading-state-skeleton {
+  width: min(100%, 280px);
+}
+
+.loading-state-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--s-6);
+  height: var(--s-6);
+  border-radius: var(--r-sm);
+  color: var(--ink-muted);
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: var(--t-sm);
+  font-weight: 600;
+}

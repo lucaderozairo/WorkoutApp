@@ -1,4 +1,4 @@
-import type { TypeFilter } from "@features/training_log/contract";
+import type { TypeFilter } from "@features/training_log/queries/calendarUtils";
 export type { TypeFilter };
 import { Tabs } from "@ui/molecules";
 

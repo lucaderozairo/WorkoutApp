@@ -10,6 +10,16 @@ export { Metric } from './Metric';
 export { Checkbox } from './Checkbox';
 export { ProgressBar } from './ProgressBar';
 export { SegmentBar } from './SegmentBar';
-export { Table, TableHead, TableRow, TableCell } from './Table';
+export {
+  Table,
+  TableHead,
+  TableHeader,
+  TableBody,
+  TableFooter,
+  TableCaption,
+  TableRow,
+  TableCell,
+  TableHeaderCell,
+} from './Table';
 export { Divider } from './Divider';
 export { Skeleton } from './Skeleton';

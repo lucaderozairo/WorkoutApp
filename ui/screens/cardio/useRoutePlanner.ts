@@ -255,6 +255,7 @@ export function useRoutePlanner() {
     if (result === 'fail') setSearchError('Search failed');
     else if (result === 'no_results') setSearchError('No results');
     setSearchBusy(false);
+    return result;
   }
 
   function applyPaceInput(raw: string) {

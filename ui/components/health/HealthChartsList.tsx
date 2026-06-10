@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useQuery } from '@ui/bindings';
-import type { HealthChartMap } from '@features/health/contract';
+import type { HealthChartMap } from '@features/health';
 import { ChartContainer } from '../../patterns/charts/charts';
 import { Row, Column } from '@ui/layout';
 import { Surface, Text } from '@ui/atoms';

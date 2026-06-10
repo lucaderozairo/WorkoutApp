@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom'
 import { Search } from 'lucide-react'
 import { ChartContainer } from '@ui/patterns/charts/charts'
 import { useQuery } from '@ui/bindings'
-import type { HealthChartDef, HealthChartMap } from '@features/health/contract'
+import type { HealthChartDef, HealthChartMap } from '@features/health'
 import { Row, Column, Cluster } from '@ui/layout'
-import { Text, Chip, Divider } from '@ui/atoms';
+import { Surface, Text, Chip, Divider } from '@ui/atoms';
 
 // ─── Types & Registry ───────────────────────────────────────────────────────
 
@@ -70,8 +70,12 @@ interface CategoryButtonProps {
 
 function CategoryTile({ cat, isPinned = false, onClick, onLongPress, charts }: CategoryButtonProps) {
   return (
-    <button
-      className={`surface pad-sm${isPinned ? ' pinned' : ''}`}
+    <Surface
+      as="button"
+      type="button"
+      pad="sm"
+      variant={isPinned ? 'pinned' : 'default'}
+      interactive
       onClick={onClick}
       onPointerDown={onLongPress.start}
       onPointerUp={onLongPress.cancel}
@@ -82,14 +86,18 @@ function CategoryTile({ cat, isPinned = false, onClick, onLongPress, charts }: C
         <span>{cat.icon}</span>
         <Text size="caption">{cat.name}</Text>
       </Column>
-    </button>
+    </Surface>
   )
 }
 
 function CategoryRow({ cat, isPinned = false, onClick, onLongPress, charts }: CategoryButtonProps) {
   return (
-    <button
-      className={`surface pad-sm${isPinned ? ' pinned' : ''}`}
+    <Surface
+      as="button"
+      type="button"
+      pad="sm"
+      variant={isPinned ? 'pinned' : 'default'}
+      interactive
       onClick={onClick}
       onPointerDown={onLongPress.start}
       onPointerUp={onLongPress.cancel}
@@ -118,7 +126,7 @@ function CategoryRow({ cat, isPinned = false, onClick, onLongPress, charts }: Ca
           <Text color="faint" aria-hidden="true">›</Text>
         </Row>
       </Row>
-    </button>
+    </Surface>
   )
 }
 

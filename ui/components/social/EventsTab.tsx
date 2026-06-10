@@ -1,5 +1,5 @@
 import { useQuery } from '@ui/bindings';
-import type { MockSocialEvent } from '@features/social/contract';
+import type { MockSocialEvent } from '@features/social';
 import { SPORT_MAP } from '@features/social/domain/constants';
 import { Row, Column } from '@ui/layout';
 import { Surface, Avatar, Text } from '@ui/atoms';

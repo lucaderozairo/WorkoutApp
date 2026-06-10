@@ -16,7 +16,9 @@
   container: tile / inline-size;
 
   @container tile (min-width: 200px) {
-    & .mono { font-size: var(--t-lg); }
+    & .mono {
+      font-size: var(--t-lg);
+    }
   }
 }
 
@@ -39,4 +41,21 @@
    components that need to restyle their children by card width. */
 .q-card {
   container: card / inline-size;
+}
+
+.full-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100dvw;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.content:has(.fill-screen) {
+  padding: 0;
+
+  .fill-screen {
+    height: 100%;
+  }
 }

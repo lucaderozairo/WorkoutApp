@@ -3,7 +3,8 @@ import type { ElementType, ReactNode } from 'react';
 import { type Gap } from './_classes';
 
 type LayerPin =
-  | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
+  | 'top-left' | 'top-center' | 'top-right'
+  | 'bottom-left' | 'bottom-center' | 'bottom-right'
   | 'below-left' | 'below-center' | 'below-right'
   | 'above-left' | 'above-center' | 'above-right'
   | 'left-start' | 'left-center' | 'left-end'
@@ -33,8 +34,10 @@ interface LayerProps {
 
 const PIN_CLASS: Record<LayerPin, string> = {
   'top-left':     'layer-pin-top-left',
+  'top-center':   'layer-pin-top-center',
   'top-right':    'layer-pin-top-right',
   'bottom-left':  'layer-pin-bottom-left',
+  'bottom-center':'layer-pin-bottom-center',
   'bottom-right': 'layer-pin-bottom-right',
   'below-left':   'layer-pin-below-left',
   'below-center': 'layer-pin-below-center',

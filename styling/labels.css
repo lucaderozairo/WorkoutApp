@@ -4,6 +4,26 @@
 /* ════════════════════════════════════════════
    BADGE — status/category label with optional dot
    ════════════════════════════════════════════ */
+.label {
+  color: var(--ink);
+  font-size: var(--t-sm);
+  font-weight: 600;
+}
+
+.empty {
+  text-align: center;
+
+  & h3 {
+    margin: 0;
+  }
+
+  & p {
+    max-width: 48ch;
+    margin: 0;
+    text-wrap: pretty;
+  }
+}
+
 .badge {
   gap: var(--s-2);
   padding: var(--s-1) var(--s-3);

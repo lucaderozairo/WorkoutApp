@@ -4,7 +4,7 @@ import { SetsBarChart } from './SetsBarChart';
 import { CommentLine } from './CommentLine';
 import { LetterBadge } from './LetterBadge';
 import { getWarnings } from '@features/training_log/projections/mappers';
-import type { UIExercise, UICondition } from '@features/training_log/contract';
+import type { UIExercise, UICondition } from '@features/training_log/projections/viewTypes';
 import type { SetMode } from '@data/static/exercises';
 import { Row, Column } from '@ui/layout';
 import { Text } from '@ui/atoms';

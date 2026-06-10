@@ -4,27 +4,66 @@
   border-radius: var(--r-md);
   box-shadow: var(--box-shadow-sm);
   display: block;
-  padding: var(--s-4);
+  padding: var(--s-3);
 
-  &.pad-sm, &.tight { padding: var(--s-3); }
-  &.pad-none { padding: 0; overflow: hidden; }
+  &.pad-sm {
+    padding: var(--s-2);
+  }
+  &.pad-xs {
+    padding: var(--s-1);
+  }
+  &.pad-none {
+    padding: 0;
+    overflow: hidden;
+  }
 
   /* ── Visual variants ── */
-  &.plain    { border-color: transparent; box-shadow: none; }
-  &.flat     { background: var(--surface-2); border-color: transparent; }
-  &.accent   { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
-  &.ghost    { background: transparent; border-color: transparent; box-shadow: none; }
-  &.selected { border-color: var(--accent); }
-  &.inset    { background: var(--surface-2); border-style: dashed; }
-  &.pinned   { border-color: var(--accent); background: var(--surface-2); }
+  &.plain {
+    border-color: transparent;
+    box-shadow: none;
+  }
+  &.flat {
+    background: var(--surface-2);
+    border-color: transparent;
+  }
+  &.accent {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: transparent;
+  }
+  &.ghost {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+  }
+  &.selected {
+    border-color: var(--accent);
+  }
+  &.active {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 10%, var(--surface-1));
+  }
+  &.inset {
+    background: var(--surface-2);
+    border-style: dashed;
+  }
+  &.pinned {
+    border-color: var(--accent);
+    background: var(--surface-2);
+  }
 
   /* ── Interactive state ── */
   &.interactive {
     cursor: pointer;
-    transition: background var(--duration-short) var(--ease),
-                box-shadow  var(--duration-short) var(--ease);
-    &:hover  { background: color-mix(in srgb, var(--surface-1), var(--ink) 5%); }
-    &:active { background: color-mix(in srgb, var(--surface-1), var(--ink) 10%); }
+    transition:
+      background var(--duration-short) var(--ease),
+      box-shadow var(--duration-short) var(--ease);
+    &:hover {
+      background: color-mix(in srgb, var(--surface-1), var(--ink) 5%);
+    }
+    &:active {
+      background: color-mix(in srgb, var(--surface-1), var(--ink) 10%);
+    }
   }
 
   @media (max-width: 360px) {

@@ -2,7 +2,10 @@ import type { ReactNode } from 'react';
 import { Layer, type LayerZ } from './Layered';
 import { type Gap } from './_classes';
 
-type Pin = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'center';
+type Pin =
+  | 'top-left' | 'top-center' | 'top-right'
+  | 'bottom-left' | 'bottom-center' | 'bottom-right'
+  | 'center';
 
 interface OverlayProps {
   pin?: Pin;

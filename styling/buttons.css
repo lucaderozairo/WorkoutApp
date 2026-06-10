@@ -1,5 +1,5 @@
 /* ── Base button ── */
-:is(button, input[type="button"], input[type="submit"], input[type="reset"], .custom-file-upload) {
+:is(.button, .choice-card, input[type="button"], input[type="submit"], input[type="reset"], .custom-file-upload) {
   display: inline-flex;
   align-items: center;
   justify-content: center;

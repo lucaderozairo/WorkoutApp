@@ -17,6 +17,22 @@ export function TableHead({ children }: TableHeadProps) {
   return <thead>{children}</thead>;
 }
 
+export function TableHeader({ children }: TableHeadProps) {
+  return <thead>{children}</thead>;
+}
+
+export function TableBody({ children }: TableHeadProps) {
+  return <tbody>{children}</tbody>;
+}
+
+export function TableFooter({ children }: TableHeadProps) {
+  return <tfoot>{children}</tfoot>;
+}
+
+export function TableCaption({ children }: TableHeadProps) {
+  return <caption>{children}</caption>;
+}
+
 interface TableRowProps {
   onClick?: () => void;
   interactive?: boolean;
@@ -45,4 +61,8 @@ export function TableCell({ align, mono, muted, header = false, className, child
 
   const Tag = header ? 'th' : 'td';
   return <Tag className={classes || undefined}>{children}</Tag>;
+}
+
+export function TableHeaderCell(props: Omit<TableCellProps, 'header'>) {
+  return <TableCell {...props} header />;
 }

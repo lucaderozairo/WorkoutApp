@@ -1,5 +1,5 @@
 import type { TextareaHTMLAttributes } from 'react';
-import { Column } from '@ui/layout/Column';
+import { Field } from './Field';
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
@@ -10,8 +10,6 @@ interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 }
 
 export function Textarea({ label, hint, error, rows = 3, autoGrow = false, id, className, onChange, ...rest }: TextareaProps) {
-  const textareaId = id ?? label?.toLowerCase().replace(/\s+/g, '-');
-
   function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     if (autoGrow) {
       e.target.style.height = 'auto';
@@ -21,20 +19,18 @@ export function Textarea({ label, hint, error, rows = 3, autoGrow = false, id, c
   }
 
   return (
-    <Column gap={1} className={className}>
-      {label && <label htmlFor={textareaId}>{label}</label>}
-      <textarea
-        id={textareaId}
-        rows={rows}
-        className={error ? 'error' : undefined}
-        onChange={autoGrow || onChange ? handleChange : undefined}
-        {...rest}
-      />
-      {error ? (
-        <span className="caption negative">{error}</span>
-      ) : hint ? (
-        <span className="caption muted">{hint}</span>
-      ) : null}
-    </Column>
+    <Field id={id} label={label} hint={hint} error={error} className={className}>
+      {({ id: textareaId, describedBy, invalid }) => (
+        <textarea
+          id={textareaId}
+          rows={rows}
+          aria-invalid={invalid || undefined}
+          aria-describedby={describedBy}
+          className={['textarea', invalid ? 'error' : ''].filter(Boolean).join(' ')}
+          onChange={autoGrow || onChange ? handleChange : undefined}
+          {...rest}
+        />
+      )}
+    </Field>
   );
 }

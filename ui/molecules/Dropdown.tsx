@@ -24,14 +24,15 @@ interface DropdownProps {
 export function Dropdown({ trigger, items, align = 'right' }: DropdownProps) {
   const id = useId();
   const pid = `dd-${id.replace(/:/g, '')}`;
+  const alignClass = align === 'left' ? 'popover-align-start' : 'popover-align-end';
 
   return (
     <>
-      <button type="button" className="ghost" popoverTarget={pid}>{trigger}</button>
+      <Button type="button" variant="ghost" popoverTarget={pid}>{trigger}</Button>
       <div
         id={pid}
         popover="auto"
-        className={`dropdown surface column gap-1 menu-popover${align === 'left' ? ' anchor-left' : ''}`}
+        className={`dropdown surface column gap-1 menu-popover popover-bottom ${alignClass}`}
       >
         {items.map((item, i) => (
           <Button

@@ -18,7 +18,7 @@ export class ErrorBoundaryRoot extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="column surface centered" role="alert">
+        <div className="column surface center" role="alert">
           <h2>Something went wrong</h2>
           <p className="caption">Your data is safe — this is a display error.</p>
           {this.state.errorMessage && (

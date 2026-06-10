@@ -8,4 +8,4 @@ function resolveMode(defaultMode: AppMode): AppMode {
   return defaultMode;
 }
 
-export const APP_MODE: AppMode = resolveMode("github-pages");
+export const APP_MODE: AppMode = resolveMode("prototype");

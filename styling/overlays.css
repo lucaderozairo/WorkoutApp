@@ -68,6 +68,18 @@
 
     &.anchor-left  { position-area: bottom span-inline-end; }
     &.anchor-above { position-area: top span-inline-start; }
+    &.popover-top { position-area: top span-inline-start; }
+    &.popover-bottom { position-area: bottom span-inline-start; }
+    &.popover-left { position-area: left span-block-start; }
+    &.popover-right { position-area: right span-block-start; }
+    &.popover-align-center { position-area: bottom center; }
+    &.popover-align-end { position-area: bottom span-inline-end; }
+    &.popover-top.popover-align-center { position-area: top center; }
+    &.popover-top.popover-align-end { position-area: top span-inline-end; }
+    &.popover-left.popover-align-center { position-area: left center; }
+    &.popover-left.popover-align-end { position-area: left span-block-end; }
+    &.popover-right.popover-align-center { position-area: right center; }
+    &.popover-right.popover-align-end { position-area: right span-block-end; }
   }
 }
 
@@ -92,9 +104,13 @@
 }
 
 .filter-panel { min-width: 280px; }
+
 /* ── Bottom sheet — mobile snap container ── */
 .bottom-sheet {
-  position: relative;
+  bottom:0;
+  left:0;
+  right:0;
+  position: fixed;
   background: var(--surface-1);
   border-top: 1px solid var(--line);
   border-top-left-radius: var(--r-lg);

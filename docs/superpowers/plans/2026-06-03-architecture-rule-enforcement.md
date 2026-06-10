@@ -9,6 +9,7 @@
 **Tech Stack:** ESLint 9 (flat config), `typescript-eslint` 8, `eslint-plugin-boundaries` 5, Stylelint 16, `stylelint-config-standard`, `stylelint-declaration-strict-value`. Build is Vite + `tsc`; tests are Vitest. CI is GitHub Actions (`.github/workflows/ci.yml`).
 
 **Layer model (from CLAUDE.md):**
+
 ```
 tokens ← primitives(ui/atoms,ui/molecules) ← layouts(ui/layout) ← patterns(ui/patterns)
        ← feature-ui(ui/components) ← screens(ui/screens,ui/navigation)
@@ -41,27 +42,33 @@ features(features/*) → infrastructure(data,core) → shared    (domain logic s
 ### Task 1: Install linting toolchain
 
 **Files:**
+
 - Modify: `package.json` (devDependencies + scripts)
 
 - [ ] **Step 1: Install ESLint + boundaries toolchain**
 
 Run:
+
 ```bash
 npm install -D eslint@^9 @eslint/js@^9 typescript-eslint@^8 eslint-plugin-boundaries@^5 globals
 ```
+
 Expected: packages added to `devDependencies`, no peer-dep errors.
 
 - [ ] **Step 2: Install Stylelint toolchain**
 
 Run:
+
 ```bash
 npm install -D stylelint@^16 stylelint-config-standard@^36 stylelint-declaration-strict-value@^1
 ```
+
 Expected: packages added to `devDependencies`.
 
 - [ ] **Step 3: Add lint scripts to `package.json`**
 
 In the `"scripts"` block add:
+
 ```json
     "lint": "eslint .",
     "lint:css": "stylelint \"styling/**/*.css\"",
@@ -84,40 +91,49 @@ git commit -m "chore(lint): add eslint + stylelint toolchain"
 ### Task 2: ESLint flat config with layer element definitions
 
 **Files:**
+
 - Create: `eslint.config.js`
 
 - [ ] **Step 1: Write the flat config with element types (no rules enabled yet)**
 
 ```js
 // eslint.config.js
-import js from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import boundaries from 'eslint-plugin-boundaries';
+import js from "@eslint/js";
+import tseslint from "typescript-eslint";
+import boundaries from "eslint-plugin-boundaries";
 
 export default tseslint.config(
-  { ignores: ['dist/**', 'node_modules/**', 'eslint-fixtures/**', 'graphify-out/**', 'docs/**'] },
+  {
+    ignores: [
+      "dist/**",
+      "node_modules/**",
+      "eslint-fixtures/**",
+      "graphify-out/**",
+      "docs/**",
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ["**/*.{ts,tsx}"],
     plugins: { boundaries },
     settings: {
-      'boundaries/elements': [
-        { type: 'tokens',         pattern: 'styling/*' },
-        { type: 'primitives',     pattern: 'ui/atoms/*' },
-        { type: 'primitives',     pattern: 'ui/molecules/*' },
-        { type: 'layouts',        pattern: 'ui/layout/*' },
-        { type: 'patterns',       pattern: 'ui/patterns/*' },
-        { type: 'feature-ui',     pattern: 'ui/components/*' },
-        { type: 'screens',        pattern: 'ui/screens/*' },
-        { type: 'screens',        pattern: 'ui/navigation/*' },
-        { type: 'feature-logic',  pattern: 'features/*', capture: ['feature'] },
-        { type: 'infrastructure', pattern: 'data/*' },
-        { type: 'infrastructure', pattern: 'core/*' },
-        { type: 'shared',         pattern: 'shared/*' },
-        { type: 'app',            pattern: 'app/*' },
+      "boundaries/elements": [
+        { type: "tokens", pattern: "styling/*" },
+        { type: "primitives", pattern: "ui/atoms/*" },
+        { type: "primitives", pattern: "ui/molecules/*" },
+        { type: "layouts", pattern: "ui/layout/*" },
+        { type: "patterns", pattern: "ui/patterns/*" },
+        { type: "feature-ui", pattern: "ui/components/*" },
+        { type: "screens", pattern: "ui/screens/*" },
+        { type: "screens", pattern: "ui/navigation/*" },
+        { type: "feature-logic", pattern: "features/*", capture: ["feature"] },
+        { type: "infrastructure", pattern: "data/*" },
+        { type: "infrastructure", pattern: "core/*" },
+        { type: "shared", pattern: "shared/*" },
+        { type: "app", pattern: "app/*" },
       ],
-      'boundaries/ignore': ['**/*.test.{ts,tsx}', '**/*.d.ts'],
+      "boundaries/ignore": ["**/*.test.{ts,tsx}", "**/*.d.ts"],
     },
     rules: {},
   },
@@ -143,12 +159,14 @@ git commit -m "chore(lint): eslint flat config with layer element types"
 The codebase is already clean here (`ui/atoms`, `ui/molecules`, `ui/layout` import no features), so this ships as `error`.
 
 **Files:**
+
 - Modify: `eslint.config.js` (add `boundaries/element-types` rule)
 - Create (temp): `eslint-fixtures/violation.tsx`
 
 - [ ] **Step 1: Add the dependency-direction rule**
 
 In `eslint.config.js`, replace `rules: {}` with:
+
 ```js
     rules: {
       'boundaries/element-types': ['error', {
@@ -173,9 +191,10 @@ In `eslint.config.js`, replace `rules: {}` with:
 - [ ] **Step 2: Write a deliberate violation fixture**
 
 Create `eslint-fixtures/violation.tsx` — temporarily add `eslint-fixtures` as a `primitives` element by appending `{ type: 'primitives', pattern: 'eslint-fixtures/*' }` to `boundaries/elements`, then:
+
 ```tsx
 // eslint-fixtures/violation.tsx — proves a primitive cannot import a feature
-import { something } from '@features/training_log/queries';
+import { something } from "@features/training_log/queries";
 export const X = something;
 ```
 
@@ -189,6 +208,7 @@ Expected: FAIL with a `boundaries/element-types` error ("element of type primiti
 ```bash
 rm -rf eslint-fixtures
 ```
+
 Then delete the `{ type: 'primitives', pattern: 'eslint-fixtures/*' }` line from `boundaries/elements`.
 
 - [ ] **Step 5: Run ESLint on the whole repo, expect NO boundary errors**
@@ -210,11 +230,13 @@ git commit -m "feat(lint): enforce layer dependency boundaries"
 8 `.tsx` files currently use `style={{`. Ship as `warn`, triage in Task 5, ratchet to `error` in Task 8.
 
 **Files:**
+
 - Modify: `eslint.config.js`
 
 - [ ] **Step 1: Add the inline-style rule as a warning**
 
 Add to the `rules` block:
+
 ```js
       'no-restricted-syntax': ['warn', {
         selector: 'JSXAttribute[name.name="style"]',
@@ -241,6 +263,7 @@ git commit -m "feat(lint): warn on inline styles"
 Convert each `style={{...}}` to either a CSS class or a dynamic CSS custom property. Dynamic values (progress %, chart heights) may keep `style` ONLY to set a CSS variable, with an `eslint-disable` justification.
 
 **Files:**
+
 - Modify: each `.tsx` flagged in Task 4 Step 2.
 
 - [ ] **Step 1: List the flagged files**
@@ -255,12 +278,19 @@ If the style is static (e.g. `style={{ display: 'flex' }}`), move it to the appr
 - [ ] **Step 3: For each file — dynamic styles → CSS custom property**
 
 If the value is computed (e.g. a width percentage), set a CSS variable instead and consume it in CSS:
+
 ```tsx
 // eslint-disable-next-line no-restricted-syntax -- dynamic value must be a CSS custom property
-<div className="bar" style={{ '--bar-fill': `${pct}%` } as React.CSSProperties} />
+<div
+  className="bar"
+  style={{ "--bar-fill": `${pct}%` } as React.CSSProperties}
+/>
 ```
+
 ```css
-.bar { inline-size: var(--bar-fill); }
+.bar {
+  inline-size: var(--bar-fill);
+}
 ```
 
 - [ ] **Step 4: Re-run ESLint, expect zero un-disabled inline-style warnings**
@@ -286,15 +316,18 @@ git commit -m "refactor(ui): remove inline styles in favour of token-driven CSS"
 ~10 sites import another feature's `domain/types` (mostly `training_log` and `cardio` types: `SetEntry`, `SessionFinishedPayload`, `SportType`, `CardioSession`, `CardioSport`, `StrengthSet`). These shared contracts move to `shared/contracts` so no feature imports another.
 
 **Files:**
+
 - Modify: `shared/contracts/index.ts`
 - Modify: the importing files (listed in Step 1)
 
 - [ ] **Step 1: Enumerate cross-feature imports**
 
 Run: `npx eslint . --no-warn-ignored 2>&1 | grep "boundaries/element-types" | grep -i feature` and cross-check with:
+
 ```bash
 grep -rn "from '@features/" features | grep -vE "from '@features/([a-z_]+)'" | grep "$(basename "$PWD")" || grep -rn "from '@features/.*domain" features
 ```
+
 Expected: the set of cross-feature type-import sites.
 
 - [ ] **Step 2: Identify the shared types**
@@ -304,19 +337,18 @@ These are the domain types referenced across features. Confirm the canonical def
 - [ ] **Step 3: Re-export shared contracts from `shared/contracts`**
 
 In `shared/contracts/index.ts`, add a cross-feature contract surface. Prefer relocating the type definitions here; if a type is co-owned with a feature's reducers, re-export it:
+
 ```ts
 // shared/contracts/index.ts — cross-feature domain contracts (Rule 4)
 export type {
   SessionFinishedPayload,
   SetEntry,
   SportType,
-} from '@features/training_log/domain/types';
-export type {
-  CardioSession,
-  CardioSport,
-} from '@features/cardio/domain/types';
+} from "@features/training_log/domain/types";
+export type { CardioSession, CardioSport } from "@features/cardio/domain/types";
 ```
-> Note: this re-export still lives logically above features. If stricter purity is wanted, move the type *definitions* into `shared/contracts` and have the features import them back. Decide per-type; re-export is the minimal change.
+
+> Note: this re-export still lives logically above features. If stricter purity is wanted, move the type _definitions_ into `shared/contracts` and have the features import them back. Decide per-type; re-export is the minimal change.
 
 - [ ] **Step 4: Repoint every cross-feature importer**
 
@@ -346,6 +378,7 @@ git commit -m "refactor(features): route cross-feature types through shared/cont
 Hardcoded values exist (e.g. `padding: 6px var(--s-2)`), so strict-value ships as `warning`, gets triaged, then ratchets to `error` in Task 8.
 
 **Files:**
+
 - Create: `stylelint.config.js`
 - Create (temp): `stylelint-fixtures/bad.css`
 
@@ -354,39 +387,76 @@ Hardcoded values exist (e.g. `padding: 6px var(--s-2)`), so strict-value ships a
 ```js
 // stylelint.config.js
 export default {
-  extends: ['stylelint-config-standard'],
-  plugins: ['stylelint-declaration-strict-value'],
+  extends: ["stylelint-config-standard"],
+  plugins: ["stylelint-declaration-strict-value"],
   rules: {
-    'scale-unlimited/declaration-strict-value': [
+    "scale-unlimited/declaration-strict-value": [
       [
-        '/color$/', 'background-color', 'fill', 'stroke',
-        'padding', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
-        'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
-        'gap', 'row-gap', 'column-gap',
-        'border-radius', 'box-shadow', 'font-size', 'z-index',
+        "/color$/",
+        "background-color",
+        "fill",
+        "stroke",
+        "padding",
+        "padding-top",
+        "padding-right",
+        "padding-bottom",
+        "padding-left",
+        "margin",
+        "margin-top",
+        "margin-right",
+        "margin-bottom",
+        "margin-left",
+        "gap",
+        "row-gap",
+        "column-gap",
+        "border-radius",
+        "box-shadow",
+        "font-size",
+        "z-index",
       ],
       {
         ignoreValues: [
-          'transparent', 'inherit', 'currentColor', 'currentcolor', 'none',
-          'unset', 'initial', 'auto', '0', 'fit-content', 'max-content', 'min-content',
+          "transparent",
+          "inherit",
+          "currentColor",
+          "currentcolor",
+          "none",
+          "unset",
+          "initial",
+          "auto",
+          "0",
+          "fit-content",
+          "max-content",
+          "min-content",
         ],
         ignoreFunctions: false,
-        severity: 'warning',
+        severity: "warning",
         disableFix: true,
-        message: 'Use a design token (var(--…)) instead of a hardcoded value (Rules 5/6/7).',
+        message:
+          "Use a design token (var(--…)) instead of a hardcoded value (Rules 5/6/7).",
       },
     ],
   },
-  ignoreFiles: ['dist/**', 'node_modules/**', 'styling/tokens.css', 'styling/themes/**', 'styling/reset.css'],
+  ignoreFiles: [
+    "dist/**",
+    "node_modules/**",
+    "styling/tokens.css",
+    "styling/themes/**",
+    "styling/reset.css",
+  ],
 };
 ```
-> `tokens.css`, `themes/`, and `reset.css` are exempt — they are where literal values are *defined*.
+
+> `tokens.css`, `themes/`, and `reset.css` are exempt — they are where literal values are _defined_.
 
 - [ ] **Step 2: Write a deliberate violation fixture**
 
 ```css
 /* stylelint-fixtures/bad.css */
-.x { padding: 12px; color: #ff0000; }
+.x {
+  padding: 12px;
+  color: #ff0000;
+}
 ```
 
 - [ ] **Step 3: Run Stylelint on the fixture, expect warnings**
@@ -417,6 +487,7 @@ git commit -m "feat(lint): stylelint token-discipline config (warning)"
 ### Task 8: Triage CSS, ratchet rules to error, update CLAUDE.md
 
 **Files:**
+
 - Modify: `styling/*.css` (flagged files)
 - Modify: `eslint.config.js`, `stylelint.config.js` (severity → error)
 - Modify: `CLAUDE.md`
@@ -440,9 +511,11 @@ Expected: no `no-restricted-syntax` errors (all remaining usages carry justified
 - [ ] **Step 4: Update CLAUDE.md Rule 8**
 
 Replace the Rule 8 line so it no longer says "planned":
+
 ```md
 8. **ESLint + Stylelint boundaries fail CI when violated.** Layer dependencies via `eslint-plugin-boundaries`; token discipline via `stylelint-declaration-strict-value`. See `eslint.config.js` / `stylelint.config.js`.
 ```
+
 Also add under the Architecture section: `Enforcement plan: docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md`.
 
 - [ ] **Step 5: Commit**
@@ -457,17 +530,19 @@ git commit -m "feat(lint): ratchet token + inline-style rules to error; update C
 ### Task 9: Wire linting into CI
 
 **Files:**
+
 - Modify: `.github/workflows/ci.yml`
 
 - [ ] **Step 1: Add lint steps after the type-check step**
 
 In `.github/workflows/ci.yml`, insert between the `Type check` and `Build` steps:
-```yaml
-      - name: Lint (architecture boundaries)
-        run: npm run lint
 
-      - name: Lint CSS (token discipline)
-        run: npm run lint:css
+```yaml
+- name: Lint (architecture boundaries)
+  run: npm run lint
+
+- name: Lint CSS (token discipline)
+  run: npm run lint:css
 ```
 
 - [ ] **Step 2: Verify the commands pass locally exactly as CI runs them**

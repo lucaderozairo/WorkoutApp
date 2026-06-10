@@ -1,5 +1,6 @@
 import type { ReactNode, ToggleEvent } from 'react';
 import { useId, useEffect, useRef } from 'react';
+import { Button } from './Button';
 
 type Position = 'top' | 'bottom' | 'left' | 'right';
 type Align = 'start' | 'center' | 'end';
@@ -11,6 +12,8 @@ interface PopoverProps {
   /** Optional controlled visibility. When omitted, the popover is uncontrolled. */
   open?: boolean;
   onClose?: () => void;
+  triggerClassName?: string;
+  contentClassName?: string;
   children: ReactNode;
 }
 
@@ -19,7 +22,16 @@ interface PopoverProps {
  * light-dismiss. Pass `open`/`onClose` for controlled visibility, or omit them
  * for uncontrolled (the trigger button toggles it natively).
  */
-export function Popover({ trigger, position = 'bottom', open, onClose, children }: PopoverProps) {
+export function Popover({
+  trigger,
+  position = 'bottom',
+  align = 'start',
+  open,
+  onClose,
+  triggerClassName,
+  contentClassName,
+  children,
+}: PopoverProps) {
   const id = useId();
   const pid = `pop-${id.replace(/:/g, '')}`;
   const ref = useRef<HTMLDivElement>(null);
@@ -34,16 +46,23 @@ export function Popover({ trigger, position = 'bottom', open, onClose, children 
     else if (!open && isOpen) el.hidePopover();
   }, [open, controlled]);
 
-  const anchorClass = position === 'top' ? ' anchor-above' : '';
+  const panelClasses = [
+    'popover',
+    'surface',
+    'menu-popover',
+    `popover-${position}`,
+    `popover-align-${align}`,
+    contentClassName,
+  ].filter(Boolean).join(' ');
 
   return (
     <>
-      <button type="button" className="ghost" popoverTarget={pid}>{trigger}</button>
+      <Button type="button" variant="ghost" className={triggerClassName} popoverTarget={pid}>{trigger}</Button>
       <div
         ref={ref}
         id={pid}
         popover="auto"
-        className={`popover surface menu-popover${anchorClass}`}
+        className={panelClasses}
         onToggle={controlled ? (e: ToggleEvent<HTMLDivElement>) => {
           if (e.newState === 'closed' && open) onClose?.();
         } : undefined}

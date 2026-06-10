@@ -24,6 +24,7 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./vitest.setup.ts'],
+    exclude: ['**/node_modules/**', '**/.git/**', '**/.claude/**'],
     alias: {
       '@app': path.resolve(__dirname, 'app'),
       '@ui': path.resolve(__dirname, 'ui'),

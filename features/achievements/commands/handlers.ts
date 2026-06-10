@@ -12,6 +12,7 @@ import {
   ACHIEVEMENT_DEFINITIONS,
 } from '../domain/types';
 import { systemClock } from '@core/clock';
+import { defineCommand } from '@data/define-command';
 import { projectionRegistry } from '@data/projections/builders';
 import { viewStore } from '@data/projections/views';
 import { achievementsProjection } from '../projections';
@@ -172,22 +173,24 @@ function checkAchievement(
 
 // ─── Command Handler ─────────────────────────────────────────
 
-export async function handleCheckAchievements(cmd: CheckAchievements): Promise<Result<void, string>> {
-  const currentState = viewStore.get<UserAchievement[]>('user_achievements') ?? [];
-  const allEvents: AchievementEvent[] = [];
+export const handleCheckAchievements = defineCommand<CheckAchievements, Result<void, string>>({
+  execute: async (cmd) => {
+    const currentState = viewStore.get<UserAchievement[]>('user_achievements') ?? [];
+    const allEvents: AchievementEvent[] = [];
 
-  for (const def of ACHIEVEMENT_DEFINITIONS) {
-    const current = currentState.find(a => a.achievementId === def.id);
-    const events = checkAchievement(def, current, cmd.sessionHistory, cmd.cardioSessions);
-    allEvents.push(...events);
-  }
+    for (const def of ACHIEVEMENT_DEFINITIONS) {
+      const current = currentState.find(a => a.achievementId === def.id);
+      const events = checkAchievement(def, current, cmd.sessionHistory, cmd.cardioSessions);
+      allEvents.push(...events);
+    }
 
-  // Apply all events to projection
-  for (const event of allEvents) {
-    achievementsProjection.apply(event);
-  }
+    // Apply all events to projection
+    for (const event of allEvents) {
+      achievementsProjection.apply(event);
+    }
 
-  viewStore.set('user_achievements', achievementsProjection.getState());
+    viewStore.set('user_achievements', achievementsProjection.getState());
 
-  return ok(undefined);
-}
+    return { events: allEvents, result: ok(undefined) };
+  },
+});

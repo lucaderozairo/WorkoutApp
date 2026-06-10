@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import type { ActivityHistoryItem } from '@features/training_log/contract';
-import type { CardioSession, CardioSport } from '@features/cardio/contract';
-import type { SportType } from '@features/training_log/contract';
+import type { ActivityHistoryItem } from '@features/training_log';
+import type { CardioSession, CardioSport } from '@features/cardio';
+import type { SportType } from '@features/training_log/domain/types';
 import { ACTIVITY_ICONS, getActivityLabel } from '@ui/icons/activityIcons';
 import { Carousel } from '../shared';
 import { timeAgo } from '@shared/utils/timeAgo';

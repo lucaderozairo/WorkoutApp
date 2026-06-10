@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useQuery, useCommand } from '@ui/bindings';
 import { handleCreatePost } from '@features/social';
-import type { Post } from '@features/social/contract';
-import type { PostWithMeta } from '@features/social/contract';
-import type { ActivityHistoryItem, ActivitiesState } from '@features/training_log/contract';
-import type { CardioSession } from '@features/cardio/contract';
+import type { Post } from '@features/social';
+import type { PostWithMeta } from '@features/social';
+import type { ActivityHistoryItem, ActivitiesState } from '@features/training_log';
+import type { CardioSession } from '@features/cardio';
 import { PostCard } from './PostCard';
 import { StrengthActivityCard, CardioActivityCard } from './ActivityPostCard';
 import { USER_ID, USER_NAME, USER_INITIALS } from '@features/social/domain/constants';

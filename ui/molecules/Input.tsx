@@ -1,7 +1,7 @@
 import type { InputHTMLAttributes, ReactNode } from 'react';
-import { Column } from '@ui/layout/Column';
 import { Row } from '@ui/layout/Row';
 import { Spinner } from '@ui/atoms/Spinner';
+import { Field } from './Field';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -13,27 +13,32 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 export function Input({ label, hint, error, leading, trailing, loading, id, className, ...rest }: InputProps) {
-  const inputId = id ?? label?.toLowerCase().replace(/\s+/g, '-');
   const trailingSlot = loading ? <Spinner size="sm" /> : trailing;
   const hasSlots = leading || trailingSlot;
 
   return (
-    <Column gap={1} className={className}>
-      {label && <label htmlFor={inputId}>{label}</label>}
-      {hasSlots ? (
-        <Row align="center" gap={1} className={error ? 'error' : undefined}>
+    <Field id={id} label={label} hint={hint} error={error} className={className}>
+      {({ id: inputId, describedBy, invalid }) => hasSlots ? (
+        <Row align="center" gap={1} className={invalid ? 'field-control error' : 'field-control'}>
           {leading}
-          <input id={inputId} className="grow" {...rest} />
+          <input
+            id={inputId}
+            aria-invalid={invalid || undefined}
+            aria-describedby={describedBy}
+            className="input grow"
+            {...rest}
+          />
           {trailingSlot}
         </Row>
       ) : (
-        <input id={inputId} className={error ? 'error' : undefined} {...rest} />
+        <input
+          id={inputId}
+          aria-invalid={invalid || undefined}
+          aria-describedby={describedBy}
+          className={['input', invalid ? 'error' : ''].filter(Boolean).join(' ')}
+          {...rest}
+        />
       )}
-      {error ? (
-        <span className="caption negative">{error}</span>
-      ) : hint ? (
-        <span className="caption muted">{hint}</span>
-      ) : null}
-    </Column>
+    </Field>
   );
 }

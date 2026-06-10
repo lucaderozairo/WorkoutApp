@@ -9,7 +9,7 @@ import { CommentLine } from './CommentLine';
 import { SetsBarChart } from './SetsBarChart';
 import { SetRow } from './SetRow';
 import { getWarnings, worstSev } from '@features/training_log/projections/mappers';
-import type { UIBlock, UICardioSet, UIExercise, UICondition } from '@features/training_log/contract';
+import type { UIBlock, UICardioSet, UIExercise, UICondition } from '@features/training_log/projections/viewTypes';
 import type { SetMode } from '@data/static/exercises';
 
 export interface BlockCardProps {

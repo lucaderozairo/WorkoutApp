@@ -24,15 +24,67 @@
   gap:                   var(--grid-gap, var(--s-3));
   place-items:           var(--grid-place, normal);
   place-content:         var(--grid-content, normal);
-}
 
-/* ── Grid item — span + placement for children of .grid ── */
-.grid-item {
-  grid-area:   var(--area, auto);
-  grid-column: var(--col-span, auto);
-  grid-row:    var(--row-span, auto);
-  place-self:  var(--place-self, auto);
-  min-width:   0;
+  &.grid-single {
+    --grid-cols: 1fr;
+    --grid-gap: var(--s-4);
+  }
+
+  &.grid-double {
+    --grid-cols: repeat(2, 1fr);
+    --grid-gap: var(--s-3);
+  }
+
+  &.grid-triple {
+    --grid-cols: repeat(3, 1fr);
+    --grid-gap: var(--s-3);
+  }
+
+  &.grid-quad {
+    --grid-cols: repeat(4, 1fr);
+    --grid-gap: var(--s-3);
+  }
+
+  &.grid-widget {
+    --grid-cols: repeat(auto-fill, minmax(150px, 1fr));
+    --grid-gap: var(--s-3);
+  }
+
+  &.grid-columns {
+    --grid-cols: repeat(auto-fill, minmax(280px, 1fr));
+    --grid-gap: var(--s-4);
+  }
+
+  &.grid-auto {
+    --grid-cols: repeat(auto-fit, minmax(320px, 1fr));
+    --grid-gap: var(--s-4);
+  }
+
+  &.grid-tiles {
+    --grid-cols: repeat(auto-fit, minmax(150px, 1fr));
+    --grid-gap: var(--s-1);
+  }
+
+  &.grid-cal {
+    --grid-cols: repeat(7, 1fr);
+    --grid-gap: var(--s-2);
+  }
+
+  &.gap-0 { --grid-gap: 0; }
+  &.gap-1 { --grid-gap: var(--s-1); }
+  &.gap-2 { --grid-gap: var(--s-2); }
+  &.gap-3 { --grid-gap: var(--s-3); }
+  &.gap-4 { --grid-gap: var(--s-4); }
+  &.gap-5 { --grid-gap: var(--s-5); }
+
+  /* ── Grid item — span + placement for children of .grid ── */
+  & > .grid-item {
+    grid-area:   var(--area, auto);
+    grid-column: var(--col-span, auto);
+    grid-row:    var(--row-span);
+    place-self:  var(--place-self, auto);
+    min-width:   0;
+  }
 }
 
 /* ── Flex layout primitives ── */
@@ -58,6 +110,12 @@
   left: var(--s-2);
 }
 
+.layer-pin-top-center {
+  top: var(--s-2);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .layer-pin-top-right {
   top: var(--s-2);
   right: var(--s-2);
@@ -66,6 +124,12 @@
 .layer-pin-bottom-left {
   bottom: var(--s-2);
   left: var(--s-2);
+}
+
+.layer-pin-bottom-center {
+  bottom: var(--s-2);
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .layer-pin-bottom-right {

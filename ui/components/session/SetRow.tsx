@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Check, MessageSquare, MoreVertical, Pencil, Trash2, X } from 'lucide-react';
-import type { UISet } from '@features/training_log/contract';
+import type { UISet } from '@features/training_log/projections/viewTypes';
 import type { SetMode } from '@data/static/exercises';
 import { Row, Column, Cluster, Spacer } from '@ui/layout';
 import { Surface, Text, Chip } from '@ui/atoms';

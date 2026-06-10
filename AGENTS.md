@@ -89,7 +89,17 @@ Modals are addressable routes (e.g., `/dashboard/day/:date`).
 
 This repo has a graphify knowledge graph at `graphify-out/`. Use code-review-graph MCP tools **before** Grep/Glob/Read for exploration and impact analysis.
 
-After modifying code: `python3 -c "from graphify.watch import _rebuild_code; from pathlib import Path; _rebuild_code(Path('.'))"`
+After modifying code, rebuild the graphify graph. On Windows/PowerShell, force UTF-8 so Graphify can emit/report Unicode characters such as `≤`:
+
+```powershell
+$env:PYTHONIOENCODING='utf-8'; $env:PYTHONUTF8='1'; python3 -c "from graphify.watch import _rebuild_code; from pathlib import Path; _rebuild_code(Path('.'))"
+```
+
+On UTF-8 shells, this is sufficient:
+
+```bash
+python3 -c "from graphify.watch import _rebuild_code; from pathlib import Path; _rebuild_code(Path('.'))"
+```
 
 ## References
 

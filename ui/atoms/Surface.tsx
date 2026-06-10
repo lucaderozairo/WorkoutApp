@@ -1,21 +1,20 @@
-import type { ReactNode } from 'react';
+import type { ElementType, HTMLAttributes, ReactNode } from 'react';
 
-type SurfaceVariant = 'default' | 'plain' | 'flat' | 'accent' | 'ghost';
-type SurfacePad = 'md' | 'sm' | 'none';
+type SurfaceVariant = 'default' | 'plain' | 'flat' | 'accent' | 'ghost' | 'inset' | 'pinned';
+type SurfacePad = 'md' | 'sm' | 'xs' | 'none';
 type SurfaceAs = 'div' | 'section' | 'article' | 'aside' | 'nav' | 'header' | 'footer' | 'main' | 'button';
 
-interface SurfaceProps {
+interface SurfaceProps extends Omit<HTMLAttributes<HTMLElement>, 'children' | 'onClick'> {
   variant?: SurfaceVariant;
   pad?: SurfacePad;
   interactive?: boolean;
   selected?: boolean;
   as?: SurfaceAs;
-  role?: string;
-  'aria-expanded'?: boolean | 'true' | 'false';
-  'aria-label'?: string;
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
   className?: string;
   children: ReactNode;
-  onClick?: () => void;
+  onClick?: HTMLAttributes<HTMLElement>['onClick'];
 }
 
 const VARIANT_CLASS: Record<SurfaceVariant, string> = {
@@ -24,11 +23,14 @@ const VARIANT_CLASS: Record<SurfaceVariant, string> = {
   flat:    'flat',
   accent:  'accent',
   ghost:   'ghost',
+  inset:   'inset',
+  pinned:  'pinned',
 };
 
 const PAD_CLASS: Record<SurfacePad, string> = {
   md:   '',
   sm:   'pad-sm',
+  xs:   'pad-xs',
   none: 'pad-none',
 };
 
@@ -38,12 +40,10 @@ export function Surface({
   interactive = false,
   selected = false,
   as: Tag = 'div',
-  role,
-  'aria-expanded': ariaExpanded,
-  'aria-label': ariaLabel,
   className,
   children,
   onClick,
+  ...rest
 }: SurfaceProps) {
   const classes = [
     'surface',
@@ -54,15 +54,15 @@ export function Surface({
     className,
   ].filter(Boolean).join(' ');
 
+  const Component = Tag as ElementType;
+
   return (
-    <Tag
+    <Component
       className={classes}
-      role={role}
-      aria-expanded={ariaExpanded}
-      aria-label={ariaLabel}
       onClick={onClick}
+      {...rest}
     >
       {children}
-    </Tag>
+    </Component>
   );
 }

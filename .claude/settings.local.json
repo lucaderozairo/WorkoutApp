@@ -141,7 +141,17 @@
       "Bash(node ./.parse.js)",
       "Bash(cp /tmp/parse.js ./.parse.cjs)",
       "Bash(node ./.parse.cjs)",
-      "Bash(rm -f ./.parse.js ./.parse.cjs)"
+      "Bash(rm -f ./.parse.js ./.parse.cjs)",
+      "Bash(npx stylelint *)",
+      "Bash(node -e 'const fs=require\\(\"fs\"\\);const p=require\\(\"path\"\\);const d=JSON.parse\\(fs.readFileSync\\(\"./.sl.json\",\"utf8\"\\)\\);const root=process.cwd\\(\\).split\\(p.sep\\).join\\(\"/\"\\);for\\(const f of d\\){if\\(!f.warnings.length\\)continue;const rel=f.source.split\\(p.sep\\).join\\(\"/\"\\).replace\\(root+\"/\",\"\"\\);const src=fs.readFileSync\\(f.source,\"utf8\"\\).split\\(/\\\\r?\\\\n/\\);for\\(const w of f.warnings\\){console.log\\(rel+\":\"+w.line+\"  \"+\\(src[w.line-1]||\"\"\\).trim\\(\\)\\);}}')",
+      "Bash(rm -f ./.sl.json)",
+      "Bash(find \"C:\\\\Users\\\\Deroz01\\\\Documents\\\\Coding Projects\\\\Workout App\\\\workoutApp\" -maxdepth 2 -type d ! -path '*/\\\\.*')",
+      "Bash(Get-ChildItem -Recurse -Filter \"views*\")",
+      "Bash(typescript-language-server *)",
+      "Bash(git branch *)",
+      "mcp__code-review-graph__get_minimal_context_tool",
+      "mcp__code-review-graph__list_flows_tool",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(json.dumps\\({k:v for k,v in d.get\\('scripts',{}\\).items\\(\\)}, indent=2\\)\\)\")"
     ]
   },
   "enabledMcpjsonServers": [

@@ -8,7 +8,7 @@ import type {
 } from "../domain/types";
 import { cryptoIdGenerator } from "@core/id-generator";
 import { systemClock } from "@core/clock";
-import { eventRepository } from "@data/event-repository";
+import { defineCommand } from "@data/define-command";
 import { projectionRegistry } from "@data/projections/builders";
 import { viewStore } from "@data/projections/views";
 import { loadFromStorage } from "@data/sources/local/persistence";
@@ -46,82 +46,79 @@ function applyAndStore(events: CardioEvent[]): void {
   );
 }
 
-export async function handleRecordCardioSession(
-  cmd: RecordCardioSession,
-): Promise<Result<void, string>> {
-  if (cmd.durationSeconds < 1) return err("Duration must be at least 1 second");
-  if (cmd.distanceMeters < 0) return err("Distance must be non-negative");
+export const handleRecordCardioSession = defineCommand<RecordCardioSession, Result<void, string>>({
+  execute: async (cmd) => {
+    if (cmd.durationSeconds < 1) return { events: [], result: err("Duration must be at least 1 second") };
+    if (cmd.distanceMeters < 0) return { events: [], result: err("Distance must be non-negative") };
 
-  const sessionId = cmd.sessionId ?? cryptoIdGenerator.next<"CardioSession">();
-  const events: CardioEvent[] = [
-    {
-      type: "CardioSessionRecorded",
-      aggregateId: cmd.userId,
-      aggregateType: "User",
-      timestamp: systemClock.now(),
-      version: 1,
-      payload: {
-        sessionId,
-        userId: cmd.userId,
-        sport: cmd.sport,
-        durationSeconds: cmd.durationSeconds,
-        distanceMeters: cmd.distanceMeters,
-        notes: cmd.notes,
+    const sessionId = cmd.sessionId ?? cryptoIdGenerator.next<"CardioSession">();
+    const events: CardioEvent[] = [
+      {
+        type: "CardioSessionRecorded",
+        aggregateId: cmd.userId,
+        aggregateType: "User",
+        timestamp: systemClock.now(),
+        version: 1,
+        payload: {
+          sessionId,
+          userId: cmd.userId,
+          sport: cmd.sport,
+          durationSeconds: cmd.durationSeconds,
+          distanceMeters: cmd.distanceMeters,
+          notes: cmd.notes,
+        },
       },
-    },
-  ];
+    ];
 
-  await eventRepository.commit(events);
-  applyAndStore(events);
+    applyAndStore(events);
 
-  return ok(undefined);
-}
+    return { events, result: ok(undefined) };
+  },
+});
 
-export async function handleUpdateCardioSession(
-  cmd: UpdateCardioSession,
-): Promise<Result<void, string>> {
-  const events: CardioEvent[] = [
-    {
-      type: "CardioSessionUpdated",
-      aggregateId: cmd.sessionId,
-      aggregateType: "CardioSession",
-      timestamp: systemClock.now(),
-      version: 1,
-      payload: {
-        sessionId: cmd.sessionId,
-        durationSeconds: cmd.durationSeconds,
-        distanceMeters: cmd.distanceMeters,
-        notes:     cmd.notes,
-        title:     cmd.title,
-        location:  cmd.location,
-        ranWith:   cmd.ranWith,
+export const handleUpdateCardioSession = defineCommand<UpdateCardioSession, Result<void, string>>({
+  execute: async (cmd) => {
+    const events: CardioEvent[] = [
+      {
+        type: "CardioSessionUpdated",
+        aggregateId: cmd.sessionId,
+        aggregateType: "CardioSession",
+        timestamp: systemClock.now(),
+        version: 1,
+        payload: {
+          sessionId: cmd.sessionId,
+          durationSeconds: cmd.durationSeconds,
+          distanceMeters: cmd.distanceMeters,
+          notes:     cmd.notes,
+          title:     cmd.title,
+          location:  cmd.location,
+          ranWith:   cmd.ranWith,
+        },
       },
-    },
-  ];
+    ];
 
-  await eventRepository.commit(events);
-  applyAndStore(events);
-  return ok(undefined);
-}
+    applyAndStore(events);
+    return { events, result: ok(undefined) };
+  },
+});
 
-export async function handleDeleteCardioSession(
-  cmd: DeleteCardioSession,
-): Promise<Result<void, string>> {
-  const events: CardioEvent[] = [
-    {
-      type: "CardioSessionDeleted",
-      aggregateId: cmd.sessionId,
-      aggregateType: "CardioSession",
-      timestamp: systemClock.now(),
-      version: 1,
-      payload: { sessionId: cmd.sessionId },
-    },
-  ];
+export const handleDeleteCardioSession = defineCommand<DeleteCardioSession, Result<void, string>>({
+  execute: async (cmd) => {
+    const events: CardioEvent[] = [
+      {
+        type: "CardioSessionDeleted",
+        aggregateId: cmd.sessionId,
+        aggregateType: "CardioSession",
+        timestamp: systemClock.now(),
+        version: 1,
+        payload: { sessionId: cmd.sessionId },
+      },
+    ];
 
-  await eventRepository.commit(events);
-  applyAndStore(events);
-  return ok(undefined);
-}
+    applyAndStore(events);
+    return { events, result: ok(undefined) };
+  },
+});
 
 export async function handleUpdateCardioSessionFull(cmd: {
   sessionId: string;
@@ -150,24 +147,23 @@ export async function handleUpdateCardioSessionFull(cmd: {
   });
 }
 
-export async function handleImportGpsTrack(
-  cmd: import("../domain/types").ImportGpsTrack,
-): Promise<Result<void, string>> {
-  const events: CardioEvent[] = [
-    {
-      type: "GpsTrackImported",
-      aggregateId: cmd.sessionId,
-      aggregateType: "CardioSession",
-      timestamp: systemClock.now(),
-      version: 1,
-      payload: {
-        sessionId: cmd.sessionId,
-        track: cmd.track,
+export const handleImportGpsTrack = defineCommand<import("../domain/types").ImportGpsTrack, Result<void, string>>({
+  execute: async (cmd) => {
+    const events: CardioEvent[] = [
+      {
+        type: "GpsTrackImported",
+        aggregateId: cmd.sessionId,
+        aggregateType: "CardioSession",
+        timestamp: systemClock.now(),
+        version: 1,
+        payload: {
+          sessionId: cmd.sessionId,
+          track: cmd.track,
+        },
       },
-    },
-  ];
+    ];
 
-  await eventRepository.commit(events);
-  applyAndStore(events);
-  return ok(undefined);
-}
+    applyAndStore(events);
+    return { events, result: ok(undefined) };
+  },
+});

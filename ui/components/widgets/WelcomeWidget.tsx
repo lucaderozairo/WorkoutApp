@@ -1,5 +1,5 @@
 import { useQuery } from '@ui/bindings';
-import { Flame } from 'lucide-react';
+import { Flame } from 'phosphor-react';
 import { Row, Column } from '@ui/layout';
 import { Surface, Text } from '@ui/atoms';
 import { Badge } from '@ui/molecules';

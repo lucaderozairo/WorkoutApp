@@ -2,9 +2,9 @@ import { ScoreRing, SleepStagesBar, SparklineArea, fmtMin } from '@ui/patterns/c
 import { Grid, Row, Column, Cluster, Spacer } from '@ui/layout';
 import { Surface, Text, Metric, Divider } from '@ui/atoms';
 import { Badge } from '@ui/molecules';
-import type { SleepSession } from '@features/readiness/contract';
-import type { HealthMetricsView } from '@features/readiness/contract';
-import type { Appointment } from '@features/scheduling/contract';
+import type { SleepSession } from '@features/readiness';
+import type { HealthMetricsView } from '@features/readiness';
+import type { Appointment } from '@features/scheduling';
 
 type WidgetSize = '1x1' | '2x1' | '2x2';
 type ScoreClass = 'good' | 'warning' | 'poor';

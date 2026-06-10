@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { TypeFilter } from './SessionFilterBar';
-import type { CombinedSession } from '@features/training_log/contract';
+import type { CombinedSession } from '@features/training_log/queries/calendarUtils';
 import { buildDateMap, getWeekStart, formatWeekRange, toDateKey } from '@features/training_log/queries/calendarUtils';
 import { StrengthSessionItem, CardioSessionItem } from './SessionListItem';
 import { Row, Column } from '@ui/layout';

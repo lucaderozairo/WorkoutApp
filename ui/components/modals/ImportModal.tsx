@@ -3,7 +3,7 @@ import { useState, useRef } from 'react';
 import { parseGpsFile } from '@data/sources/files/gps';
 // eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
 import type { GpsTrack } from '@data/sources/files/gps';
-import type { CardioSport } from '@features/cardio/contract';
+import type { CardioSport } from '@features/cardio';
 import { Row, Column } from '@ui/layout';
 import { Surface, Text, Metric } from '@ui/atoms';
 import { Badge, Button, Slider, Textarea } from '@ui/molecules';
@@ -98,8 +98,11 @@ export function ImportModal({ context, existingSession, onComplete, onClose }: I
           {step === 1 && (
             <Column>
               {error && <Text size="caption" color="negative">{error}</Text>}
-              <section
-                className={`surface inset interactive${isDragOver ? ' active' : ''}`}
+              <Surface
+                as="section"
+                variant="inset"
+                interactive
+                className={isDragOver ? 'active' : undefined}
                 onDragOver={(e: React.DragEvent) => { e.preventDefault(); setIsDragOver(true); }}
                 onDragLeave={() => setIsDragOver(false)}
                 onDrop={handleDrop}
@@ -125,7 +128,7 @@ export function ImportModal({ context, existingSession, onComplete, onClose }: I
                     </Column>
                   )
                 }
-              </section>
+              </Surface>
               <input
                 ref={inputRef}
                 type="file"

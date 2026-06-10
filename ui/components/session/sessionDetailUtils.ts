@@ -1,6 +1,6 @@
-import type { ActivityView, ActivityHistoryItem } from '@features/training_log/contract';
-import type { CardioSession } from '@features/cardio/contract';
-import type { SetEntry, StrengthSet } from '@features/training_log/contract';
+import type { ActivityView, ActivityHistoryItem } from '@features/training_log';
+import type { CardioSession } from '@features/cardio';
+import type { SetEntry, StrengthSet } from '@features/training_log/domain/types';
 
 /** A seeded/sample cardio session used by mock data and previews. */
 export interface SampleCardioSession {

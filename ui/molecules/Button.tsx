@@ -47,6 +47,7 @@ export function Button({
   ...rest
 }: ButtonProps) {
   const classes = [
+    'button',
     VARIANT_CLASS[variant],
     SIZE_CLASS[size],
     block ? 'block' : '',

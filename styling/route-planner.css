@@ -2,24 +2,50 @@
    ROUTE PLANNER — side panel, rail, controls
    ════════════════════════════════════════════ */
 
-/* ── Collapsible side panel ── */
+.route-planner-rail-layer {
+  height: 100%;
+  pointer-events: none;
+
+  & .side {
+    pointer-events: auto;
+  }
+}
+
+.route-planner-location-control {
+  transition: width 0.18s var(--ease);
+  width: fit-content;
+
+  &[data-phase="input"] {
+    width: 280px;
+  }
+}
+
+
+
 .side {
   flex: 0 0 auto;
   display: flex;
   flex-direction: row;
-  background: var(--surface-1);
-  border-right: 1px solid var(--line);
+  height: 100%;
+  max-height: 100%;
+  background: transparent;
   overflow: hidden;
 
   @media (max-width: 780px) { display: none; }
 }
 
 .side-content {
-  width: var(--panel-width);
+  width: min(var(--panel-width), 32vw);
+  min-width: 260px;
+  max-height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
   padding: var(--s-3) var(--s-4);
-  flex-shrink: 0;
+  flex: 1 1 auto;
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-left: 0;
+  border-radius: 0 var(--r-md) var(--r-md) 0;
   scrollbar-width: thin;
   scrollbar-color: var(--line-strong) transparent;
 }
@@ -41,16 +67,23 @@
 .side-rail {
   flex: 0 0 56px;
   width: 56px;
+  height: max-content;
+  max-height: 100%;
   background: var(--surface-1);
-  border-right: 1px solid var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md) 0 0 var(--r-md);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--s-1);
   padding: var(--s-2) 0;
-  flex-shrink: 0;
+  overflow-y: auto;
 
   @media (max-width: 780px) { display: none; }
+}
+
+.side:not(:has(.side-content)) .side-rail {
+  border-radius: var(--r-md);
 }
 
 .side-rail-item {
@@ -111,6 +144,8 @@
 
 .activity-chip.active .activity-dot { opacity: 1; }
 
+
+
 /* ── Mobile bottom-sheet visibility ── */
 @media (min-width: 781px) { .bottom-sheet { display: none; } }
 
@@ -126,21 +161,10 @@
 
 /* ── Map control groups ── */
 [data-map-group] { padding: 0; overflow: hidden; }
-[data-map-btn]   { border-radius: 0; }
 
 /* ── Elevation panels ── */
-[data-elevation-panel] {
-  border-top: 1px solid var(--line);
-  background: var(--surface-1);
-}
-
 [data-chart] {
   height: 100px;
-  & svg { width: 100%; height: 100%; }
-}
-
-[data-mini-chart] {
-  height: 40px;
   & svg { width: 100%; height: 100%; }
 }
 
@@ -175,8 +199,9 @@
 }
 
 /* ── Full-bleed layout reset for route planner screen ── */
-main:has(> .full-bleed) {
+.full-bleed{
   padding-top: 0;
   padding-inline: 0;
   overflow: hidden;
+  height:100%;
 }

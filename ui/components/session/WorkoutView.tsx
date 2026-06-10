@@ -13,13 +13,13 @@ import {
   handleLogCardioSet,
   handleDeleteSession,
 } from '@features/training_log';
-import type { ActivityView } from '@features/training_log/contract';
-import type { StrengthSet, CardioSet } from '@features/training_log/contract';
+import type { ActivityView } from '@features/training_log';
+import type { StrengthSet, CardioSet } from '@features/training_log/domain/types';
 import type { Id } from '@shared/types';
 import { UndoToast, useUndoToast, RestTimerAlert } from '@ui/components/log';
 import { viewStore } from '@data/projections/views';
 import { domainBlocksToUIBlocks, sessionDateLabel } from '@features/training_log/projections/mappers';
-import type { UIBlock, UICardioSet, UICondition, DeleteTarget } from '@features/training_log/contract';
+import type { UIBlock, UICardioSet, UICondition, DeleteTarget } from '@features/training_log/projections/viewTypes';
 import { SessionHeader } from './SessionHeader';
 import { triggerDownload } from '@shared/utils/csv';
 import { InjuryBanner } from './InjuryBanner';

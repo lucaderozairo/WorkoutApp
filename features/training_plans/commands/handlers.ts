@@ -1,5 +1,5 @@
 // features/training_plans/commands/handlers.ts
-import { eventRepository } from '@data/event-repository';
+import { defineCommand } from '@data/define-command';
 import { generateId } from '@shared/utils';
 import { systemClock } from '@core/clock';
 import type { Id } from '@shared/types';
@@ -20,70 +20,86 @@ function buildInitialWeeks(durationWeeks: number): PlanWeek[] {
   }));
 }
 
-export async function handleCreatePlan(cmd: CreatePlan): Promise<Id<'Plan'>> {
-  const planId = generateId<'Plan'>();
-  const payload: PlanCreatedPayload = {
-    planId,
-    userId: cmd.userId,
-    name: cmd.name,
-    startDate: cmd.startDate,
-    durationWeeks: cmd.durationWeeks,
-    weeks: buildInitialWeeks(cmd.durationWeeks),
-    createdAt: systemClock.now(),
-  };
-  await eventRepository.commit([{
-    type: 'PlanCreated',
-    aggregateId: planId,
-    aggregateType: 'TrainingPlan',
-    timestamp: systemClock.now(),
-    version: 1,
-    payload,
-  }]);
-  return planId;
-}
+export const handleCreatePlan = defineCommand<CreatePlan, Id<'Plan'>>({
+  execute: async (cmd) => {
+    const planId = generateId<'Plan'>();
+    const payload: PlanCreatedPayload = {
+      planId,
+      userId: cmd.userId,
+      name: cmd.name,
+      startDate: cmd.startDate,
+      durationWeeks: cmd.durationWeeks,
+      weeks: buildInitialWeeks(cmd.durationWeeks),
+      createdAt: systemClock.now(),
+    };
+    return {
+      result: planId,
+      events: [{
+        type: 'PlanCreated',
+        aggregateId: planId,
+        aggregateType: 'TrainingPlan',
+        timestamp: systemClock.now(),
+        version: 1,
+        payload,
+      }],
+    };
+  },
+});
 
-export async function handleUpdatePlan(cmd: UpdatePlan): Promise<void> {
-  const payload: PlanUpdatedPayload = {
-    planId: cmd.planId,
-    name: cmd.name,
-    startDate: cmd.startDate,
-    durationWeeks: cmd.durationWeeks,
-  };
-  await eventRepository.commit([{
-    type: 'PlanUpdated',
-    aggregateId: cmd.planId,
-    aggregateType: 'TrainingPlan',
-    timestamp: systemClock.now(),
-    version: 1,
-    payload,
-  }]);
-}
+export const handleUpdatePlan = defineCommand<UpdatePlan>({
+  execute: async (cmd) => {
+    const payload: PlanUpdatedPayload = {
+      planId: cmd.planId,
+      name: cmd.name,
+      startDate: cmd.startDate,
+      durationWeeks: cmd.durationWeeks,
+    };
+    return {
+      events: [{
+        type: 'PlanUpdated',
+        aggregateId: cmd.planId,
+        aggregateType: 'TrainingPlan',
+        timestamp: systemClock.now(),
+        version: 1,
+        payload,
+      }],
+    };
+  },
+});
 
-export async function handleAssignWorkoutToDay(cmd: AssignWorkoutToDay): Promise<void> {
-  const payload: DayAssignedPayload = {
-    planId: cmd.planId,
-    weekNumber: cmd.weekNumber,
-    dayOfWeek: cmd.dayOfWeek,
-    assignment: cmd.assignment,
-  };
-  await eventRepository.commit([{
-    type: 'DayAssigned',
-    aggregateId: cmd.planId,
-    aggregateType: 'TrainingPlan',
-    timestamp: systemClock.now(),
-    version: 1,
-    payload,
-  }]);
-}
+export const handleAssignWorkoutToDay = defineCommand<AssignWorkoutToDay>({
+  execute: async (cmd) => {
+    const payload: DayAssignedPayload = {
+      planId: cmd.planId,
+      weekNumber: cmd.weekNumber,
+      dayOfWeek: cmd.dayOfWeek,
+      assignment: cmd.assignment,
+    };
+    return {
+      events: [{
+        type: 'DayAssigned',
+        aggregateId: cmd.planId,
+        aggregateType: 'TrainingPlan',
+        timestamp: systemClock.now(),
+        version: 1,
+        payload,
+      }],
+    };
+  },
+});
 
-export async function handleDeletePlan(cmd: DeletePlan): Promise<void> {
-  const payload: PlanDeletedPayload = { planId: cmd.planId };
-  await eventRepository.commit([{
-    type: 'PlanDeleted',
-    aggregateId: cmd.planId,
-    aggregateType: 'TrainingPlan',
-    timestamp: systemClock.now(),
-    version: 1,
-    payload,
-  }]);
-}
+export const handleDeletePlan = defineCommand<DeletePlan>({
+  execute: async (cmd) => {
+    const payload: PlanDeletedPayload = { planId: cmd.planId };
+    return {
+      events: [{
+        type: 'PlanDeleted',
+        aggregateId: cmd.planId,
+        aggregateType: 'TrainingPlan',
+        timestamp: systemClock.now(),
+        version: 1,
+        payload,
+      }],
+    };
+  },
+});

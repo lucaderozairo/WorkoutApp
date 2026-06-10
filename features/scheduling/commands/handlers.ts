@@ -3,7 +3,7 @@ import { ok, err } from '@shared/types';
 import type { AddAppointment, UpdateAppointment, DeleteAppointment, ReorderAppointments, JoinEvent, LeaveEvent, SchedulingEvent } from '../domain/types';
 import { cryptoIdGenerator } from '@core/id-generator';
 import { systemClock } from '@core/clock';
-import { eventRepository } from '@data/event-repository';
+import { defineCommand } from '@data/define-command';
 import { viewStore } from '@data/projections/views';
 import { appointmentsByDateProjection, joinedEventsProjection } from '../projections';
 
@@ -16,115 +16,121 @@ function applyAndStore(events: SchedulingEvent[]): void {
   viewStore.set('joined_events', joinedEventsProjection.getState());
 }
 
-export async function handleAddAppointment(cmd: AddAppointment): Promise<Result<void, string>> {
-  if (!cmd.title.trim()) return err('Title is required');
+export const handleAddAppointment = defineCommand<AddAppointment, Result<void, string>>({
+  execute: async (cmd) => {
+    if (!cmd.title.trim()) return { events: [], result: err('Title is required') };
 
-  const event: SchedulingEvent = {
-    type: 'AppointmentAdded',
-    aggregateId: cmd.userId,
-    aggregateType: 'User',
-    timestamp: systemClock.now(),
-    version: 1,
-    payload: {
-      appointmentId: cryptoIdGenerator.next<'Appointment'>(),
-      userId: cmd.userId,
-      title: cmd.title.trim(),
-      scheduledAt: cmd.scheduledAt,
-      durationMinutes: cmd.durationMinutes,
-      notes: cmd.notes,
-      order: systemClock.now(),
-    },
-  };
+    const event: SchedulingEvent = {
+      type: 'AppointmentAdded',
+      aggregateId: cmd.userId,
+      aggregateType: 'User',
+      timestamp: systemClock.now(),
+      version: 1,
+      payload: {
+        appointmentId: cryptoIdGenerator.next<'Appointment'>(),
+        userId: cmd.userId,
+        title: cmd.title.trim(),
+        scheduledAt: cmd.scheduledAt,
+        durationMinutes: cmd.durationMinutes,
+        notes: cmd.notes,
+        order: systemClock.now(),
+      },
+    };
 
-  await eventRepository.commit([event]);
-  applyAndStore([event]);
-  return ok(undefined);
-}
+    applyAndStore([event]);
+    return { events: [event], result: ok(undefined) };
+  },
+});
 
-export async function handleUpdateAppointment(cmd: UpdateAppointment): Promise<Result<void, string>> {
-  const event: SchedulingEvent = {
-    type: 'AppointmentUpdated',
-    aggregateId: cmd.appointmentId,
-    aggregateType: 'Appointment',
-    timestamp: systemClock.now(),
-    version: 1,
-    payload: {
-      appointmentId: cmd.appointmentId,
-      title: cmd.title,
-      scheduledAt: cmd.scheduledAt,
-      durationMinutes: cmd.durationMinutes,
-      notes: cmd.notes,
-    },
-  };
+export const handleUpdateAppointment = defineCommand<UpdateAppointment, Result<void, string>>({
+  execute: async (cmd) => {
+    const event: SchedulingEvent = {
+      type: 'AppointmentUpdated',
+      aggregateId: cmd.appointmentId,
+      aggregateType: 'Appointment',
+      timestamp: systemClock.now(),
+      version: 1,
+      payload: {
+        appointmentId: cmd.appointmentId,
+        title: cmd.title,
+        scheduledAt: cmd.scheduledAt,
+        durationMinutes: cmd.durationMinutes,
+        notes: cmd.notes,
+      },
+    };
 
-  await eventRepository.commit([event]);
-  applyAndStore([event]);
-  return ok(undefined);
-}
+    applyAndStore([event]);
+    return { events: [event], result: ok(undefined) };
+  },
+});
 
-export async function handleDeleteAppointment(cmd: DeleteAppointment): Promise<Result<void, string>> {
-  const event: SchedulingEvent = {
-    type: 'AppointmentDeleted',
-    aggregateId: cmd.appointmentId,
-    aggregateType: 'Appointment',
-    timestamp: systemClock.now(),
-    version: 1,
-    payload: { appointmentId: cmd.appointmentId },
-  };
+export const handleDeleteAppointment = defineCommand<DeleteAppointment, Result<void, string>>({
+  execute: async (cmd) => {
+    const event: SchedulingEvent = {
+      type: 'AppointmentDeleted',
+      aggregateId: cmd.appointmentId,
+      aggregateType: 'Appointment',
+      timestamp: systemClock.now(),
+      version: 1,
+      payload: { appointmentId: cmd.appointmentId },
+    };
 
-  await eventRepository.commit([event]);
-  applyAndStore([event]);
-  return ok(undefined);
-}
+    applyAndStore([event]);
+    return { events: [event], result: ok(undefined) };
+  },
+});
 
-export async function handleReorderAppointments(cmd: ReorderAppointments): Promise<Result<void, string>> {
-  const event: SchedulingEvent = {
-    type: 'AppointmentsReordered',
-    aggregateId: 'scheduling' as unknown as Id,
-    aggregateType: 'Scheduling',
-    timestamp: systemClock.now(),
-    version: 1,
-    payload: { orderedIds: cmd.orderedIds },
-  };
+export const handleReorderAppointments = defineCommand<ReorderAppointments, Result<void, string>>({
+  execute: async (cmd) => {
+    const event: SchedulingEvent = {
+      type: 'AppointmentsReordered',
+      aggregateId: 'scheduling' as unknown as Id,
+      aggregateType: 'Scheduling',
+      timestamp: systemClock.now(),
+      version: 1,
+      payload: { orderedIds: cmd.orderedIds },
+    };
 
-  await eventRepository.commit([event]);
-  applyAndStore([event]);
-  return ok(undefined);
-}
+    applyAndStore([event]);
+    return { events: [event], result: ok(undefined) };
+  },
+});
 
-export async function handleJoinEvent(cmd: JoinEvent): Promise<Result<void, string>> {
-  const event: SchedulingEvent = {
-    type: 'EventJoined',
-    aggregateId: cmd.eventId,
-    aggregateType: 'ScheduledEvent',
-    timestamp: systemClock.now(),
-    version: 1,
-    payload: {
-      eventId: cmd.eventId,
-      title: cmd.title,
-      sport: cmd.sport,
-      startAt: cmd.startAt,
-      endAt: cmd.endAt,
-      organizerId: cmd.organizerId,
-    },
-  };
+export const handleJoinEvent = defineCommand<JoinEvent, Result<void, string>>({
+  execute: async (cmd) => {
+    const event: SchedulingEvent = {
+      type: 'EventJoined',
+      aggregateId: cmd.eventId,
+      aggregateType: 'ScheduledEvent',
+      timestamp: systemClock.now(),
+      version: 1,
+      payload: {
+        eventId: cmd.eventId,
+        title: cmd.title,
+        sport: cmd.sport,
+        startAt: cmd.startAt,
+        endAt: cmd.endAt,
+        organizerId: cmd.organizerId,
+      },
+    };
 
-  await eventRepository.commit([event]);
-  applyAndStore([event]);
-  return ok(undefined);
-}
+    applyAndStore([event]);
+    return { events: [event], result: ok(undefined) };
+  },
+});
 
-export async function handleLeaveEvent(cmd: LeaveEvent): Promise<Result<void, string>> {
-  const event: SchedulingEvent = {
-    type: 'EventLeft',
-    aggregateId: cmd.eventId,
-    aggregateType: 'ScheduledEvent',
-    timestamp: systemClock.now(),
-    version: 1,
-    payload: { eventId: cmd.eventId },
-  };
+export const handleLeaveEvent = defineCommand<LeaveEvent, Result<void, string>>({
+  execute: async (cmd) => {
+    const event: SchedulingEvent = {
+      type: 'EventLeft',
+      aggregateId: cmd.eventId,
+      aggregateType: 'ScheduledEvent',
+      timestamp: systemClock.now(),
+      version: 1,
+      payload: { eventId: cmd.eventId },
+    };
 
-  await eventRepository.commit([event]);
-  applyAndStore([event]);
-  return ok(undefined);
-}
+    applyAndStore([event]);
+    return { events: [event], result: ok(undefined) };
+  },
+});

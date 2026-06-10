@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import type { ActivityHistoryItem } from "@features/training_log/contract";
-import type { CardioSession } from "@features/cardio/contract";
+import type { ActivityHistoryItem } from "@features/training_log";
+import type { CardioSession } from "@features/cardio";
 import { EllipsisVertical } from "lucide-react";
 import { ACTIVITY_ICONS, getActivityLabel } from "@ui/icons/activityIcons";
 import { Carousel } from "../shared";

@@ -1,4 +1,23 @@
 /* ════════════════════════════════════════════
+   CHART CONTAINER
+   -------------------------------------------------------------------------- */
+.chart-container {
+  width: 100%;
+  min-width: 0;
+}
+
+.chart-container-sm { height: 120px; }
+.chart-container-md { height: 180px; }
+.chart-container-lg { height: 240px; }
+.chart-container-xl { height: 320px; }
+
+.chart-container-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --------------------------------------------------------------------------
    CHART Y-AXIS LABEL
    ════════════════════════════════════════════ */
 .chart-ylabel {
