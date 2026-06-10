@@ -61,6 +61,15 @@
 .menu-popover {
   margin: var(--s-1) 0 0;
 }
+
+.widget-context-menu {
+  position: fixed;
+  top: var(--menu-y);
+  left: var(--menu-x);
+  z-index: var(--z-overlay);
+  min-width: var(--modal-sm);
+  max-width: var(--modal-md);
+}
 @supports (position-area: bottom) {
   .menu-popover {
     position-area: bottom span-inline-start;

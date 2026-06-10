@@ -19,6 +19,35 @@
   justify-content: center;
   font-family: var(--font-mono);
   font-size: var(--t-xs);
+
+  &.today {
+    color: var(--surface-1);
+    background: var(--ink);
+  }
+
+  &[data-sport="strength"],
+  &[data-sport="lift"] {
+    background: color-mix(in oklab, var(--c-strength) 12%, var(--surface-2));
+  }
+
+  &[data-sport="run"],
+  &[data-sport="cardio"] {
+    background: color-mix(in oklab, var(--c-cardio) 12%, var(--surface-2));
+  }
+
+  &[data-sport="cycle"],
+  &[data-sport="bike"] {
+    background: color-mix(in oklab, var(--c-nutrition) 12%, var(--surface-2));
+  }
+
+  &[data-sport="swim"] {
+    background: color-mix(in oklab, var(--c-water) 12%, var(--surface-2));
+  }
+
+  &[data-sport="row"],
+  &[data-sport="recovery"] {
+    background: color-mix(in oklab, var(--c-recovery) 12%, var(--surface-2));
+  }
 }
 
 /* ── Time-slot grid row ── */

@@ -1,0 +1,46 @@
+/* .home-widget-divider {
+  align-self: stretch;
+  width: 1px;
+  background: var(--line);
+  opacity: 0.6;
+}
+
+.macro-bar {
+  height: var(--s-2);
+  overflow: hidden;
+  border-radius: var(--r-xs);
+}
+
+.macro-bar-sm {
+  height: 6px;
+}
+
+.macro-segment {
+  height: 100%;
+}
+
+.macro-protein {
+  flex: 3;
+  background: var(--ok);
+}
+
+.macro-carbs {
+  flex: 4;
+  background: var(--warn);
+}
+
+.macro-fat {
+  flex: 2;
+  background: var(--bad);
+}
+
+.home-weather-icon {
+  font-size: var(--t-xl);
+  line-height: 1;
+}
+
+.home-widget-insight {
+  font-size: var(--t-sm);
+  line-height: var(--lh-normal);
+  color: var(--ink);
+} */

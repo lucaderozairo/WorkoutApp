@@ -8,12 +8,12 @@
   justify-content: center;
   width: var(--size);
   height: var(--size);
-  border-radius: 50%;
+  border-radius: var(--r-pill);
   /* Neutral generic default; project overrides the brand gradient in @layer project */
   background: linear-gradient(135deg, var(--surface-2), var(--accent));
   font-weight: 600;
   font-size: calc(var(--size) * 0.4);
-  color: white;
+  color: var(--accent-ink);
   overflow: hidden;
   flex-shrink: 0;
 

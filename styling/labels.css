@@ -86,7 +86,7 @@
     content: "";
     width: 6px;
     height: 6px;
-    border-radius: 50%;
+    border-radius: var(--r-pill);
     background: var(--tag-color, var(--ink-faint));
     flex-shrink: 0;
   }
@@ -101,7 +101,7 @@
   display: inline-block;
   width: var(--dot-size, var(--s-3));
   height: var(--dot-size, var(--s-3));
-  border-radius: 50%;
+  border-radius: var(--r-pill);
   background: var(--dot-color, var(--ink-faint));
   opacity: 0.5;
 

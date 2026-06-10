@@ -29,3 +29,8 @@
     color: var(--accent-ink);
   }
 }
+
+.calendar-event-day {
+  font-size: var(--t-lg);
+  line-height: 1;
+}

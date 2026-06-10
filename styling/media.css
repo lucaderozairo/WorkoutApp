@@ -4,6 +4,7 @@
 .carousel {
   & .track {
     gap: 0;
+    transform: translateX(var(--carousel-x, 0%));
     transition: transform 0.28s var(--ease);
 
     & > * {

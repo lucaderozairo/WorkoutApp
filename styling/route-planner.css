@@ -11,6 +11,19 @@
   }
 }
 
+.route-planner-screen {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
+}
+
+.route-planner-stage {
+  grid-row: 2;
+  align-self: stretch;
+  height: auto;
+  min-height: 0;
+}
+
 .route-planner-location-control {
   transition: width 0.18s var(--ease);
   width: fit-content;
@@ -128,7 +141,7 @@
 .activity-dot {
   width: 16px;
   height: 16px;
-  border-radius: 50%;
+  border-radius: var(--r-pill);
   display: flex;
   align-items: center;
   justify-content: center;

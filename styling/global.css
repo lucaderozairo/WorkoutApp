@@ -32,6 +32,7 @@
 /* ── Project (fitness-specific components + domain→token mapping) ── */
 @import "./project-activity.css" layer(project);
 @import "./calendar.css"       layer(project);
+@import "./home-widgets.css"   layer(project);
 @import "./session.css"        layer(project);
 @import "./route-planner.css"  layer(project);
 @import "./training-plans.css" layer(project);

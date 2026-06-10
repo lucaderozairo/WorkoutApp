@@ -43,6 +43,10 @@
 .locked    { opacity: 0.3; }
 .grow      { flex: 1; min-width: 0; min-height: 0; }
 .shrink-0  { flex-shrink: 0; }
+.min-w-0   { min-width: 0; }
+.min-h-0   { min-height: 0; }
+.self-fill { width: 100%; height: 100%; min-width: 0; min-height: 0; }
+.spacer    { margin-inline-start: auto; min-width: 0; min-height: 0; }
 .relative  { position: relative; }
 .absolute  { position: absolute; }
 .top       { top: var(--s-2); }
@@ -74,13 +78,13 @@
 
 /* ── Emoji sizes — base class + nested modifiers (same pattern as .button.sm/.lg) ── */
 .emoji {
-  &.sm { font-size: 28px; }
-  &.md { font-size: 32px; }
-  &.lg { font-size: 36px; }
+  &.sm { font-size: var(--t-emoji-sm); }
+  &.md { font-size: var(--t-emoji-md); }
+  &.lg { font-size: var(--t-emoji-lg); }
 }
 
 /* ── Sub-scale text (below token scale, used in compact calendar labels) ── */
-.text-9 { font-size: 9px; }
+.text-9 { font-size: var(--t-2xs); }
 
 /* ── Tight line height (single-figure display numerals) ── */
 .lh-1 { line-height: 1; }
@@ -102,7 +106,7 @@
 
 .spinner {
   display: inline-block;
-  border-radius: 50%;
+  border-radius: var(--r-pill);
   border: 2px solid var(--line);
   border-top-color: var(--accent);
   animation: spin var(--duration-medium) linear infinite;
