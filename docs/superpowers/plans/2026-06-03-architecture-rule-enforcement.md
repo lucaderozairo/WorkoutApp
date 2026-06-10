@@ -45,7 +45,7 @@ features(features/*) → infrastructure(data,core) → shared    (domain logic s
 
 - Modify: `package.json` (devDependencies + scripts)
 
-- [ ] **Step 1: Install ESLint + boundaries toolchain**
+- [x] **Step 1: Install ESLint + boundaries toolchain**
 
 Run:
 
@@ -55,7 +55,7 @@ npm install -D eslint@^9 @eslint/js@^9 typescript-eslint@^8 eslint-plugin-bounda
 
 Expected: packages added to `devDependencies`, no peer-dep errors.
 
-- [ ] **Step 2: Install Stylelint toolchain**
+- [x] **Step 2: Install Stylelint toolchain**
 
 Run:
 
@@ -65,7 +65,7 @@ npm install -D stylelint@^16 stylelint-config-standard@^36 stylelint-declaration
 
 Expected: packages added to `devDependencies`.
 
-- [ ] **Step 3: Add lint scripts to `package.json`**
+- [x] **Step 3: Add lint scripts to `package.json`**
 
 In the `"scripts"` block add:
 
@@ -74,7 +74,7 @@ In the `"scripts"` block add:
     "lint:css": "stylelint \"styling/**/*.css\"",
 ```
 
-- [ ] **Step 4: Verify the binaries resolve**
+- [x] **Step 4: Verify the binaries resolve**
 
 Run: `npx eslint --version && npx stylelint --version`
 Expected: prints an ESLint 9.x version and a Stylelint 16.x version.
@@ -94,7 +94,7 @@ git commit -m "chore(lint): add eslint + stylelint toolchain"
 
 - Create: `eslint.config.js`
 
-- [ ] **Step 1: Write the flat config with element types (no rules enabled yet)**
+- [x] **Step 1: Write the flat config with element types (no rules enabled yet)**
 
 ```js
 // eslint.config.js
@@ -140,7 +140,7 @@ export default tseslint.config(
 );
 ```
 
-- [ ] **Step 2: Verify config loads and parses the repo**
+- [x] **Step 2: Verify config loads and parses the repo**
 
 Run: `npx eslint . --no-warn-ignored`
 Expected: ESLint runs to completion (it may report `typescript-eslint` recommended findings, but NO config/parse errors). If recommended rules produce excessive noise, narrow them in a follow-up — do not let them block this task.
@@ -163,7 +163,7 @@ The codebase is already clean here (`ui/atoms`, `ui/molecules`, `ui/layout` impo
 - Modify: `eslint.config.js` (add `boundaries/element-types` rule)
 - Create (temp): `eslint-fixtures/violation.tsx`
 
-- [ ] **Step 1: Add the dependency-direction rule**
+- [x] **Step 1: Add the dependency-direction rule**
 
 In `eslint.config.js`, replace `rules: {}` with:
 
@@ -211,7 +211,7 @@ rm -rf eslint-fixtures
 
 Then delete the `{ type: 'primitives', pattern: 'eslint-fixtures/*' }` line from `boundaries/elements`.
 
-- [ ] **Step 5: Run ESLint on the whole repo, expect NO boundary errors**
+- [x] **Step 5: Run ESLint on the whole repo, expect NO boundary errors**
 
 Run: `npx eslint . --no-warn-ignored --rule '{}' 2>&1 | grep -c "boundaries/element-types" || true`
 Expected: `0` boundary violations from the design-system layers. (If any appear in `features/*` cross-imports, they belong to Task 6 — note them and continue; they are expected until Task 6 runs.)
@@ -233,7 +233,7 @@ git commit -m "feat(lint): enforce layer dependency boundaries"
 
 - Modify: `eslint.config.js`
 
-- [ ] **Step 1: Add the inline-style rule as a warning**
+- [x] **Step 1: Add the inline-style rule as a warning**
 
 Add to the `rules` block:
 
@@ -244,7 +244,7 @@ Add to the `rules` block:
       }],
 ```
 
-- [ ] **Step 2: Run ESLint and capture the inline-style warnings**
+- [x] **Step 2: Run ESLint and capture the inline-style warnings**
 
 Run: `npx eslint . --no-warn-ignored 2>&1 | grep "no-restricted-syntax" | wc -l`
 Expected: a non-zero count (~8). Save the file list for Task 5.
@@ -266,16 +266,16 @@ Convert each `style={{...}}` to either a CSS class or a dynamic CSS custom prope
 
 - Modify: each `.tsx` flagged in Task 4 Step 2.
 
-- [ ] **Step 1: List the flagged files**
+- [x] **Step 1: List the flagged files**
 
 Run: `npx eslint . --no-warn-ignored 2>&1 | grep -B1 "no-restricted-syntax" | grep -oE "^\S+\.tsx" | sort -u`
 Expected: the list of files to fix.
 
-- [ ] **Step 2: For each file — static styles → CSS class**
+- [x] **Step 2: For each file — static styles → CSS class**
 
 If the style is static (e.g. `style={{ display: 'flex' }}`), move it to the appropriate `styling/*.css` file as a class (token-driven, nested), and apply via `className`. Follow existing semantic-class + nesting conventions.
 
-- [ ] **Step 3: For each file — dynamic styles → CSS custom property**
+- [x] **Step 3: For each file — dynamic styles → CSS custom property**
 
 If the value is computed (e.g. a width percentage), set a CSS variable instead and consume it in CSS:
 
@@ -293,7 +293,7 @@ If the value is computed (e.g. a width percentage), set a CSS variable instead a
 }
 ```
 
-- [ ] **Step 4: Re-run ESLint, expect zero un-disabled inline-style warnings**
+- [x] **Step 4: Re-run ESLint, expect zero un-disabled inline-style warnings**
 
 Run: `npx eslint . --no-warn-ignored 2>&1 | grep "no-restricted-syntax" | wc -l`
 Expected: `0` (every remaining `style` usage carries a justification disable comment).
@@ -320,7 +320,7 @@ git commit -m "refactor(ui): remove inline styles in favour of token-driven CSS"
 - Modify: `shared/contracts/index.ts`
 - Modify: the importing files (listed in Step 1)
 
-- [ ] **Step 1: Enumerate cross-feature imports**
+- [x] **Step 1: Enumerate cross-feature imports**
 
 Run: `npx eslint . --no-warn-ignored 2>&1 | grep "boundaries/element-types" | grep -i feature` and cross-check with:
 
@@ -354,12 +354,12 @@ export type { CardioSession, CardioSport } from "@features/cardio/domain/types";
 
 In each file from Step 1, change `from '@features/<other>/domain/types'` to `from '@shared/contracts'`. Leave same-feature imports untouched.
 
-- [ ] **Step 5: Typecheck + test**
+- [x] **Step 5: Typecheck + test**
 
 Run: `npx tsc --noEmit && npm test`
 Expected: PASS (no type errors, tests green).
 
-- [ ] **Step 6: Run ESLint, expect zero cross-feature boundary errors**
+- [x] **Step 6: Run ESLint, expect zero cross-feature boundary errors**
 
 Run: `npx eslint . --no-warn-ignored 2>&1 | grep -c "boundaries/element-types" || true`
 Expected: `0`.
@@ -382,7 +382,7 @@ Hardcoded values exist (e.g. `padding: 6px var(--s-2)`), so strict-value ships a
 - Create: `stylelint.config.js`
 - Create (temp): `stylelint-fixtures/bad.css`
 
-- [ ] **Step 1: Write the Stylelint config**
+- [x] **Step 1: Write the Stylelint config**
 
 ```js
 // stylelint.config.js
@@ -470,7 +470,7 @@ Expected: warnings on both `padding` and `color` (hardcoded values).
 rm -rf stylelint-fixtures
 ```
 
-- [ ] **Step 5: Run Stylelint on the real CSS, capture the baseline**
+- [x] **Step 5: Run Stylelint on the real CSS, capture the baseline**
 
 Run: `npx stylelint "styling/**/*.css" 2>&1 | grep -c "declaration-strict-value" || true`
 Expected: a non-zero count — the triage backlog for Task 8 Step 1.
@@ -492,23 +492,23 @@ git commit -m "feat(lint): stylelint token-discipline config (warning)"
 - Modify: `eslint.config.js`, `stylelint.config.js` (severity → error)
 - Modify: `CLAUDE.md`
 
-- [ ] **Step 1: Fix flagged hardcoded CSS values**
+- [x] **Step 1: Fix flagged hardcoded CSS values**
 
 For each warning from Task 7 Step 5, replace the literal with the matching token (e.g. `padding: 6px var(--s-2)` → `padding: var(--s-1) var(--s-2)`). If no token exists for a needed value, add it to `styling/tokens.css` first, then reference it. Re-run `npx stylelint "styling/**/*.css"` until the count is `0`.
 
-- [ ] **Step 2: Ratchet Stylelint to error**
+- [x] **Step 2: Ratchet Stylelint to error**
 
 In `stylelint.config.js`, change `severity: 'warning'` to `severity: 'error'`.
 Run: `npx stylelint "styling/**/*.css"`
 Expected: PASS (exit 0).
 
-- [ ] **Step 3: Ratchet the inline-style rule to error**
+- [x] **Step 3: Ratchet the inline-style rule to error**
 
 In `eslint.config.js`, change `'no-restricted-syntax': ['warn', …]` to `['error', …]`.
 Run: `npx eslint . --no-warn-ignored`
 Expected: no `no-restricted-syntax` errors (all remaining usages carry justified disables).
 
-- [ ] **Step 4: Update CLAUDE.md Rule 8**
+- [x] **Step 4: Update CLAUDE.md Rule 8**
 
 Replace the Rule 8 line so it no longer says "planned":
 
@@ -533,7 +533,7 @@ git commit -m "feat(lint): ratchet token + inline-style rules to error; update C
 
 - Modify: `.github/workflows/ci.yml`
 
-- [ ] **Step 1: Add lint steps after the type-check step**
+- [x] **Step 1: Add lint steps after the type-check step**
 
 In `.github/workflows/ci.yml`, insert between the `Type check` and `Build` steps:
 
@@ -545,7 +545,7 @@ In `.github/workflows/ci.yml`, insert between the `Type check` and `Build` steps
   run: npm run lint:css
 ```
 
-- [ ] **Step 2: Verify the commands pass locally exactly as CI runs them**
+- [x] **Step 2: Verify the commands pass locally exactly as CI runs them**
 
 Run: `npm run lint && npm run lint:css`
 Expected: both exit 0.

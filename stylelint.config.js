@@ -22,7 +22,7 @@ export default {
           'transparent', 'inherit', 'currentColor', 'currentcolor', 'none',
           'unset', 'initial', 'auto', '0', 'fit-content', 'max-content', 'min-content',
         ],
-        severity: 'warning',
+        severity: 'error',
         disableFix: true,
         message: 'Use a design token (var(--…)) instead of a hardcoded value (Rules 5/6/7).',
       },

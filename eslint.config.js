@@ -20,7 +20,21 @@ import reactHooks from 'eslint-plugin-react-hooks';
 const el = (type, pattern, extra = {}) => ({ type, pattern, mode: 'full', ...extra });
 
 export default tseslint.config(
-  { ignores: ['dist/**', 'node_modules/**', 'eslint-fixtures/**', 'graphify-out/**', 'docs/**'] },
+  {
+    ignores: [
+      'dist/**',
+      'node_modules/**',
+      'eslint-fixtures/**',
+      'graphify-out/**',
+      'docs/**',
+      '.agents/**',
+      '.claude/**',
+      '.codex/**',
+      '.impeccable/**',
+      '.playwright-mcp/**',
+      '.worktrees/**',
+    ],
+  },
   tseslint.configs.base,
   {
     files: ['**/*.{ts,tsx}'],
@@ -54,10 +68,9 @@ export default tseslint.config(
       'boundaries/ignore': ['**/*.test.{ts,tsx}', '**/*.d.ts'],
     },
     rules: {
-      // Rules 6/7 — no inline styles. Ships as 'warn'; ratcheted to 'error' once
-      // existing usages are triaged. Dynamic CSS custom properties are the only
+      // Rules 6/7 — no inline styles. Dynamic CSS custom properties are the only
       // allowed exception (keep an eslint-disable with justification).
-      'no-restricted-syntax': ['warn', {
+      'no-restricted-syntax': ['error', {
         selector: 'JSXAttribute[name.name="style"]',
         message: 'No inline styles (Rules 6/7): use CSS classes + tokens. Dynamic CSS custom properties are the only allowed exception — add an eslint-disable with justification.',
       }],
@@ -90,9 +103,9 @@ export default tseslint.config(
           // TYPE imports (Rule 4 / contract discipline). Runtime values (command
           // handlers, queries) still come from feature-logic — contract.ts is
           // type-only — so a separate importKind:'value' rule permits those.
-          { from: ['feature-ui'],    allow: ['primitives', 'layouts', 'patterns', 'feature-ui', 'feature-contract', 'read-models', 'core', 'shared'] },
+          { from: ['feature-ui'],    allow: ['primitives', 'layouts', 'patterns', 'feature-ui', 'feature-contract', 'feature-logic', 'read-models', 'core', 'shared'] },
           { from: ['feature-ui'],    importKind: 'value', allow: ['primitives', 'layouts', 'patterns', 'feature-ui', 'feature-contract', 'feature-logic', 'read-models', 'core', 'shared'] },
-          { from: ['screens'],       allow: ['primitives', 'layouts', 'patterns', 'feature-ui', 'screens', 'feature-contract', 'read-models', 'core', 'shared'] },
+          { from: ['screens'],       allow: ['primitives', 'layouts', 'patterns', 'feature-ui', 'screens', 'feature-contract', 'feature-logic', 'read-models', 'core', 'shared'] },
           { from: ['screens'],       importKind: 'value', allow: ['primitives', 'layouts', 'patterns', 'feature-ui', 'screens', 'feature-contract', 'feature-logic', 'read-models', 'core', 'shared'] },
           { from: ['app'],           allow: ['*'] },
         ],
