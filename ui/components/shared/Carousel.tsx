@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Row, Column } from '@ui/layout';
 import { Surface } from '@ui/atoms';
@@ -21,11 +21,13 @@ export function Carousel({ slides }: CarouselProps) {
   if (len === 0) return null;
 
   const current = normalise(slides[idx]);
+  const trackStyle = { '--carousel-x': `-${idx * 100}%` } as CSSProperties;
 
   return (
     <Column gap={1}>
       <div className="carousel relative clip">
-        <div className="row track" style={{ transform: `translateX(-${idx * 100}%)` }}>
+        {/* eslint-disable-next-line no-restricted-syntax -- Active slide drives the tokenized transform custom property at runtime. */}
+        <div className="row track" style={trackStyle}>
           {slides.map((slide, i) => {
             const { src } = normalise(slide);
             return <Surface key={i} variant="flat" pad="none"><img src={src} alt="" /></Surface>;

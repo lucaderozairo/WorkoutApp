@@ -2,8 +2,11 @@ import { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import type { ActivityView, ActivitiesState } from '@features/training_log';
 import {
-  handleFinishSession, handleUpdateSessionNote,
-  handleRenameSession, handleUpdateSessionStartTime, handleUpdateSessionDetails,
+  handleUpdateSessionNote,
+  handleRenameSession,
+  handleUpdateSessionStartTime,
+  handleUpdateSessionDetails,
+  handleFinishSessionWithDetails,
 } from '@features/training_log';
 import { useCommand, useQuery } from '@ui/bindings';
 // eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
@@ -81,11 +84,11 @@ export function useFinishSession() {
     return () => clearInterval(id);
   }, [finished, isAlreadyFinished]);
 
-  const { dispatch: finish } = useCommand(handleFinishSession);
   const { dispatch: updateNote } = useCommand(handleUpdateSessionNote);
   const { dispatch: renameSession } = useCommand(handleRenameSession);
   const { dispatch: updateStartTime } = useCommand(handleUpdateSessionStartTime);
   const { dispatch: updateDetails } = useCommand(handleUpdateSessionDetails);
+  const { dispatch: finishWithDetails } = useCommand(handleFinishSessionWithDetails);
   const { dispatch: saveTemplate } = useCommand(handleSaveTemplate);
 
   const rawTs = date && startTime ? new Date(`${date}T${startTime}`).getTime() : NaN;
@@ -93,7 +96,7 @@ export function useFinishSession() {
   const rawEndTs = date && endTime ? new Date(`${date}T${endTime}`).getTime() : NaN;
   const endTimestampRaw = Number.isFinite(rawEndTs) ? rawEndTs : null;
   const endTimestamp = finished ? (finishedAtRef.current ?? Date.now()) : (endTimestampRaw ?? now);
-  const durationMs = startTimestamp && endTimestamp > startTimestamp ? endTimestamp - startTimestamp : 0;
+  const durationMs = startTimestamp != null && endTimestamp > startTimestamp ? endTimestamp - startTimestamp : 0;
 
   const actionLabel = isAlreadyFinished ? 'Update' : 'Finish';
 
@@ -125,24 +128,17 @@ export function useFinishSession() {
     if (isActiveSession) {
       finishedAtRef.current = newFinishedAt ?? Date.now();
 
-      if (notes !== oldNotes) {
-        await updateNote({ type: 'UpdateSessionNote', sessionId: sid, notes });
-      }
-
-      await finish({
-        type: 'FinishSession',
+      await finishWithDetails({
+        type: 'FinishSessionWithDetails',
         sessionId: sid,
-        finishedAt: newFinishedAt,
+        ...(name !== oldName ? { name } : {}),
+        ...(notes !== oldNotes ? { notes } : {}),
         ...(rpe !== null ? { sessionRpe: rpe } : {}),
         ...(tags.length > 0 ? { tags } : {}),
+        ...(newStartedAt !== undefined && newStartedAt !== oldStartedAt ? { startedAt: newStartedAt } : {}),
+        finishedAt: newFinishedAt ?? Date.now(),
+        ...(photos.length > 0 ? { media: photos } : {}),
       });
-
-      if (name !== oldName)
-        await renameSession({ type: 'RenameSession', sessionId: sid, name });
-      if (newStartedAt !== undefined && newStartedAt !== oldStartedAt)
-        await updateStartTime({ type: 'UpdateSessionStartTime', sessionId: sid, startedAt: newStartedAt });
-      if (photos.length > 0)
-        await updateDetails({ type: 'UpdateSessionDetails', sessionId: sid, media: photos });
 
       setFinished(true);
     } else {

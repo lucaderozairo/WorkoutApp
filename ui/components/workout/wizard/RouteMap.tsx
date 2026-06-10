@@ -777,7 +777,7 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
   }));
 
   return (
-    <div ref={mapWrapRef} className="grow map-root media-md">
+    <div ref={mapWrapRef} className="self-fill map-root">
       <Layered fill>
         <Layer pin="full" z="base" direction="none">
           <div ref={containerRef} className="route-map-canvas" />

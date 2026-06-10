@@ -1,5 +1,5 @@
 import React from "react";
-import type { ElementType, ReactNode } from "react";
+import type { ElementType, KeyboardEventHandler, ReactNode } from "react";
 import type { Gap } from "./_classes";
 
 type GridMin = "xs" | "sm" | "md" | "lg" | "xl";
@@ -78,6 +78,8 @@ interface GridProps {
   hidden?: boolean;
   className?: string;
   children?: ReactNode;
+  onClick?: () => void;
+  onKeyDown?: KeyboardEventHandler;
 }
 
 export function Grid({
@@ -100,6 +102,8 @@ export function Grid({
   hidden,
   className,
   children,
+  onClick,
+  onKeyDown,
 }: GridProps) {
   const vars: CSSVars = {};
 
@@ -149,7 +153,8 @@ export function Grid({
   if (hidden) return null;
 
   return (
-    <Tag className={cx} style={vars as React.CSSProperties}>
+    // eslint-disable-next-line no-restricted-syntax -- Grid uses runtime CSS custom properties for typed layout variants and named areas.
+    <Tag className={cx} style={vars as React.CSSProperties} onClick={onClick} onKeyDown={onKeyDown}>
       {children}
     </Tag>
   );

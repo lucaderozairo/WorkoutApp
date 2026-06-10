@@ -82,10 +82,10 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
     <Column gap={1}>
       <Row gap={1} align="center">
         {/* ── Session name search ── */}
-        <Row gap={1} align="center" className="grow">
+        <Row gap={1} align="center" className="min-w-0">
           <Search size={14} className="faint" />
           <input
-            className="grow"
+            className="min-w-0"
             placeholder="Search sessions…"
             value={filters.sessionName}
             onChange={e => onChange({ ...filters, sessionName: e.target.value })}
@@ -174,7 +174,7 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
                         <Text size="caption" color="muted">From</Text>
                         <input
                           type="date"
-                          className="grow"
+                          className="min-w-0"
                           value={filters.dateFrom}
                           onChange={e => onChange({ ...filters, dateFrom: e.target.value, dateRange: 'all' })}
                         />
@@ -183,7 +183,7 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
                         <Text size="caption" color="muted">To</Text>
                         <input
                           type="date"
-                          className="grow"
+                          className="min-w-0"
                           value={filters.dateTo}
                           min={filters.dateFrom || undefined}
                           onChange={e => onChange({ ...filters, dateTo: e.target.value, dateRange: 'all' })}
@@ -235,7 +235,7 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
                   <div className="relative">
                     <Row gap={1} align="center">
                       <input
-                        className="grow"
+                        className="min-w-0"
                         placeholder="Search exercises…"
                         value={exerciseSearch}
                         onChange={e => setExerciseSearch(e.target.value)}

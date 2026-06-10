@@ -1,4 +1,4 @@
-﻿import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { HEALTH_CATEGORIES } from '@ui/components/profile/HealthOverviewTab';
 
 export function useHealthCategory() {

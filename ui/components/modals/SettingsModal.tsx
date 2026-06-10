@@ -10,7 +10,9 @@ import {
 // eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
 } from '@data/sources/local/persistence';
 import type { Id } from '@shared/types';
-import { importCsv, writeImportToStore } from '@shared/utils/importCsv';
+import { parseCsvForImport } from '@shared/utils/importCsv';
+import { handleImportSessions } from '@features/training_log/commands/importSessions';
+import { handleImportCardioSessions } from '@features/cardio/commands/importCardioSessions';
 import { exportAllSessionsCsv } from '@shared/utils/exportCsv';
 import { triggerDownload } from '@shared/utils/csv';
 import { getActivityHistory } from '@features/training_log';
@@ -82,12 +84,20 @@ export function SettingsContent() {
       const text = await file.text();
 
       if (file.name.endsWith('.csv')) {
-        const result = importCsv(text);
-        const counts = writeImportToStore(result);
+        const data = parseCsvForImport(text);
+        const [trainingResult, cardioResult] = await Promise.all([
+          handleImportSessions(data),
+          handleImportCardioSessions(data),
+        ]);
+        const counts = {
+          sessionCount: trainingResult.sessionCount,
+          cardioCount: cardioResult.cardioCount,
+          errorCount: trainingResult.errors.length + cardioResult.errors.length,
+        };
         if (counts.sessionCount > 0 || counts.cardioCount > 0) {
           setImportStatus(`Imported ${counts.sessionCount} strength + ${counts.cardioCount} cardio sessions.`);
-        } else if (result.errors.length > 0) {
-          setImportStatus(result.errors[0]);
+        } else if (counts.errorCount > 0) {
+          setImportStatus([...trainingResult.errors, ...cardioResult.errors][0]);
         } else {
           setImportStatus('No sessions found in CSV.');
         }

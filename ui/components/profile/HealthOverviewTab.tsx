@@ -113,7 +113,7 @@ function CategoryRow({ cat, isPinned = false, onClick, onLongPress, charts }: Ca
         </Row>
         <Row align="center">
           {charts?.[0] && (
-            <div className="grow">
+            <div className="min-w-0">
               <ChartContainer
                 chartType={charts[0].chartType}
                 data={charts[0].data}
@@ -188,7 +188,7 @@ export function HealthOverviewTab() {
       <Row align="center">
         <Search size={16} className="faint" />
         <input
-          className="input grow"
+          className="input min-w-0"
           placeholder="Search categories…"
           aria-label="Search health categories"
           value={query}

@@ -1,3 +1,3 @@
 export function Spacer() {
-  return <div className="grow" />;
+  return <div className="spacer" />;
 }

@@ -25,6 +25,7 @@ export function GridItem({ area, colSpan, rowSpan, placeSelf, className, childre
 
   const cx = ['grid-item', className].filter(Boolean).join(' ');
   return (
+    // eslint-disable-next-line no-restricted-syntax -- Grid item placement is intentionally passed through typed CSS custom properties.
     <div className={cx} style={vars as React.CSSProperties}>
       {children}
     </div>

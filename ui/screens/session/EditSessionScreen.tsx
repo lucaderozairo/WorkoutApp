@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Grid, Row, Column } from '@ui/layout';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MoreVertical } from 'lucide-react';
@@ -202,7 +202,7 @@ export function EditSessionScreen() {
         <Surface className="secondary column gap-1">
           <Row align="center" justify="between">
             <Row gap={1}>
-              <input id="edit-name" className="ghost" type="text" value={name} onChange={e => setName(e.target.value)} />
+              <Input id="edit-name" variant="ghost" type="text" value={name} onChange={e => setName(e.target.value)} />
             </Row>
             <Row gap={1} align="center">
               <Button variant="primary" size="sm" onClick={save}>Done</Button>
@@ -220,8 +220,8 @@ export function EditSessionScreen() {
 
         {isCardio ? (
           <Row gap={1}>
-            <Input label="Duration (sec)" type="number" min={0} value={durationSec} onChange={e => setDurationSec(Math.max(0, parseInt(e.target.value) || 0))} className="grow" />
-            <Input label="Distance (m)" type="number" min={0} value={distanceM} onChange={e => setDistanceM(Math.max(0, parseInt(e.target.value) || 0))} className="grow" />
+            <Input label="Duration (sec)" type="number" min={0} value={durationSec} onChange={e => setDurationSec(Math.max(0, parseInt(e.target.value) || 0))} className="min-w-0" />
+            <Input label="Distance (m)" type="number" min={0} value={distanceM} onChange={e => setDistanceM(Math.max(0, parseInt(e.target.value) || 0))} className="min-w-0" />
           </Row>
         ) : (
           <>
@@ -246,7 +246,7 @@ export function EditSessionScreen() {
           </>
         )}
 
-        <Textarea label="Notes" value={notes} onChange={e => setNotes(e.target.value)} placeholder="Session notes…" rows={3} />
+        <Textarea label="Notes" value={notes} onChange={e => setNotes(e.target.value)} placeholder="Session notes�" rows={3} />
 
         <PhotoGallery photos={photos} onAdd={addPhotos} onRemove={removePhoto} />
 

@@ -6,7 +6,7 @@ import { getActivityHistory } from '@features/training_log';
 import type { CardioSport, RecentCardioView } from '@features/cardio';
 import type { Insight } from '@features/insights';
 import type { Id } from '@shared/types';
-import type { ProgressionState } from '@features/progression';
+import type { ExerciseProgression, ProgressionState } from '@features/progression';
 import {
   handleAddAnnotation,
   handleDeleteAnnotation,
@@ -28,10 +28,13 @@ export function useProgressScreen() {
   const sessionsState = useQuery<ActivitiesState>('sessions');
   const history = useMemo(() => getActivityHistory(), [sessionsState]);
   const progressionsRaw = useQuery<ProgressionState>('exercise_progressions');
-  const exerciseList = useMemo(
-    () => Object.values(progressionsRaw ?? {}).toSorted((a, b) =>
-      a.exerciseName.localeCompare(b.exerciseName)
-    ),
+  const exerciseList = useMemo<ExerciseProgression[]>(
+    () => {
+      const progressions = Object.values(progressionsRaw ?? {}) as ExerciseProgression[];
+      return [...progressions].sort((a, b) =>
+        a.exerciseName.localeCompare(b.exerciseName)
+      );
+    },
     [progressionsRaw],
   );
 

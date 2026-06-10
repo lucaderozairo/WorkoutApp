@@ -97,7 +97,7 @@ export function StrengthSessionItem({ session, matchedExercise, onDelete }: Stre
       <Column>
         <Surface as="header" variant="ghost" pad="none" interactive onClick={() => navigate(`/sessions/${session.id}`)}>
           <Row justify="between" align="center">
-            <Row align="center" className="grow">
+            <Row align="center" className="min-w-0">
               <StrengthIcon size={20} />
               <Column gap={1}>
                 <Text size="detail">{ACTIVITY_ICONS['strength'].label}</Text>
@@ -162,7 +162,7 @@ export function CardioSessionItem({ session, onDelete }: CardioItemProps) {
       <Column>
         <Surface as="header" variant="ghost" pad="none" interactive onClick={() => navigate(`/sessions/${session.id}`)}>
           <Row justify="between" align="center">
-            <Row align="center" className="grow">
+            <Row align="center" className="min-w-0">
               <SportIcon size={20} />
               <Column gap={1}>
                 <Text size="detail">

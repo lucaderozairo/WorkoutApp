@@ -38,9 +38,9 @@ export function ExerciseSection({
   return (
     <Column gap={1}>
       <Row align="center" justify="between">
-        <Row gap={1} align="center" className="grow">
+        <Row gap={1} align="center" className="min-w-0">
           {ex.label && <LetterBadge letter={ex.label} />}
-          <Text as="h3" className="grow">{ex.name}</Text>
+          <Text as="h3" className="min-w-0">{ex.name}</Text>
           <Text size="caption" color="faint">{currentMode}</Text>
           {warnings.length > 0 && (
             <AlertTriangle size={11} className="muted" />
@@ -52,7 +52,7 @@ export function ExerciseSection({
         <Column gap={1}>
           {warnings.map(w => (
             <Row key={w.id} align="center" gap={1}>
-              <Text size="caption" className="grow">{w.advice}</Text>
+              <Text size="caption" className="min-w-0">{w.advice}</Text>
               <Button type="button" variant="ghost" size="icon" onClick={() => onAcknowledge(ex.name)}>
                 <AlertTriangle size={10} className="faint" />
               </Button>

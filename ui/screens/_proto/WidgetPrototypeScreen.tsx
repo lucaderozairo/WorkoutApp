@@ -1,14 +1,22 @@
-﻿import { useQuery } from '@ui/bindings';
+import { useQuery } from '@ui/bindings';
 import type { SleepEntryView, SleepSession } from '@features/readiness';
 import { sleepEntryToSession } from '@features/readiness/queries';
 import { SleepReviewWidget } from '@ui/components/widgets/SleepReviewWidget';
 import { WeatherDashWidget, CalendarDashWidget } from '@ui/components/widgets/DashboardMiniWidgets';
-import {
-  ReadinessWidget, SleepBreakdownWidget, HRVWidget, RestingHRWidget,
-  BodyBatteryWidget, PlanAdherenceWidget, WeeklyVolumeWidget,
-  ActivityFeedWidget, ActiveGoalsWidget, MacrosWidget, CaloriesWidget,
-  HabitsWidget, MonthlyDistanceWidget, InsightsWidget,
-} from '@ui/components/widgets/DashWidgets';
+import { ReadinessWidget } from '@ui/components/widgets/ReadinessWidget';
+import { SleepBreakdownWidget } from '@ui/components/widgets/SleepBreakdownWidget';
+import { HRVWidget } from '@ui/components/widgets/HRVWidget';
+import { RestingHRWidget } from '@ui/components/widgets/RestingHRWidget';
+import { BodyBatteryWidget } from '@ui/components/widgets/BodyBatteryWidget';
+import { PlanAdherenceWidget } from '@ui/components/widgets/PlanAdherenceWidget';
+import { WeeklyVolumeWidget } from '@ui/components/widgets/WeeklyVolumeWidget';
+import { ActivityFeedWidget } from '@ui/components/widgets/ActivityFeedWidget';
+import { ActiveGoalsWidget } from '@ui/components/widgets/ActiveGoalsWidget';
+import { MacrosWidget } from '@ui/components/widgets/MacrosWidget';
+import { CaloriesWidget } from '@ui/components/widgets/CaloriesWidget';
+import { HabitsWidget } from '@ui/components/widgets/HabitsWidget';
+import { MonthlyDistanceWidget } from '@ui/components/widgets/MonthlyDistanceWidget';
+import { InsightsWidget } from '@ui/components/widgets/InsightsWidget';
 import { ChartContainer } from '@ui/patterns/charts/charts';
 import { Grid, Row, Column, Cluster } from '@ui/layout';
 import { Surface, Text } from '@ui/atoms';
@@ -22,27 +30,27 @@ function useLastNightSession(): SleepSession | null {
 }
 
 const REGISTRY: WidgetDef[] = [
-  { id: 'sleep-review', label: 'Sleep Review', sizes: ['1x1', '2x1', '2x2'], Component: ({ size }) => {
+  { id: 'sleep-review', label: 'Sleep Review', sizes: ['sm', 'wide', 'md'], Component: ({ size }) => {
     const lastNight = useLastNightSession();
     if (!lastNight) return null;
     return <SleepReviewWidget size={size} session={lastNight} />;
   } },
-  { id: 'weather', label: 'Weather', sizes: ['1x1', '2x1', '2x2'], Component: WeatherDashWidget },
-  { id: 'calendar', label: 'Calendar', sizes: ['1x1', '2x1', '2x2'], Component: ({ size }) => <CalendarDashWidget size={size} appointments={[]} /> },
-  { id: 'readiness', label: 'Readiness', sizes: ['1x1', '2x1', '2x2'], Component: ReadinessWidget },
-  { id: 'sleep-breakdown', label: 'Sleep Breakdown', sizes: ['2x1', '2x2'], Component: SleepBreakdownWidget },
-  { id: 'hrv', label: 'HRV Trend', sizes: ['2x1', '2x2'], Component: HRVWidget },
-  { id: 'resting-hr', label: 'Resting HR', sizes: ['1x1', '2x1'], Component: RestingHRWidget },
-  { id: 'body-battery', label: 'Body Battery', sizes: ['1x1', '2x1'], Component: BodyBatteryWidget },
-  { id: 'plan-adherence', label: 'Plan Adherence', sizes: ['1x1', '2x1'], Component: PlanAdherenceWidget },
-  { id: 'weekly-volume', label: 'Weekly Volume', sizes: ['2x1', '2x2'], Component: WeeklyVolumeWidget },
-  { id: 'activity-feed', label: 'Recent Sessions', sizes: ['2x1', '2x2'], Component: ActivityFeedWidget },
-  { id: 'active-goals', label: 'Active Goals', sizes: ['2x1', '2x2'], Component: ActiveGoalsWidget },
-  { id: 'macros', label: 'Macros', sizes: ['1x1', '2x1'], Component: MacrosWidget },
-  { id: 'calories', label: 'Calories', sizes: ['1x1'], Component: CaloriesWidget },
-  { id: 'habits', label: "Today's Habits", sizes: ['1x1', '2x1'], Component: HabitsWidget },
-  { id: 'monthly-dist', label: 'Monthly Distance', sizes: ['2x1', '2x2'], Component: MonthlyDistanceWidget },
-  { id: 'insights', label: 'Insights', sizes: ['2x1', '2x2'], Component: InsightsWidget },
+  { id: 'weather', label: 'Weather', sizes: ['sm', 'wide', 'md'], Component: WeatherDashWidget },
+  { id: 'calendar', label: 'Calendar', sizes: ['sm', 'wide', 'md'], Component: ({ size }) => <CalendarDashWidget size={size} appointments={[]} /> },
+  { id: 'readiness', label: 'Readiness', sizes: ['sm', 'wide', 'md'], Component: ReadinessWidget },
+  { id: 'sleep-breakdown', label: 'Sleep Breakdown', sizes: ['wide', 'md'], Component: SleepBreakdownWidget },
+  { id: 'hrv', label: 'HRV Trend', sizes: ['wide', 'md'], Component: HRVWidget },
+  { id: 'resting-hr', label: 'Resting HR', sizes: ['sm', 'wide'], Component: RestingHRWidget },
+  { id: 'body-battery', label: 'Body Battery', sizes: ['sm', 'wide'], Component: BodyBatteryWidget },
+  { id: 'plan-adherence', label: 'Plan Adherence', sizes: ['sm', 'wide'], Component: PlanAdherenceWidget },
+  { id: 'weekly-volume', label: 'Weekly Volume', sizes: ['wide', 'md'], Component: WeeklyVolumeWidget },
+  { id: 'activity-feed', label: 'Recent Sessions', sizes: ['wide', 'md'], Component: ActivityFeedWidget },
+  { id: 'active-goals', label: 'Active Goals', sizes: ['wide', 'md'], Component: ActiveGoalsWidget },
+  { id: 'macros', label: 'Macros', sizes: ['sm', 'wide'], Component: MacrosWidget },
+  { id: 'calories', label: 'Calories', sizes: ['sm'], Component: CaloriesWidget },
+  { id: 'habits', label: "Today's Habits", sizes: ['sm', 'wide'], Component: HabitsWidget },
+  { id: 'monthly-dist', label: 'Monthly Distance', sizes: ['wide', 'md'], Component: MonthlyDistanceWidget },
+  { id: 'insights', label: 'Insights', sizes: ['wide', 'md'], Component: InsightsWidget },
 ];
 
 interface WidgetCardProps {
@@ -60,9 +68,10 @@ interface WidgetCardProps {
 function WidgetCard({ def, instance, editMode, delay, onRemove, onCycleSize, onDragStart, onDragOver, onDrop }: WidgetCardProps) {
   const { Component } = def;
   return (
-    <div
-      className={`widget-${instance.size} relative ${editMode ? 'widget-edit' : 'widget-enter'}`}
-      style={{ '--anim-delay': `${delay}ms` } as React.CSSProperties}
+    <Surface
+      variant="ghost"
+      pad="none"
+      className={`widget-${instance.size} relative widget-delay-${delay} ${editMode ? 'widget-edit' : 'widget-enter'}`}
       draggable={editMode}
       onDragStart={() => onDragStart(def.id)}
       onDragOver={e => { e.preventDefault(); onDragOver(e); }}
@@ -70,21 +79,25 @@ function WidgetCard({ def, instance, editMode, delay, onRemove, onCycleSize, onD
     >
       {editMode && (
         <>
-          <button
+          <Button
+            variant="ghost"
+            size="icon-sm"
             className="widget-remove"
             onClick={e => { e.stopPropagation(); onRemove(def.id); }}
             aria-label="Remove widget"
-          >×</button>
-          <button
+          >×</Button>
+          <Button
+            variant="ghost"
+            size="icon-sm"
             className="widget-resize"
             onClick={e => { e.stopPropagation(); onCycleSize(def.id); }}
             aria-label="Resize widget"
             title={`Current: ${instance.size}`}
-          >⤢</button>
+          >⤢</Button>
         </>
       )}
       <Component size={instance.size} />
-    </div>
+    </Surface>
   );
 }
 
@@ -134,6 +147,23 @@ export function WidgetPrototypeScreen() {
           50%      { transform: rotate( 1.2deg) scale(1.01); }
         }
         .widget-enter { animation: widget-in .3s cubic-bezier(0.2,0.8,0.2,1) var(--anim-delay, 0ms) both; }
+        .widget-delay-0 { --anim-delay: 0ms; }
+        .widget-delay-35 { --anim-delay: 35ms; }
+        .widget-delay-70 { --anim-delay: 70ms; }
+        .widget-delay-105 { --anim-delay: 105ms; }
+        .widget-delay-140 { --anim-delay: 140ms; }
+        .widget-delay-175 { --anim-delay: 175ms; }
+        .widget-delay-210 { --anim-delay: 210ms; }
+        .widget-delay-245 { --anim-delay: 245ms; }
+        .widget-delay-280 { --anim-delay: 280ms; }
+        .widget-delay-315 { --anim-delay: 315ms; }
+        .widget-delay-350 { --anim-delay: 350ms; }
+        .widget-delay-385 { --anim-delay: 385ms; }
+        .widget-delay-420 { --anim-delay: 420ms; }
+        .widget-delay-455 { --anim-delay: 455ms; }
+        .widget-delay-490 { --anim-delay: 490ms; }
+        .widget-delay-525 { --anim-delay: 525ms; }
+        .widget-delay-560 { --anim-delay: 560ms; }
         .widget-edit  { animation: wiggle .35s ease-in-out infinite; cursor: grab; }
         .widget-remove {
           position: absolute; top: -10px; left: -10px; z-index: 20;

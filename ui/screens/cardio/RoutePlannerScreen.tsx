@@ -205,7 +205,7 @@ export function RoutePlannerScreen() {
           : "Past routes & favourites";
 
   return (
-    <FillScreen>
+    <FillScreen className="route-planner-screen">
       {/* ── MOBILE HEADER ── */}
       <Column gap={1} className="mobile-only">
         <ScreenHeader
@@ -236,11 +236,11 @@ export function RoutePlannerScreen() {
       </Column>
 
       {/* ── TWO-PANE AREA ── */}
-      <Row className="gap-0 grow clip">
+      <Grid rows="1fr" className="route-planner-stage gap-0 self-fill clip">
 
         {/* Map column */}
-        <Column gap={0} className="grow">
-          <Layered className="grow column">
+        <Column gap={0} className="self-fill">
+          <Layered className="self-fill column">
             <RouteMap
               ref={mapRef}
               waypoints={waypoints}
@@ -274,15 +274,15 @@ export function RoutePlannerScreen() {
                 )}
                 {searchState.phase === "input" && (
                   <Column gap={1}>
-                    <Row
-                      align="center"
+                    <Grid
+                      cols="minmax(0, 1fr) auto auto"
                       gap={1}
                       onKeyDown={(e: React.KeyboardEvent) => {
                         if (e.key === "Escape") handleCloseSearch();
                       }}
                     >
                       <SearchBar
-                        className="grow"
+                        className="self-fill"
                         value={searchQuery}
                         onChange={setSearchQuery}
                         placeholder="Search a place, address, or lat/lng..."
@@ -305,7 +305,7 @@ export function RoutePlannerScreen() {
                       >
                         <X size={14} />
                       </Button>
-                    </Row>
+                    </Grid>
                     {searchError && (
                       <Text size="caption" color="faint" nowrap>
                         {searchError}
@@ -314,13 +314,13 @@ export function RoutePlannerScreen() {
                   </Column>
                 )}
                 {searchState.phase === "located" && (
-                  <Row align="center" gap={1}>
-                    <MapPin size={14} className="faint shrink-0" />
-                    <Text size="caption" nowrap className="grow">{searchState.label}</Text>
+                  <Grid cols="auto minmax(0, 1fr) auto" gap={1}>
+                    <MapPin size={14} className="faint" />
+                    <Text size="caption" nowrap className="min-w-0">{searchState.label}</Text>
                     <Button variant="ghost" size="sm" onClick={() => setSearchState({ phase: "input" })}>
                       Search again
                     </Button>
-                  </Row>
+                  </Grid>
                 )}
               </Surface>
             </Layer>
@@ -524,17 +524,16 @@ export function RoutePlannerScreen() {
 
           </Layered>
         </Column>
-      </Row>
+      </Grid>
 
       {/* ── MOBILE BOTTOM SHEET ── */}
-      {/* bottom-sheet: raw div retained — data-snap drives CSS snap behavior, pending grid-first refactor */}
-      <div className="bottom-sheet" data-snap={snap}>
+      <Surface variant="ghost" pad="none" className="bottom-sheet" data-snap={snap}>
         <Button variant="ghost" className="handle"
           onClick={() => setSnap(s => s === 'peek' ? 'mid' : s === 'mid' ? 'full' : 'peek')}
           aria-label="Toggle sheet"
         />
-        <Column className="grow scroll-y">
-          <Row className="tabs shrink-0">
+        <Grid rows="auto auto auto 1fr" className="bottom-sheet-body scroll-y">
+          <Row className="tabs">
             {MOBILE_TABS.map(tab => (
               <Button key={tab.id} variant="ghost" active={sidePanel === tab.id} className="tab"
                 onClick={() => { setSidePanel(tab.id); if (snap === 'peek') setSnap('mid'); }}
@@ -591,8 +590,8 @@ export function RoutePlannerScreen() {
             handleLoadSavedRoute={handleLoadSavedRoute}
             navigate={navigate}
           />}
-        </Column>
-      </div>
+        </Grid>
+      </Surface>
     </FillScreen >
   );
 }
@@ -696,8 +695,8 @@ function PlanPanel({
           </Text>
         </Row>
       </Surface>
-      <Row gap={1}>
-        <Surface pad="sm" variant="flat" className="grow">
+      <Grid cols={3} gap={1}>
+        <Surface pad="sm" variant="flat">
           <Column gap={1} align="center">
             <Text size="detail" mono>
               {timeStr}
@@ -705,7 +704,7 @@ function PlanPanel({
             <Text size="eyebrow">Time</Text>
           </Column>
         </Surface>
-        <Surface pad="sm" variant="flat" className="grow">
+        <Surface pad="sm" variant="flat">
           <Column gap={1} align="center">
             <Text size="detail" mono>
               {displayKm > 0 ? `+${gain}` : "—"}
@@ -717,7 +716,7 @@ function PlanPanel({
             <Text size="eyebrow">Gain</Text>
           </Column>
         </Surface>
-        <Surface pad="sm" variant="flat" className="grow">
+        <Surface pad="sm" variant="flat">
           <Column gap={1} align="center">
             <Text size="detail" mono>
               {displayKm > 0 ? estimatedCal : "—"}
@@ -729,7 +728,7 @@ function PlanPanel({
             <Text size="eyebrow">Energy</Text>
           </Column>
         </Surface>
-      </Row>
+      </Grid>
 
       <hr />
 
@@ -794,8 +793,8 @@ function PlanPanel({
           </Row>
           {perSegEnabled &&
             segmentDistances.map((dist, idx) => (
-              <Row key={idx} align="center" gap={1}>
-                <Text size="caption" color="muted" className="grow">
+              <Grid key={idx} cols="minmax(0, 1fr) auto" gap={1}>
+                <Text size="caption" color="muted" className="min-w-0">
                   Seg {idx + 1} — {dist.toFixed(2)} km
                 </Text>
                 <Input
@@ -804,7 +803,7 @@ function PlanPanel({
                   value={segmentInputs[idx] ?? ""}
                   onChange={(e) => applySegmentPaceInput(idx, e.target.value)}
                 />
-              </Row>
+              </Grid>
             ))}
         </>
       )}
@@ -832,7 +831,7 @@ function PinsPanel({
         </Text>
       ) : (
         waypoints.map((wp, idx) => (
-          <Row key={`wp-${idx}`} align="center" gap={1}>
+          <Grid key={`wp-${idx}`} cols="auto minmax(0, 1fr) auto" gap={1}>
             <span
               className={`waypoint-badge row center align-center mono${
                 idx === 0
@@ -843,7 +842,7 @@ function PinsPanel({
               }`}>
               {idx === 0 ? "S" : idx === waypoints.length - 1 ? "F" : idx}
             </span>
-            <Column gap={1} className="grow">
+            <Column gap={1} className="min-w-0">
               <Text size="caption" mono>
                 {wp[0].toFixed(4)}, {wp[1].toFixed(4)}
               </Text>
@@ -860,7 +859,7 @@ function PinsPanel({
               aria-label="Remove waypoint">
               <X size={12} />
             </Button>
-          </Row>
+          </Grid>
         ))
       )}
     </Column>
@@ -894,6 +893,7 @@ function StatsPanel({
               key={s.key}
               className="surface-mix-segment"
               data-surface={s.key}
+              // eslint-disable-next-line no-restricted-syntax -- Surface percentages drive segment widths through a CSS custom property.
               style={
                 { "--mix-pct": `${surfaceMix[s.key]}%` } as React.CSSProperties
               }
@@ -919,8 +919,8 @@ function StatsPanel({
       <hr />
 
       <Text size="eyebrow">Elevation</Text>
-      <Row gap={1}>
-        <Surface pad="sm" variant="flat" className="grow">
+      <Grid cols={2} gap={1}>
+        <Surface pad="sm" variant="flat">
           <Column gap={1} align="center">
             <Text size="detail" mono>
               {displayKm > 0 ? `+${gain}` : "—"}
@@ -932,7 +932,7 @@ function StatsPanel({
             <Text size="eyebrow">Gain</Text>
           </Column>
         </Surface>
-        <Surface pad="sm" variant="flat" className="grow">
+        <Surface pad="sm" variant="flat">
           <Column gap={1} align="center">
             <Text size="detail" mono>
               {displayKm > 0 ? `−${loss}` : "—"}
@@ -944,7 +944,7 @@ function StatsPanel({
             <Text size="eyebrow">Loss</Text>
           </Column>
         </Surface>
-      </Row>
+      </Grid>
 
       <hr />
 
@@ -1003,18 +1003,18 @@ function SavedPanel({
             pad="sm"
             interactive
             onClick={() => handleLoadSavedRoute(route)}>
-            <Row align="center" gap={1}>
+            <Grid cols="auto minmax(0, 1fr) auto" gap={1}>
               <span
                 className={`dot ${route.profile === "bike" ? "cycle" : "run"}`}
               />
-              <Column gap={1} className="grow">
+              <Column gap={1} className="min-w-0">
                 <Text size="caption">{route.name}</Text>
                 <Text size="caption" color="faint">
                   {route.distanceKm.toFixed(1)} km
                 </Text>
               </Column>
               <ChevronRight size={12} className="faint" />
-            </Row>
+            </Grid>
           </Surface>
         ))
       )}

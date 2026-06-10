@@ -632,7 +632,7 @@ export function SessionDetail({ session, onClose, onEdit, onShare, onExportJson,
     <Row align="end" justify="between">
       <Row align="start">
         {icon}
-        <Column gap={1} className="grow">
+        <Column gap={1} className="min-w-0">
           {isCardio ? (
             <EditableTitle
               value={currentTitle}
@@ -659,7 +659,7 @@ export function SessionDetail({ session, onClose, onEdit, onShare, onExportJson,
           <Button type="button" variant="ghost" size="icon" onClick={handleClose}>
             <ChevronLeft size={14} />
           </Button>
-          <Text as="h3" className="grow truncate">{currentTitle}</Text>
+          <Text as="h3" className="min-w-0 truncate">{currentTitle}</Text>
           <Row gap={1}>
             {onEdit && <Button type="button" variant="ghost" size="icon" onClick={onEdit}><Pencil size={13} /></Button>}
             {onShare && <Button type="button" variant="ghost" size="icon" onClick={onShare}><Share2 size={13} /></Button>}

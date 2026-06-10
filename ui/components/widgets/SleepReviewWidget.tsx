@@ -10,7 +10,7 @@ import { Row, Column, Spacer } from '@ui/layout';
 import { Surface, Text } from '@ui/atoms';
 import { Badge } from '@ui/molecules';
 
-type WidgetSize = '1x1' | '2x1' | '2x2';
+import type { WidgetSize } from './widgetTypes';
 
 const STAGE_LABELS = ['Awake', 'Light', 'Deep', 'REM'] as const;
 const STAGE_PILLS = ['deep', 'light', 'rem', 'awake'] as const;
@@ -94,7 +94,7 @@ export function SleepReviewWidget({
   const badge = scoreBadge(session.score);
   const color = scoreColor(session.score);
 
-  if (size === '1x1') {
+  if (size === 'sm') {
     return (
       <Surface pad="sm">
         <Column align="center" justify="center" className="h-full">
@@ -148,7 +148,7 @@ export function SleepReviewWidget({
     </Row>
   ));
 
-  if (size === '2x1') {
+  if (size === 'wide') {
     return (
       <Surface pad="sm">
         <Column className="h-full">
@@ -159,7 +159,7 @@ export function SleepReviewWidget({
 
           <Row align="center">
             <Text as="h2" mono>{session.score}</Text>
-            <Text size="caption" color="faint" className="grow">
+            <Text size="caption" color="faint" className="min-w-0">
               &nbsp;· {duration}
             </Text>
           </Row>

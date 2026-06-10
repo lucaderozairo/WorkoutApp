@@ -112,7 +112,7 @@ export function NewSessionScreen() {
 
       {ROUTE_ACTIVITIES.has(selected) && (
         <Row gap={1}>
-          <Button variant="secondary" className="grow" onClick={handleAddRoute}>
+          <Button variant="secondary" className="min-w-0" onClick={handleAddRoute}>
             {routeLabel}
           </Button>
           <Button variant="secondary" onClick={handleSavedRoutes}>

@@ -39,6 +39,5 @@ export function useHomeScreen() {
     lastNight: sleepTrend?.lastNight ?? null,
     weeklyTrend: sleepTrend?.weeklyTrend ?? [],
     scoreHistory: sleepTrend?.scoreHistory ?? [],
-    isFirstRun: (dashboard?.totalSessions ?? 0) === 0,
   };
 }

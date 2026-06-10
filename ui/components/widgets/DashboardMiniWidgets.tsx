@@ -6,7 +6,7 @@ import type { SleepSession } from '@features/readiness';
 import type { HealthMetricsView } from '@features/readiness';
 import type { Appointment } from '@features/scheduling';
 
-type WidgetSize = '1x1' | '2x1' | '2x2';
+import type { WidgetSize } from './widgetTypes';
 type ScoreClass = 'good' | 'warning' | 'poor';
 
 const BADGE_CLASS: Record<ScoreClass, string> = { good: 'green', warning: 'amber', poor: '' };
@@ -60,7 +60,7 @@ export function SleepWidget({
     ? `−${Math.round(debtMin / 6) / 10}h vs goal`
     : `+${Math.round(-debtMin / 6) / 10}h vs goal`;
 
-  if (size === '1x1') {
+  if (size === 'sm') {
     return (
       <Surface><Column gap={1} className="h-full">
         <Text size="caption">Sleep</Text>
@@ -69,7 +69,7 @@ export function SleepWidget({
     );
   }
 
-  if (size === '2x1') {
+  if (size === 'wide') {
     return (
       <Surface><Column gap={1} className="h-full">
         <Row justify="between" align="center">
@@ -94,7 +94,7 @@ export function SleepWidget({
       </Row>
       <Row align="center">
         <ScoreRing score={session.score} subtitle="score" size={72} />
-        <Column gap={1} className="grow">
+        <Column gap={1} className="min-w-0">
           <Text size="detail">{duration}</Text>
           <Text size="caption" color="faint">{debtLabel}</Text>
         </Column>
@@ -131,7 +131,7 @@ const NEXT_HOURS = [
 ];
 
 export function WeatherDashWidget({ size }: { size: WidgetSize }) {
-  if (size === '1x1') {
+  if (size === 'sm') {
     return (
       <Surface><Column gap={1} justify="center" align="center" className="h-full">
         <span className="emoji sm">⛅</span>
@@ -141,7 +141,7 @@ export function WeatherDashWidget({ size }: { size: WidgetSize }) {
     );
   }
 
-  if (size === '2x1') {
+  if (size === 'wide') {
     return (
       <Surface><Column gap={1} className="h-full">
         <Row justify="between" align="center">
@@ -150,7 +150,7 @@ export function WeatherDashWidget({ size }: { size: WidgetSize }) {
         </Row>
         <Row align="center">
           <span className="emoji md">⛅</span>
-          <Column gap={1} className="grow">
+          <Column gap={1} className="min-w-0">
             <Metric value={18} unit="°" size="sm" />
             <Text size="caption" color="faint">Partly Cloudy · Feels 16°</Text>
           </Column>
@@ -245,7 +245,7 @@ export function CalendarDashWidget({ size, appointments }: { size: WidgetSize; a
   const year = now.getFullYear();
   const monthName = now.toLocaleDateString(undefined, { month: 'long' });
 
-  if (size === '1x1') {
+  if (size === 'sm') {
     return (
       <Surface><Column gap={1} justify="center" align="center" className="h-full">
         <Metric value={today} size="lg" />
@@ -257,7 +257,7 @@ export function CalendarDashWidget({ size, appointments }: { size: WidgetSize; a
     );
   }
 
-  if (size === '2x1') {
+  if (size === 'wide') {
     return (
       <Surface><Column gap={1} className="h-full">
         <Row justify="between" align="center">
@@ -270,7 +270,7 @@ export function CalendarDashWidget({ size, appointments }: { size: WidgetSize; a
             {appointments.slice(0, 3).map(a => (
               <Row key={a.id} align="center" gap={1}>
                 <div className="dot bg-primary" />
-                <Text size="caption" className="grow">{a.title}</Text>
+                <Text size="caption" className="min-w-0">{a.title}</Text>
                 <time className="caption faint">
                   {new Date(a.scheduledAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
                 </time>
@@ -302,7 +302,7 @@ export function CalendarDashWidget({ size, appointments }: { size: WidgetSize; a
           {appointments.slice(0, 2).map(a => (
             <Row key={a.id} gap={1} align="center">
               <div className="dot bg-primary" />
-              <Text size="caption" className="grow">{a.title}</Text>
+              <Text size="caption" className="min-w-0">{a.title}</Text>
             </Row>
           ))}
         </Column>
@@ -316,7 +316,7 @@ export function CalendarDashWidget({ size, appointments }: { size: WidgetSize; a
 export function ReadinessRecoveryWidget({ size, score, scoreClass }: { size: WidgetSize; score: number; scoreClass: ScoreClass }) {
   const ringColor = scoreClass === 'good' ? 'var(--ok)' : scoreClass === 'warning' ? 'var(--warn)' : 'var(--bad)';
 
-  if (size === '1x1') {
+  if (size === 'sm') {
     return (
       <Surface><Column gap={1} className="h-full">
         <Text size="caption">Readiness</Text>
@@ -326,7 +326,7 @@ export function ReadinessRecoveryWidget({ size, score, scoreClass }: { size: Wid
     );
   }
 
-  if (size === '2x1') {
+  if (size === 'wide') {
     return (
       <Surface><Column gap={1} className="h-full">
         <Row justify="between" align="center">
@@ -334,7 +334,7 @@ export function ReadinessRecoveryWidget({ size, score, scoreClass }: { size: Wid
           <Badge className={BADGE_CLASS[scoreClass]}>{RECOVERY_LABEL[scoreClass]}</Badge>
         </Row>
         <Row align="center">
-          <Metric value={score} size="lg" className="grow" />
+          <Metric value={score} size="lg" className="min-w-0" />
           <Text size="detail" color="faint">{RECOVERY_DETAIL[scoreClass]}</Text>
         </Row>
       </Column></Surface>
@@ -349,7 +349,7 @@ export function ReadinessRecoveryWidget({ size, score, scoreClass }: { size: Wid
       </Row>
       <Row align="center">
         <ScoreRing score={score} color={ringColor} subtitle="score" size={72} />
-        <Column gap={1} className="grow">
+        <Column gap={1} className="min-w-0">
           <Text size="detail">{RECOVERY_DETAIL[scoreClass]}</Text>
           <Text size="caption" color="faint">{RECOVERY_TIP[scoreClass]}</Text>
         </Column>
@@ -373,7 +373,7 @@ export function HeartStatsWidget({ size, bpm, hrv, history }: { size: WidgetSize
     .reverse()
     .map(h => ({ x: new Date(h.loggedAt).toLocaleDateString('en', { day: 'numeric', month: 'short' }), y: h.hrv as number }));
 
-  if (size === '1x1') {
+  if (size === 'sm') {
     return (
       <Surface><Column gap={1} className="h-full">
         <Text size="caption">Heart</Text>
@@ -391,7 +391,7 @@ export function HeartStatsWidget({ size, bpm, hrv, history }: { size: WidgetSize
     );
   }
 
-  if (size === '2x1') {
+  if (size === 'wide') {
     return (
       <Surface><Column gap={1} className="h-full">
         <Text size="caption">Heart</Text>

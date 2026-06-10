@@ -10,11 +10,15 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   leading?: ReactNode;
   trailing?: ReactNode;
   loading?: boolean;
+  variant?: 'default' | 'ghost';
 }
 
-export function Input({ label, hint, error, leading, trailing, loading, id, className, ...rest }: InputProps) {
+export function Input({ label, hint, error, leading, trailing, loading, id, className, variant = 'default', ...rest }: InputProps) {
   const trailingSlot = loading ? <Spinner size="sm" /> : trailing;
   const hasSlots = leading || trailingSlot;
+  const inputClassName = ['input', variant === 'ghost' ? 'ghost' : '', error ? 'error' : '']
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <Field id={id} label={label} hint={hint} error={error} className={className}>
@@ -25,7 +29,7 @@ export function Input({ label, hint, error, leading, trailing, loading, id, clas
             id={inputId}
             aria-invalid={invalid || undefined}
             aria-describedby={describedBy}
-            className="input grow"
+            className={`${inputClassName} min-w-0`}
             {...rest}
           />
           {trailingSlot}
@@ -35,7 +39,7 @@ export function Input({ label, hint, error, leading, trailing, loading, id, clas
           id={inputId}
           aria-invalid={invalid || undefined}
           aria-describedby={describedBy}
-          className={['input', invalid ? 'error' : ''].filter(Boolean).join(' ')}
+          className={inputClassName}
           {...rest}
         />
       )}

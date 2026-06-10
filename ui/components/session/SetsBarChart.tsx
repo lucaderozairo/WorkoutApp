@@ -1,4 +1,4 @@
-﻿import ChartContainer from '@ui/patterns/charts/charts';
+import ChartContainer from '@ui/patterns/charts/charts';
 import type { UISet } from '@features/training_log/projections/viewTypes';
 
 export function SetsBarChart({ sets }: { sets?: UISet[] }) {

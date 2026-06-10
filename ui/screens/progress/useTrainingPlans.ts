@@ -11,17 +11,17 @@ export type CalView = 'month' | 'week' | 'day';
 export const USER_ID = 'user-001' as Id<'User'>;
 
 export const FILTERS = [
-  { label: 'Strength', color: 'var(--c-strength)' },
-  { label: 'Cardio', color: 'var(--c-cardio)' },
-  { label: 'Mobility', color: 'var(--c-mind)' },
-  { label: 'Recovery', color: 'var(--c-recovery)' },
+  { label: 'Strength', color: 'c-strength' },
+  { label: 'Cardio', color: 'c-cardio' },
+  { label: 'Mobility', color: 'c-mind' },
+  { label: 'Recovery', color: 'c-recovery' },
 ];
 
 export const LEGEND = [
-  { label: 'Strength', color: 'var(--c-strength)' },
-  { label: 'Cardio', color: 'var(--c-cardio)' },
-  { label: 'Mobility', color: 'var(--c-mind)' },
-  { label: 'Appt.', color: 'var(--ink-muted)' },
+  { label: 'Strength', color: 'c-strength' },
+  { label: 'Cardio', color: 'c-cardio' },
+  { label: 'Mobility', color: 'c-mind' },
+  { label: 'Appt.', color: 'ink-muted' },
 ];
 
 export const SPORT_COLOR: Partial<Record<SportType, string>> = {

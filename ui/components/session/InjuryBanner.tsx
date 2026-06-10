@@ -37,7 +37,7 @@ export function InjuryBanner({ conditions }: { conditions: UICondition[] }) {
               return (
                 <Column key={inj.id} gap={1}>
                   <Row gap={1} align="center">
-                    <Text size="detail" className="grow">{inj.fullName}</Text>
+                    <Text size="detail" className="min-w-0">{inj.fullName}</Text>
                     <Badge tone={badgeTone}>{inj.severity}</Badge>
                   </Row>
                   <Text size="caption">{inj.advice}</Text>

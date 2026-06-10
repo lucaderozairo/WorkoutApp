@@ -82,7 +82,7 @@ export function WeekCalendar({ sessions, typeFilter, renderFilter }: Props) {
             return (
               <button
                 key={key}
-                className={`column align-center grow ghost${isSelected ? ' primary' : ''}`}
+                className={`column align-center min-w-0 ghost${isSelected ? ' primary' : ''}`}
                 {...(isToday ? { 'data-today': true } : {})}
                 onClick={() => !isFuture && setSelectedKey(k => k === key ? null : key)}
                 disabled={isFuture}

@@ -1,5 +1,6 @@
 import React from 'react'
 import { InjuriesView } from '@ui/components/health/InjuriesView'
+import { SleepView } from '@ui/components/health/SleepView'
 import { HealthChartsList } from '@ui/components/health/HealthChartsList'
 import { Surface } from '@ui/atoms';
 import { ScreenHeader } from '@ui/molecules'
@@ -9,6 +10,7 @@ import { useHealthCategory } from './useHealthCategory'
 // Custom views for categories that need more than a chart list
 const CUSTOM_VIEWS: Record<string, React.FC> = {
   'injuries': InjuriesView,
+  'sleep': SleepView,
 }
 
 export function HealthCategoryScreen() {

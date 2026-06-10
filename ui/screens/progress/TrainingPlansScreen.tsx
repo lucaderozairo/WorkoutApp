@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Grid, Row, Column, Cluster } from '@ui/layout';
-import { ProgressBar, Chip, Surface, Text } from '@ui/atoms';
+import { Dot, ProgressBar, Chip, Surface, Text } from '@ui/atoms';
 import { Badge, Button, Input } from '@ui/molecules';
 import { ScheduleEventBlock } from '@ui/components/training-plans/ScheduleEventBlock';
 import { useCommand } from '@ui/bindings';
@@ -11,7 +11,7 @@ import { CalendarGrid } from '@ui/components/widgets/CalendarWidgets';
 import type { SportType } from '@features/training_log/domain/types';
 import {
   useTrainingPlans,
-  USER_ID, FILTERS, LEGEND, SPORT_COLOR, SPORT_LABEL, SPORT_TITLE, DOW_SHORT,
+  USER_ID, FILTERS, LEGEND, SPORT_LABEL, SPORT_TITLE, DOW_SHORT,
   weekStart, addDays, isSameDay,
   type CalView,
 } from './useTrainingPlans';
@@ -82,11 +82,11 @@ function WeekView({ anchor, workoutCalendar }: { anchor: Date; workoutCalendar: 
     if (sports?.length) eventsByDow.set(i, sports[0]);
   });
 
-  const dayCircleStyle = (d: Date, dow: number): React.CSSProperties => {
+  const dayCircleState = (d: Date, dow: number): { className: string; sport?: SportType } => {
     const sport = eventsByDow.get(dow);
-    if (isSameDay(d, today)) return { background: 'var(--ink)', color: 'var(--surface-1)' };
-    if (sport) return { background: `color-mix(in oklab, ${SPORT_COLOR[sport]} 12%, var(--surface-2))` };
-    return {};
+    if (isSameDay(d, today)) return { className: 'day-circle today' };
+    if (sport) return { className: 'day-circle', sport };
+    return { className: 'day-circle' };
   };
 
   return (
@@ -95,12 +95,15 @@ function WeekView({ anchor, workoutCalendar }: { anchor: Date; workoutCalendar: 
       {/* Day headers */}
       <Grid cols="40px repeat(7, 1fr)" gap={1}>
         <span />
-        {days.map((d, i) => (
-          <Column key={i} gap={1} align="center">
-            <Text mono size="caption" color="faint">{DOW_SHORT[i]}</Text>
-            <span className="day-circle" style={dayCircleStyle(d, i)}>{d.getDate()}</span>
-          </Column>
-        ))}
+        {days.map((d, i) => {
+          const { className, sport } = dayCircleState(d, i);
+          return (
+            <Column key={i} gap={1} align="center">
+              <Text mono size="caption" color="faint">{DOW_SHORT[i]}</Text>
+              <span className={className} data-sport={sport}>{d.getDate()}</span>
+            </Column>
+          );
+        })}
       </Grid>
 
       {/* Time slots */}
@@ -280,10 +283,10 @@ export function TrainingPlansScreen() {
         {FILTERS.map(f => (
           <Chip
             key={f.label}
-            className="nowrap shrink-0"
+            className="nowrap min-w-0"
             active={activeFilters.has(f.label)}
             onClick={() => toggleFilter(f.label)}
-            leading={<span className="dot sm" style={{ '--dot-color': f.color } as React.CSSProperties} />}
+            leading={<Dot size="sm" color={f.color} />}
           >
             {f.label}
           </Chip>
@@ -299,7 +302,7 @@ export function TrainingPlansScreen() {
               <Cluster>
                 {LEGEND.map(l => (
                   <Row key={l.label} align="center" gap={1} className="caption">
-                    <span className="dot sm" style={{ '--dot-color': l.color } as React.CSSProperties} />
+                    <Dot size="sm" color={l.color} />
                     <Text color="muted">{l.label}</Text>
                   </Row>
                 ))}
@@ -319,7 +322,7 @@ export function TrainingPlansScreen() {
                         <Text size="caption" mono>{ev.monthLabel}</Text>
                         <Text size="caption">{ev.day}</Text>
                       </Column>
-                      <Column gap={1} className="grow">
+                      <Column gap={1} className="min-w-0">
                         <Row justify="between" align="center">
                           <Text size="detail">{ev.title}</Text>
                           <Text className={`badge ${ev.sport}`}>{SPORT_LABEL[ev.sport]}</Text>

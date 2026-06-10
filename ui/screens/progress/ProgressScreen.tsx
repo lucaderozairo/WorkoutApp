@@ -1,9 +1,9 @@
-import { useState, useId } from 'react';
+import { useState } from 'react';
 import { Grid, Row, Column } from '@ui/layout';
 import { useNavigate } from 'react-router-dom';
 import type { ActivityHistoryItem } from '@features/training_log';
 import type { CardioSession, CardioSport } from '@features/cardio';
-import { Tabs, DetailRow, Alert, Badge, Button } from '@ui/molecules';
+import { Tabs, DetailRow, Alert, Badge, Button, ExpandableCard } from '@ui/molecules';
 import { EmptyState, StatTile } from '@ui/patterns';
 import { Surface, Text, SegmentBar } from '@ui/atoms';
 import { SparklineArea } from '@ui/patterns/charts/domain-charts';
@@ -71,7 +71,6 @@ function severityVariant(severity: string): AlertVariant {
 
 function SessionCard({ session }: { session: ActivityHistoryItem }) {
   const navigate = useNavigate();
-  const id = useId();
   const [shareData, setShareData] = useState<{
     title: string; date: string; summary: string;
     details: Array<{ label: string; value: string }>;
@@ -81,9 +80,8 @@ function SessionCard({ session }: { session: ActivityHistoryItem }) {
   const accent = session.category === 'strength' ? 'strength' : 'run';
 
   return (
-    <Surface as="section" className={`pad-sm${session.hasPR ? ' accent' : ''}`}>
-      <input type="checkbox" id={id} className="exp-toggle" />
-      <label htmlFor={id} className="exp-trigger column interactive">
+    <ExpandableCard className={`pad-sm${session.hasPR ? ' accent' : ''}`} header={(
+      <>
         <Row justify="between">
           <Column gap={0}>
             <Text as="time" size="caption">{new Date(session.startedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</Text>
@@ -98,7 +96,8 @@ function SessionCard({ session }: { session: ActivityHistoryItem }) {
             <Text className="chevron">›</Text>
           </Row>
         </Row>
-      </label>
+      </>
+    )}>
       <Column className="expandable">
         <DetailRow label="Duration" value={formatDuration(session.durationSeconds)} />
         <DetailRow label="Total sets" value={session.totalSets} />
@@ -124,7 +123,7 @@ function SessionCard({ session }: { session: ActivityHistoryItem }) {
         </Row>
       </Column>
       {shareData && <ShareModal type="session" data={shareData} onClose={() => setShareData(null)} />}
-    </Surface>
+    </ExpandableCard>
   );
 }
 
@@ -146,7 +145,6 @@ const SPORT_TOKEN: Record<string, string> = {
 
 function CardioSessionCard({ session }: { session: CardioSession }) {
   const navigate = useNavigate();
-  const id = useId();
   const color = sportColor(session.sport);
   const distKm = session.distanceMeters / 1000;
   const duration = formatDuration(session.durationSeconds);
@@ -156,9 +154,8 @@ function CardioSessionCard({ session }: { session: CardioSession }) {
   const elevationGain = session.gpsTrack?.elevationGain;
 
   return (
-    <Surface as="section" className="pad-sm">
-      <input type="checkbox" id={id} className="exp-toggle" />
-      <label htmlFor={id} className="exp-trigger column interactive">
+    <ExpandableCard className="pad-sm" header={(
+      <>
         <Row justify="between">
           <Column gap={0}>
             <Text as="time" size="caption">{new Date(session.startedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</Text>
@@ -176,7 +173,8 @@ function CardioSessionCard({ session }: { session: CardioSession }) {
           {heartRate != null && <Badge color="c-strength" dot>♥ {Math.round(heartRate)}bpm</Badge>}
           {elevationGain != null && elevationGain > 0 && <Badge dot>↑ {Math.round(elevationGain)}m</Badge>}
         </Row>
-      </label>
+      </>
+    )}>
       <Column className="expandable">
         <DetailRow label="Distance" value={`${distKm.toFixed(2)} km`} />
         <DetailRow label="Duration" value={duration} />
@@ -188,7 +186,7 @@ function CardioSessionCard({ session }: { session: CardioSession }) {
           navigate(`/sessions/${session.id}`);
         }}>📋 Details</Button>
       </Column>
-    </Surface>
+    </ExpandableCard>
   );
 }
 

@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
+import type { WidgetSize } from '@ui/components/widgets/widgetPrimitives';
 
-export type WidgetSize = '1x1' | '2x1' | '2x2';
+export type { WidgetSize };
 export interface WidgetInstance { id: string; size: WidgetSize; }
 export interface WidgetDef {
   id: string;
@@ -10,21 +11,21 @@ export interface WidgetDef {
 }
 
 export const DEFAULT_LAYOUT: WidgetInstance[] = [
-  { id: 'sleep-review', size: '2x2' },
-  { id: 'weather', size: '2x1' },
-  { id: 'readiness', size: '2x1' },
-  { id: 'sleep-breakdown', size: '2x2' },
-  { id: 'hrv', size: '2x1' },
-  { id: 'resting-hr', size: '2x1' },
-  { id: 'plan-adherence', size: '2x1' },
-  { id: 'weekly-volume', size: '2x2' },
-  { id: 'activity-feed', size: '2x1' },
-  { id: 'macros', size: '2x1' },
-  { id: 'calories', size: '1x1' },
-  { id: 'habits', size: '1x1' },
-  { id: 'active-goals', size: '2x2' },
-  { id: 'monthly-dist', size: '2x1' },
-  { id: 'insights', size: '2x1' },
+  { id: 'sleep-review',    size: 'md' },
+  { id: 'weather',         size: 'wide' },
+  { id: 'readiness',       size: 'wide' },
+  { id: 'sleep-breakdown', size: 'md' },
+  { id: 'hrv',             size: 'wide' },
+  { id: 'resting-hr',      size: 'wide' },
+  { id: 'plan-adherence',  size: 'wide' },
+  { id: 'weekly-volume',   size: 'md' },
+  { id: 'activity-feed',   size: 'wide' },
+  { id: 'macros',          size: 'wide' },
+  { id: 'calories',        size: 'sm' },
+  { id: 'habits',          size: 'sm' },
+  { id: 'active-goals',    size: 'md' },
+  { id: 'monthly-dist',    size: 'wide' },
+  { id: 'insights',        size: 'wide' },
 ];
 
 export function useWidgetPrototype(registry: WidgetDef[]) {

@@ -118,7 +118,7 @@ export function ExercisePicker({ onClose, onCommit }: ExercisePickerProps) {
                       className={i < arr.length - 1 ? 'bordered-bottom' : undefined}
                     >
                       <Row justify="between" align="center">
-                        <Column gap={1} align="start" className="grow">
+                        <Column gap={1} align="start" className="min-w-0">
                           <Text size="detail">{ex.name}</Text>
                           <Text size="caption">{ex.muscle}</Text>
                         </Column>

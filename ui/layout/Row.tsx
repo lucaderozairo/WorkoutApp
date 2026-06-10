@@ -1,4 +1,4 @@
-import type { CSSProperties, ElementType, KeyboardEventHandler, ReactNode } from 'react';
+import type { ElementType, KeyboardEventHandler, ReactNode } from 'react';
 import { layoutClasses, type Gap, type Align, type Justify } from './_classes';
 
 interface RowProps {
@@ -8,13 +8,12 @@ interface RowProps {
   wrap?: boolean;
   as?: ElementType;
   className?: string;
-  style?: CSSProperties;
   children: ReactNode;
   onClick?: () => void;
   onKeyDown?: KeyboardEventHandler;
 }
 
-export function Row({ gap, align, justify, wrap = false, as: Tag = 'div', className, style, children, onClick, onKeyDown }: RowProps) {
+export function Row({ gap, align, justify, wrap = false, as: Tag = 'div', className, children, onClick, onKeyDown }: RowProps) {
   const classes = layoutClasses({ base: 'row', gap, defaultGap: 3, align, justify, wrap, className });
-  return <Tag className={classes} style={style} onClick={onClick} onKeyDown={onKeyDown}>{children}</Tag>;
+  return <Tag className={classes} onClick={onClick} onKeyDown={onKeyDown}>{children}</Tag>;
 }

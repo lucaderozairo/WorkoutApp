@@ -61,7 +61,7 @@ export function SetRow({
         <span className={`mono caption bold text-center set-number ${labelColor}`}>
           {label}
         </span>
-        <Row className="grow" align="center" gap={1}>
+        <Row className="min-w-0" align="center" gap={1}>
           {currentMode === 'wt-reps' && (
             <>
               <input
@@ -95,7 +95,7 @@ export function SetRow({
               <Text size="caption" color={labelColor} mono className="set-sep">×</Text>
               <input
                 type="number"
-                className={`mono num grow${warmup ? ' faint' : ''}`}
+                className={`mono num min-w-0${warmup ? ' faint' : ''}`}
                 value={rVal}
                 placeholder="1"
                 min="1"
@@ -185,7 +185,7 @@ export function SetRow({
           <Button variant="ghost" size="icon" disabled>
             <MessageSquare size={9} className="faint" />
           </Button>
-          <Surface variant="ghost" pad="sm" className="grow">
+          <Surface variant="ghost" pad="sm" className="min-w-0">
             <Text size="caption" className="pre-wrap">{comment}</Text>
           </Surface>
           {!disabled && (
@@ -244,7 +244,7 @@ export function SetRow({
         <Row gap={1} align="start">
           <Button variant="ghost" size="icon" disabled><MessageSquare size={9} /></Button>
           <textarea
-            className="grow"
+            className="min-w-0"
             rows={3}
             placeholder="Add a note…"
             value={commentDraft}

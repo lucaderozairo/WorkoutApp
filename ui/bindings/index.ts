@@ -2,21 +2,24 @@ import { useState, useCallback, useEffect } from 'react';
 // Note: ui/bindings is the designated bridge between the view store and React.
 // This is the one sanctioned ui→data import; see LAYER_RULES.md.
 import { viewStore } from '@data/projections/views';
+import type { ViewRegistry } from '@data/projections/views/schema';
 
 /**
  * useQuery subscribes to a view store key and re-renders when it changes.
  * Uses subscription-based change notification instead of polling.
  */
+export function useQuery<K extends keyof ViewRegistry>(key: K): ViewRegistry[K] | null;
+export function useQuery<T>(key: string): T | null;
 export function useQuery<T>(key: string): T | null {
-  const [data, setData] = useState<T | null>(() => viewStore.get(key) ?? null);
+  const [data, setData] = useState<T | null>(() => (viewStore.get(key) as T | undefined) ?? null);
 
   useEffect(() => {
     // Sync on mount in case the view was set before this component rendered
-    const current = viewStore.get<T>(key) ?? null;
+    const current = (viewStore.get(key) as T | undefined) ?? null;
     setData(prev => (prev === current ? prev : current));
 
     return viewStore.subscribe(key, () => {
-      setData(viewStore.get<T>(key) ?? null);
+      setData((viewStore.get(key) as T | undefined) ?? null);
     });
   }, [key]);
 

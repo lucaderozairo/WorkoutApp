@@ -2,7 +2,9 @@ import { useRef, useState } from 'react';
 // eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
 import { PERSISTED_KEYS } from '@data/sources/local/persistence';
 import { viewStore } from '@data/projections/views';
-import { importCsv, writeImportToStore } from '@shared/utils/importCsv';
+import { parseCsvForImport } from '@shared/utils/importCsv';
+import { handleImportSessions } from '@features/training_log/commands/importSessions';
+import { handleImportCardioSessions } from '@features/cardio/commands/importCardioSessions';
 import { Column } from '@ui/layout';
 import { Surface, Text } from '@ui/atoms';
 import { Button } from '@ui/molecules';
@@ -19,13 +21,16 @@ export function ImportDataWidget() {
     const text = await file.text();
 
     if (file.name.endsWith('.csv')) {
-      const result = importCsv(text);
-      const counts = writeImportToStore(result);
-      if (counts.sessionCount > 0 || counts.cardioCount > 0) {
-        setMessage(`Imported ${counts.sessionCount} strength + ${counts.cardioCount} cardio sessions.`);
+      const data = parseCsvForImport(text);
+      const [trainingResult, cardioResult] = await Promise.all([
+        handleImportSessions(data),
+        handleImportCardioSessions(data),
+      ]);
+      if (trainingResult.sessionCount > 0 || cardioResult.cardioCount > 0) {
+        setMessage(`Imported ${trainingResult.sessionCount} strength + ${cardioResult.cardioCount} cardio sessions.`);
         setStatus('ok');
-      } else if (result.errors.length > 0) {
-        setMessage(result.errors[0]);
+      } else if (trainingResult.errors.length > 0 || cardioResult.errors.length > 0) {
+        setMessage([...trainingResult.errors, ...cardioResult.errors][0]);
         setStatus('error');
       } else {
         setMessage('No sessions found in CSV.');

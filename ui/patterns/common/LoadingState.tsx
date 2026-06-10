@@ -1,0 +1,47 @@
+import type { ReactNode } from 'react';
+import { Spinner } from '@ui/atoms/Spinner';
+import { Skeleton } from '@ui/atoms/Skeleton';
+import { Surface } from '@ui/atoms/Surface';
+import { Column } from '@ui/layout/Column';
+
+type LoadingStateKind = 'loading' | 'empty' | 'error';
+
+interface LoadingStateProps {
+  state: LoadingStateKind;
+  title?: ReactNode;
+  message?: ReactNode;
+  action?: ReactNode;
+  skeletonRows?: number;
+  className?: string;
+}
+
+export function LoadingState({
+  state,
+  title,
+  message,
+  action,
+  skeletonRows = 3,
+  className,
+}: LoadingStateProps) {
+  const isLoading = state === 'loading';
+
+  return (
+    <Surface variant={state === 'error' ? 'flat' : 'default'} className={['loading-state', className].filter(Boolean).join(' ')}>
+      <Column align="center" gap={3}>
+        {isLoading ? (
+          <Column gap={2} className="loading-state-skeleton" aria-hidden>
+            {Array.from({ length: skeletonRows }, (_, index) => (
+              <Skeleton key={index} size="line" short={index === skeletonRows - 1} />
+            ))}
+          </Column>
+        ) : (
+          <span className="loading-state-mark" aria-hidden>{state === 'error' ? '!' : 'i'}</span>
+        )}
+        {isLoading && <Spinner size="sm" />}
+        {title && <h3>{title}</h3>}
+        {message && <p className="caption muted">{message}</p>}
+        {action}
+      </Column>
+    </Surface>
+  );
+}

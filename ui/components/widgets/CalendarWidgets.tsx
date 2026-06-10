@@ -65,9 +65,9 @@ export function CalendarLarge() {
               <Row align="center" gap={1}>
                 <div>
                   <span className="eyebrow text-9">{ev.month}</span>
-                  <span className="lh-1" style={{ fontSize: 'var(--t-lg)' }}>{ev.day}</span>
+                  <span className="calendar-event-day">{ev.day}</span>
                 </div>
-                <Column gap={1} className="grow">
+                <Column gap={1} className="min-w-0">
                   <Row justify="between" align="center">
                     <Text size="detail">{ev.title}</Text>
                     <Badge className={`pill ${ev.sport}`}>{ev.sport}</Badge>

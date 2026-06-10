@@ -187,8 +187,8 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
                   <Row align="center" justify="between">
                     {b.tag && <Badge dot>{b.tag}</Badge>}
                   </Row>
-                  {b.exercises.map((ex, i) => (
-                    <Row key={i} align="center" justify="between">
+                  {b.exercises.map((ex) => (
+                    <Row key={ex.blockId ?? `${b.id}-${ex.name}-${ex.hold ?? ''}`} align="center" justify="between">
                       <Text size="detail">{ex.name}</Text>
                       <Text size="caption" mono>{ex.hold}</Text>
                     </Row>
@@ -226,7 +226,7 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
                 <>
                   {b.type === 'single' ? (
                     <Row align="center" justify="between">
-                      <Row gap={1} align="center" className="grow">
+                      <Row gap={1} align="center" className="min-w-0">
                         <span className="mono num caption muted bold set-number">{idx + 1}</span>
                         <Text size="detail">{b.exercises[0].name}</Text>
                       </Row>
@@ -237,7 +237,7 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
                     </Row>
                   )}
                   {b.exercises.map((ex, i) => (
-                    <Column key={i}>
+                    <Column key={ex.blockId ?? `${b.id}-${ex.label ?? ex.name}`}>
                       {b.type !== 'single' && (
                         <Row gap={1} align="center" justify="between">
                           <Row gap={1} align="center">

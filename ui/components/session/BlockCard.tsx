@@ -110,7 +110,7 @@ export function BlockCard({
               justify="between"
               className={i < block.exercises.length - 1 ? 'bordered-bottom' : undefined}
             >
-              <Column gap={1} className="grow">
+              <Column gap={1} className="min-w-0">
                 <Text size="detail">{ex.name}</Text>
                 <Text size="caption">{ex.muscle}</Text>
               </Column>
@@ -157,9 +157,9 @@ export function BlockCard({
       <Surface className={flagCls}>
         <Column>
           <Row align="center" justify="between">
-            <Row gap={1} align="center" className="grow">
+            <Row gap={1} align="center" className="min-w-0">
               {warnings.length > 0 && <AlertTriangle size={12} />}
-              <Text as="h3" className="grow">{ex.name}</Text>
+              <Text as="h3" className="min-w-0">{ex.name}</Text>
               <Text size="caption" color="faint">{getMode(ex)}</Text>
               {warnings.map(w => (
                 <Badge key={w.id} tone={w.severity === 'severe' ? 'bad' : 'warn'}>{w.bodyPart}</Badge>
@@ -174,7 +174,7 @@ export function BlockCard({
             <Column gap={1}>
               {warnings.map(w => (
                 <Row key={w.id} align="center" gap={1}>
-                  <Text size="caption" className="grow">{w.advice}</Text>
+                  <Text size="caption" className="min-w-0">{w.advice}</Text>
                 </Row>
               ))}
             </Column>
