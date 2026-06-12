@@ -1,30 +1,10 @@
-import { useQuery } from '@ui/bindings';
-// eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
-import { exportEnvelope } from '@data/sources/local/persistence';
-import { triggerDownload } from '@shared/utils/csv';
-import type { ActivitiesState } from '@features/training_log';
-import { getActivityHistory } from '@features/training_log';
-import type { CardioSession } from '@features/cardio/domain/types';
-import { exportAllSessionsCsv } from '@shared/utils/exportCsv';
+import { useDataTransfer } from '@ui/components/transfer';
 import { Row, Column } from '@ui/layout';
 import { Surface, Text } from '@ui/atoms';
 import { Button } from '@ui/molecules';
 
 export function ExportDataWidget() {
-  useQuery<ActivitiesState>('sessions');
-  const history = getActivityHistory();
-  const cardioView = useQuery<{ sessions: CardioSession[] }>('recent_cardio_sessions') ?? { sessions: [] };
-
-  function handleExportJson() {
-    const json = exportEnvelope();
-    const date = new Date().toISOString().slice(0, 10);
-    const blob = new Blob([json], { type: 'application/json' });
-    triggerDownload(blob, `workout-data-${date}.json`);
-  }
-
-  function handleExportCsv() {
-    exportAllSessionsCsv(history, cardioView.sessions);
-  }
+  const { exportAllJson, exportAllCsv } = useDataTransfer();
 
   return (
     <Surface>
@@ -32,8 +12,8 @@ export function ExportDataWidget() {
         <Text size="eyebrow">Export Data</Text>
         <Text size="detail">Download all your workout data as JSON or CSV.</Text>
         <Row gap={1}>
-          <Button variant="secondary" size="sm" onClick={handleExportJson}>JSON</Button>
-          <Button variant="secondary" size="sm" onClick={handleExportCsv}>CSV</Button>
+          <Button variant="secondary" size="sm" onClick={exportAllJson}>JSON</Button>
+          <Button variant="secondary" size="sm" onClick={exportAllCsv}>CSV</Button>
         </Row>
       </Column>
     </Surface>

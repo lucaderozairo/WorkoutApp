@@ -9,10 +9,10 @@ import {
   handleFinishSessionWithDetails,
 } from '@features/training_log';
 import { useCommand, useQuery } from '@ui/bindings';
-// eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
-import { exportSessionEnvelope } from '@data/sources/local/persistence';
-import { exportSessionCsv, triggerDownload } from '@shared/utils/exportSession';
-import { handleSaveTemplate } from '@features/planning';
+import { exportSessionBackup } from '@features/data_transfer';
+import { downloadJson } from '@shared/utils/csv';
+import { exportActivitySessionCsv } from '@ui/components/transfer';
+import { handleCreateTemplate } from '@features/templates';
 
 export const RPE_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 export const SUGGESTED_TAGS = ['push', 'pull', 'legs', 'upper', 'lower', 'full-body', 'heavy', 'light', 'deload'];
@@ -89,7 +89,7 @@ export function useFinishSession() {
   const { dispatch: updateStartTime } = useCommand(handleUpdateSessionStartTime);
   const { dispatch: updateDetails } = useCommand(handleUpdateSessionDetails);
   const { dispatch: finishWithDetails } = useCommand(handleFinishSessionWithDetails);
-  const { dispatch: saveTemplate } = useCommand(handleSaveTemplate);
+  const { dispatch: saveTemplate } = useCommand(handleCreateTemplate);
 
   const rawTs = date && startTime ? new Date(`${date}T${startTime}`).getTime() : NaN;
   const startTimestamp = Number.isFinite(rawTs) ? rawTs : null;
@@ -162,23 +162,27 @@ export function useFinishSession() {
 
   const handleExportJson = () => {
     if (!session) return;
-    const json = exportSessionEnvelope([session]);
-    const blob = new Blob([json], { type: 'application/json' });
     const d = new Date().toISOString().split('T')[0];
-    triggerDownload(blob, `session-${session.id}-${d}.json`);
+    downloadJson(exportSessionBackup([session]), `session-${session.id}-${d}.json`);
   };
 
   const handleExportCsv = () => {
-    if (session) exportSessionCsv(session);
+    if (session) exportActivitySessionCsv(session);
   };
 
   const handleSaveAsTemplate = async () => {
     if (!session || session.segments.length === 0) return;
     await saveTemplate({
-      type: 'SaveTemplate',
+      type: 'CreateTemplate',
       name: name.trim() || session.name,
       primarySport: session.primarySport,
-      exercises: session.segments.map(s => ({ name: s.exerciseName, setCount: s.sets.length })),
+      exercises: session.segments.map(s => ({
+        name: s.exerciseName,
+        category: s.exerciseCategory,
+        targetSets: s.sets.filter(set => !set.isWarmup).length,
+        restSeconds: s.restSeconds,
+        notes: s.notes || undefined,
+      })),
     });
   };
 

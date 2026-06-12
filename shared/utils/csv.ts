@@ -55,3 +55,9 @@ export function triggerDownload(blob: Blob, filename: string): void {
   a.click();
   URL.revokeObjectURL(url);
 }
+
+/** Download a value as a JSON file. Strings are written verbatim (already-serialized envelopes). */
+export function downloadJson(value: unknown, filename: string): void {
+  const text = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+  triggerDownload(new Blob([text], { type: 'application/json' }), filename);
+}

@@ -3,9 +3,9 @@ import type { Id } from '@shared/types';
 import type { ActivityView } from '@features/training_log/projections';
 import { handleFinishSession, handleUpdateSessionNote, getActivityHistory } from '@features/training_log';
 import { useCommand } from '@ui/bindings';
-// eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
-import { exportSessionEnvelope } from '@data/sources/local/persistence';
-import { exportSessionCsv, triggerDownload } from '@shared/utils/exportSession';
+import { exportSessionBackup } from '@features/data_transfer';
+import { downloadJson } from '@shared/utils/csv';
+import { exportActivitySessionCsv } from '@ui/components/transfer';
 import { Row, Column, Cluster, Spacer } from '@ui/layout';
 import { Text } from '@ui/atoms';
 import { Button, Textarea } from '@ui/molecules';
@@ -51,14 +51,12 @@ export function FinishSessionModal({ session, onClose, onFinished, onJumpToBlock
   const handleExportJson = () => {
     const item = getActivityHistory().find(s => s.id === session.id);
     const sessions = item ? [item] : [];
-    const json = exportSessionEnvelope(sessions);
-    const blob = new Blob([json], { type: 'application/json' });
     const date = new Date().toISOString().split('T')[0];
-    triggerDownload(blob, `session-${session.id}-${date}.json`);
+    downloadJson(exportSessionBackup(sessions), `session-${session.id}-${date}.json`);
   };
 
   const handleExportCsv = () => {
-    exportSessionCsv(session);
+    exportActivitySessionCsv(session);
   };
 
   return (

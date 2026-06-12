@@ -1,22 +1,8 @@
 import { useRef, useState } from 'react';
 import { useQuery, useCommand } from '@ui/bindings';
 import { handleUpdateProfile, handleSetUnitPreference } from '@features/profile';
-import { viewStore } from '@data/projections/views';
-import {
-  exportEnvelope,
-  clearStorage,
-  PERSISTED_KEYS,
-  type PersistedKey,
-// eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
-} from '@data/sources/local/persistence';
 import type { Id } from '@shared/types';
-import { parseCsvForImport } from '@shared/utils/importCsv';
-import { handleImportSessions } from '@features/training_log/commands/importSessions';
-import { handleImportCardioSessions } from '@features/cardio/commands/importCardioSessions';
-import { exportAllSessionsCsv } from '@shared/utils/exportCsv';
-import { triggerDownload } from '@shared/utils/csv';
-import { getActivityHistory } from '@features/training_log';
-import type { CardioSession } from '@features/cardio/domain/types';
+import { useDataTransfer } from '@ui/components/transfer';
 import { Row, Column } from '@ui/layout';
 import { Surface, Text } from '@ui/atoms';
 import { Button, Switch } from '@ui/molecules';
@@ -44,6 +30,7 @@ export function SettingsContent() {
 
   const { dispatch: dispatchUpdateProfile } = useCommand(handleUpdateProfile);
   const { dispatch: setUnitsCmd } = useCommand(handleSetUnitPreference);
+  const { importFile, exportAllJson, exportAllCsv, clearAll } = useDataTransfer();
 
   const handleSaveProfile = async () => {
     await dispatchUpdateProfile({ type: 'UpdateProfile', userId: USER_ID, displayName, email });
@@ -65,65 +52,17 @@ export function SettingsContent() {
     setUnits('imperial');
   };
 
-  const exportData = () => {
-    const json = exportEnvelope();
-    const blob = new Blob([json], { type: 'application/json' });
-    triggerDownload(blob, `workout-data-${new Date().toISOString().split('T')[0]}.json`);
-  };
-
-  const exportDataCsv = () => {
-    const history = getActivityHistory();
-    const cardioView = viewStore.get<{ sessions: CardioSession[] }>('recent_cardio_sessions') ?? { sessions: [] };
-    exportAllSessionsCsv(history, cardioView.sessions);
-  };
-
   const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    try {
-      const text = await file.text();
-
-      if (file.name.endsWith('.csv')) {
-        const data = parseCsvForImport(text);
-        const [trainingResult, cardioResult] = await Promise.all([
-          handleImportSessions(data),
-          handleImportCardioSessions(data),
-        ]);
-        const counts = {
-          sessionCount: trainingResult.sessionCount,
-          cardioCount: cardioResult.cardioCount,
-          errorCount: trainingResult.errors.length + cardioResult.errors.length,
-        };
-        if (counts.sessionCount > 0 || counts.cardioCount > 0) {
-          setImportStatus(`Imported ${counts.sessionCount} strength + ${counts.cardioCount} cardio sessions.`);
-        } else if (counts.errorCount > 0) {
-          setImportStatus([...trainingResult.errors, ...cardioResult.errors][0]);
-        } else {
-          setImportStatus('No sessions found in CSV.');
-        }
-      } else {
-        const parsed = JSON.parse(text) as { version?: number; data?: Record<string, unknown> };
-        if (parsed.version !== 1 || !parsed.data || typeof parsed.data !== 'object') {
-          setImportStatus('Invalid file format.');
-          return;
-        }
-        for (const key of PERSISTED_KEYS) {
-          const value = parsed.data[key];
-          if (value !== undefined) viewStore.set(key as PersistedKey, value);
-        }
-        const sessionsData = parsed.data.sessions as { byId?: Record<string, unknown> } | undefined;
-        const sessionCount = sessionsData?.byId ? Object.keys(sessionsData.byId).length : 0;
-        setImportStatus(`Imported — ${sessionCount} session${sessionCount !== 1 ? 's' : ''} loaded.`);
-      }
-    } catch {
-      setImportStatus('Could not read file.');
-    }
+    const summary = await importFile(file);
+    setImportStatus(summary.message);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const clearAllData = () => {
     if (window.confirm('Clear all data? This cannot be undone.')) {
-      clearStorage();
+      clearAll();
       window.location.reload();
     }
   };
@@ -143,8 +82,8 @@ export function SettingsContent() {
         <Row justify="between" align="center">
           <Text size="caption">Export history</Text>
           <Row gap={1}>
-            <Button variant="secondary" size="sm" onClick={exportData}>Export JSON</Button>
-            <Button variant="secondary" size="sm" onClick={exportDataCsv}>Export CSV</Button>
+            <Button variant="secondary" size="sm" onClick={exportAllJson}>Export JSON</Button>
+            <Button variant="secondary" size="sm" onClick={exportAllCsv}>Export CSV</Button>
           </Row>
         </Row>
         <Row justify="between" align="center">

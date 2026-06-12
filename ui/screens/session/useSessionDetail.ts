@@ -2,11 +2,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@ui/bindings';
 import type { ActivitiesState, ActivityView } from '@features/training_log';
 import type { CardioSession, RecentCardioView } from '@features/cardio';
-// eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
-import { exportSessionEnvelope } from '@data/sources/local/persistence';
-import { triggerDownload } from '@shared/utils/csv';
+import { exportSessionBackup } from '@features/data_transfer';
+import { downloadJson } from '@shared/utils/csv';
 import { getActivityHistory } from '@features/training_log';
-import { exportSessionCsv, exportCardioSessionCsv } from '@shared/utils/exportCsv';
+import { exportSessionCsv, exportCardioSessionCsv } from '@ui/components/transfer';
 
 
 export function isCardioSession(s: unknown): s is CardioSession {
@@ -39,12 +38,9 @@ export function useSessionDetail() {
 
   function handleExportJson() {
     if (isCardioSession(session)) {
-      const blob = new Blob([JSON.stringify(session, null, 2)], { type: 'application/json' });
-      triggerDownload(blob, `cardio-${session.id}.json`);
+      downloadJson(session, `cardio-${session.id}.json`);
     } else if (strengthSession) {
-      const json = exportSessionEnvelope([strengthSession]);
-      const blob = new Blob([json], { type: 'application/json' });
-      triggerDownload(blob, `session-${session!.id}.json`);
+      downloadJson(exportSessionBackup([strengthSession]), `session-${session!.id}.json`);
     }
   }
 
