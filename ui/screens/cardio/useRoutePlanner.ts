@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useQuery } from '@ui/bindings';
-import { handleSaveRoute, formatPace, parsePace } from '@features/planning';
+import { handleSaveRoute, handleUpdateRoute, formatPace, parsePace } from '@features/planning';
 import type { SavedRoute } from '@features/planning/contract';
-import { totalDistanceKm, haversineKm } from '@ui/components/workout/wizard/RouteMap';
+import { pathDistanceKm as totalDistanceKm, distanceKm as haversineKm } from '@shared/geo';
 import type { MapCanvasHandle } from '@ui/components/workout/wizard/RouteMap';
+import { cryptoIdGenerator } from '@core/id-generator';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -13,11 +14,19 @@ export type BaseLayerId = 'plain' | 'dark' | 'topo' | 'sat';
 export type ActivityId = 'run' | 'hike' | 'ride' | 'walk';
 export type PacePreset = 'easy' | 'steady' | 'tempo' | 'race';
 export type SurfaceKey = 'paved' | 'gravel' | 'trail' | 'unpaved';
+export type RouteFieldStatus = 'real' | 'estimated' | 'unavailable';
+
+export interface RouteDataStatus {
+  elevationGain: RouteFieldStatus;
+  elevationProfile: RouteFieldStatus;
+  surfaceMix: RouteFieldStatus;
+}
 
 interface RouteDraft {
   waypoints: [number, number][];
   profile: 'foot' | 'bike';
   routeName: string;
+  routeDescription: string;
   baseLayerId: BaseLayerId;
   showDistanceMarkers: boolean;
   segmentPaces: Record<number, number>;
@@ -39,6 +48,7 @@ const DRAFT_DEFAULTS: RouteDraft = {
   waypoints: [],
   profile: 'foot',
   routeName: '',
+  routeDescription: '',
   baseLayerId: 'plain',
   showDistanceMarkers: true,
   segmentPaces: {},
@@ -123,18 +133,34 @@ export function formatMin(min: number): string {
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
-export function useRoutePlanner() {
+interface UseRoutePlannerOptions {
+  routeId?: SavedRoute['id'];
+}
+
+export function useRoutePlanner(options: UseRoutePlannerOptions = {}) {
   const navigate = useNavigate();
   const location = useLocation();
   const incoming = (location.state ?? {}) as RoutePlannerState;
+  const savedRoutes = (useQuery<SavedRoute[]>('saved_routes') ?? []) as SavedRoute[];
+  const editingRoute = options.routeId
+    ? savedRoutes.find(route => route.id === options.routeId)
+    : undefined;
 
   const savedState = useRef(loadRouteDraft()).current;
-  if (incoming.waypoints) clearRouteDraft();
+  const createRouteId = useRef(cryptoIdGenerator.next<'SavedRoute'>()).current;
+  if (incoming.waypoints || options.routeId) clearRouteDraft();
 
   const mapRef = useRef<MapCanvasHandle>(null);
-  const [waypoints, setWaypoints] = useState<[number, number][]>(incoming.waypoints ?? savedState.waypoints);
+  const [waypoints, setWaypoints] = useState<[number, number][]>(
+    editingRoute?.waypoints ?? incoming.waypoints ?? savedState.waypoints,
+  );
   const [routedKm, setRoutedKm] = useState(0);
-  const [routeName, setRouteName] = useState(incoming.waypoints ? '' : savedState.routeName);
+  const [routeName, setRouteName] = useState(
+    editingRoute?.name ?? (incoming.waypoints ? '' : savedState.routeName),
+  );
+  const [routeDescription, setRouteDescription] = useState(
+    editingRoute?.description ?? (incoming.waypoints ? '' : savedState.routeDescription),
+  );
   const [mode, setMode] = useState<EditMode>('select');
   const [undoCount, setUndoCount] = useState(0);
   const [redoCount, setRedoCount] = useState(0);
@@ -146,7 +172,7 @@ export function useRoutePlanner() {
   const [sideOpen, setSideOpen] = useState(true);
   const [snap, setSnap] = useState<'peek' | 'mid' | 'full'>('mid');
   const [activity, setActivity] = useState<ActivityId>(
-    (incoming.profile ?? savedState.profile) === 'bike' ? 'ride' : 'run',
+    (editingRoute?.profile ?? incoming.profile ?? savedState.profile) === 'bike' ? 'ride' : 'run',
   );
   const [paceSecondsPerKm, setPaceSecondsPerKm] = useState(savedState.paceSecondsPerKm);
   const [pacePreset, setPacePreset] = useState<PacePreset>('steady');
@@ -159,11 +185,11 @@ export function useRoutePlanner() {
   });
   const [layerPickerOpen, setLayerPickerOpen] = useState(false);
 
-  const savedRoutes = (useQuery<SavedRoute[]>('saved_routes') ?? []) as SavedRoute[];
-
   const profile: 'foot' | 'bike' = activity === 'ride' ? 'bike' : 'foot';
   const displayKm = routedKm > 0 ? routedKm : totalDistanceKm(waypoints);
   const isStandalone = !incoming.callerState;
+  const isEditing = !!options.routeId;
+  const routeNotFound = !!options.routeId && !editingRoute;
 
   const segmentDistances = (() => {
     if (waypoints.length < 2) return [] as number[];
@@ -189,36 +215,69 @@ export function useRoutePlanner() {
 
   const surfaceMix = estimateSurfaceMix(activity, waypoints.length, displayKm);
 
-  const elevationPts = displayKm > 0 ? Math.min(Math.round(displayKm * 10), 100) : 40;
-  const elevD = Array.from({ length: elevationPts }, (_, i) => {
-    const t = i / (elevationPts - 1);
-    const y = 70 - 50 * (0.3 * Math.sin(t * Math.PI) + 0.7 * Math.sin(t * Math.PI * 3) * 0.3 + 0.3 * t * (1 - t) * 4);
-    return `${i === 0 ? 'M' : 'L'}${(i / (elevationPts - 1)) * 400},${y}`;
-  }).join(' ');
-
-  const elevPoints = Array.from({ length: elevationPts }, (_, i) => {
-    const t = i / Math.max(elevationPts - 1, 1);
-    const svgY = 70 - 50 * (0.3 * Math.sin(t * Math.PI) + 0.7 * Math.sin(t * Math.PI * 3) * 0.3 + 0.3 * t * (1 - t) * 4);
-    const elevM = Math.round((70 - svgY) * 3);
-    return { x: (displayKm * t).toFixed(1), y: elevM };
-  });
+  const routeDataStatus: RouteDataStatus = {
+    elevationGain: 'unavailable',
+    elevationProfile: 'unavailable',
+    surfaceMix: 'estimated',
+  };
 
   const profileFilteredRoutes = savedRoutes.filter(r => r.profile === profile).slice(0, 5);
 
   useEffect(() => {
-    saveRouteDraft({ waypoints, profile, routeName, baseLayerId, showDistanceMarkers, segmentPaces, paceSecondsPerKm });
-  }, [waypoints, profile, routeName, baseLayerId, showDistanceMarkers, segmentPaces, paceSecondsPerKm]);
+    if (isEditing) return;
+    saveRouteDraft({ waypoints, profile, routeName, routeDescription, baseLayerId, showDistanceMarkers, segmentPaces, paceSecondsPerKm });
+  }, [isEditing, waypoints, profile, routeName, routeDescription, baseLayerId, showDistanceMarkers, segmentPaces, paceSecondsPerKm]);
+
+  useEffect(() => {
+    if (!editingRoute) return;
+    setWaypoints(editingRoute.waypoints);
+    setRouteName(editingRoute.name);
+    setRouteDescription(editingRoute.description ?? '');
+    setActivity(editingRoute.profile === 'bike' ? 'ride' : 'run');
+    setSegmentPaces({});
+    setSegmentInputs({});
+  }, [editingRoute]);
 
   useEffect(() => {
     setPaceInput(formatPace(paceSecondsPerKm));
   }, [paceSecondsPerKm]);
 
   async function handleSave() {
-    const dest = incoming.returnTo ?? (-1 as never);
-    if (isStandalone && waypoints.length >= 2 && displayKm > 0) {
-      const name = routeName.trim() || (profile === 'bike' ? 'Cycle Route' : 'Run Route');
-      await handleSaveRoute({ type: 'SaveRoute', name, profile, waypoints, distanceKm: displayKm });
+    const name = routeName.trim() || (profile === 'bike' ? 'Cycle Route' : 'Run Route');
+    if (isEditing && options.routeId) {
+      const result = await handleUpdateRoute({
+        type: 'UpdateRoute',
+        routeId: options.routeId,
+        name,
+        description: routeDescription,
+        profile,
+        waypoints,
+        distanceKm: displayKm,
+      });
+      if (!result.ok) return;
+      clearRouteDraft();
+      navigate(`/routes/${options.routeId}`, { replace: true });
+      return;
     }
+
+    if (isStandalone && waypoints.length >= 2 && displayKm > 0) {
+      const result = await handleSaveRoute({
+        type: 'SaveRoute',
+        routeId: createRouteId,
+        name,
+        description: routeDescription,
+        profile,
+        waypoints,
+        distanceKm: displayKm,
+      });
+      clearRouteDraft();
+      if (result.ok && result.value) {
+        navigate(`/routes/${result.value.routeId}`, { replace: true });
+      }
+      return;
+    }
+
+    const dest = incoming.returnTo ?? (-1 as never);
     clearRouteDraft();
     navigate(dest, {
       replace: typeof dest === 'string',
@@ -228,6 +287,10 @@ export function useRoutePlanner() {
 
   function handleBack() {
     clearRouteDraft();
+    if (isEditing && options.routeId) {
+      navigate(`/routes/${options.routeId}`);
+      return;
+    }
     navigate(incoming.returnTo ?? (-1 as never));
   }
 
@@ -330,6 +393,8 @@ export function useRoutePlanner() {
     setRoutedKm,
     routeName,
     setRouteName,
+    routeDescription,
+    setRouteDescription,
     mode,
     setMode,
     undoCount,
@@ -356,14 +421,16 @@ export function useRoutePlanner() {
     layerPickerOpen,
     setLayerPickerOpen,
     savedRoutes,
+    editingRoute,
+    isEditing,
+    routeNotFound,
     profile,
     displayKm,
     isStandalone,
     segmentDistances,
     timeStr,
     surfaceMix,
-    elevD,
-    elevPoints,
+    routeDataStatus,
     profileFilteredRoutes,
     handleSave,
     handleBack,

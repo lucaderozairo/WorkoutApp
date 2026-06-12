@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 import {
-  haversineDistanceMeters,
   computeTrackStats,
   parseGpx,
   parseTcx,
@@ -15,18 +14,6 @@ const pt = (
   timestamp: string,
   heartRate?: number,
 ): GpsPoint => ({ lat, lng, elevation, timestamp, heartRate });
-
-describe("haversineDistanceMeters", () => {
-  it("returns 0 for identical points", () => {
-    expect(haversineDistanceMeters(51.5, -0.1, 51.5, -0.1)).toBe(0);
-  });
-
-  it("returns ~111km for 1 degree latitude change", () => {
-    const dist = haversineDistanceMeters(0, 0, 1, 0);
-    expect(dist).toBeGreaterThan(110_000);
-    expect(dist).toBeLessThan(112_000);
-  });
-});
 
 describe("computeTrackStats", () => {
   it("returns zeros for empty points", () => {

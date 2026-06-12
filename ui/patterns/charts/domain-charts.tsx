@@ -15,8 +15,7 @@ import type { WeeklySleepTrend } from '@features/readiness';
 import type { DailyLoad } from '@features/progress_analysis';
 // eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
 import type { GpsPoint } from '@data/sources/files/gps';
-// eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
-import { haversineDistanceMeters } from '@data/sources/files/gps';
+import { distanceMeters } from '@shared/geo';
 
 // ─── Shared chart constants ───────────────────────────────────────────────────
 
@@ -417,7 +416,7 @@ export function gpsPointsToHRSeries(
   let distM = 0;
   const result: Array<{ x: number; y: number }> = [];
   for (let i = 0; i < points.length; i++) {
-    if (i > 0) distM += haversineDistanceMeters(points[i - 1].lat, points[i - 1].lng, points[i].lat, points[i].lng);
+    if (i > 0) distM += distanceMeters([points[i - 1].lat, points[i - 1].lng], [points[i].lat, points[i].lng]);
     if (points[i].heartRate != null) result.push({ x: Math.round(distM), y: points[i].heartRate! });
   }
   return result;
@@ -433,7 +432,7 @@ export function gpsPointsToPaceSeries(
   for (let i = 1; i < points.length; i++) {
     const prev = points[i - 1];
     const curr = points[i];
-    const d = haversineDistanceMeters(prev.lat, prev.lng, curr.lat, curr.lng);
+    const d = distanceMeters([prev.lat, prev.lng], [curr.lat, curr.lng]);
     distM += d;
     // Prefer the recorded speed field (TCX); fall back to deriving it from
     // segment distance / elapsed time (GPX and any format without speed data).
@@ -465,7 +464,7 @@ export function gpsPointsToElevationSeries(
   if (points.length === 0) return [];
   let distM = 0;
   return points.map((p, i) => {
-    if (i > 0) distM += haversineDistanceMeters(points[i - 1].lat, points[i - 1].lng, p.lat, p.lng);
+    if (i > 0) distM += distanceMeters([points[i - 1].lat, points[i - 1].lng], [p.lat, p.lng]);
     return { x: Math.round(distM), y: p.elevation };
   });
 }
@@ -494,7 +493,7 @@ export function gpsPointsToKmSplits(points: GpsPoint[]): KmSplit[] {
   for (let i = 1; i < points.length; i++) {
     const prev = points[i - 1];
     const curr = points[i];
-    distM += haversineDistanceMeters(prev.lat, prev.lng, curr.lat, curr.lng);
+    distM += distanceMeters([prev.lat, prev.lng], [curr.lat, curr.lng]);
     if (curr.heartRate != null) bucketHrs.push(curr.heartRate);
 
     if (distM >= nextBoundary) {

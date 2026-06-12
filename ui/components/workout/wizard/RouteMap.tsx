@@ -2,80 +2,19 @@ import { useEffect, useMemo, useRef, useState, forwardRef, useImperativeHandle }
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Layer, Layered } from '@ui/layout';
+import {
+  distanceKm as haversineKm,
+  pathDistanceKm as totalDistanceKm,
+  distanceMarkers as distanceMarkerPoints,
+  distToSegmentSq,
+  closestPathIndex,
+} from '@shared/geo';
 
 const TILE_ATTR = '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>';
 const DEFAULT_CENTER: L.LatLngTuple = [51.463955, -0.305095];  // London — replaced once user taps
 const DEFAULT_ZOOM = 13;
 const SEARCH_ZOOM = 15;
 const LONG_PRESS_MS = 650;
-
-export function haversineKm(a: [number, number], b: [number, number]): number {
-  const R = 6371;
-  const dLat = ((b[0] - a[0]) * Math.PI) / 180;
-  const dLon = ((b[1] - a[1]) * Math.PI) / 180;
-  const lat1 = (a[0] * Math.PI) / 180;
-  const lat2 = (b[0] * Math.PI) / 180;
-  const sinLat = Math.sin(dLat / 2);
-  const sinLon = Math.sin(dLon / 2);
-  const h = sinLat * sinLat + Math.cos(lat1) * Math.cos(lat2) * sinLon * sinLon;
-  return R * 2 * Math.asin(Math.sqrt(h));
-}
-
-export function totalDistanceKm(waypoints: [number, number][]): number {
-  if (waypoints.length < 2) return 0;
-  let total = 0;
-  for (let i = 1; i < waypoints.length; i++) {
-    total += haversineKm(waypoints[i - 1], waypoints[i]);
-  }
-  return Math.round(total * 100) / 100;
-}
-
-function interpolateLatLng(
-  a: [number, number],
-  b: [number, number],
-  ratio: number,
-): [number, number] {
-  return [
-    a[0] + (b[0] - a[0]) * ratio,
-    a[1] + (b[1] - a[1]) * ratio,
-  ];
-}
-
-function distanceMarkerPoints(path: [number, number][]): { latlng: [number, number]; km: number }[] {
-  if (path.length < 2) return [];
-
-  let totalKm = 0;
-  for (let i = 1; i < path.length; i++) {
-    totalKm += haversineKm(path[i - 1], path[i]);
-  }
-
-  const markerCount = Math.floor(totalKm);
-  if (markerCount < 1) return [];
-
-  const markers: { latlng: [number, number]; km: number }[] = [];
-  let nextMarkerKm = 1;
-  let travelledKm = 0;
-
-  for (let i = 1; i < path.length && nextMarkerKm <= markerCount; i++) {
-    const previous = path[i - 1];
-    const current = path[i];
-    const segmentKm = haversineKm(previous, current);
-    if (segmentKm === 0) continue;
-
-    while (travelledKm + segmentKm >= nextMarkerKm && nextMarkerKm <= markerCount) {
-      const ratio = (nextMarkerKm - travelledKm) / segmentKm;
-      markers.push({
-        latlng: interpolateLatLng(previous, current, ratio),
-        km: nextMarkerKm,
-      });
-      nextMarkerKm += 1;
-    }
-
-    travelledKm += segmentKm;
-  }
-
-  return markers;
-}
 
 export interface MapCanvasHandle {
   zoomIn: () => void;
@@ -104,6 +43,8 @@ interface RouteMapProps {
   onUndoRedoChange?: (undo: number, redo: number) => void;
   baseLayerId?: BaseLayerId;
   showDistanceMarkers?: boolean;
+  readOnly?: boolean;
+  interactive?: boolean;
 }
 
 export type EditMode = 'select' | 'add' | 'split' | 'delete';
@@ -139,54 +80,13 @@ function clampLatLng([lat, lng]: [number, number]): [number, number] {
   ];
 }
 
-function latLngToXY([lat, lng]: [number, number]): [number, number] {
-  // Equirectangular projection (good enough for local route editing UI)
-  const x = (lng * Math.PI) / 180;
-  const y = (lat * Math.PI) / 180;
-  return [x, y];
-}
-
-function distToSegmentSq(
-  p: [number, number],
-  a: [number, number],
-  b: [number, number],
-): number {
-  const [px, py] = latLngToXY(p);
-  const [ax, ay] = latLngToXY(a);
-  const [bx, by] = latLngToXY(b);
-
-  const abx = bx - ax;
-  const aby = by - ay;
-  const apx = px - ax;
-  const apy = py - ay;
-  const abLenSq = abx * abx + aby * aby;
-  if (abLenSq === 0) return apx * apx + apy * apy;
-  const t = Math.max(0, Math.min(1, (apx * abx + apy * aby) / abLenSq));
-  const cx = ax + t * abx;
-  const cy = ay + t * aby;
-  const dx = px - cx;
-  const dy = py - cy;
-  return dx * dx + dy * dy;
-}
-
-function closestPathIndex(path: [number, number][], target: [number, number]): number {
-  let bestIdx = 0;
-  let bestDist = Infinity;
-  for (let i = 0; i < path.length; i++) {
-    const d = haversineKm(path[i], target);
-    if (d < bestDist) {
-      bestDist = d;
-      bestIdx = i;
-    }
-  }
-  return bestIdx;
-}
-
 export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function RouteMap({
   waypoints, onChange, profile = 'foot', onRoutedDistanceChange,
   mode: modeProp = 'add', onModeChange, onUndoRedoChange,
   baseLayerId: baseLayerIdProp = 'plain',
   showDistanceMarkers: showDistanceMarkersProp = true,
+  readOnly = false,
+  interactive = true,
 }, ref) {
   async function fetchRoute(
     anchors: [number, number][],
@@ -287,6 +187,7 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
   }, []);
 
   function commitWaypoints(next: [number, number][], opts?: { pushHistory?: boolean }) {
+    if (readOnly) return;
     const pushHistory = opts?.pushHistory ?? true;
     const current = waypointsRef.current;
     if (pushHistory) {
@@ -306,6 +207,7 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
   }
 
   function handleUndo() {
+    if (readOnly) return;
     const stack = undoRef.current;
     if (stack.length === 0) return;
     const current = waypointsRef.current;
@@ -318,6 +220,7 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
   }
 
   function handleWipe() {
+    if (readOnly) return;
     undoRef.current = [];
     redoRef.current = [];
     markersRef.current.forEach(m => m.remove());
@@ -333,10 +236,12 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
   }
 
   function reverseRoute() {
+    if (readOnly) return;
     commitWaypoints([...waypointsRef.current].reverse());
   }
 
   function handleRedo() {
+    if (readOnly) return;
     const stack = redoRef.current;
     if (stack.length === 0) return;
     const current = waypointsRef.current;
@@ -349,6 +254,7 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
   }
 
   function setMode(next: EditMode) {
+    if (readOnly) return;
     onModeChangeRef.current?.(next);
   }
 
@@ -359,6 +265,12 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
       center: DEFAULT_CENTER,
       zoom: DEFAULT_ZOOM,
       zoomControl: false,
+      dragging: interactive,
+      scrollWheelZoom: interactive,
+      doubleClickZoom: interactive,
+      boxZoom: interactive,
+      keyboard: interactive,
+      touchZoom: interactive,
     });
     mapRef.current = map;
 
@@ -394,6 +306,8 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
+    if (!interactive) return;
+    if (readOnly) return;
 
     const handler = (e: L.LeafletMouseEvent) => {
       const click: [number, number] = [e.latlng.lat, e.latlng.lng];
@@ -428,28 +342,42 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
     return () => {
       map.off('click', handler);
     };
-  }, [modeProp]);
+  }, [modeProp, readOnly, interactive]);
 
-  // Keep map dragging aligned with mode.
+  // Keep map gestures aligned with mode.
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
-    if (modeProp === 'select') {
+    if (!interactive) {
+      map.dragging.disable();
+      map.scrollWheelZoom.disable();
+      map.doubleClickZoom.disable();
+      map.boxZoom.disable();
+      map.keyboard.disable();
+      map.touchZoom.disable();
+      return;
+    }
+    map.scrollWheelZoom.enable();
+    map.doubleClickZoom.enable();
+    map.boxZoom.enable();
+    map.keyboard.enable();
+    map.touchZoom.enable();
+    if (readOnly || modeProp === 'select') {
       map.dragging.enable();
     } else {
       map.dragging.disable();
     }
-  }, [modeProp]);
+  }, [modeProp, readOnly, interactive]);
 
   // Keep marker dragging aligned with mode.
   useEffect(() => {
-    const isSelect = modeProp === 'select';
+    const isSelect = interactive && !readOnly && modeProp === 'select';
     markersRef.current.forEach(m => {
       if (!m.dragging) return;
       if (isSelect) m.dragging.enable();
       else m.dragging.disable();
     });
-  }, [modeProp, waypoints]);
+  }, [modeProp, readOnly, interactive, waypoints]);
 
   function fitToRoute() {
     const map = mapRef.current;
@@ -612,20 +540,20 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
         iconSize: [18, 18],
         iconAnchor: [9, 9],
       });
-      const m = L.marker(latlng, { icon, draggable: true }).addTo(map);
+      const m = L.marker(latlng, { icon, draggable: !readOnly }).addTo(map);
 
       // Toggle drag ability by mode (select only).
-      if (modeRef.current !== 'select') {
+      if (readOnly || modeRef.current !== 'select') {
         m.dragging?.disable();
       }
 
       m.on('dragstart', () => {
-        if (modeRef.current !== 'select') {
+        if (readOnly || modeRef.current !== 'select') {
           m.dragging?.disable();
         }
       });
       m.on('dragend', () => {
-        if (modeRef.current !== 'select') return;
+        if (readOnly || modeRef.current !== 'select') return;
         const ll = m.getLatLng();
         const next = waypointsRef.current.map((p, j) => (j === i ? ([ll.lat, ll.lng] as [number, number]) : p));
         commitWaypoints(next);
@@ -633,6 +561,7 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
 
       m.on('click', (e: L.LeafletMouseEvent) => {
         L.DomEvent.stopPropagation(e);
+        if (readOnly) return;
         if (modeRef.current === 'delete') {
           removeWaypoint();
         } else {
@@ -642,15 +571,19 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
 
       m.on('contextmenu', (e: L.LeafletMouseEvent) => {
         L.DomEvent.stopPropagation(e);
+        if (readOnly) return;
         removeWaypoint();
       });
       m.on('touchstart', () => {
+        if (readOnly) return;
         clearLongPress();
         longPressId = setTimeout(removeWaypoint, LONG_PRESS_MS);
       });
       m.on('touchend touchcancel touchmove', clearLongPress);
       m.on('remove', clearLongPress);
-      m.bindTooltip('<span class="caption">Right-click or delete tool to remove</span>', { direction: 'top' });
+      if (!readOnly) {
+        m.bindTooltip('<span class="caption">Right-click or delete tool to remove</span>', { direction: 'top' });
+      }
       markersRef.current.push(m);
     });
 
@@ -659,6 +592,7 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
     prevCountRef.current = waypoints.length;
     if (prevCount === 0 && waypoints.length > 0) {
       if (waypoints.length >= 2) {
+        map.invalidateSize();
         map.fitBounds(L.latLngBounds(waypoints), { padding: [24, 24] });
       }
     }
@@ -738,7 +672,7 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
             iconSize: [60, 26],
             iconAnchor: [30, 26],
           });
-          L.marker(latlng, { icon, interactive: false }).addTo(distanceMarkers);
+          L.marker([latlng[0], latlng[1]], { icon, interactive: false }).addTo(distanceMarkers);
         });
         distanceMarkersRef.current = distanceMarkers;
         if (showDistanceMarkersRef.current) {
@@ -757,7 +691,7 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
       distanceMarkersRef.current?.remove();
       distanceMarkersRef.current = null;
     };
-  }, [waypoints, profile]);
+  }, [waypoints, profile, readOnly]);
 
   useImperativeHandle(ref, () => ({
     zoomIn: () => mapRef.current?.zoomIn(),

@@ -1,3 +1,5 @@
+import { distanceMeters } from "@shared/geo";
+
 export interface LapSummary {
   startTimestamp: string;
   durationSeconds: number;
@@ -35,23 +37,6 @@ export interface GpsTrack {
   sport?: string;
   startTimestamp?: string;
   laps?: LapSummary[];
-}
-
-export function haversineDistanceMeters(
-  lat1: number,
-  lon1: number,
-  lat2: number,
-  lon2: number,
-): number {
-  const R = 6_371_000;
-  const toRad = (d: number) => (d * Math.PI) / 180;
-  const φ1 = toRad(lat1);
-  const φ2 = toRad(lat2);
-  const Δφ = toRad(lat2 - lat1);
-  const Δλ = toRad(lon2 - lon1);
-  const a =
-    Math.sin(Δφ / 2) ** 2 + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) ** 2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
 export function computeTrackStats(
@@ -97,11 +82,9 @@ export function computeTrackStats(
   let elevationGain = 0;
 
   for (let i = 1; i < points.length; i++) {
-    totalDistance += haversineDistanceMeters(
-      points[i - 1].lat,
-      points[i - 1].lng,
-      points[i].lat,
-      points[i].lng,
+    totalDistance += distanceMeters(
+      [points[i - 1].lat, points[i - 1].lng],
+      [points[i].lat, points[i].lng],
     );
     const elevDiff = points[i].elevation - points[i - 1].elevation;
     if (elevDiff > 0) elevationGain += elevDiff;
