@@ -3,27 +3,61 @@ import type { EventStore } from '@shared/contracts';
 import { persistEvent, loadAllEvents } from '@data/sources/local/event-db';
 import { upcastEvent } from './upcasters';
 
+/** Persistence backend for the hybrid store. Injected so the failure path is testable. */
+export interface PersistenceBackend {
+  persist(event: DomainEvent<string, object>): Promise<void>;
+  loadAll(): Promise<DomainEvent<string, object>[]>;
+  /** True when a durable backend (IndexedDB) is available. */
+  available: boolean;
+}
+
+const indexedDbBackend: PersistenceBackend = {
+  persist: persistEvent,
+  loadAll: loadAllEvents,
+  available: (() => {
+    try { return typeof indexedDB !== 'undefined'; } catch { return false; }
+  })(),
+};
+
 /**
- * Hybrid event store: IndexedDB backend with in-memory fallback.
+ * Hybrid event store: durable backend (IndexedDB) with in-memory fallback.
+ *
+ * `append` is best-effort: a failed durable write does NOT reject (the event
+ * still lives in memory for this session), but it flips persistence health and
+ * notifies subscribers so the app can warn the user in real time — rather than
+ * losing the write silently until the next reload.
  */
-class HybridEventStore implements EventStore {
+export class HybridEventStore implements EventStore {
   private streams = new Map<string, DomainEvent<string, object>[]>();
   private subscribers = new Map<string, Set<(event: DomainEvent<string, object>) => void>>();
+  private statusListeners = new Set<(working: boolean) => void>();
+  private readonly backend: PersistenceBackend;
   private useIndexedDB: boolean;
   private hydrationFailed = false;
   private persistenceFailures = 0;
 
-  constructor() {
-    try {
-      this.useIndexedDB = typeof indexedDB !== 'undefined';
-    } catch {
-      this.useIndexedDB = false;
-    }
+  constructor(backend: PersistenceBackend = indexedDbBackend) {
+    this.backend = backend;
+    this.useIndexedDB = backend.available;
   }
 
   /** False means events are in-memory only and will be lost on page refresh. */
   isPersistenceWorking(): boolean {
     return this.useIndexedDB && !this.hydrationFailed && this.persistenceFailures === 0;
+  }
+
+  /**
+   * Subscribe to persistence-health changes. Fires whenever durability degrades
+   * (e.g. a write fails mid-session). Returns an unsubscribe function.
+   */
+  onPersistenceStatus(listener: (working: boolean) => void): () => void {
+    this.statusListeners.add(listener);
+    return () => { this.statusListeners.delete(listener); };
+  }
+
+  private notifyStatus(): void {
+    const working = this.isPersistenceWorking();
+    for (const listener of this.statusListeners) listener(working);
   }
 
   async append(event: DomainEvent<string, object>): Promise<void> {
@@ -33,9 +67,11 @@ class HybridEventStore implements EventStore {
 
     if (this.useIndexedDB) {
       try {
-        await persistEvent(event);
+        await this.backend.persist(event);
       } catch {
+        const wasWorking = this.isPersistenceWorking();
         this.persistenceFailures++;
+        if (wasWorking) this.notifyStatus();
       }
     }
 
@@ -62,10 +98,11 @@ class HybridEventStore implements EventStore {
   async hydrate(): Promise<void> {
     if (!this.useIndexedDB) {
       this.hydrationFailed = true;
+      this.notifyStatus();
       return;
     }
     try {
-      const events = await loadAllEvents();
+      const events = await this.backend.loadAll();
       for (const raw of events) {
         const event = upcastEvent(raw);
         const stream = this.streams.get(event.aggregateId) ?? [];
@@ -74,6 +111,7 @@ class HybridEventStore implements EventStore {
       }
     } catch {
       this.hydrationFailed = true;
+      this.notifyStatus();
     }
   }
 

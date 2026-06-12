@@ -19,8 +19,15 @@ import {
 } from '@features/training_log';
 import { recentCardioProjection } from '@features/cardio/projections';
 import type { RecentCardioView } from '@features/cardio/projections';
-import { savedTemplatesProjection } from '@features/planning';
-import type { SavedTemplate } from '@features/planning';
+import { savedTemplatesProjection, savedRoutesProjection } from '@features/planning';
+import type { SavedTemplate, SavedRoute } from '@features/planning';
+import {
+  favoriteTemplatesProjection,
+  templateListProjection,
+  templateStateProjection,
+} from '@features/templates';
+import { getVisibleTemplates } from '@features/templates/domain/reducers';
+import type { TemplateState } from '@features/templates';
 import { telemetry } from '@core/telemetry/TelemetryLogger';
 import '@styling/global.css';
 
@@ -123,13 +130,34 @@ window.addEventListener('unhandledrejection', (e) => {
   const savedTemplates = viewStore.get<SavedTemplate[]>('saved_templates');
   if (savedTemplates) savedTemplatesProjection.setState(savedTemplates);
 
+  const savedRoutes = viewStore.get<SavedRoute[]>('saved_routes');
+  if (savedRoutes) savedRoutesProjection.setState(savedRoutes);
+
+  const savedTemplateState = viewStore.get<TemplateState>('template_state');
+  if (savedTemplateState) {
+    templateStateProjection.setState(savedTemplateState);
+    const templateList = getVisibleTemplates(savedTemplateState);
+    templateListProjection.setState(templateList);
+    favoriteTemplatesProjection.setState(templateList.filter(t => t.favorite));
+    viewStore.set('template_list', templateList);
+    viewStore.set('favorite_templates', templateList.filter(t => t.favorite));
+  }
+
   // Surface storage problems to the user via the StorageWarningBanner.
+  const STORAGE_UNAVAILABLE_WARNING =
+    'Your workouts are not being saved between sessions — storage is unavailable. Export your data as a backup.';
   if (!inMemoryEventStore.isPersistenceWorking()) {
-    viewStore.set('storage_warning', 'Your workouts are not being saved between sessions — storage is unavailable. Export your data as a backup.');
+    viewStore.set('storage_warning', STORAGE_UNAVAILABLE_WARNING);
   } else {
     const quotaWarning = await checkStorageQuota();
     if (quotaWarning) viewStore.set('storage_warning', quotaWarning);
   }
+
+  // Keep watching: if a durable write fails mid-session, warn the user right
+  // away instead of losing the event silently until the next reload.
+  inMemoryEventStore.onPersistenceStatus((working) => {
+    if (!working) viewStore.set('storage_warning', STORAGE_UNAVAILABLE_WARNING);
+  });
 
   document.getElementById('app-loading')?.remove();
 
