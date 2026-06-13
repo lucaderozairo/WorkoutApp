@@ -1,46 +1,93 @@
-/* .home-widget-divider {
-  align-self: stretch;
-  width: 1px;
-  background: var(--line);
-  opacity: 0.6;
+/* ── Sleep stages bar — extends .bar.multi; gap not tokenised (2px between segments) ── */
+.sleep-stages {
+  gap: 2px;
+
+  .sleep-stage-seg {
+    &[data-stage="deep"]  { flex: 1.5; background: var(--c-recovery); }
+    &[data-stage="core"]  { flex: 2.5; background: var(--accent); }
+    &[data-stage="rem"]   { flex: 2;   background: var(--c-mind); }
+    &[data-stage="awake"] { flex: 0.5; background: var(--surface-3); }
+  }
 }
 
-.macro-bar {
-  height: var(--s-2);
-  overflow: hidden;
-  border-radius: var(--r-xs);
+/* ── Readiness ring ── */
+.readiness-ring-wrap {
+  position: relative;
+  width: fit-content;
 }
 
-.macro-bar-sm {
-  height: 6px;
+.readiness-ring {
+  width: 44px;
+  height: 44px;
+  display: block;
+
+  .readiness-ring-track {
+    fill: none;
+    stroke: var(--surface-3);
+    stroke-width: 4;
+  }
+
+  .readiness-ring-progress {
+    fill: none;
+    stroke: var(--ring-stroke);
+    stroke-dasharray: var(--ring-dash);
+    stroke-width: 4;
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: center;
+    transition: stroke-dasharray var(--duration-medium) var(--ease);
+  }
 }
 
+.readiness-ring-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--t-xs);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* ── Macro segments — domain fill colors for .bar.multi children ── */
 .macro-segment {
   height: 100%;
+
+  &.macro-protein { flex: 3; background: var(--ok); }
+  &.macro-carbs   { flex: 4; background: var(--warn); }
+  &.macro-fat     { flex: 2; background: var(--bad); }
 }
 
-.macro-protein {
-  flex: 3;
-  background: var(--ok);
-}
-
-.macro-carbs {
-  flex: 4;
-  background: var(--warn);
-}
-
-.macro-fat {
-  flex: 2;
-  background: var(--bad);
-}
-
+/* ── Weather icon ── */
 .home-weather-icon {
   font-size: var(--t-xl);
   line-height: 1;
 }
 
+/* ── Insight text ── */
 .home-widget-insight {
   font-size: var(--t-sm);
   line-height: var(--lh-normal);
   color: var(--ink);
-} */
+}
+
+/* ── Upcoming time — typography only; layout via .spacer.shrink-0 in JSX ── */
+.upcoming-time {
+  font-size: var(--t-sm);
+  color: var(--ink-muted);
+}
+
+/* ── This Week dots — extends .dot atom ── */
+.week-dot {
+  --dot-size: 24px;
+  --dot-color: var(--surface-2);
+  display: block;
+  opacity: 1;
+  border: 2px solid transparent;
+  transition: background var(--duration-short) var(--ease);
+
+  &[data-done]   { --dot-color: var(--ok); border-color: var(--ok); }
+  &[data-today]  { border-color: var(--accent); }
+  &[data-future] { opacity: 0.4; }
+}

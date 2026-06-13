@@ -1,7 +1,10 @@
+import type React from 'react';
 import { Surface, Text, Metric } from '@ui/atoms';
 import { Badge } from '@ui/molecules';
 import { Column, Row, Spacer } from '@ui/layout';
 import { SparklineArea } from '@ui/patterns/charts/domain-charts';
+import { useQuery } from '@ui/bindings';
+import type { TodayReadinessView, SleepTrendView } from '@features/readiness/contract';
 import type { WidgetSize } from './widgetTypes';
 
 // ── Shared helpers ────────────────────────────────────────────────────────────
@@ -18,15 +21,58 @@ const HRV_7DAY = [
 
 const MACRO_KEYS = ['protein', 'carbs', 'fat'] as const;
 
+// ── Shared SVG ring ───────────────────────────────────────────────────────────
+
+const RING_R = 18;
+const RING_CIRC = 2 * Math.PI * RING_R;
+
+function RingProgress({ score, color }: { score: number; color: string }) {
+  const dash = (score / 100) * RING_CIRC;
+  return (
+    <svg className="readiness-ring" viewBox="0 0 44 44" aria-hidden="true">
+      <circle className="readiness-ring-track" cx={22} cy={22} r={RING_R} />
+      <circle
+        className="readiness-ring-progress"
+        cx={22} cy={22} r={RING_R}
+        // eslint-disable-next-line no-restricted-syntax -- dynamic CSS custom properties (ring colour + dash from score) are the sanctioned exception; static declarations live in home-widgets.css
+        style={{ '--ring-stroke': color, '--ring-dash': `${dash} ${RING_CIRC}` } as React.CSSProperties}
+      />
+    </svg>
+  );
+}
+
 // ── Readiness ─────────────────────────────────────────────────────────────────
 
 export function ReadinessHomeWidget({ size }: { size: WidgetSize }) {
+  const readiness = useQuery<TodayReadinessView>('today_readiness');
+  const hasEntry = readiness?.hasEntry ?? false;
+  const score = readiness?.score ?? 0;
+
+  if (!hasEntry) {
+    return (
+      <Surface pad="sm" className="h-full">
+        <Column gap={1} className="h-full" justify="center">
+          <Text size="caption" color="muted">Readiness</Text>
+          <Text size="caption" color="muted">Log readiness to see your score</Text>
+        </Column>
+      </Surface>
+    );
+  }
+
+  const ringColor = !hasEntry ? 'var(--ink-faint)'
+    : score >= 80 ? 'var(--ok)'
+    : score >= 60 ? 'var(--warn)'
+    : 'var(--bad)';
+
   if (size === 'sm') {
     return (
       <Surface pad="sm" className="h-full">
         <Column gap={1} className="h-full" justify="between">
           <Text size="caption" color="muted">Readiness</Text>
-          <Metric value={82} size="xl" />
+          <div className="readiness-ring-wrap">
+            <RingProgress score={score} color={ringColor} />
+            <span className="readiness-ring-label mono">{hasEntry ? score : '—'}</span>
+          </div>
         </Column>
       </Surface>
     );
@@ -38,9 +84,9 @@ export function ReadinessHomeWidget({ size }: { size: WidgetSize }) {
         <Row align="center" className="h-full" gap={3}>
           <Column gap={0} className="min-w-0">
             <Text size="caption" color="muted">Readiness</Text>
-            <Metric value={82} unit="/100" size="lg" />
+            <Metric value={score} unit="/100" size="lg" />
           </Column>
-          <div className="home-widget-divider" />
+          <div className="vr" />
           <Column gap={0} className="min-w-0">
             <Text size="caption" color="muted">Load</Text>
             <Metric value={41} size="lg" />
@@ -50,7 +96,6 @@ export function ReadinessHomeWidget({ size }: { size: WidgetSize }) {
     );
   }
 
-  // md / lg
   return (
     <Surface pad="sm" className="h-full">
       <Column gap={2} className="h-full">
@@ -59,7 +104,7 @@ export function ReadinessHomeWidget({ size }: { size: WidgetSize }) {
           <Badge>Steady</Badge>
         </Row>
         <Row align="center" gap={3}>
-          <Metric value={82} unit="/100" size="xl" />
+          <Metric value={score} unit="/100" size="xl" />
           <Column gap={0}>
             <Text size="detail">Load 41</Text>
             <Text size="detail" color="muted">Moderate session ok</Text>
@@ -114,12 +159,32 @@ const SLEEP_7DAY = [
 ];
 
 export function SleepHomeWidget({ size }: { size: WidgetSize }) {
+  const sleepTrend = useQuery<SleepTrendView>('sleep_trend');
+  const hasData = sleepTrend?.lastNight != null || (sleepTrend?.weeklyTrend?.length ?? 0) > 0;
+  const lastNightScore = sleepTrend?.lastNight?.score ?? 0;
+
+  if (!hasData) {
+    return (
+      <Surface pad="sm" className="h-full">
+        <Column gap={1} className="h-full" justify="center">
+          <Text size="caption" color="muted">Sleep</Text>
+          <Text size="caption" color="muted">No sleep logged</Text>
+        </Column>
+      </Surface>
+    );
+  }
+
+  const lastNight = sleepTrend?.lastNight;
+  const lastNightDur = lastNight
+    ? `${Math.floor((lastNight.end.getTime() - lastNight.start.getTime()) / 3600000)}h ${Math.round(((lastNight.end.getTime() - lastNight.start.getTime()) % 3600000) / 60000)}m`
+    : '—';
+
   if (size === 'sm') {
     return (
       <Surface pad="sm" className="h-full">
         <Column gap={1} className="h-full" justify="between">
           <Text size="caption" color="muted">Sleep</Text>
-          <Metric value={89} size="xl" />
+          <Metric value={lastNightScore} size="xl" />
         </Column>
       </Surface>
     );
@@ -131,19 +196,22 @@ export function SleepHomeWidget({ size }: { size: WidgetSize }) {
         <Row align="center" className="h-full" gap={3}>
           <Column gap={0} className="min-w-0">
             <Text size="caption" color="muted">Sleep</Text>
-            <Metric value={89} unit="/100" size="lg" />
+            <Metric value={lastNightScore} unit="/100" size="lg" />
           </Column>
-          <div className="home-widget-divider" />
+          <div className="vr" />
           <Column gap={0} className="min-w-0">
             <Text size="caption" color="muted">Duration</Text>
-            <Metric value="7h 23m" size="lg" />
+            <Metric value={lastNightDur} size="lg" />
           </Column>
         </Row>
       </Surface>
     );
   }
 
-  // md / lg — two rows available (~207px)
+  const bedTime = lastNight
+    ? new Date(lastNight.start).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+    : null;
+
   return (
     <Surface pad="sm" className="h-full">
       <Column gap={2} className="h-full">
@@ -152,15 +220,24 @@ export function SleepHomeWidget({ size }: { size: WidgetSize }) {
           <Badge>Good</Badge>
         </Row>
         <Row align="center" gap={3}>
-          <Metric value={89} unit="/100" size="xl" />
+          <Metric value={lastNightScore} unit="/100" size="xl" />
           <Column gap={0}>
-            <Text size="detail">7h 23m</Text>
-            <Text size="detail" color="muted">Deep 1h 18m · REM 1h 54m</Text>
+            <Text size="detail">{lastNightDur}</Text>
+            {bedTime && <Text size="caption" color="muted">Bed {bedTime}</Text>}
           </Column>
         </Row>
-        <div className="min-w-0">
-          <SparklineArea data={SLEEP_7DAY} color="var(--color-primary)" height={40} id="hw-sleep" showTooltip tooltipFormatter={v => `Score ${v}`} />
+        <div className="bar multi sleep-stages">
+          <div className="sleep-stage-seg" data-stage="deep" />
+          <div className="sleep-stage-seg" data-stage="core" />
+          <div className="sleep-stage-seg" data-stage="rem" />
+          <div className="sleep-stage-seg" data-stage="awake" />
         </div>
+        <Row align="center" justify="between">
+          <Text size="caption" color="muted">Deep</Text>
+          <Text size="caption" color="muted">Core</Text>
+          <Text size="caption" color="muted">REM</Text>
+          <Text size="caption" color="muted">Awake</Text>
+        </Row>
       </Column>
     </Surface>
   );
@@ -401,7 +478,7 @@ export function MacrosHomeWidget({ size }: { size: WidgetSize }) {
             <Text size="caption" color="muted">Nutrition</Text>
             <Text size="detail" color="muted">1,840 kcal</Text>
           </Row>
-          <Row gap={1} className="macro-bar macro-bar-sm">
+          <Row gap={1} className="bar multi">
             {MACRO_KEYS.map(key => (
               <div key={key} className={`macro-segment macro-${key}`} />
             ))}
@@ -424,7 +501,7 @@ export function MacrosHomeWidget({ size }: { size: WidgetSize }) {
           <Text size="caption" color="muted">Nutrition</Text>
           <Badge>1,840 kcal</Badge>
         </Row>
-        <Row gap={1} className="macro-bar">
+        <Row gap={1} className="bar multi md">
           {MACRO_KEYS.map(key => (
             <div key={key} className={`macro-segment macro-${key}`} />
           ))}
