@@ -24,3 +24,5 @@ export {
 } from "./commands/handlers";
 
 export { getRecentCardioSessions, getMonthlyProgression } from "./queries";
+
+export { isCardioSession } from "./guards";

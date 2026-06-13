@@ -27,6 +27,7 @@ export type {
   TrainingLogEvent,
   TrainingLogCommand,
   StartSession,
+  StartSessionFromTemplate,
   AddBlock,
   LogStrengthSet,
   LogCardioSet,
@@ -65,6 +66,7 @@ export { applyAll as replayTrainingLogEvents } from './commands/handlers';
 
 export {
   handleStartSession,
+  handleStartSessionFromTemplate,
   handleAddBlock,
   handleLogStrengthSet,
   handleLogCardioSet,
@@ -97,6 +99,8 @@ export {
   getActivityHistory,
   getRecentExercises,
 } from './queries';
+
+export { isActivityView, isActivityHistoryItem, isStrengthSet } from './guards';
 
 export {
   sessionProjection,

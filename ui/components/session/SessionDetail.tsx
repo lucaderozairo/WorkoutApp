@@ -20,14 +20,12 @@ import { Badge, Button, EditableTitle } from '@ui/molecules';
 import { SportIcon } from '@ui/atoms/icons/SportIcon';
 import { CategoryIcon } from '@ui/atoms/icons/CategoryIcon';
 import { formatDuration, formatPace, paceSecPerKm } from '@shared/utils';
+import { isCardioSession } from '@features/cardio';
+import { isActivityView, isActivityHistoryItem, isStrengthSet } from '@features/training_log';
 import {
   type SampleCardioSession,
   sportColor,
-  isActivityHistoryItem,
-  isCardioSession,
   isSampleCardioSession,
-  isActivityView,
-  isStrengthSet,
 } from './sessionDetailUtils';
 
 interface SessionDetailProps {

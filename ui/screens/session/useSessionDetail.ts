@@ -2,20 +2,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@ui/bindings';
 import type { ActivitiesState, ActivityView } from '@features/training_log';
 import type { CardioSession, RecentCardioView } from '@features/cardio';
+import { isCardioSession } from '@features/cardio';
 import { exportSessionBackup } from '@features/data_transfer';
 import { downloadJson } from '@shared/utils/csv';
 import { getActivityHistory } from '@features/training_log';
 import { exportSessionCsv, exportCardioSessionCsv } from '@ui/components/transfer';
-
-
-export function isCardioSession(s: unknown): s is CardioSession {
-  const obj = s as Record<string, unknown>;
-  return typeof obj.sport === 'string' && 'distanceMeters' in obj && 'userId' in obj;
-}
-
-export function isSessionHistoryItem(s: unknown): s is ActivityView {
-  return typeof (s as ActivityView).status === 'string' && typeof (s as ActivityView).segments !== 'undefined';
-}
 
 export function useSessionDetail() {
   const navigate = useNavigate();
