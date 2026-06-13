@@ -22,9 +22,9 @@ import { CategoryIcon } from '@ui/atoms/icons/CategoryIcon';
 import { formatDuration, formatPace, paceSecPerKm } from '@shared/utils';
 import { isCardioSession } from '@features/cardio';
 import { isActivityView, isActivityHistoryItem, isStrengthSet } from '@features/training_log';
+import { sportColorClass } from '@ui/icons/sportColor';
 import {
   type SampleCardioSession,
-  sportColor,
   isSampleCardioSession,
 } from './sessionDetailUtils';
 
@@ -228,7 +228,7 @@ function CardioDetail({ session, fullPage }: { session: CardioSession; fullPage?
   const [showImport, setShowImport] = useState(false);
   const distKm = session.distanceMeters / 1000;
   const pace = paceSecPerKm(session.durationSeconds, session.distanceMeters);
-  const color = sportColor(session.sport);
+  const color = sportColorClass(session.sport);
   const track = session.gpsTrack;
   const hasSecondary = track && (
     track.avgHeartRate != null || track.maxHeartRate != null ||

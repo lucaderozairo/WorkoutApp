@@ -12,16 +12,6 @@ export interface SampleCardioSession {
   createdAt: number;
 }
 
-export function sportColor(sport: string): string {
-  switch (sport) {
-    case 'run': return 'run';
-    case 'cycle': return 'cycle';
-    case 'swim': return 'swim';
-    case 'row': return 'rowing';
-    default: return 'lift';
-  }
-}
-
 /**
  * UI-only discriminator for the preview/sample shape, which lives here because
  * `SampleCardioSession` is a UI sample type. The persisted-session guards

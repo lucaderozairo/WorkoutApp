@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import type { ActivityHistoryItem } from '@features/training_log';
-import type { CardioSession, CardioSport } from '@features/cardio';
+import type { CardioSession } from '@features/cardio';
 import type { SportType } from '@features/training_log/domain/types';
 import { ACTIVITY_ICONS, getActivityLabel } from '@ui/icons/activityIcons';
+import { sportColorClass } from '@ui/icons/sportColor';
 import { Carousel } from '../shared';
 import { timeAgo } from '@shared/utils/timeAgo';
 import { formatDuration, formatPace, paceSecPerKm } from '@shared/utils';
@@ -10,10 +11,6 @@ import { USER_NAME, USER_INITIALS } from '@features/social/domain/constants';
 import { Row, Column, Cluster } from '@ui/layout';
 import { Surface, Avatar, Text } from '@ui/atoms';
 import { Badge } from '@ui/molecules';
-
-const SPORT_AVATAR: Partial<Record<CardioSport, string>> = {
-  run: 'run', cycle: 'cycle', swim: 'swim', row: 'rowing',
-};
 
 export function StrengthActivityCard({ session }: { session: ActivityHistoryItem }) {
   const navigate = useNavigate();
@@ -66,7 +63,7 @@ export function CardioActivityCard({ session }: { session: CardioSession }) {
   const navigate = useNavigate();
   const { Icon: SportIcon } = ACTIVITY_ICONS[session.sport as SportType];
   const sportLabel = getActivityLabel(session.sport as SportType);
-  const avatarClass = SPORT_AVATAR[session.sport] ?? 'lift';
+  const avatarClass = sportColorClass(session.sport);
   const distKm = (session.distanceMeters / 1000).toFixed(1);
   const pace = formatPace(paceSecPerKm(session.durationSeconds, session.distanceMeters), { suffix: true, empty: '' });
   const title = session.title || sportLabel;

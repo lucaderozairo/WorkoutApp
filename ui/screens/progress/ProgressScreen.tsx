@@ -10,6 +10,7 @@ import { SparklineArea } from '@ui/patterns/charts/domain-charts';
 import { ShareModal } from '@ui/components/modals/ShareModal';
 import { useProgressScreen } from './useProgressScreen';
 import { formatDuration } from '@shared/utils';
+import { sportColorClass, sportColorToken } from '@ui/icons/sportColor';
 import type { IconType } from 'react-icons';
 import {
   MdDirectionsBike, MdDirectionsRun, MdDownhillSkiing, MdFitnessCenter, MdHiking,
@@ -22,21 +23,21 @@ import '@features/cardio';
 import '@features/insights';
 import '@features/progress_analysis';
 
-const SPORT_META: Record<CardioSport, { label: string; Icon: IconType; color: string }> = {
-  run:       { label: 'RUNS',       Icon: MdDirectionsRun,     color: 'run' },
-  cycle:     { label: 'CYCLING',    Icon: MdDirectionsBike,    color: 'cycle' },
-  swim:      { label: 'SWIMMING',   Icon: MdPool,              color: 'swim' },
-  row:       { label: 'ROWING',     Icon: MdRowing,            color: 'rowing' },
-  hike:      { label: 'HIKING',     Icon: MdHiking,            color: 'strength' },
-  ski:       { label: 'SKIING',     Icon: MdDownhillSkiing,    color: 'strength' },
-  snowboard: { label: 'SNOWBOARD',  Icon: MdSnowboarding,      color: 'strength' },
-  climb:     { label: 'CLIMBING',   Icon: MdTerrain,           color: 'strength' },
-  surf:      { label: 'SURFING',    Icon: MdSurfing,           color: 'strength' },
-  kayak:     { label: 'KAYAKING',   Icon: MdKayaking,          color: 'strength' },
-  yoga:      { label: 'YOGA',       Icon: MdSelfImprovement,   color: 'strength' },
-  boxing:    { label: 'BOXING',     Icon: PiBoxingGlove,       color: 'strength' },
-  stretch:   { label: 'STRETCHING', Icon: PiPersonSimpleTaiChi,color: 'strength' },
-  hiit:      { label: 'HIIT',       Icon: PiFlame,             color: 'strength' },
+const SPORT_META: Record<CardioSport, { label: string; Icon: IconType }> = {
+  run:       { label: 'RUNS',       Icon: MdDirectionsRun     },
+  cycle:     { label: 'CYCLING',    Icon: MdDirectionsBike    },
+  swim:      { label: 'SWIMMING',   Icon: MdPool              },
+  row:       { label: 'ROWING',     Icon: MdRowing            },
+  hike:      { label: 'HIKING',     Icon: MdHiking            },
+  ski:       { label: 'SKIING',     Icon: MdDownhillSkiing    },
+  snowboard: { label: 'SNOWBOARD',  Icon: MdSnowboarding      },
+  climb:     { label: 'CLIMBING',   Icon: MdTerrain           },
+  surf:      { label: 'SURFING',    Icon: MdSurfing           },
+  kayak:     { label: 'KAYAKING',   Icon: MdKayaking          },
+  yoga:      { label: 'YOGA',       Icon: MdSelfImprovement   },
+  boxing:    { label: 'BOXING',     Icon: PiBoxingGlove       },
+  stretch:   { label: 'STRETCHING', Icon: PiPersonSimpleTaiChi},
+  hiit:      { label: 'HIIT',       Icon: PiFlame             },
 };
 
 function categoryIcon(category: string): string {
@@ -124,23 +125,9 @@ function SessionCard({ session }: { session: ActivityHistoryItem }) {
 
 /* ── Cardio Session Card (expandable) ── */
 
-function sportColor(sport: string): string {
-  switch (sport) {
-    case 'run': return 'run';
-    case 'cycle': return 'cycle';
-    case 'swim': return 'swim';
-    case 'row': return 'rowing';
-    default: return 'strength';
-  }
-}
-
-const SPORT_TOKEN: Record<string, string> = {
-  run: 'c-cardio', cycle: 'c-nutrition', swim: 'c-water', rowing: 'c-recovery', strength: 'c-strength',
-};
-
 function CardioSessionCard({ session }: { session: CardioSession }) {
   const navigate = useNavigate();
-  const color = sportColor(session.sport);
+  const color = sportColorClass(session.sport);
   const distKm = session.distanceMeters / 1000;
   const duration = formatDuration(session.durationSeconds);
   const pace = session.durationSeconds > 0 && session.distanceMeters > 0
@@ -163,7 +150,7 @@ function CardioSessionCard({ session }: { session: CardioSession }) {
         </Row>
         <Row>
           {pace > 0 && (
-            <Badge color={color !== 'strength' ? SPORT_TOKEN[color] : undefined}>{Math.floor(pace / 60)}:{String(Math.floor(pace % 60)).padStart(2, '0')}/km</Badge>
+            <Badge color={color !== 'lift' ? sportColorToken(session.sport) : undefined}>{Math.floor(pace / 60)}:{String(Math.floor(pace % 60)).padStart(2, '0')}/km</Badge>
           )}
           {heartRate != null && <Badge color="c-strength" dot>♥ {Math.round(heartRate)}bpm</Badge>}
           {elevationGain != null && elevationGain > 0 && <Badge dot>↑ {Math.round(elevationGain)}m</Badge>}
