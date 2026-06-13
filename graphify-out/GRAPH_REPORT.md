@@ -1,25 +1,25 @@
-# Graph Report - .  (2026-06-07)
+# Graph Report - .  (2026-06-13)
 
 ## Corpus Check
-- 449 files Â· ~378,368 words
+- 522 files · ~952,820 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 991 nodes Â· 1325 edges Â· 63 communities detected
-- Extraction: 100% EXTRACTED Â· 0% INFERRED Â· 0% AMBIGUOUS
-- Token cost: 0 input Â· 0 output
+- 1131 nodes · 1516 edges · 74 communities detected
+- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
+- Token cost: 0 input · 0 output
 
 ## God Nodes (most connected - your core abstractions)
 1. `commit()` - 13 edges
-2. `HybridEventStore` - 9 edges
+2. `HybridEventStore` - 11 edges
 3. `ProjectionBuilder` - 6 edges
 4. `PaceControl()` - 6 edges
-5. `makeInsight()` - 6 edges
+5. `isoDate()` - 6 edges
 6. `useFinishSession()` - 6 edges
-7. `computeTrackStats()` - 5 edges
-8. `fmtDuration()` - 5 edges
-9. `checkAchievement()` - 5 edges
-10. `insight()` - 5 edges
+7. `fmtDuration()` - 5 edges
+8. `distanceKm()` - 5 edges
+9. `useRoutePlanner()` - 5 edges
+10. `ConsoleLogger` - 4 edges
 
 ## Surprising Connections (you probably didn't know these)
 - None detected - all connections are within the same source files.
@@ -32,126 +32,126 @@ Nodes (3): focusTab(), handleKeyDown(), tabId()
 
 ### Community 1 - "Community 1"
 Cohesion: 0.02
-Nodes (29): computeDashboard(), registerTrainingDashboardProjection(), getAchievementById(), getAchievements(), getActiveGoals(), getAppointments(), getCompletedGoals(), getGoalById() (+21 more)
+Nodes (37): computeDashboard(), registerTrainingDashboardProjection(), closestPathIndex(), distanceKm(), distanceMarkers(), distanceMeters(), distToSegmentSq(), getAchievementById() (+29 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.03
-Nodes (16): EventBusImpl, makeBus(), makeRepo(), makeStore(), clearEventDB(), loadAllEvents(), openEventDB(), persistEvent() (+8 more)
+Nodes (11): mealToCategory(), parseMfpCsv(), parseDuration(), parseGarminSleepYearCSV(), buildProgressions(), buildSleepHistory(), seedMockDataIfEmpty(), addDays() (+3 more)
 
 ### Community 3 - "Community 3"
-Cohesion: 0.04
-Nodes (12): cardioDate(), exportAllSessionsCsv(), exportCardioSessionCsv(), headerIndex(), importCsv(), normalizeHeaders(), parseExportFormat(), parseSimpleFormat() (+4 more)
+Cohesion: 0.03
+Nodes (2): EventBusImpl, EventRepository
 
 ### Community 4 - "Community 4"
-Cohesion: 0.05
-Nodes (2): worstActiveCondition(), worstSev()
+Cohesion: 0.04
+Nodes (11): buildDateMap(), toDateKey(), d(), minimalTrack(), run(), handleDrop(), handleFile(), categoryIcon() (+3 more)
 
 ### Community 5 - "Community 5"
-Cohesion: 0.05
-Nodes (25): checkAchievement(), checkCardioDistance(), checkConsecutiveDays(), checkPRWeight(), checkSessionCount(), commit(), handleAddToSuperset(), handleLeaveSuperset() (+17 more)
+Cohesion: 0.04
+Nodes (4): getMode(), onPlateCalculator(), worstActiveCondition(), worstSev()
 
 ### Community 6 - "Community 6"
 Cohesion: 0.05
-Nodes (7): d(), minimalTrack(), run(), handleDrop(), handleFile(), todayDateString(), useNewSession()
+Nodes (25): activeTemplates(), applyTemplateEvents(), commit(), commitTemplateEvents(), findTemplate(), handleAddToSuperset(), handleLeaveSuperset(), handleRemoveBlock() (+17 more)
 
 ### Community 7 - "Community 7"
 Cohesion: 0.05
-Nodes (11): applyFrequencyDrop(), applyOvertrainingRisk(), applyPlateauDetected(), applyPRAchieved(), applyVolumeSpike(), makeInsight(), mapBlock(), mapSession() (+3 more)
+Nodes (14): computeTrackStats(), parseFit(), parseGpsFile(), parseGpx(), parseTcx(), Map(), useTheme(), scoreBadge() (+6 more)
 
 ### Community 8 - "Community 8"
-Cohesion: 0.06
-Nodes (21): CollapsedRail(), DesktopShell(), distanceMarkerPoints(), distToSegmentSq(), ExpandedSidebar(), fmtDuration(), fmtPace(), haversineKm() (+13 more)
+Cohesion: 0.05
+Nodes (7): appendInsight(), makeInsight(), mapBlock(), mapSession(), mapSet(), fold(), reduce()
 
 ### Community 9 - "Community 9"
 Cohesion: 0.06
-Nodes (3): buildFlatData(), formatDate(), useExerciseHistory()
+Nodes (21): CollapsedRail(), DesktopShell(), distanceMarkerPoints(), distToSegmentSq(), ExpandedSidebar(), fmtDuration(), fmtPace(), haversineKm() (+13 more)
 
 ### Community 10 - "Community 10"
-Cohesion: 0.09
-Nodes (8): mealToCategory(), parseMfpCsv(), buildProgressions(), buildSleepHistory(), seedMockDataIfEmpty(), buildActivityView(), d(), s()
+Cohesion: 0.07
+Nodes (23): downloadJson(), triggerDownload(), applyAndStoreCardio(), handleImportCardioSessions(), normalizeHeaders(), parseCsvForImport(), handleImportSessions(), parseExportRows() (+15 more)
 
 ### Community 11 - "Community 11"
-Cohesion: 0.11
-Nodes (4): buildDateMap(), toDateKey(), formatRelativeTime(), formatTime()
+Cohesion: 0.05
+Nodes (9): routePhoto(), RoutePreview(), activityForRoute(), useRouteDetail(), clearRouteDraft(), estimateSurfaceMix(), formatMin(), loadRouteDraft() (+1 more)
 
 ### Community 12 - "Community 12"
-Cohesion: 0.13
-Nodes (10): computeTrackStats(), haversineDistanceMeters(), parseFit(), parseGpsFile(), parseGpx(), parseTcx(), Map(), useTheme() (+2 more)
-
-### Community 13 - "Community 13"
-Cohesion: 0.15
+Cohesion: 0.08
 Nodes (0): 
 
+### Community 13 - "Community 13"
+Cohesion: 0.11
+Nodes (5): clearEventDB(), loadAllEvents(), openEventDB(), persistEvent(), HybridEventStore
+
 ### Community 14 - "Community 14"
-Cohesion: 0.16
-Nodes (12): closestPathIndex(), distanceMarkerPoints(), distToSegmentSq(), haversineKm(), interpolateLatLng(), latLngToXY(), totalDistanceKm(), clearRouteDraft() (+4 more)
+Cohesion: 0.13
+Nodes (5): defineCommand(), hasProjections(), makeBus(), makeRepo(), makeStore()
 
 ### Community 15 - "Community 15"
-Cohesion: 0.15
+Cohesion: 0.13
 Nodes (0): 
 
 ### Community 16 - "Community 16"
-Cohesion: 0.15
-Nodes (4): addDays(), getUpcoming(), useTrainingPlans(), weekStart()
-
-### Community 17 - "Community 17"
-Cohesion: 0.13
-Nodes (0): 
-
-### Community 18 - "Community 18"
-Cohesion: 0.24
-Nodes (9): csvRow(), exportSessionCsv(), triggerDownload(), msToTimeInput(), nowDate(), nowTime(), toDateInput(), toTimeInput() (+1 more)
-
-### Community 19 - "Community 19"
-Cohesion: 0.17
-Nodes (9): BlueprintNotFoundError, EventConflictError, InvalidSetWeightError, MigrationRequiredError, NetworkOfflineError, RemoteUnavailableError, SessionAlreadyDeletedError, StorageFullError (+1 more)
-
-### Community 20 - "Community 20"
 Cohesion: 0.17
 Nodes (2): ErrorBoundaryRoot, TelemetryLogger
 
-### Community 21 - "Community 21"
-Cohesion: 0.22
-Nodes (1): HybridEventStore
+### Community 17 - "Community 17"
+Cohesion: 0.18
+Nodes (2): ExploreTrailsPage(), rotate()
 
-### Community 22 - "Community 22"
+### Community 18 - "Community 18"
+Cohesion: 0.22
+Nodes (2): generateOverloadHint(), roundToNearest()
+
+### Community 19 - "Community 19"
+Cohesion: 0.32
+Nodes (3): buildActivityView(), d(), s()
+
+### Community 20 - "Community 20"
 Cohesion: 0.25
 Nodes (0): 
 
-### Community 23 - "Community 23"
+### Community 21 - "Community 21"
 Cohesion: 0.48
 Nodes (5): fetchWeather(), getApiKey(), getStubWeather(), parseOpenWeatherData(), weatherIcon()
 
+### Community 22 - "Community 22"
+Cohesion: 0.29
+Nodes (0): 
+
+### Community 23 - "Community 23"
+Cohesion: 0.33
+Nodes (1): ProjectionBuilder
+
 ### Community 24 - "Community 24"
 Cohesion: 0.4
-Nodes (1): ConsoleLogger
+Nodes (2): todayDateString(), useNewSession()
 
 ### Community 25 - "Community 25"
 Cohesion: 0.4
-Nodes (1): NotificationCenter
+Nodes (1): ConsoleLogger
 
 ### Community 26 - "Community 26"
 Cohesion: 0.4
-Nodes (1): NotificationRulesEngine
+Nodes (1): NotificationCenter
 
 ### Community 27 - "Community 27"
 Cohesion: 0.4
-Nodes (0): 
+Nodes (1): NotificationRulesEngine
 
 ### Community 28 - "Community 28"
-Cohesion: 0.5
+Cohesion: 0.4
 Nodes (0): 
 
 ### Community 29 - "Community 29"
 Cohesion: 1.0
-Nodes (2): Avatar(), initials()
+Nodes (1): ViewStore
 
 ### Community 30 - "Community 30"
-Cohesion: 0.67
+Cohesion: 0.5
 Nodes (0): 
 
 ### Community 31 - "Community 31"
-Cohesion: 0.67
+Cohesion: 0.5
 Nodes (0): 
 
 ### Community 32 - "Community 32"
@@ -159,8 +159,8 @@ Cohesion: 0.67
 Nodes (0): 
 
 ### Community 33 - "Community 33"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 1.0
+Nodes (2): Avatar(), initials()
 
 ### Community 34 - "Community 34"
 Cohesion: 0.67
@@ -171,19 +171,19 @@ Cohesion: 0.67
 Nodes (0): 
 
 ### Community 36 - "Community 36"
-Cohesion: 1.0
+Cohesion: 0.67
 Nodes (0): 
 
 ### Community 37 - "Community 37"
-Cohesion: 1.0
+Cohesion: 0.67
 Nodes (0): 
 
 ### Community 38 - "Community 38"
-Cohesion: 1.0
+Cohesion: 0.67
 Nodes (0): 
 
 ### Community 39 - "Community 39"
-Cohesion: 1.0
+Cohesion: 0.67
 Nodes (0): 
 
 ### Community 40 - "Community 40"
@@ -278,71 +278,125 @@ Nodes (0):
 Cohesion: 1.0
 Nodes (0): 
 
+### Community 63 - "Community 63"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 64 - "Community 64"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 65 - "Community 65"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 66 - "Community 66"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 67 - "Community 67"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 68 - "Community 68"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 69 - "Community 69"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 70 - "Community 70"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 71 - "Community 71"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 72 - "Community 72"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 73 - "Community 73"
+Cohesion: 1.0
+Nodes (0): 
+
 ## Knowledge Gaps
-- **9 isolated node(s):** `InvalidSetWeightError`, `SessionAlreadyDeletedError`, `EventConflictError`, `BlueprintNotFoundError`, `NetworkOfflineError` (+4 more)
-  These have â‰¤1 connection - possible missing edges or undocumented components.
-- **Thin community `Community 36`** (2 nodes): `eslint.config.js`, `el()`
+- **Thin community `Community 40`** (2 nodes): `eslint.config.js`, `el()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 37`** (2 nodes): `Checkbox.tsx`, `Checkbox()`
+- **Thin community `Community 41`** (2 nodes): `Checkbox.tsx`, `Checkbox()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 38`** (2 nodes): `Divider.tsx`, `Divider()`
+- **Thin community `Community 42`** (2 nodes): `Divider.tsx`, `Divider()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 39`** (2 nodes): `ProgressBar.tsx`, `ProgressBar()`
+- **Thin community `Community 43`** (2 nodes): `ProgressBar.tsx`, `ProgressBar()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 40`** (2 nodes): `SegmentBar.tsx`, `SegmentBar()`
+- **Thin community `Community 44`** (2 nodes): `SegmentBar.tsx`, `SegmentBar()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 41`** (2 nodes): `useConfirmPress.ts`, `useConfirmPress()`
+- **Thin community `Community 45`** (2 nodes): `useConfirmPress.ts`, `useConfirmPress()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 42`** (2 nodes): `useSessionTimer.ts`, `useSessionTimer()`
+- **Thin community `Community 46`** (2 nodes): `useSessionTimer.ts`, `useSessionTimer()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 43`** (2 nodes): `GridItem.tsx`, `GridItem()`
+- **Thin community `Community 47`** (2 nodes): `ExportDataWidget.tsx`, `ExportDataWidget()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 44`** (2 nodes): `ScrollRow.tsx`, `ScrollRow()`
+- **Thin community `Community 48`** (2 nodes): `ImportDataWidget.tsx`, `ImportDataWidget()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 45`** (2 nodes): `Command.tsx`, `Command()`
+- **Thin community `Community 49`** (2 nodes): `PlanRouteWidget.tsx`, `PlanRouteWidget()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 46`** (2 nodes): `Label.tsx`, `Label()`
+- **Thin community `Community 50`** (2 nodes): `GridItem.tsx`, `GridItem()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 47`** (2 nodes): `NavItem.tsx`, `NavItem()`
+- **Thin community `Community 51`** (2 nodes): `ScrollRow.tsx`, `ScrollRow()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 48`** (2 nodes): `Tooltip.tsx`, `Tooltip()`
+- **Thin community `Community 52`** (2 nodes): `Command.tsx`, `Command()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 49`** (2 nodes): `BottomSheet.tsx`, `BottomSheet()`
+- **Thin community `Community 53`** (2 nodes): `Label.tsx`, `Label()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 50`** (2 nodes): `Sidebar.tsx`, `Sidebar()`
+- **Thin community `Community 54`** (2 nodes): `NavItem.tsx`, `NavItem()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 51`** (1 nodes): `stylelint.config.js`
+- **Thin community `Community 55`** (2 nodes): `Tooltip.tsx`, `Tooltip()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 52`** (1 nodes): `vite-env.d.ts`
+- **Thin community `Community 56`** (2 nodes): `BottomSheet.tsx`, `BottomSheet()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 53`** (1 nodes): `vite.config.ts`
+- **Thin community `Community 57`** (2 nodes): `Sidebar.tsx`, `Sidebar()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 54`** (1 nodes): `vitest.setup.ts`
+- **Thin community `Community 58`** (1 nodes): `stylelint.config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 55`** (1 nodes): `garmin.ts`
+- **Thin community `Community 59`** (1 nodes): `vite-env.d.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 56`** (1 nodes): `NotificationPreferences.ts`
+- **Thin community `Community 60`** (1 nodes): `vite.config.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 57`** (1 nodes): `BodyMetrics.ts`
+- **Thin community `Community 61`** (1 nodes): `vitest.setup.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 58`** (1 nodes): `InjuryTracking.ts`
+- **Thin community `Community 62`** (1 nodes): `garmin.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 59`** (1 nodes): `NutritionTracking.ts`
+- **Thin community `Community 63`** (1 nodes): `NotificationPreferences.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 60`** (1 nodes): `SleepTracking.ts`
+- **Thin community `Community 64`** (1 nodes): `BodyMetrics.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 61`** (1 nodes): `Breadcrumb.tsx`
+- **Thin community `Community 65`** (1 nodes): `InjuryTracking.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 62`** (1 nodes): `AppNav.tsx`
+- **Thin community `Community 66`** (1 nodes): `NutritionTracking.ts`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 67`** (1 nodes): `SleepTracking.ts`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 68`** (1 nodes): `provenance.ts`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 69`** (1 nodes): `strength.ts`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 70`** (1 nodes): `Breadcrumb.tsx`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 71`** (1 nodes): `AppNav.tsx`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 72`** (1 nodes): `SplitTabs.tsx`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 73`** (1 nodes): `dashboardUtils.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `HybridEventStore` connect `Community 21` to `Community 2`?**
-  _High betweenness centrality (0.013) - this node is a cross-community bridge._
-- **What connects `InvalidSetWeightError`, `SessionAlreadyDeletedError`, `EventConflictError` to the rest of the system?**
-  _9 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `ProjectionBuilder` connect `Community 23` to `Community 1`?**
+  _High betweenness centrality (0.007) - this node is a cross-community bridge._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.02 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
@@ -350,6 +404,8 @@ _Questions this graph is uniquely positioned to answer:_
 - **Should `Community 2` be split into smaller, more focused modules?**
   _Cohesion score 0.03 - nodes in this community are weakly interconnected._
 - **Should `Community 3` be split into smaller, more focused modules?**
-  _Cohesion score 0.04 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.03 - nodes in this community are weakly interconnected._
 - **Should `Community 4` be split into smaller, more focused modules?**
-  _Cohesion score 0.05 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.04 - nodes in this community are weakly interconnected._
+- **Should `Community 5` be split into smaller, more focused modules?**
+  _Cohesion score 0.04 - nodes in this community are weakly interconnected._

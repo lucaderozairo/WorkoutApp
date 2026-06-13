@@ -2,53 +2,48 @@ import type { Id, DomainEvent } from '@shared/types';
 
 export type InsightSeverity = 'info' | 'warning' | 'success';
 
+export type InsightType =
+  | 'PlateauDetected'
+  | 'PRAchieved'
+  | 'VolumeSpike'
+  | 'FrequencyDrop'
+  | 'OvertrainingRisk';
+
+/** The full taxonomy of insight kinds, used to wire the projection generically. */
+export const INSIGHT_TYPES: readonly InsightType[] = [
+  'PlateauDetected',
+  'PRAchieved',
+  'VolumeSpike',
+  'FrequencyDrop',
+  'OvertrainingRisk',
+];
+
 export interface Insight {
   id: Id<'Insight'>;
-  type: 'PlateauDetected' | 'PRAchieved' | 'VolumeSpike' | 'FrequencyDrop' | 'OvertrainingRisk';
+  type: InsightType;
   severity: InsightSeverity;
+  /** Human-readable headline (e.g. "High training load"). */
+  title: string;
+  message: string;
   sport?: string;
   exerciseId?: Id<'Exercise'>;
-  message: string;
   detectedAt: number;
 }
 
+/**
+ * Every insight event shares one payload shape. `severity` is derived from
+ * `type` at projection time, so it is not carried on the wire.
+ */
+export interface InsightEventPayload {
+  insightId: Id<'Insight'>;
+  title: string;
+  message: string;
+  sport?: string;
+  exerciseId?: Id<'Exercise'>;
+}
+
+export type InsightEvent = DomainEvent<InsightType, InsightEventPayload>;
+
 export interface InsightsState {
   insights: Insight[];
-}
-
-export type InsightEvent =
-  | DomainEvent<'PlateauDetected', PlateauDetectedPayload>
-  | DomainEvent<'PRAchieved', PRAchievedPayload>
-  | DomainEvent<'VolumeSpike', VolumeSpikePayload>
-  | DomainEvent<'FrequencyDrop', FrequencyDropPayload>
-  | DomainEvent<'OvertrainingRisk', OvertrainingRiskPayload>;
-
-export interface PlateauDetectedPayload {
-  insightId: Id<'Insight'>;
-  exerciseId: Id<'Exercise'>;
-  message: string;
-}
-
-export interface PRAchievedPayload {
-  insightId: Id<'Insight'>;
-  exerciseId: Id<'Exercise'>;
-  sport?: string;
-  message: string;
-}
-
-export interface VolumeSpikePayload {
-  insightId: Id<'Insight'>;
-  sport?: string;
-  message: string;
-}
-
-export interface FrequencyDropPayload {
-  insightId: Id<'Insight'>;
-  sport?: string;
-  message: string;
-}
-
-export interface OvertrainingRiskPayload {
-  insightId: Id<'Insight'>;
-  message: string;
 }

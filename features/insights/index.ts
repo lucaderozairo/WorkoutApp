@@ -1,4 +1,6 @@
-export type { Insight, InsightSeverity, InsightEvent, InsightsState } from './domain/types';
+export type { Insight, InsightSeverity, InsightType, InsightEvent, InsightsState } from './domain/types';
+export { INSIGHT_TYPES } from './domain/types';
 export { insightsProjection } from './projections';
-export { getInsights, getInsightsForSport, getInsightsForExercise } from './queries';
-export { emitPRAchieved, emitPlateauDetected, emitVolumeSpike, emitFrequencyDrop, emitOvertrainingRisk } from './commands/handlers';
+export { getInsights } from './queries';
+export { emitInsight, type EmitInsightInput } from './commands/handlers';
+export { registerInsightsPolicy } from './policies/generateInsights';

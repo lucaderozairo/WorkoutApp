@@ -29,10 +29,11 @@ import '@features/conditions';
 import '@features/scheduling';
 import '@features/news_feed';
 import '@features/insights';
+import '@features/templates';
 
 // ── Cross-feature policies / projections ──
 import { registerProgressionPolicy } from '@features/progression';
-import { registerCoachingPolicy } from '@features/coaching';
+import { registerInsightsPolicy } from '@features/insights';
 import { registerTrainingPlanProjections, registerAdherencePolicy } from '@features/training_plans';
 import { registerGoalProjections, registerGoalUpdatePolicy } from '@features/goals';
 import { registerHabitProjections, registerStreakMilestonePolicy } from '@features/habits';
@@ -49,7 +50,7 @@ export function bootstrapFeatures(): void {
   booted = true;
 
   registerProgressionPolicy();
-  registerCoachingPolicy();
+  registerInsightsPolicy();
   registerTrainingPlanProjections();
   registerAdherencePolicy();
   registerGoalProjections();

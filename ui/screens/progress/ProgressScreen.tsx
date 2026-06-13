@@ -325,7 +325,7 @@ export function ProgressScreen({ onOpenSettings }: { onOpenSettings?: () => void
         <>
           <Text as="h3">Insights</Text>
           {insights.slice(0, 3).map(i => (
-            <Alert key={i.id} variant={severityVariant(i.severity)} title={i.severity} message={i.message} />
+            <Alert key={i.id} variant={severityVariant(i.severity)} title={i.title} message={i.message} />
           ))}
         </>
       )}

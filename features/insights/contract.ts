@@ -4,4 +4,4 @@
 export type { InsightEvent } from './domain/types';
 
 // Domain types consumed by screens and data/projections.
-export type { Insight, InsightSeverity } from './domain/types';
+export type { Insight, InsightSeverity, InsightType } from './domain/types';

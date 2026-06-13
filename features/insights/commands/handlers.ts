@@ -3,105 +3,48 @@ import { viewStore } from '@data/projections/views';
 import { cryptoIdGenerator } from '@core/id-generator';
 import { systemClock } from '@core/clock';
 import type { Id } from '@shared/types';
-import type { InsightEvent } from '../domain/types';
+import type { InsightEvent, InsightType } from '../domain/types';
 import { insightsProjection } from '../projections';
 
-function applyAndStore(events: InsightEvent[]): void {
-  events.forEach(e => insightsProjection.apply(e));
+export interface EmitInsightInput {
+  type: InsightType;
+  title: string;
+  message: string;
+  sport?: string;
+  exerciseId?: Id<'Exercise'>;
+}
+
+function applyAndStore(event: InsightEvent): void {
+  insightsProjection.apply(event);
   viewStore.set('insights', insightsProjection.getState());
 }
 
-const handleEmitPRAchieved = defineCommand<{ exerciseId: Id<'Exercise'>; sport: string | undefined; message: string }>({
-  execute: async ({ exerciseId, sport, message }) => {
-  const event: InsightEvent = {
-    type: 'PRAchieved',
-    aggregateId: exerciseId as unknown as Id,
-    aggregateType: 'Exercise',
-    timestamp: systemClock.now(),
-    version: 1,
-    payload: { insightId: cryptoIdGenerator.next<'Insight'>(), exerciseId, sport, message },
-  };
-  applyAndStore([event]);
-  return { events: [event] };
+/**
+ * The single insight write-path. Every insight kind flows through here: the
+ * `type` discriminates the event (and, downstream, its severity); the rest is
+ * the shared payload.
+ */
+const handleEmitInsight = defineCommand<EmitInsightInput>({
+  execute: async ({ type, title, message, sport, exerciseId }) => {
+    const event: InsightEvent = {
+      type,
+      aggregateId: (exerciseId as unknown as Id) ?? cryptoIdGenerator.next(),
+      aggregateType: exerciseId ? 'Exercise' : 'User',
+      timestamp: systemClock.now(),
+      version: 1,
+      payload: {
+        insightId: cryptoIdGenerator.next<'Insight'>(),
+        title,
+        message,
+        sport,
+        exerciseId,
+      },
+    };
+    applyAndStore(event);
+    return { events: [event] };
   },
 });
 
-export function emitPRAchieved(exerciseId: Id<'Exercise'>, sport: string | undefined, message: string): Promise<void> {
-  return handleEmitPRAchieved({ exerciseId, sport, message });
-}
-
-const handleEmitPlateauDetected = defineCommand<{ exerciseId: Id<'Exercise'>; message: string }>({
-  execute: async ({ exerciseId, message }) => {
-  const event: InsightEvent = {
-    type: 'PlateauDetected',
-    aggregateId: exerciseId as unknown as Id,
-    aggregateType: 'Exercise',
-    timestamp: systemClock.now(),
-    version: 1,
-    payload: { insightId: cryptoIdGenerator.next<'Insight'>(), exerciseId, message },
-  };
-  applyAndStore([event]);
-  return { events: [event] };
-  },
-});
-
-export function emitPlateauDetected(exerciseId: Id<'Exercise'>, message: string): Promise<void> {
-  return handleEmitPlateauDetected({ exerciseId, message });
-}
-
-const handleEmitVolumeSpike = defineCommand<{ sport: string | undefined; message: string }>({
-  execute: async ({ sport, message }) => {
-  const event: InsightEvent = {
-    type: 'VolumeSpike',
-    aggregateId: cryptoIdGenerator.next(),
-    aggregateType: 'User',
-    timestamp: systemClock.now(),
-    version: 1,
-    payload: { insightId: cryptoIdGenerator.next<'Insight'>(), sport, message },
-  };
-  applyAndStore([event]);
-  return { events: [event] };
-  },
-});
-
-export function emitVolumeSpike(sport: string | undefined, message: string): Promise<void> {
-  return handleEmitVolumeSpike({ sport, message });
-}
-
-const handleEmitFrequencyDrop = defineCommand<{ sport: string | undefined; message: string }>({
-  execute: async ({ sport, message }) => {
-  const event: InsightEvent = {
-    type: 'FrequencyDrop',
-    aggregateId: cryptoIdGenerator.next(),
-    aggregateType: 'User',
-    timestamp: systemClock.now(),
-    version: 1,
-    payload: { insightId: cryptoIdGenerator.next<'Insight'>(), sport, message },
-  };
-  applyAndStore([event]);
-  return { events: [event] };
-  },
-});
-
-export function emitFrequencyDrop(sport: string | undefined, message: string): Promise<void> {
-  return handleEmitFrequencyDrop({ sport, message });
-}
-
-const handleEmitOvertrainingRisk = defineCommand<{ message: string }>({
-  execute: async ({ message }) => {
-  const event: InsightEvent = {
-    type: 'OvertrainingRisk',
-    aggregateId: cryptoIdGenerator.next(),
-    aggregateType: 'User',
-    timestamp: systemClock.now(),
-    version: 1,
-    payload: { insightId: cryptoIdGenerator.next<'Insight'>(), message },
-  };
-  applyAndStore([event]);
-  return { events: [event] };
-  },
-});
-
-export function emitOvertrainingRisk(message: string): Promise<void> {
-  return handleEmitOvertrainingRisk({ message });
+export function emitInsight(input: EmitInsightInput): Promise<void> {
+  return handleEmitInsight(input);
 }

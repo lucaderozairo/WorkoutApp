@@ -59,9 +59,6 @@ import type {
 } from '@features/readiness/contract';
 import type { SleepTrendView } from '@features/readiness/contract';
 
-// ── coaching ──────────────────────────────────────────────────────────-───
-import type { CoachingInsight } from '@features/coaching/contract';
-
 // ── insights ──────────────────────────────────────────────────────────-───
 import type { Insight } from '@features/insights/contract';
 
@@ -101,6 +98,13 @@ import type {
   SavedRoute,
   SavedTemplate,
 } from '@features/planning/contract';
+
+// ── templates ──────────────────────────────────────────────────────────────
+import type {
+  RecentRoutine,
+  TemplateState,
+  WorkoutTemplate,
+} from '@features/templates/contract';
 
 // ── social ────────────────────────────────────────────────────────────-───
 import type { Post } from '@features/social/contract';
@@ -217,21 +221,13 @@ export type ViewRegistry = {
   health_metrics:              HealthMetricsView[];
   resting_hr_history:          RestingHRView[];
   subjective_rpe_history:      SubjectiveRPEView[];
-  /** Rolling RPE values used by coaching insight generation. */
+  /** Rolling RPE values used by the insights deload heuristic. */
   session_rpe_history:         number[];
   /** Derived sleep trend for the last 7 days (features/readiness/projections/sleepTrend). */
   sleep_trend:                 SleepTrendView;
 
-  // ── coaching ─────────────────────────────────────────────────────────-
-  active_insights:             CoachingInsight[];
-  insight_history:             CoachingInsight[];
-
   // ── insights ─────────────────────────────────────────────────────────-
   insights:                    Insight[];
-  // TODO: wired in features/insights — not yet live
-  insights_by_sport:           Insight[];
-  // TODO: wired in features/insights — not yet live
-  insights_by_exercise:        Insight[];
 
   // ── conditions ───────────────────────────────────────────────────────-
   current_conditions:          WeatherCondition | null;
@@ -265,6 +261,12 @@ export type ViewRegistry = {
   planned_sessions:            PlannedSession[];
   saved_routes:                SavedRoute[];
   saved_templates:             SavedTemplate[];
+
+  // ── templates ──────────────────────────────────────────────────────────────
+  template_state:              TemplateState;
+  template_list:               WorkoutTemplate[];
+  favorite_templates:          WorkoutTemplate[];
+  recent_routines:             RecentRoutine[];
 
   // ── social ───────────────────────────────────────────────────────────-
   social_feed:                 Post[];

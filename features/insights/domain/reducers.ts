@@ -1,6 +1,6 @@
-import type { InsightEvent, Insight } from '../domain/types';
+import type { InsightEvent, Insight, InsightType, InsightSeverity } from './types';
 
-const SEVERITY_MAP: Record<string, Insight['severity']> = {
+const SEVERITY_MAP: Record<InsightType, InsightSeverity> = {
   PlateauDetected: 'warning',
   PRAchieved: 'success',
   VolumeSpike: 'warning',
@@ -8,40 +8,28 @@ const SEVERITY_MAP: Record<string, Insight['severity']> = {
   OvertrainingRisk: 'warning',
 };
 
+/** Keep the projection bounded — insights are a rolling feed, not an archive. */
+const MAX_INSIGHTS = 50;
+
 function makeInsight(event: InsightEvent): Insight {
-  const payload = event.payload as unknown as Record<string, unknown>;
+  const p = event.payload;
   return {
-    id: payload.insightId as Insight['id'],
-    type: event.type as Insight['type'],
+    id: p.insightId,
+    type: event.type,
     severity: SEVERITY_MAP[event.type] ?? 'info',
-    sport: payload.sport as string | undefined,
-    exerciseId: payload.exerciseId as Insight['exerciseId'],
-    message: payload.message as string,
+    title: p.title,
+    message: p.message,
+    sport: p.sport,
+    exerciseId: p.exerciseId,
     detectedAt: event.timestamp,
   };
 }
 
-export function applyPlateauDetected(state: Insight[], event: InsightEvent): Insight[] {
-  if (event.type !== 'PlateauDetected') return state;
-  return [...state, makeInsight(event)];
-}
-
-export function applyPRAchieved(state: Insight[], event: InsightEvent): Insight[] {
-  if (event.type !== 'PRAchieved') return state;
-  return [...state, makeInsight(event)];
-}
-
-export function applyVolumeSpike(state: Insight[], event: InsightEvent): Insight[] {
-  if (event.type !== 'VolumeSpike') return state;
-  return [...state, makeInsight(event)];
-}
-
-export function applyFrequencyDrop(state: Insight[], event: InsightEvent): Insight[] {
-  if (event.type !== 'FrequencyDrop') return state;
-  return [...state, makeInsight(event)];
-}
-
-export function applyOvertrainingRisk(state: Insight[], event: InsightEvent): Insight[] {
-  if (event.type !== 'OvertrainingRisk') return state;
-  return [...state, makeInsight(event)];
+/**
+ * Single reducer for every insight type: append the newest insight and cap the
+ * feed. The projection's event-type → reducer map gates dispatch, so a per-type
+ * guard here would be dead code.
+ */
+export function appendInsight(state: Insight[], event: InsightEvent): Insight[] {
+  return [makeInsight(event), ...state].slice(0, MAX_INSIGHTS);
 }
