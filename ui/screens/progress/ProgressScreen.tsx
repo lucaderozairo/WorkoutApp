@@ -9,6 +9,7 @@ import { Surface, Text, SegmentBar } from '@ui/atoms';
 import { SparklineArea } from '@ui/patterns/charts/domain-charts';
 import { ShareModal } from '@ui/components/modals/ShareModal';
 import { useProgressScreen } from './useProgressScreen';
+import { formatDuration } from '@shared/utils';
 import type { IconType } from 'react-icons';
 import {
   MdDirectionsBike, MdDirectionsRun, MdDownhillSkiing, MdFitnessCenter, MdHiking,
@@ -37,12 +38,6 @@ const SPORT_META: Record<CardioSport, { label: string; Icon: IconType; color: st
   stretch:   { label: 'STRETCHING', Icon: PiPersonSimpleTaiChi,color: 'strength' },
   hiit:      { label: 'HIIT',       Icon: PiFlame,             color: 'strength' },
 };
-
-function formatDuration(seconds: number): string {
-  const m = Math.floor(seconds / 60);
-  if (m < 60) return `${m} min`;
-  return `${Math.floor(m / 60)}h ${m % 60}m`;
-}
 
 function categoryIcon(category: string): string {
   switch (category) {

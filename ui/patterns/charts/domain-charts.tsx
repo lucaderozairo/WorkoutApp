@@ -16,6 +16,7 @@ import type { DailyLoad } from '@features/progress_analysis';
 // eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
 import type { GpsPoint } from '@data/sources/files/gps';
 import { distanceMeters } from '@shared/geo';
+import { formatPace } from '@shared/utils';
 
 // ─── Shared chart constants ───────────────────────────────────────────────────
 
@@ -44,11 +45,7 @@ export function fmtMin(minutes: number): string {
   return h > 0 ? `${h}h ${m}m` : `${m}m`;
 }
 
-function fmtPace(minPerKm: number): string {
-  const m = Math.floor(minPerKm);
-  const s = Math.round((minPerKm - m) * 60);
-  return `${m}:${String(s).padStart(2, '0')}`;
-}
+const fmtPace = (minPerKm: number): string => formatPace(minPerKm * 60, { empty: '0:00' });
 
 // Format a distance in metres for axis labels
 function fmtDist(m: number): string {

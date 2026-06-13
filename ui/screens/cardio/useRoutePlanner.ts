@@ -4,6 +4,7 @@ import { useQuery } from '@ui/bindings';
 import { handleSaveRoute, handleUpdateRoute, formatPace, parsePace } from '@features/planning';
 import type { SavedRoute } from '@features/planning/contract';
 import { pathDistanceKm as totalDistanceKm, distanceKm as haversineKm } from '@shared/geo';
+import { formatDuration } from '@shared/utils';
 import type { MapCanvasHandle } from '@ui/components/workout/wizard/RouteMap';
 import { cryptoIdGenerator } from '@core/id-generator';
 
@@ -127,8 +128,7 @@ export function estimateSurfaceMix(activity: ActivityId, waypointCount: number, 
 }
 
 export function formatMin(min: number): string {
-  if (min <= 0) return '—';
-  return min >= 60 ? `${Math.floor(min / 60)}h ${Math.round(min % 60)}m` : `${Math.round(min)} min`;
+  return min <= 0 ? '—' : formatDuration(Math.round(min) * 60);
 }
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────

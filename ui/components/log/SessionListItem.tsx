@@ -8,20 +8,7 @@ import { Carousel } from "../shared";
 import { Surface, Text } from "@ui/atoms";
 import { Badge, Button } from "@ui/molecules";
 import { Layer, Layered, Row, Column, Cluster } from "@ui/layout";
-
-function formatDuration(seconds: number): string {
-  const m = Math.floor(seconds / 60);
-  if (m < 60) return `${m} min`;
-  const h = Math.floor(m / 60);
-  const rem = m % 60;
-  return rem === 0 ? `${h}h` : `${h}h ${rem}m`;
-}
-
-function formatPace(durationSeconds: number, distanceMeters: number): string {
-  if (!distanceMeters || !durationSeconds) return "";
-  const secsPerKm = durationSeconds / (distanceMeters / 1000);
-  return `${Math.floor(secsPerKm / 60)}:${String(Math.floor(secsPerKm % 60)).padStart(2, "0")}/km`;
-}
+import { formatDuration, formatPace, paceSecPerKm } from "@shared/utils";
 
 function formatTime(ts: number): string {
   return new Date(ts).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
@@ -152,7 +139,7 @@ interface CardioItemProps {
 export function CardioSessionItem({ session, onDelete }: CardioItemProps) {
   const navigate = useNavigate();
   const distKm = (session.distanceMeters / 1000).toFixed(1);
-  const pace = formatPace(session.durationSeconds, session.distanceMeters);
+  const pace = formatPace(paceSecPerKm(session.durationSeconds, session.distanceMeters), { suffix: true, empty: '' });
   const title = session.title || getActivityLabel(session.sport);
   const { Icon: SportIcon } = ACTIVITY_ICONS[session.sport];
   const sportLabel = getActivityLabel(session.sport);

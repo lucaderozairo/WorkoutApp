@@ -6,6 +6,7 @@
 import type { ActivityView, ActivityHistoryItem } from '@features/training_log';
 import type { CardioSession } from '@features/cardio/domain/types';
 import { csvRow, triggerDownload } from '@shared/utils/csv';
+import { toIsoDate as isoDate } from '@shared/utils';
 
 const EXPORT_HEADERS = [
   'Type', 'Session ID', 'Name', 'Date', 'Category/Sport',
@@ -14,10 +15,6 @@ const EXPORT_HEADERS = [
   'Is Warmup', 'Is PR', 'RPE', 'Notes',
 ];
 
-function isoDate(ts: number | string | null | undefined): string {
-  const d = ts != null ? new Date(ts) : new Date();
-  return d.toISOString().split('T')[0];
-}
 
 /** A finished, in-memory strength session (ActivityView) → its own CSV file. */
 export function exportActivitySessionCsv(session: ActivityView): void {

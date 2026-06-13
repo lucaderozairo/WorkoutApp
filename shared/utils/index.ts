@@ -8,3 +8,12 @@ export const constants = {
 } as const;
 
 export { timeAgo } from './timeAgo';
+export {
+  formatDuration,
+  formatDurationMs,
+  paceSecPerKm,
+  formatPace,
+  toIsoDate,
+  type DurationOptions,
+  type PaceOptions,
+} from './format';

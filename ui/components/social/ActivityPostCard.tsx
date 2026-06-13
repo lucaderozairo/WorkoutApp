@@ -5,6 +5,7 @@ import type { SportType } from '@features/training_log/domain/types';
 import { ACTIVITY_ICONS, getActivityLabel } from '@ui/icons/activityIcons';
 import { Carousel } from '../shared';
 import { timeAgo } from '@shared/utils/timeAgo';
+import { formatDuration, formatPace, paceSecPerKm } from '@shared/utils';
 import { USER_NAME, USER_INITIALS } from '@features/social/domain/constants';
 import { Row, Column, Cluster } from '@ui/layout';
 import { Surface, Avatar, Text } from '@ui/atoms';
@@ -13,20 +14,6 @@ import { Badge } from '@ui/molecules';
 const SPORT_AVATAR: Partial<Record<CardioSport, string>> = {
   run: 'run', cycle: 'cycle', swim: 'swim', row: 'rowing',
 };
-
-function formatDuration(seconds: number): string {
-  const m = Math.floor(seconds / 60);
-  if (m < 60) return `${m} min`;
-  const h = Math.floor(m / 60);
-  const rem = m % 60;
-  return rem === 0 ? `${h}h` : `${h}h ${rem}m`;
-}
-
-function formatPace(durationSeconds: number, distanceMeters: number): string {
-  if (!distanceMeters || !durationSeconds) return '';
-  const secsPerKm = durationSeconds / (distanceMeters / 1000);
-  return `${Math.floor(secsPerKm / 60)}:${String(Math.floor(secsPerKm % 60)).padStart(2, '0')}/km`;
-}
 
 export function StrengthActivityCard({ session }: { session: ActivityHistoryItem }) {
   const navigate = useNavigate();
@@ -81,7 +68,7 @@ export function CardioActivityCard({ session }: { session: CardioSession }) {
   const sportLabel = getActivityLabel(session.sport as SportType);
   const avatarClass = SPORT_AVATAR[session.sport] ?? 'lift';
   const distKm = (session.distanceMeters / 1000).toFixed(1);
-  const pace = formatPace(session.durationSeconds, session.distanceMeters);
+  const pace = formatPace(paceSecPerKm(session.durationSeconds, session.distanceMeters), { suffix: true, empty: '' });
   const title = session.title || sportLabel;
 
   return (

@@ -19,10 +19,9 @@ import { Surface, Text, Chip, Table, TableRow, TableCell } from '@ui/atoms';
 import { Badge, Button, EditableTitle } from '@ui/molecules';
 import { SportIcon } from '@ui/atoms/icons/SportIcon';
 import { CategoryIcon } from '@ui/atoms/icons/CategoryIcon';
+import { formatDuration, formatPace, paceSecPerKm } from '@shared/utils';
 import {
   type SampleCardioSession,
-  formatDuration,
-  formatPace,
   sportColor,
   isActivityHistoryItem,
   isCardioSession,
@@ -230,10 +229,7 @@ function StrengthDetail({ session }: { session: ActivityView }) {
 function CardioDetail({ session, fullPage }: { session: CardioSession; fullPage?: boolean }) {
   const [showImport, setShowImport] = useState(false);
   const distKm = session.distanceMeters / 1000;
-  const pace =
-    session.durationSeconds > 0 && session.distanceMeters > 0
-      ? session.durationSeconds / (session.distanceMeters / 1000)
-      : 0;
+  const pace = paceSecPerKm(session.durationSeconds, session.distanceMeters);
   const color = sportColor(session.sport);
   const track = session.gpsTrack;
   const hasSecondary = track && (
@@ -277,7 +273,7 @@ function CardioDetail({ session, fullPage }: { session: CardioSession; fullPage?
       {pace > 0 && (
         <Column gap={1} align="center">
           <Text size="eyebrow">Avg Pace</Text>
-          <Text as="h3">{formatPace(pace)}</Text>
+          <Text as="h3">{formatPace(pace, { suffix: true })}</Text>
         </Column>
       )}
       {track?.elevationGain != null && (
@@ -471,7 +467,7 @@ function CardioDetail({ session, fullPage }: { session: CardioSession; fullPage?
           {pace > 0 && (
             <Column gap={1} align="center">
               <Text size="caption">PACE</Text>
-              <Text size="detail">{formatPace(pace)}</Text>
+              <Text size="detail">{formatPace(pace, { suffix: true })}</Text>
             </Column>
           )}
           {track?.elevationGain != null && (

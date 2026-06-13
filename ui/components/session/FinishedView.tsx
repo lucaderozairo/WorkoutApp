@@ -8,6 +8,7 @@ import type { ActivityView } from '@features/training_log';
 import type { UISet } from '@features/training_log/projections/viewTypes';
 import { handleDeleteSession } from '@features/training_log';
 import { useCommand } from '@ui/bindings';
+import { formatDurationMs } from '@shared/utils';
 import { CARDIO_FIELDS } from './CardioEditor';
 import ChartContainer from '@ui/patterns/charts/charts';
 import { LetterBadge } from './LetterBadge';
@@ -50,14 +51,7 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
     : '';
   const durationMs = session.finishedAt && session.startedAt ? session.finishedAt - session.startedAt : 0;
 
-  function formatDuration(ms: number): string {
-    if (ms <= 0) return '—';
-    const totalMinutes = Math.floor(ms / 60000);
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-    if (hours > 0) return `${hours}h ${minutes}m`;
-    return `${minutes}m`;
-  }
+  const formatDuration = (ms: number): string => (ms <= 0 ? '—' : formatDurationMs(ms));
 
   function handleExport() {
     const blob = new Blob([JSON.stringify(session, null, 2)], { type: 'application/json' });

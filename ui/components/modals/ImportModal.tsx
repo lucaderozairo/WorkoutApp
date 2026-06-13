@@ -7,6 +7,7 @@ import type { CardioSport } from '@features/cardio';
 import { Row, Column } from '@ui/layout';
 import { Surface, Text, Metric } from '@ui/atoms';
 import { Badge, Button, Slider, Textarea } from '@ui/molecules';
+import { formatDuration } from '@shared/utils';
 
 type ImportContext = 'new-session' | 'enrich-session' | 'standalone';
 
@@ -30,12 +31,6 @@ interface ImportModalProps {
   };
   onComplete: (track: GpsTrack, rpe?: number, notes?: string, sport?: CardioSport) => void;
   onClose: () => void;
-}
-
-function formatDuration(secs: number): string {
-  const h = Math.floor(secs / 3600);
-  const m = Math.floor((secs % 3600) / 60);
-  return h > 0 ? `${h}h ${m}m` : `${m} min`;
 }
 
 export function ImportModal({ context, existingSession, onComplete, onClose }: ImportModalProps) {

@@ -6,10 +6,7 @@ import type { ActivityHistoryItem } from "@features/training_log";
 import type { CardioSession } from "@features/cardio";
 import { Text } from "@ui/atoms";
 import { Button } from "@ui/molecules";
-
-function isoDate(d: Date): string {
-  return d.toISOString().split("T")[0];
-}
+import { toIsoDate as isoDate } from "@shared/utils";
 
 function buildWeekDays(weekOffset: number): Date[] {
   const now = new Date();
