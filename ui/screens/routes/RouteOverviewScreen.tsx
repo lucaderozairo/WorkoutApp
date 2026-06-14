@@ -1,14 +1,16 @@
-import { useEffect, useRef, type CSSProperties } from 'react';
+import { useEffect, useRef } from 'react';
 import { Bike, CalendarPlus, Download, Edit3, Footprints, Play, Trash2 } from 'lucide-react';
 import { Button, ScreenHeader, Input, ToggleGroup } from '@ui/molecules';
 import { Surface, Text } from '@ui/atoms';
-import { Column, Grid, Row, Cluster } from '@ui/layout';
+import { Column, Grid, Row } from '@ui/layout';
 import { EmptyState } from '@ui/patterns';
 import { formatDuration } from '@shared/utils';
 import { RouteMap, type MapCanvasHandle } from '@ui/components/workout/wizard/RouteMap';
 import { ElevationProfile } from '@ui/components/routes/ElevationProfile';
+import { SurfaceMixBar } from '@ui/components/routes/SurfaceMixBar';
+import { RouteDetailLayout, RouteProfileIcon } from '@ui/components/routes/RouteDetailLayout';
 import { useRouteOverview } from './useRouteOverview';
-import { SURFACES, type SurfaceKey } from './useRoutePlanner';
+import { SURFACES } from './useRoutePlanner';
 
 function profileLabel(profile: 'foot' | 'bike') {
   return profile === 'bike' ? 'Bike' : 'Foot';
@@ -54,73 +56,40 @@ export function RouteOverviewScreen() {
     );
   }
 
+  const surfaceEntries = SURFACES.map(surface => ({
+    key: surface.key,
+    label: surface.label,
+    pct: stats.surfaceMix[surface.key] ?? 0,
+  }));
+
   return (
-    <Grid gap={4} className="route-detail-screen">
-      <ScreenHeader
-        title={route.name}
-        back={() => navigate('/routes')}
-        primary={<Button variant="secondary" size="sm" onClick={handleEdit}><Edit3 size={14} /> Edit route</Button>}
-      />
-
-      <Grid cols="minmax(0, 1.25fr) minmax(320px, .75fr)" gap={4} className="route-detail-grid">
-        <Column gap={3}>
-          <Surface pad="none" className="route-detail-map">
-            <RouteMap
-              ref={mapRef}
-              waypoints={route.waypoints}
-              routePath={routePath}
-              onChange={() => undefined}
-              profile={route.profile}
-              readOnly
-              showDistanceMarkers
-              mode="select"
-            />
-          </Surface>
-
-          <Surface>
-            <Column gap={2}>
-              <Text size="eyebrow">Elevation</Text>
-              <ElevationProfile
-                samples={elevationProfile}
-                hoveredIndex={hoveredIndex}
-                onHover={setHoveredIndex}
-              />
-            </Column>
-          </Surface>
-
-          {route.description ? (
-            <Surface>
-              <Column gap={2}>
-                <Text size="eyebrow">Description</Text>
-                <Text as="p">{route.description}</Text>
-              </Column>
-            </Surface>
-          ) : null}
-
-          {segments.length > 0 ? (
-            <Surface>
-              <Column gap={2}>
-                <Text size="eyebrow">Segments</Text>
-                <Column gap={1}>
-                  {segments.map(segment => (
-                    <Row key={segment.index} justify="between" align="center" gap={2}>
-                      <Text size="caption" color="muted">Leg {segment.index + 1}</Text>
-                      <Text size="caption" mono>{segment.distanceKm.toFixed(2)} km</Text>
-                      <Text size="caption" color="muted" mono>{segment.cumulativeKm.toFixed(2)} km</Text>
-                    </Row>
-                  ))}
-                </Column>
-              </Column>
-            </Surface>
-          ) : null}
-        </Column>
-
-        <Column gap={3}>
+    <RouteDetailLayout
+      header={
+        <ScreenHeader
+          title={route.name}
+          back={() => navigate('/routes')}
+          primary={<Button variant="secondary" size="sm" onClick={handleEdit}><Edit3 size={14} /> Edit route</Button>}
+        />
+      }
+      mapSlot={
+        <RouteMap
+          ref={mapRef}
+          waypoints={route.waypoints}
+          routePath={routePath}
+          onChange={() => undefined}
+          profile={route.profile}
+          readOnly
+          showDistanceMarkers
+          mode="select"
+        />
+      }
+      aside={
+        <>
           <Surface>
             <Column gap={3}>
               <Row justify="between" align="center" gap={2}>
                 <Row align="center" gap={2}>
-                  <span className="route-card-icon" aria-hidden>{profileIcon(route.profile)}</span>
+                  <RouteProfileIcon>{profileIcon(route.profile)}</RouteProfileIcon>
                   <Column gap={0}>
                     <Text bold>{profileLabel(route.profile)}</Text>
                     <Text size="caption" color="muted">Updated {formatDate(route.updatedAt ?? route.createdAt)}</Text>
@@ -172,29 +141,7 @@ export function RouteOverviewScreen() {
                   <Text size="eyebrow">Surface Mix</Text>
                   <Text size="caption" color="muted">{stats.surfaceReal ? 'Measured' : 'Estimated'}</Text>
                 </Row>
-                <Row className="surface-mix-bar">
-                  {SURFACES.map(surface =>
-                    stats.surfaceMix[surface.key] > 0 ? (
-                      <span
-                        key={surface.key}
-                        className="surface-mix-segment"
-                        data-surface={surface.key}
-                        // eslint-disable-next-line no-restricted-syntax -- Surface percentages drive segment widths through the established route planner CSS variable.
-                        style={{ "--mix-pct": `${stats.surfaceMix[surface.key]}%` } as CSSProperties}
-                        title={`${surface.label}: ${stats.surfaceMix[surface.key]}%`}
-                      />
-                    ) : null,
-                  )}
-                </Row>
-                <Cluster className="gap-1">
-                  {SURFACES.filter(surface => stats.surfaceMix[surface.key] > 0).map(surface => (
-                    <Row key={surface.key} align="center" gap={1}>
-                      <span className="surface-mix-swatch" data-surface={surface.key as SurfaceKey} />
-                      <Text size="caption">{surface.label}</Text>
-                      <Text size="caption" color="muted" mono>{stats.surfaceMix[surface.key]}%</Text>
-                    </Row>
-                  ))}
-                </Cluster>
+                <SurfaceMixBar surfaces={surfaceEntries} />
               </Column>
             </Column>
           </Surface>
@@ -302,8 +249,45 @@ export function RouteOverviewScreen() {
               )}
             </Column>
           </Surface>
+        </>
+      }
+    >
+      <Surface>
+        <Column gap={2}>
+          <Text size="eyebrow">Elevation</Text>
+          <ElevationProfile
+            samples={elevationProfile}
+            hoveredIndex={hoveredIndex}
+            onHover={setHoveredIndex}
+          />
         </Column>
-      </Grid>
-    </Grid>
+      </Surface>
+
+      {route.description ? (
+        <Surface>
+          <Column gap={2}>
+            <Text size="eyebrow">Description</Text>
+            <Text as="p">{route.description}</Text>
+          </Column>
+        </Surface>
+      ) : null}
+
+      {segments.length > 0 ? (
+        <Surface>
+          <Column gap={2}>
+            <Text size="eyebrow">Segments</Text>
+            <Column gap={1}>
+              {segments.map(segment => (
+                <Row key={segment.index} justify="between" align="center" gap={2}>
+                  <Text size="caption" color="muted">Leg {segment.index + 1}</Text>
+                  <Text size="caption" mono>{segment.distanceKm.toFixed(2)} km</Text>
+                  <Text size="caption" color="muted" mono>{segment.cumulativeKm.toFixed(2)} km</Text>
+                </Row>
+              ))}
+            </Column>
+          </Column>
+        </Surface>
+      ) : null}
+    </RouteDetailLayout>
   );
 }
