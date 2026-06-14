@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "generatedBy": "node scripts/check-ui-atomic.mjs --update-baseline",
+  "violations": [
+    {
+      "category": "ad-hoc-layering",
+      "file": "ui/screens/_proto/WidgetPrototypeScreen.tsx",
+      "snippet": "className={`widget-${instance.size} relative widget-delay-${delay} ${editMode ? 'widget-edit' : 'widget-enter'}`}"
+    },
+    {
+      "category": "raw-control",
+      "file": "ui/components/session/PainScale.tsx",
+      "snippet": "<button"
+    },
+    {
+      "category": "screen-visual-class",
+      "file": "ui/screens/_proto/WidgetPrototypeScreen.tsx",
+      "snippet": "<Row gap={1} className=\"pad-top\">"
+    },
+    {
+      "category": "screen-visual-class",
+      "file": "ui/screens/_proto/WidgetPrototypeScreen.tsx",
+      "snippet": "className=\"widget-remove\""
+    },
+    {
+      "category": "screen-visual-class",
+      "file": "ui/screens/_proto/WidgetPrototypeScreen.tsx",
+      "snippet": "className=\"widget-resize\""
+    }
+  ]
+}
