@@ -3,6 +3,7 @@ import { Grid, Row, Column, Cluster } from '@ui/layout';
 import { Dot, ProgressBar, Chip, Surface, Text } from '@ui/atoms';
 import { Badge, Button, Input } from '@ui/molecules';
 import { ScheduleEventBlock } from '@ui/components/training-plans/ScheduleEventBlock';
+import { TimeSlotGrid } from '@ui/components/training/TimeSlotGrid';
 import { useCommand } from '@ui/bindings';
 import { handleCreatePlan } from '@features/training_plans';
 import type { TrainingPlan, PlanAdherence } from '@features/training_plans';
@@ -110,7 +111,7 @@ function WeekView({ anchor, workoutCalendar }: { anchor: Date; workoutCalendar: 
       {eventsByDow.size === 0 ? (
         <Text as="p" size="caption" color="muted">No scheduled events this week.</Text>
       ) : (
-        <Grid cols="40px repeat(7, 1fr)" gap={1} className="time-slot-grid">
+        <TimeSlotGrid>
           <Text mono size="caption" color="faint">18:00</Text>
           {days.map((_, i) => {
             const sport = eventsByDow.get(i);
@@ -118,7 +119,7 @@ function WeekView({ anchor, workoutCalendar }: { anchor: Date; workoutCalendar: 
               ? <ScheduleEventBlock key={i} sport={sport} title={SPORT_TITLE[sport] ?? sport} subtitle="" />
               : <span key={i} />;
           })}
-        </Grid>
+        </TimeSlotGrid>
       )}
       </Column>
     </Surface>
@@ -158,7 +159,7 @@ function DayView({ anchor, workoutCalendar }: { anchor: Date; workoutCalendar: R
           </Column>
         )}
 
-        <Button variant="ghost" block className="dashed">+ Add event</Button>
+        <Button variant="ghost" block data-variant="dashed">+ Add event</Button>
       </Column>
     </Surface>
   );

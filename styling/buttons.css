@@ -79,6 +79,10 @@
   &.block { width: 100%; }
   &.active { background: var(--surface-2); border-color: var(--line-strong); }
 
+  &[data-variant="dashed"] {
+    border-style: dashed;
+  }
+
   @media (max-width: 360px) {
     padding: var(--s-2) var(--s-3);
   }
