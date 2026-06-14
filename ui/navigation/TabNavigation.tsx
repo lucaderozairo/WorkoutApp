@@ -25,7 +25,7 @@ const allDesktopTabs: { label: string; path: string; Icon: PhosphorIcon }[] = [
   // { label: 'Progress', path: '/progress', Icon: ChartLine },
   { label: "Social", path: "/social", Icon: Compass },
   { label: "Messages", path: "/messages", Icon: Chat },
-  { label: "Routes", path: "/plan-route", Icon: MapTrifold },
+  { label: "Routes", path: "/routes", Icon: MapTrifold },
 ];
 
 const allMobileTabs: { label: string; path: string; Icon: PhosphorIcon }[] = [

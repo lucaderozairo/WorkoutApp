@@ -1,1 +1,1 @@
-export { TabNavigation as AppNav } from '@ui/screens/TabNavigation';
+export { TabNavigation as AppNav } from './TabNavigation';
