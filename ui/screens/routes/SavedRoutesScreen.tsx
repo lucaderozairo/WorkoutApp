@@ -37,7 +37,7 @@ export function SavedRoutesScreen() {
             >
               <Column gap={1}>
                 <Row justify="between" align="center">
-                  <span className="emoji sm">{profileIcon(route.profile)}</span>
+                  <Text size="caption" aria-hidden>{profileIcon(route.profile)}</Text>
                   {confirmDelete === route.id ? (
                     <Row gap={1}>
                       <Button variant="destructive" size="sm" onClick={e => { e.stopPropagation(); handleDelete(route.id); }}>Delete</Button>
