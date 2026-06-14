@@ -2,7 +2,7 @@ import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useState, lazy, Suspense } from "react";
 import { ErrorBoundaryRoot } from "@core/errors";
 import { Shell } from "@ui/layout";
-import { TabNavigation } from "@ui/screens/TabNavigation";
+import { TabNavigation } from "@ui/navigation/TabNavigation";
 import { SettingsModal } from "@ui/components/modals/SettingsModal";
 import { StorageWarningBanner } from "@ui/components/ux/StorageWarningBanner";
 import { Toaster } from "@ui/molecules";
