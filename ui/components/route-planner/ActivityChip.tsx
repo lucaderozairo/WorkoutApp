@@ -17,6 +17,7 @@ export function ActivityChip({ id, label, dot, active, onClick }: ActivityChipPr
       active={active}
       className="activity-chip"
       onClick={onClick}
+      aria-pressed={active}
       data-id={id}
     >
       <Column gap={1} align="center">

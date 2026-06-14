@@ -8,8 +8,6 @@ export type {
   PlanningCommand,
   PlanSession,
   DeletePlannedSession,
-  SaveRoute,
-  DeleteSavedRoute,
   SaveTemplate,
   DeleteSavedTemplate,
 } from './domain/types';
@@ -19,8 +17,8 @@ export type {
   PlanType,
   PlannedExercise,
   DistanceMarker,
+  PaceTarget,
   PlannedSession,
-  SavedRoute,
   TemplateExercise,
   SavedTemplate,
 } from './domain/types';

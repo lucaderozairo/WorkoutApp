@@ -36,6 +36,25 @@ export interface JobQueue<T = unknown> {
 // contract so the chart UI (ui/patterns/charts) and domains that describe how
 // their data should be rendered (e.g. health) can share it without the domain
 // depending on the UI layer.
+export type { DataProvenance, DataSourceKind, DataProvider } from './provenance';
+export type {
+  ElevationSample,
+  RouteProfile,
+  RouteSummary,
+  RouteVisibility,
+  RoutingPreference,
+  RoutingStatus,
+  SurfaceKind,
+  SurfaceSegment,
+} from './routes';
+export type { RecentRoutine, WorkoutTemplate, WorkoutTemplateExercise } from './templates';
+export type {
+  PlateCalculation,
+  PreviousExercisePerformance,
+  PreviousExerciseSet,
+  ProgressiveOverloadHint,
+} from './strength';
+
 export type ChartType =
   | 'bar' | 'line' | 'area' | 'composed'
   | 'pie' | 'radar' | 'radialbar' | 'scatter'

@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useQuery } from '@ui/bindings';
-import { handleSaveRoute, handleUpdateRoute, formatPace, parsePace } from '@features/planning';
-import type { SavedRoute } from '@features/planning/contract';
+import { formatPace, parsePace } from '@features/planning';
+import { handleSaveRoute, handleUpdateRoute, resolveRoutePath, sampleRouteElevation, sampleRouteSurface } from '@features/routes';
+import type { ElevationSample, RoutingPreference, RouteVisibility, SavedRoute, SurfaceSegment } from '@features/routes/contract';
+import { summarizeElevation } from '@features/routes/domain/elevation';
+import { summarizeSurfaceMix } from '@features/routes/domain/surface';
 import { pathDistanceKm as totalDistanceKm, distanceKm as haversineKm } from '@shared/geo';
 import { formatDuration } from '@shared/utils';
 import type { MapCanvasHandle } from '@ui/components/workout/wizard/RouteMap';
@@ -154,7 +157,27 @@ export function useRoutePlanner(options: UseRoutePlannerOptions = {}) {
   const [waypoints, setWaypoints] = useState<[number, number][]>(
     editingRoute?.waypoints ?? incoming.waypoints ?? savedState.waypoints,
   );
+  const [routedPath, setRoutedPath] = useState<[number, number][]>(
+    editingRoute?.routePath ?? editingRoute?.waypoints ?? incoming.waypoints ?? savedState.waypoints,
+  );
+  const [routingStatus, setRoutingStatus] = useState<'routed' | 'straight_line'>(
+    editingRoute?.routingStatus ?? 'straight_line',
+  );
+  const [routingPreference, setRoutingPreference] = useState<RoutingPreference>(
+    editingRoute?.routingPreference ?? 'balanced',
+  );
+  const [visibility, setVisibility] = useState<RouteVisibility>(
+    editingRoute?.visibility ?? 'private',
+  );
   const [routedKm, setRoutedKm] = useState(0);
+  const [elevationProfile, setElevationProfile] = useState<ElevationSample[]>(
+    editingRoute?.elevationProfile ?? [],
+  );
+  const [elevationGainM, setElevationGainM] = useState(editingRoute?.elevationGainM ?? 0);
+  const [elevationLossM, setElevationLossM] = useState(editingRoute?.elevationLossM ?? 0);
+  const [surfaceSegments, setSurfaceSegments] = useState<SurfaceSegment[]>(
+    editingRoute?.surfaceSegments ?? [],
+  );
   const [routeName, setRouteName] = useState(
     editingRoute?.name ?? (incoming.waypoints ? '' : savedState.routeName),
   );
@@ -186,7 +209,7 @@ export function useRoutePlanner(options: UseRoutePlannerOptions = {}) {
   const [layerPickerOpen, setLayerPickerOpen] = useState(false);
 
   const profile: 'foot' | 'bike' = activity === 'ride' ? 'bike' : 'foot';
-  const displayKm = routedKm > 0 ? routedKm : totalDistanceKm(waypoints);
+  const displayKm = routedKm > 0 ? routedKm : totalDistanceKm(routedPath.length >= 2 ? routedPath : waypoints);
   const isStandalone = !incoming.callerState;
   const isEditing = !!options.routeId;
   const routeNotFound = !!options.routeId && !editingRoute;
@@ -213,12 +236,15 @@ export function useRoutePlanner(options: UseRoutePlannerOptions = {}) {
   })();
   const timeStr = formatMin(totalTimeMin);
 
-  const surfaceMix = estimateSurfaceMix(activity, waypoints.length, displayKm);
+  const hasRealSurface = surfaceSegments.length > 0;
+  const surfaceMix = hasRealSurface
+    ? summarizeSurfaceMix(surfaceSegments, displayKm)
+    : estimateSurfaceMix(activity, waypoints.length, displayKm);
 
   const routeDataStatus: RouteDataStatus = {
-    elevationGain: 'unavailable',
-    elevationProfile: 'unavailable',
-    surfaceMix: 'estimated',
+    elevationGain: elevationProfile.length > 0 ? 'real' : 'unavailable',
+    elevationProfile: elevationProfile.length > 0 ? 'real' : 'unavailable',
+    surfaceMix: hasRealSurface ? 'real' : 'estimated',
   };
 
   const profileFilteredRoutes = savedRoutes.filter(r => r.profile === profile).slice(0, 5);
@@ -231,6 +257,14 @@ export function useRoutePlanner(options: UseRoutePlannerOptions = {}) {
   useEffect(() => {
     if (!editingRoute) return;
     setWaypoints(editingRoute.waypoints);
+    setRoutedPath(editingRoute.routePath ?? editingRoute.waypoints);
+    setRoutingStatus(editingRoute.routingStatus ?? 'straight_line');
+    setRoutingPreference(editingRoute.routingPreference ?? 'balanced');
+    setVisibility(editingRoute.visibility ?? 'private');
+    setElevationProfile(editingRoute.elevationProfile ?? []);
+    setElevationGainM(editingRoute.elevationGainM ?? 0);
+    setElevationLossM(editingRoute.elevationLossM ?? 0);
+    setSurfaceSegments(editingRoute.surfaceSegments ?? []);
     setRouteName(editingRoute.name);
     setRouteDescription(editingRoute.description ?? '');
     setActivity(editingRoute.profile === 'bike' ? 'ride' : 'run');
@@ -242,6 +276,74 @@ export function useRoutePlanner(options: UseRoutePlannerOptions = {}) {
     setPaceInput(formatPace(paceSecondsPerKm));
   }, [paceSecondsPerKm]);
 
+  useEffect(() => {
+    if (waypoints.length < 2) {
+      setRoutedPath(waypoints);
+      setRoutingStatus('straight_line');
+      setRoutedKm(0);
+      return;
+    }
+    const controller = new AbortController();
+    const debounceId = setTimeout(() => {
+      resolveRoutePath({
+        waypoints,
+        profile,
+        preference: routingPreference,
+        signal: controller.signal,
+      }).then(result => {
+        if (controller.signal.aborted) return;
+        setRoutedPath(result.path);
+        setRoutingStatus(result.status);
+        setRoutedKm(result.distanceKm);
+      });
+    }, 400);
+    return () => {
+      clearTimeout(debounceId);
+      controller.abort();
+    };
+  }, [waypoints, profile, routingPreference]);
+
+  useEffect(() => {
+    if (routedPath.length < 2) {
+      setElevationProfile([]);
+      setElevationGainM(0);
+      setElevationLossM(0);
+      return;
+    }
+    const controller = new AbortController();
+    const debounceId = setTimeout(() => {
+      sampleRouteElevation(routedPath, controller.signal).then(samples => {
+        if (controller.signal.aborted) return;
+        setElevationProfile(samples);
+        const totals = summarizeElevation(samples);
+        setElevationGainM(totals.gainM);
+        setElevationLossM(totals.lossM);
+      });
+    }, 400);
+    return () => {
+      clearTimeout(debounceId);
+      controller.abort();
+    };
+  }, [routedPath]);
+
+  useEffect(() => {
+    if (routedPath.length < 2) {
+      setSurfaceSegments([]);
+      return;
+    }
+    const controller = new AbortController();
+    const debounceId = setTimeout(() => {
+      sampleRouteSurface(routedPath, controller.signal).then(segments => {
+        if (controller.signal.aborted) return;
+        setSurfaceSegments(segments);
+      });
+    }, 400);
+    return () => {
+      clearTimeout(debounceId);
+      controller.abort();
+    };
+  }, [routedPath]);
+
   async function handleSave() {
     const name = routeName.trim() || (profile === 'bike' ? 'Cycle Route' : 'Run Route');
     if (isEditing && options.routeId) {
@@ -252,7 +354,22 @@ export function useRoutePlanner(options: UseRoutePlannerOptions = {}) {
         description: routeDescription,
         profile,
         waypoints,
+        routePath: routedPath,
+        routingStatus,
         distanceKm: displayKm,
+        elevationProfile,
+        elevationGainM,
+        elevationLossM,
+        surfaceSegments,
+        visibility,
+        routingPreference,
+        elevation: elevationProfile.length > 0
+          ? { source: 'synced', provider: 'app', confidence: 'medium', importedAt: Date.now() }
+          : { source: 'unavailable', provider: 'app', confidence: 'low' },
+        surface: hasRealSurface
+          ? { source: 'synced', provider: 'app', confidence: 'medium', importedAt: Date.now() }
+          : { source: 'estimated', provider: 'app', confidence: 'low' },
+        dataUpdatedAt: Date.now(),
       });
       if (!result.ok) return;
       clearRouteDraft();
@@ -268,7 +385,22 @@ export function useRoutePlanner(options: UseRoutePlannerOptions = {}) {
         description: routeDescription,
         profile,
         waypoints,
+        routePath: routedPath,
+        routingStatus,
         distanceKm: displayKm,
+        elevationProfile,
+        elevationGainM,
+        elevationLossM,
+        surfaceSegments,
+        visibility,
+        routingPreference,
+        elevation: elevationProfile.length > 0
+          ? { source: 'synced', provider: 'app', confidence: 'medium', importedAt: Date.now() }
+          : { source: 'unavailable', provider: 'app', confidence: 'low' },
+        surface: hasRealSurface
+          ? { source: 'synced', provider: 'app', confidence: 'medium', importedAt: Date.now() }
+          : { source: 'estimated', provider: 'app', confidence: 'low' },
+        dataUpdatedAt: Date.now(),
       });
       clearRouteDraft();
       if (result.ok && result.value) {
@@ -373,6 +505,14 @@ export function useRoutePlanner(options: UseRoutePlannerOptions = {}) {
 
   function handleLoadSavedRoute(route: SavedRoute) {
     setWaypoints(route.waypoints);
+    setRoutedPath(route.routePath ?? route.waypoints);
+    setRoutingStatus(route.routingStatus ?? 'straight_line');
+    setRoutingPreference(route.routingPreference ?? 'balanced');
+    setVisibility(route.visibility ?? 'private');
+    setElevationProfile(route.elevationProfile ?? []);
+    setElevationGainM(route.elevationGainM ?? 0);
+    setElevationLossM(route.elevationLossM ?? 0);
+    setSurfaceSegments(route.surfaceSegments ?? []);
     setRouteName(route.name);
     setActivity(route.profile === 'bike' ? 'ride' : 'run');
     setSegmentPaces({});
@@ -389,8 +529,18 @@ export function useRoutePlanner(options: UseRoutePlannerOptions = {}) {
     navigate,
     waypoints,
     setWaypoints,
+    routedPath,
+    routingStatus,
+    routingPreference,
+    setRoutingPreference,
+    visibility,
+    setVisibility,
     routedKm,
     setRoutedKm,
+    elevationProfile,
+    elevationGainM,
+    elevationLossM,
+    surfaceSegments,
     routeName,
     setRouteName,
     routeDescription,

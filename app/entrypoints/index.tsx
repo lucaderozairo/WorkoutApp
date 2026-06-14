@@ -19,8 +19,10 @@ import {
 } from '@features/training_log';
 import { recentCardioProjection } from '@features/cardio/projections';
 import type { RecentCardioView } from '@features/cardio/projections';
-import { savedTemplatesProjection, savedRoutesProjection } from '@features/planning';
-import type { SavedTemplate, SavedRoute } from '@features/planning';
+import { savedTemplatesProjection } from '@features/planning';
+import type { SavedTemplate } from '@features/planning';
+import { savedRoutesProjection } from '@features/routes';
+import type { SavedRoute } from '@features/routes';
 import {
   favoriteTemplatesProjection,
   templateListProjection,

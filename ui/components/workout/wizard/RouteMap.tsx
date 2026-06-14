@@ -3,11 +3,9 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Layer, Layered } from '@ui/layout';
 import {
-  distanceKm as haversineKm,
   pathDistanceKm as totalDistanceKm,
   distanceMarkers as distanceMarkerPoints,
   distToSegmentSq,
-  closestPathIndex,
 } from '@shared/geo';
 
 const TILE_ATTR = '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>';
@@ -31,10 +29,12 @@ export interface MapCanvasHandle {
   cancelSearch: () => void;
   switchBaseLayer: (id: BaseLayerId) => void;
   toggleDistanceMarkers: (show: boolean) => void;
+  highlightPoint: (point: [number, number] | null) => void;
 }
 
 interface RouteMapProps {
   waypoints: [number, number][];
+  routePath?: [number, number][];
   onChange: (waypoints: [number, number][]) => void;
   profile?: 'foot' | 'bike';
   onRoutedDistanceChange?: (km: number) => void;
@@ -81,44 +81,13 @@ function clampLatLng([lat, lng]: [number, number]): [number, number] {
 }
 
 export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function RouteMap({
-  waypoints, onChange, profile = 'foot', onRoutedDistanceChange,
+  waypoints, routePath, onChange, profile = 'foot', onRoutedDistanceChange,
   mode: modeProp = 'add', onModeChange, onUndoRedoChange,
   baseLayerId: baseLayerIdProp = 'plain',
   showDistanceMarkers: showDistanceMarkersProp = true,
   readOnly = false,
   interactive = true,
 }, ref) {
-  async function fetchRoute(
-    anchors: [number, number][],
-    signal?: AbortSignal,
-  ): Promise<{ path: [number, number][]; km: number } | null> {
-    if (anchors.length < 2) return null;
-
-    const timeoutController = new AbortController();
-    const timeoutId = setTimeout(() => timeoutController.abort(), 8000);
-    signal?.addEventListener('abort', () => timeoutController.abort(), { once: true });
-
-    try {
-      const coords = anchors.map(([lat, lng]) => `${lng},${lat}`).join(';');
-      const res = await fetch(
-        `https://routing.openstreetmap.de/routed-${profile}/route/v1/${profile}/${coords}?geometries=geojson&overview=full`,
-        { signal: timeoutController.signal },
-      );
-      clearTimeout(timeoutId);
-      if (!res.ok) return null;
-      const json = await res.json();
-      const route = json.routes?.[0];
-      if (!route) return null;
-      const path: [number, number][] = route.geometry.coordinates.map(
-        ([lng, lat]: [number, number]) => [lat, lng] as [number, number],
-      );
-      return { path, km: route.distance / 1000 };
-    } catch {
-      clearTimeout(timeoutId);
-      return null;
-    }
-  }
-
   const mapWrapRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
@@ -127,6 +96,7 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
   const routePathRef = useRef<[number, number][]>([]);
   const distanceMarkersRef = useRef<L.LayerGroup | null>(null);
   const locateMarkerRef = useRef<L.Marker | null>(null);
+  const hoverMarkerRef = useRef<L.CircleMarker | null>(null);
   const baseLayerRef = useRef<L.TileLayer | null>(null);
   const baseLayerIdRef = useRef<BaseLayerId>(baseLayerIdProp);
   baseLayerIdRef.current = baseLayerIdProp;
@@ -290,6 +260,7 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
   // Stable ref to latest waypoints so the click handler (bound once) always sees current value
   const waypointsRef = useRef(waypoints);
   waypointsRef.current = waypoints;
+  const controlledRoutePath = routePath && routePath.length >= 2 ? routePath : waypoints;
 
   // If parent changes waypoints externally, reset local history.
   useEffect(() => {
@@ -508,9 +479,7 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
     const map = mapRef.current;
     if (!map) return;
 
-    const controller = new AbortController();
-
-    routePathRef.current = [];
+    routePathRef.current = controlledRoutePath;
 
     if (waypoints.length === 0) {
       prevCountRef.current = 0;
@@ -597,93 +566,45 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
       }
     }
 
-    // Draw immediate fallback segments (straight dashed lines)
     const segments = L.layerGroup().addTo(map);
     let highlighted: L.Polyline | null = null;
-    for (let i = 0; i < waypoints.length - 1; i++) {
-      const segPath = [waypoints[i], waypoints[i + 1]];
-      const segKm = totalDistanceKm([waypoints[i], waypoints[i + 1]]);
-      const pl = L.polyline(segPath, {
-        color: '#7eb8f7',
-        weight: 5,
-        dashArray: '6 4',
-      });
-      pl.on('click', (e: L.LeafletMouseEvent) => {
-        if (highlighted && highlighted !== pl) {
-          highlighted.setStyle({ color: '#7eb8f7', weight: 5 });
-        }
-        pl.setStyle({ color: '#f59e0b', weight: 6 });
-        highlighted = pl;
-        L.popup()
-          .setLatLng(e.latlng)
-          .setContent(`${segKm.toFixed(2)} km`)
-          .openOn(map);
-      });
-      segments.addLayer(pl);
-    }
+    const isRouted = controlledRoutePath !== waypoints && controlledRoutePath.length >= 2;
+    const pl = L.polyline(controlledRoutePath, {
+      color: '#7eb8f7',
+      weight: 5,
+      dashArray: isRouted ? undefined : '6 4',
+    });
+    pl.on('click', (e: L.LeafletMouseEvent) => {
+      if (highlighted && highlighted !== pl) {
+        highlighted.setStyle({ color: '#7eb8f7', weight: 5 });
+      }
+      pl.setStyle({ color: '#f59e0b', weight: 6 });
+      highlighted = pl;
+      L.popup()
+        .setLatLng(e.latlng)
+        .setContent(`${totalDistanceKm(controlledRoutePath).toFixed(2)} km`)
+        .openOn(map);
+    });
+    segments.addLayer(pl);
     polylineRef.current = segments;
+    onRoutedDistanceChangeRef.current?.(totalDistanceKm(controlledRoutePath));
 
-    // Debounce Valhalla — wait 400ms after last waypoint change before fetching
-    const debounceId = setTimeout(() => {
-      fetchRoute(waypoints, controller.signal).then(result => {
-        if (controller.signal.aborted) return;
-        if (!result) {
-          routePathRef.current = waypoints;
-          onRoutedDistanceChangeRef.current?.(totalDistanceKm(waypoints));
-          return;
-        }
-
-        routePathRef.current = result.path;
-        onRoutedDistanceChangeRef.current?.(result.km);
-
-        segments.clearLayers();
-        const segIndices = waypoints.map(wp => closestPathIndex(result.path, wp));
-        let highlighted: L.Polyline | null = null;
-        for (let i = 0; i < segIndices.length - 1; i++) {
-          const a = Math.min(segIndices[i], segIndices[i + 1]);
-          const b = Math.max(segIndices[i], segIndices[i + 1]);
-          if (b - a < 1) continue;
-          const segPath = result.path.slice(a, b + 1);
-          const segKm = totalDistanceKm([waypoints[i], waypoints[i + 1]]);
-          const pl = L.polyline(segPath, {
-            color: '#7eb8f7',
-            weight: 5,
-          });
-          pl.on('click', (e: L.LeafletMouseEvent) => {
-            if (highlighted && highlighted !== pl) {
-              highlighted.setStyle({ color: '#7eb8f7', weight: 5 });
-            }
-            pl.setStyle({ color: '#f59e0b', weight: 6 });
-            highlighted = pl;
-            L.popup()
-              .setLatLng(e.latlng)
-              .setContent(`${segKm.toFixed(2)} km`)
-              .openOn(map);
-          });
-          segments.addLayer(pl);
-        }
-        polylineRef.current = segments;
-
-        const distanceMarkers = L.layerGroup();
-        distanceMarkerPoints(result.path).forEach(({ latlng, km }) => {
-          const icon = L.divIcon({
-            className: 'distance-marker',
-            html: `<span class="distance-marker-label">${km} km</span><div class="distance-marker-line"></div>`,
-            iconSize: [60, 26],
-            iconAnchor: [30, 26],
-          });
-          L.marker([latlng[0], latlng[1]], { icon, interactive: false }).addTo(distanceMarkers);
-        });
-        distanceMarkersRef.current = distanceMarkers;
-        if (showDistanceMarkersRef.current) {
-          distanceMarkers.addTo(map);
-        }
+    const distanceMarkers = L.layerGroup();
+    distanceMarkerPoints(controlledRoutePath).forEach(({ latlng, km }) => {
+      const icon = L.divIcon({
+        className: 'distance-marker',
+        html: `<span class="distance-marker-label">${km} km</span><div class="distance-marker-line"></div>`,
+        iconSize: [60, 26],
+        iconAnchor: [30, 26],
       });
-    }, 400);
+      L.marker([latlng[0], latlng[1]], { icon, interactive: false }).addTo(distanceMarkers);
+    });
+    distanceMarkersRef.current = distanceMarkers;
+    if (showDistanceMarkersRef.current) {
+      distanceMarkers.addTo(map);
+    }
 
     return () => {
-      clearTimeout(debounceId);
-      controller.abort();
       markersRef.current.forEach(m => m.remove());
       markersRef.current = [];
       polylineRef.current?.remove();
@@ -691,7 +612,7 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
       distanceMarkersRef.current?.remove();
       distanceMarkersRef.current = null;
     };
-  }, [waypoints, profile, readOnly]);
+  }, [waypoints, controlledRoutePath, profile, readOnly]);
 
   useImperativeHandle(ref, () => ({
     zoomIn: () => mapRef.current?.zoomIn(),
@@ -708,6 +629,24 @@ export const RouteMap = forwardRef<MapCanvasHandle, RouteMapProps>(function Rout
     cancelSearch,
     switchBaseLayer,
     toggleDistanceMarkers,
+    highlightPoint: (point) => {
+      const map = mapRef.current;
+      if (!map) return;
+      if (!point) {
+        hoverMarkerRef.current?.remove();
+        hoverMarkerRef.current = null;
+        return;
+      }
+      if (hoverMarkerRef.current) {
+        hoverMarkerRef.current.setLatLng(point);
+      } else {
+        hoverMarkerRef.current = L.circleMarker(point, {
+          radius: 7,
+          className: 'route-map-hover-marker',
+          interactive: false,
+        }).addTo(map);
+      }
+    },
   }));
 
   return (

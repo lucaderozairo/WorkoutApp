@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useState, lazy, Suspense } from "react";
 import { ErrorBoundaryRoot } from "@core/errors";
 import { Shell } from "@ui/layout";
@@ -83,22 +83,39 @@ const WidgetPrototypeScreen = lazy(() =>
     default: m.WidgetPrototypeScreen,
   })),
 );
-const RoutePlannerScreen = lazy(() =>
-  import("@ui/screens/cardio/RoutePlannerScreen").then((m) => ({
-    default: m.RoutePlannerScreen,
+const ResponsivePrototype = lazy(() =>
+  import("../../docs/prototypes/responsiveapp")
+);
+const RoutesScreen = lazy(() =>
+  import("@ui/screens/routes/RoutesScreen").then((m) => ({
+    default: m.RoutesScreen,
   })),
 );
-const SavedRoutesScreen = lazy(() =>
-  import("@ui/screens/cardio/SavedRoutesScreen").then((m) => ({
-    default: m.SavedRoutesScreen,
+const RouteBuilderScreen = lazy(() =>
+  import("@ui/screens/routes/RouteBuilderScreen").then((m) => ({
+    default: m.RouteBuilderScreen,
+  })),
+);
+const RouteOverviewScreen = lazy(() =>
+  import("@ui/screens/routes/RouteOverviewScreen").then((m) => ({
+    default: m.RouteOverviewScreen,
   })),
 );
 
 export function App() {
+  const location = useLocation();
   const [showSettings, setShowSettings] = useState(false);
-  const openSettings = () => setShowSettings(true);
-
   const [menuOpen, setMenuOpen] = useState(false);
+
+  if (location.pathname === '/prototype') {
+    return (
+      <Suspense fallback={null}>
+        <ResponsivePrototype />
+      </Suspense>
+    );
+  }
+
+  const openSettings = () => setShowSettings(true);
   return (
     <Toaster>
       <ErrorBoundaryRoot>
@@ -165,8 +182,12 @@ export function App() {
               />
               <Route path="/settings" element={<SettingsScreen />} />
               <Route path="/notifications" element={<NotificationsScreen />} />
-              <Route path="/plan-route" element={<RoutePlannerScreen />} />
-              <Route path="/saved-routes" element={<SavedRoutesScreen />} />
+              <Route path="/routes" element={<RoutesScreen />} />
+              <Route path="/routes/new" element={<RouteBuilderScreen />} />
+              <Route path="/routes/:routeId" element={<RouteOverviewScreen />} />
+              <Route path="/routes/:routeId/edit" element={<RouteBuilderScreen />} />
+              <Route path="/plan-route" element={<Navigate to="/routes/new" replace />} />
+              <Route path="/saved-routes" element={<Navigate to="/routes" replace />} />
               <Route path="*" element={<Navigate to="/home" replace />} />
             </Routes>
           </Suspense>

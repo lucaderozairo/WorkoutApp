@@ -23,6 +23,7 @@
 import '@features/training_log';
 import '@features/cardio';
 import '@features/planning';
+import '@features/routes';
 import '@features/health';
 import '@features/readiness';
 import '@features/conditions';

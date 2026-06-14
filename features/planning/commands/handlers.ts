@@ -1,20 +1,18 @@
 import type { Result } from '@shared/types';
 import { ok, err } from '@shared/types';
-import type { PlanSession, DeletePlannedSession, SaveRoute, DeleteSavedRoute, SaveTemplate, DeleteSavedTemplate, PlanningEvent, PlannedSession, SavedRoute, SavedTemplate } from '../domain/types';
+import type { PlanSession, DeletePlannedSession, SaveTemplate, DeleteSavedTemplate, PlanningEvent, PlannedSession, SavedTemplate } from '../domain/types';
 import { cryptoIdGenerator } from '@core/id-generator';
 import { systemClock } from '@core/clock';
 import { defineCommand } from '@data/define-command';
 import { viewStore } from '@data/projections/views';
-import { plannedSessionsProjection, savedRoutesProjection, savedTemplatesProjection } from '../projections';
+import { plannedSessionsProjection, savedTemplatesProjection } from '../projections';
 
 function applyAndStore(events: PlanningEvent[]): void {
   events.forEach(e => {
     plannedSessionsProjection.apply(e);
-    savedRoutesProjection.apply(e);
     savedTemplatesProjection.apply(e);
   });
   viewStore.set('planned_sessions', plannedSessionsProjection.getState());
-  viewStore.set('saved_routes', savedRoutesProjection.getState());
   viewStore.set('saved_templates', savedTemplatesProjection.getState());
 }
 
@@ -31,6 +29,9 @@ export const handlePlanSession = defineCommand<PlanSession, Result<void, string>
       notes: cmd.notes,
       exercises: cmd.exercises,
       routeWaypoints: cmd.routeWaypoints,
+      routeId: cmd.routeId,
+      routeSnapshot: cmd.routeSnapshot,
+      paceTarget: cmd.paceTarget,
       distanceKm: cmd.distanceKm,
       paceSecPerKm: cmd.paceSecPerKm,
       distanceMarkers: cmd.distanceMarkers,
@@ -46,53 +47,6 @@ export const handlePlanSession = defineCommand<PlanSession, Result<void, string>
       timestamp: systemClock.now(),
       version: 1,
       payload: plan,
-    };
-
-    applyAndStore([event]);
-    return { events: [event], result: ok(undefined) };
-  },
-});
-
-export const handleSaveRoute = defineCommand<SaveRoute, Result<void, string>>({
-  execute: async (cmd) => {
-    if (!cmd.name.trim()) return { events: [], result: err('Route name is required') };
-    if (cmd.waypoints.length < 2) return { events: [], result: err('Need at least 2 waypoints') };
-
-    const route: SavedRoute = {
-      id: cryptoIdGenerator.next<'SavedRoute'>(),
-      name: cmd.name.trim(),
-      profile: cmd.profile,
-      waypoints: cmd.waypoints,
-      distanceKm: cmd.distanceKm,
-      createdAt: systemClock.now(),
-    };
-
-    const event: PlanningEvent = {
-      type: 'RouteSaved',
-      aggregateId: route.id,
-      aggregateType: 'SavedRoute',
-      timestamp: systemClock.now(),
-      version: 1,
-      payload: route,
-    };
-
-    applyAndStore([event]);
-    return { events: [event], result: ok(undefined) };
-  },
-});
-
-export const handleDeleteSavedRoute = defineCommand<DeleteSavedRoute, Result<void, string>>({
-  execute: async (cmd) => {
-    const exists = viewStore.get<SavedRoute[]>('saved_routes')?.some(r => r.id === cmd.routeId);
-    if (!exists) return { events: [], result: err('Saved route not found') };
-
-    const event: PlanningEvent = {
-      type: 'RouteDeleted',
-      aggregateId: cmd.routeId,
-      aggregateType: 'SavedRoute',
-      timestamp: systemClock.now(),
-      version: 1,
-      payload: { routeId: cmd.routeId },
     };
 
     applyAndStore([event]);

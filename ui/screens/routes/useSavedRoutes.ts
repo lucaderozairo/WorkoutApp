@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useQuery, useCommand } from '@ui/bindings';
-import type { SavedRoute } from '@features/planning';
-import { handleDeleteSavedRoute } from '@features/planning';
+import type { SavedRoute } from '@features/routes';
+import { handleDeleteSavedRoute } from '@features/routes';
 
 interface SavedRoutesState {
   returnTo?: string;

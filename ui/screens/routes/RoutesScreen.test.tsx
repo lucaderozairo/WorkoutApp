@@ -4,9 +4,9 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { viewStore } from '@data/projections/views';
 import type { Id } from '@shared/types';
-import type { SavedRoute } from '@features/planning';
+import type { SavedRoute } from '@features/routes';
 import { RoutesScreen } from './RoutesScreen';
-import { RouteDetailScreen } from './RouteDetailScreen';
+import { RouteOverviewScreen } from './RouteOverviewScreen';
 
 function setRoutes(routes: SavedRoute[]) {
   viewStore.set('saved_routes', routes);
@@ -19,6 +19,8 @@ function route(id: string, name: string, distanceKm: number, profile: 'foot' | '
     description: `${name} description`,
     profile,
     waypoints: [[51.5, -0.1], [51.51, -0.11]],
+    routePath: [[51.5, -0.1], [51.51, -0.11]],
+    routingStatus: 'routed',
     distanceKm,
     createdAt: 1000,
     updatedAt: 1000,
@@ -57,14 +59,14 @@ describe('RoutesScreen', () => {
   });
 });
 
-describe('RouteDetailScreen', () => {
+describe('RouteOverviewScreen', () => {
   beforeEach(() => setRoutes([]));
 
   it('renders a not-found state for a missing route id', () => {
     render(
       <MemoryRouter initialEntries={['/routes/missing']}>
         <Routes>
-          <Route path="/routes/:routeId" element={<RouteDetailScreen />} />
+          <Route path="/routes/:routeId" element={<RouteOverviewScreen />} />
         </Routes>
       </MemoryRouter>,
     );

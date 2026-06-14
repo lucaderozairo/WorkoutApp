@@ -1,4 +1,5 @@
 import type { Id, DomainEvent } from '@shared/types';
+import type { RouteSummary } from '@shared/contracts';
 // eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
 import type { SportType } from '@features/training_log/domain/types';
 
@@ -16,6 +17,10 @@ export interface DistanceMarker {
   cumulativeTime: string;  // "M:SS" or "MM:SS"
 }
 
+export type PaceTarget =
+  | { kind: 'full'; paceSecPerKm: number }
+  | { kind: 'segments'; segments: Array<{ fromKm: number; toKm: number; paceSecPerKm: number }> };
+
 export interface PlannedSession {
   id: Id<'PlannedSession'>;
   type: PlanType;
@@ -26,6 +31,9 @@ export interface PlannedSession {
   exercises?: PlannedExercise[];
   // Run / cycle only
   routeWaypoints?: [number, number][];   // [lat, lng] pairs
+  routeId?: Id<'SavedRoute'>;
+  routeSnapshot?: RouteSummary;
+  paceTarget?: PaceTarget;
   distanceKm?: number;
   paceSecPerKm?: number;
   distanceMarkers?: DistanceMarker[];
@@ -33,15 +41,6 @@ export interface PlannedSession {
   poolLengthM?: 25 | 50;
   targetDistanceM?: number;
   paceSecPer100m?: number;
-}
-
-export interface SavedRoute {
-  id: Id<'SavedRoute'>;
-  name: string;
-  profile: 'foot' | 'bike';
-  waypoints: [number, number][];
-  distanceKm: number;
-  createdAt: number;
 }
 
 export interface TemplateExercise {
@@ -60,8 +59,6 @@ export interface SavedTemplate {
 export type PlanningEvent =
   | DomainEvent<'SessionPlanned', PlannedSession>
   | DomainEvent<'PlannedSessionDeleted', { planId: Id<'PlannedSession'> }>
-  | DomainEvent<'RouteSaved', SavedRoute>
-  | DomainEvent<'RouteDeleted', { routeId: Id<'SavedRoute'> }>
   | DomainEvent<'TemplateSaved', SavedTemplate>
   | DomainEvent<'TemplateDeleted', { templateId: Id<'SavedTemplate'> }>;
 
@@ -74,6 +71,9 @@ export interface PlanSession {
   notes: string;
   exercises?: PlannedExercise[];
   routeWaypoints?: [number, number][];
+  routeId?: Id<'SavedRoute'>;
+  routeSnapshot?: RouteSummary;
+  paceTarget?: PaceTarget;
   distanceKm?: number;
   paceSecPerKm?: number;
   distanceMarkers?: DistanceMarker[];
@@ -85,19 +85,6 @@ export interface PlanSession {
 export interface DeletePlannedSession {
   type: 'DeletePlannedSession';
   planId: Id<'PlannedSession'>;
-}
-
-export interface SaveRoute {
-  type: 'SaveRoute';
-  name: string;
-  profile: 'foot' | 'bike';
-  waypoints: [number, number][];
-  distanceKm: number;
-}
-
-export interface DeleteSavedRoute {
-  type: 'DeleteSavedRoute';
-  routeId: Id<'SavedRoute'>;
 }
 
 export interface SaveTemplate {
@@ -112,4 +99,8 @@ export interface DeleteSavedTemplate {
   templateId: Id<'SavedTemplate'>;
 }
 
-export type PlanningCommand = PlanSession | DeletePlannedSession | SaveRoute | DeleteSavedRoute | SaveTemplate | DeleteSavedTemplate;
+export type PlanningCommand =
+  | PlanSession
+  | DeletePlannedSession
+  | SaveTemplate
+  | DeleteSavedTemplate;

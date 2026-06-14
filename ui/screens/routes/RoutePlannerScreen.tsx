@@ -10,14 +10,14 @@ import {
 } from "@ui/layout";
 import { Surface, Text } from "@ui/atoms";
 import { RouteMap } from "@ui/components/workout/wizard/RouteMap";
-import { ScreenHeader, Button, Input, Slider } from "@ui/molecules";
+import { ScreenHeader, Button, Input, Slider, Textarea } from "@ui/molecules";
+import { EmptyState } from "@ui/patterns";
 import { SearchBar } from "@ui/patterns/common/SearchBar";
 import {
   BarChart2,
   Bookmark,
   ChevronLeft,
   ChevronRight,
-  ChevronUp,
   Layers,
   Map,
   MapPin,
@@ -38,7 +38,6 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { ChartContainer } from "@ui/patterns/charts/charts";
 import {
   MdDirectionsBike,
   MdDirectionsRun,
@@ -49,7 +48,7 @@ import { IoMdLocate } from "react-icons/io";
 import { PiLineSegments } from "react-icons/pi";
 import type { IconType } from "react-icons";
 import { formatPace } from "@features/planning";
-import type { SavedRoute } from "@features/planning/contract";
+import type { SavedRoute } from "@features/routes/contract";
 import {
   useRoutePlanner,
   BASE_LAYERS,
@@ -62,7 +61,9 @@ import {
   type EditMode,
   type PacePreset,
   type SurfaceKey,
+  type RouteDataStatus,
 } from "./useRoutePlanner";
+import type { RoutingPreference, RouteVisibility } from "@features/routes/contract";
 import { MapControlButton } from "@ui/components/route-planner/MapControlButton";
 import { SideRailItem } from "@ui/components/route-planner/SideRailItem";
 import { ActivityChip } from "@ui/components/route-planner/ActivityChip";
@@ -90,15 +91,22 @@ const MOBILE_TABS: { id: SidePanel; label: string }[] = [
   { id: "saved", label: "Saved" },
 ];
 
-export function RoutePlannerScreen() {
+interface RoutePlannerScreenProps {
+  routeId?: SavedRoute["id"];
+}
+
+export function RoutePlannerScreen({ routeId }: RoutePlannerScreenProps = {}) {
   const {
     mapRef,
     navigate,
     waypoints,
     setWaypoints,
+    routedPath,
     setRoutedKm,
     routeName,
     setRouteName,
+    routeDescription,
+    setRouteDescription,
     mode,
     setMode,
     undoCount,
@@ -123,13 +131,22 @@ export function RoutePlannerScreen() {
     layerPickerOpen,
     setLayerPickerOpen,
     profile,
+    routingPreference,
+    setRoutingPreference,
+    visibility,
+    setVisibility,
     displayKm,
+    elevationGainM,
+    elevationLossM,
     isStandalone,
     segmentDistances,
     timeStr,
     surfaceMix,
-    elevPoints,
+    routeDataStatus,
     profileFilteredRoutes,
+    editingRoute,
+    isEditing,
+    routeNotFound,
     handleSave,
     handleBack,
     handleUndoRedo,
@@ -140,7 +157,7 @@ export function RoutePlannerScreen() {
     handleDeleteWaypoint,
     handleLoadSavedRoute,
     handlePacePreset,
-  } = useRoutePlanner();
+  } = useRoutePlanner({ routeId });
 
   type SearchPhase =
     | { phase: "icon" }
@@ -148,15 +165,27 @@ export function RoutePlannerScreen() {
     | { phase: "located"; label: string };
 
   const [sidePanel, setSidePanel] = useState<SidePanel>("plan");
-  const [elevOpen, setElevOpen] = useState(false);
   const [searchState, setSearchState] = useState<SearchPhase>({ phase: "icon" });
 
   const canSave = isStandalone
     ? waypoints.length >= 2 && routeName.trim().length > 0
     : waypoints.length >= 2;
 
-  const gain = displayKm > 0 ? Math.round(displayKm * 8) : 0;
-  const loss = displayKm > 0 ? Math.round(displayKm * 3) : 0;
+  const headerTitle = isEditing ? (editingRoute?.name ?? "Edit Route") : "New Route";
+
+  if (routeNotFound) {
+    return (
+      <Grid>
+        <ScreenHeader title="Route Not Found" back={() => navigate("/routes")} />
+        <EmptyState
+          icon="Map"
+          title="Route not found"
+          message="This saved route is no longer available."
+          action={<Button variant="primary" onClick={() => navigate("/routes")}>View routes</Button>}
+        />
+      </Grid>
+    );
+  }
 
   function handleRailClick(id: SidePanel) {
     if (sidePanel === id) {
@@ -201,7 +230,7 @@ export function RoutePlannerScreen() {
       : sidePanel === "pins"
         ? `${waypoints.length} waypoint${waypoints.length !== 1 ? "s" : ""}`
         : sidePanel === "stats"
-          ? `${displayKm > 0 ? displayKm.toFixed(1) : "0"} km · +${gain} m`
+          ? `${displayKm > 0 ? displayKm.toFixed(1) : "0"} km`
           : "Past routes & favourites";
 
   return (
@@ -209,7 +238,7 @@ export function RoutePlannerScreen() {
       {/* ── MOBILE HEADER ── */}
       <Column gap={1} className="mobile-only">
         <ScreenHeader
-          title="Route Planner"
+          title={headerTitle}
           back={handleBack}
           primary={
             <Button variant="ghost" size="icon-sm" disabled={undoCount === 0} onClick={() => mapRef.current?.undo()} aria-label="Undo">
@@ -244,6 +273,7 @@ export function RoutePlannerScreen() {
             <RouteMap
               ref={mapRef}
               waypoints={waypoints}
+              routePath={routedPath}
               onChange={setWaypoints}
               profile={profile}
               onRoutedDistanceChange={setRoutedKm}
@@ -328,27 +358,6 @@ export function RoutePlannerScreen() {
             {/* ── Toolbar — bottom-center ── */}
             <Layer pin="bottom-center" z="controls" className="desktop-only">
               <Surface pad="sm" className="route-planner-draw-toolbar">
-                {elevOpen && (
-                  <Column gap={1} className="route-planner-toolbar-elevation">
-                    <Column data-chart>
-                      <ChartContainer
-                        data={elevPoints}
-                        chartType="area"
-                        color="var(--accent)"
-                        height={100}
-                        axisShow={{ x: true, y: false }}
-                      />
-                    </Column>
-                    <Row align="center" justify="between" gap={2}>
-                      <Text size="caption" color="muted" nowrap>
-                        {displayKm > 0 ? `+${gain}m gain` : "No route"}
-                      </Text>
-                      <Text size="caption" color="muted" nowrap>
-                        {displayKm > 0 ? `-${loss}m loss` : "Add points"}
-                      </Text>
-                    </Row>
-                  </Column>
-                )}
                 <Row align="center" gap={1}>
                   {waypoints.length >= 2 && (
                     <>
@@ -362,17 +371,6 @@ export function RoutePlannerScreen() {
                   <Button variant="ghost" size="icon-sm" onClick={() => mapRef.current?.fitRoute()} aria-label="Fit route">
                     <PiLineSegments size={14} />
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    active={elevOpen}
-                    onClick={() => setElevOpen(v => !v)}
-                    aria-expanded={elevOpen}
-                    aria-label="Toggle elevation profile"
-                  >
-                    <ChevronUp size={14} className={elevOpen ? 'chevron open' : 'chevron'} />
-                  </Button>
-                  <span className="route-planner-toolbar-divider" aria-hidden />
                   {(['select', 'add', 'split', 'delete'] as EditMode[]).map(m => (
                     <Button
                       key={m}
@@ -434,8 +432,8 @@ export function RoutePlannerScreen() {
             {/* ── Side rail — right edge, full height ── */}
             <Layer pin="full" z="controls" direction="none" className="desktop-only">
               <Row justify="end" className="route-planner-rail-layer">
-                <Row gap={0} className={`side${sideOpen ? '' : ' collapsed'}`}>
-                  <Column className="side-rail">
+                <Row gap={0} className={`route-planner-side${sideOpen ? '' : ' collapsed'}`}>
+                  <Column className="route-planner-rail">
                     <Button
                       variant="ghost"
                       size="icon-sm"
@@ -456,7 +454,7 @@ export function RoutePlannerScreen() {
                     ))}
                   </Column>
                   {sideOpen && (
-                    <Column gap={1} className="side-content">
+                    <Column gap={1} className="route-planner-side-content">
                       <Row align="center" justify="between">
                         <Text size="eyebrow">{panelSubtitle}</Text>
                         <Button variant="ghost" size="icon-sm" onClick={() => setSideOpen(false)} aria-label="Collapse sidebar">
@@ -467,14 +465,22 @@ export function RoutePlannerScreen() {
                         <Surface pad="sm" variant="flat" className="route-planner-route-details">
                           <Column gap={1}>
                             {isStandalone && (
-                              <Input
-                                placeholder="Route name..."
-                                value={routeName}
-                                onChange={e => setRouteName(e.target.value)}
-                              />
+                              <>
+                                <Input
+                                  placeholder="Route name..."
+                                  value={routeName}
+                                  onChange={e => setRouteName(e.target.value)}
+                                />
+                                <Textarea
+                                  placeholder="Route description"
+                                  rows={3}
+                                  value={routeDescription}
+                                  onChange={e => setRouteDescription(e.target.value)}
+                                />
+                              </>
                             )}
                             <Button variant="primary" size="sm" disabled={!canSave} onClick={handleSave}>
-                              <Save size={14} /> Save route
+                              <Save size={14} /> {isEditing ? "Save changes" : "Save route"}
                             </Button>
                           </Column>
                         </Surface>
@@ -485,7 +491,6 @@ export function RoutePlannerScreen() {
                         setActivity={setActivity}
                         displayKm={displayKm}
                         timeStr={timeStr}
-                        gain={gain}
                         estimatedCal={displayKm > 0 ? estimateCalories(displayKm, activity) : 0}
                         paceSecondsPerKm={paceSecondsPerKm}
                         setPaceSecondsPerKm={setPaceSecondsPerKm}
@@ -497,6 +502,10 @@ export function RoutePlannerScreen() {
                         segmentDistances={segmentDistances}
                         segmentInputs={segmentInputs}
                         applySegmentPaceInput={applySegmentPaceInput}
+                        routingPreference={routingPreference}
+                        setRoutingPreference={setRoutingPreference}
+                        visibility={visibility}
+                        setVisibility={setVisibility}
                       />}
                       {sidePanel === 'pins' && <PinsPanel
                         waypoints={waypoints}
@@ -506,10 +515,11 @@ export function RoutePlannerScreen() {
                       {sidePanel === 'stats' && <StatsPanel
                         surfaceMix={surfaceMix}
                         displayKm={displayKm}
-                        gain={gain}
-                        loss={loss}
                         waypoints={waypoints}
                         timeStr={timeStr}
+                        routeDataStatus={routeDataStatus}
+                        elevationGainM={elevationGainM}
+                        elevationLossM={elevationLossM}
                       />}
                       {sidePanel === 'saved' && <SavedPanel
                         profileFilteredRoutes={profileFilteredRoutes}
@@ -527,7 +537,7 @@ export function RoutePlannerScreen() {
       </Grid>
 
       {/* ── MOBILE BOTTOM SHEET ── */}
-      <Surface variant="ghost" pad="none" className="bottom-sheet" data-snap={snap}>
+      <Surface variant="ghost" pad="none" className="bottom-sheet route-planner-bottom-sheet" data-snap={snap}>
         <Button variant="ghost" className="handle"
           onClick={() => setSnap(s => s === 'peek' ? 'mid' : s === 'mid' ? 'full' : 'peek')}
           aria-label="Toggle sheet"
@@ -544,14 +554,22 @@ export function RoutePlannerScreen() {
           </Row>
 
           {isStandalone && (
+            <>
             <Input
               placeholder="Route name…"
               value={routeName}
               onChange={e => setRouteName(e.target.value)}
             />
+            <Textarea
+              placeholder="Route description"
+              rows={3}
+              value={routeDescription}
+              onChange={e => setRouteDescription(e.target.value)}
+            />
+            </>
           )}
           <Button variant="primary" disabled={!canSave} onClick={handleSave}>
-            <Save size={14} /> Save route
+            <Save size={14} /> {isEditing ? "Save changes" : "Save route"}
           </Button>
 
           {sidePanel === 'plan' && <PlanPanel
@@ -559,7 +577,6 @@ export function RoutePlannerScreen() {
             setActivity={setActivity}
             displayKm={displayKm}
             timeStr={timeStr}
-            gain={gain}
             estimatedCal={displayKm > 0 ? estimateCalories(displayKm, activity) : 0}
             paceSecondsPerKm={paceSecondsPerKm}
             setPaceSecondsPerKm={setPaceSecondsPerKm}
@@ -571,6 +588,10 @@ export function RoutePlannerScreen() {
             segmentDistances={segmentDistances}
             segmentInputs={segmentInputs}
             applySegmentPaceInput={applySegmentPaceInput}
+            routingPreference={routingPreference}
+            setRoutingPreference={setRoutingPreference}
+            visibility={visibility}
+            setVisibility={setVisibility}
           />}
           {sidePanel === 'pins' && <PinsPanel
             waypoints={waypoints}
@@ -580,10 +601,11 @@ export function RoutePlannerScreen() {
           {sidePanel === 'stats' && <StatsPanel
             surfaceMix={surfaceMix}
             displayKm={displayKm}
-            gain={gain}
-            loss={loss}
             waypoints={waypoints}
             timeStr={timeStr}
+            routeDataStatus={routeDataStatus}
+            elevationGainM={elevationGainM}
+            elevationLossM={elevationLossM}
           />}
           {sidePanel === 'saved' && <SavedPanel
             profileFilteredRoutes={profileFilteredRoutes}
@@ -603,7 +625,6 @@ interface PlanPanelProps {
   setActivity: (a: ActivityId) => void;
   displayKm: number;
   timeStr: string;
-  gain: number;
   estimatedCal: number;
   paceSecondsPerKm: number;
   setPaceSecondsPerKm: (v: number) => void;
@@ -615,6 +636,10 @@ interface PlanPanelProps {
   segmentDistances: number[];
   segmentInputs: Record<number, string>;
   applySegmentPaceInput: (idx: number, v: string) => void;
+  routingPreference: RoutingPreference;
+  setRoutingPreference: (value: RoutingPreference) => void;
+  visibility: RouteVisibility;
+  setVisibility: (value: RouteVisibility) => void;
 }
 
 function PlanPanel({
@@ -622,7 +647,6 @@ function PlanPanel({
   setActivity,
   displayKm,
   timeStr,
-  gain,
   estimatedCal,
   paceSecondsPerKm,
   setPaceSecondsPerKm,
@@ -634,6 +658,10 @@ function PlanPanel({
   segmentDistances,
   segmentInputs,
   applySegmentPaceInput,
+  routingPreference,
+  setRoutingPreference,
+  visibility,
+  setVisibility,
 }: PlanPanelProps) {
   const [perSegEnabled, setPerSegEnabled] = useState(false);
 
@@ -684,6 +712,38 @@ function PlanPanel({
 
       <hr />
 
+      <Text size="eyebrow">Routing</Text>
+      <Cluster className="gap-1">
+        {(['balanced', 'prefer_cycleways', 'shortest'] as RoutingPreference[]).map((preference) => (
+          <Button
+            key={preference}
+            variant="ghost"
+            size="sm"
+            active={routingPreference === preference}
+            onClick={() => setRoutingPreference(preference)}
+          >
+            {preference === 'prefer_cycleways' ? 'Cycleways' : preference.charAt(0).toUpperCase() + preference.slice(1)}
+          </Button>
+        ))}
+      </Cluster>
+
+      <Text size="eyebrow">Visibility</Text>
+      <Cluster className="gap-1">
+        {(['private', 'feed'] as RouteVisibility[]).map((option) => (
+          <Button
+            key={option}
+            variant="ghost"
+            size="sm"
+            active={visibility === option}
+            onClick={() => setVisibility(option)}
+          >
+            {option === 'feed' ? 'Feed' : 'Private'}
+          </Button>
+        ))}
+      </Cluster>
+
+      <hr />
+
       <Text size="eyebrow">Summary</Text>
       <Surface pad="sm" variant="ghost">
         <Row align="end" gap={1}>
@@ -695,25 +755,13 @@ function PlanPanel({
           </Text>
         </Row>
       </Surface>
-      <Grid cols={3} gap={1}>
+      <Grid cols={2} gap={1}>
         <Surface pad="sm" variant="flat">
           <Column gap={1} align="center">
             <Text size="detail" mono>
               {timeStr}
             </Text>
             <Text size="eyebrow">Time</Text>
-          </Column>
-        </Surface>
-        <Surface pad="sm" variant="flat">
-          <Column gap={1} align="center">
-            <Text size="detail" mono>
-              {displayKm > 0 ? `+${gain}` : "—"}
-              <Text size="caption" color="muted">
-                {" "}
-                m
-              </Text>
-            </Text>
-            <Text size="eyebrow">Gain</Text>
           </Column>
         </Surface>
         <Surface pad="sm" variant="flat">
@@ -869,23 +917,30 @@ function PinsPanel({
 interface StatsPanelProps {
   surfaceMix: Record<SurfaceKey, number>;
   displayKm: number;
-  gain: number;
-  loss: number;
   waypoints: [number, number][];
   timeStr: string;
+  routeDataStatus: RouteDataStatus;
+  elevationGainM: number;
+  elevationLossM: number;
 }
 
 function StatsPanel({
   surfaceMix,
   displayKm,
-  gain,
-  loss,
   waypoints,
   timeStr,
+  routeDataStatus,
+  elevationGainM,
+  elevationLossM,
 }: StatsPanelProps) {
   return (
     <Column gap={1}>
-      <Text size="eyebrow">Surface Mix</Text>
+      <Row align="center" gap={1}>
+        <Text size="eyebrow">Surface Mix</Text>
+        {routeDataStatus.surfaceMix === 'estimated' && (
+          <span className="badge caption" title="Estimated from activity type — not from map data">est.</span>
+        )}
+      </Row>
       <Row className="surface-mix-bar">
         {SURFACES.map((s) =>
           surfaceMix[s.key] > 0 ? (
@@ -919,32 +974,32 @@ function StatsPanel({
       <hr />
 
       <Text size="eyebrow">Elevation</Text>
-      <Grid cols={2} gap={1}>
-        <Surface pad="sm" variant="flat">
-          <Column gap={1} align="center">
-            <Text size="detail" mono>
-              {displayKm > 0 ? `+${gain}` : "—"}
-              <Text size="caption" color="muted">
-                {" "}
-                m
+      {routeDataStatus.elevationGain === 'unavailable' ? (
+        <Text size="caption" color="muted">
+          Elevation data unavailable — no terrain source connected
+        </Text>
+      ) : (
+        <Grid cols={2} gap={1}>
+          <Surface pad="sm" variant="flat">
+            <Column gap={1} align="center">
+              <Text size="detail" mono>
+                {displayKm > 0 ? `+${elevationGainM}` : "—"}
+                <Text size="caption" color="muted"> m</Text>
               </Text>
-            </Text>
-            <Text size="eyebrow">Gain</Text>
-          </Column>
-        </Surface>
-        <Surface pad="sm" variant="flat">
-          <Column gap={1} align="center">
-            <Text size="detail" mono>
-              {displayKm > 0 ? `−${loss}` : "—"}
-              <Text size="caption" color="muted">
-                {" "}
-                m
+              <Text size="eyebrow">Gain</Text>
+            </Column>
+          </Surface>
+          <Surface pad="sm" variant="flat">
+            <Column gap={1} align="center">
+              <Text size="detail" mono>
+                {displayKm > 0 ? `-${elevationLossM}` : "—"}
+                <Text size="caption" color="muted"> m</Text>
               </Text>
-            </Text>
-            <Text size="eyebrow">Loss</Text>
-          </Column>
-        </Surface>
-      </Grid>
+              <Text size="eyebrow">Loss</Text>
+            </Column>
+          </Surface>
+        </Grid>
+      )}
 
       <hr />
 
@@ -964,14 +1019,6 @@ function StatsPanel({
           </Text>
         </Row>
       ))}
-
-      <hr />
-
-      <Surface pad="sm" variant="flat">
-        <Text size="caption" color="muted">
-          Surface mix and elevation are estimated values.
-        </Text>
-      </Surface>
     </Column>
   );
 }
@@ -1021,9 +1068,7 @@ function SavedPanel({
       <Button
         variant="ghost"
         size="sm"
-        onClick={() =>
-          navigate("/saved-routes", { state: { returnTo: "/plan-route" } })
-        }>
+        onClick={() => navigate("/routes")}>
         View all saved routes
       </Button>
     </Column>

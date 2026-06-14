@@ -15,7 +15,7 @@ export function SideRailItem({ id, label, icon, active, onClick }: SideRailItemP
       variant="ghost"
       size="icon"
       active={active}
-      className="side-rail-item"
+      className="route-planner-rail-item"
       onClick={onClick}
       aria-label={label}
       aria-pressed={active}
