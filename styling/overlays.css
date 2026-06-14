@@ -114,6 +114,11 @@
 
 .filter-panel { min-width: 280px; }
 
+.exercise-suggestions {
+  min-width: 220px;
+  max-width: min(320px, calc(100vw - var(--s-4)));
+}
+
 /* ── Bottom sheet — mobile snap container ── */
 .bottom-sheet {
   bottom:0;
@@ -134,7 +139,7 @@
   &[data-snap="mid"]  { height: 240px; }
   &[data-snap="full"] { height: 65vh; }
 
-  & .handle {
+  & [data-role="handle"] {
     display: flex;
     justify-content: center;
     padding: var(--s-2) 0;

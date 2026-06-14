@@ -67,6 +67,8 @@ import type { RoutingPreference, RouteVisibility } from "@features/routes/contra
 import { MapControlButton } from "@ui/components/route-planner/MapControlButton";
 import { SideRailItem } from "@ui/components/route-planner/SideRailItem";
 import { ActivityChip } from "@ui/components/route-planner/ActivityChip";
+import { SurfaceMixBar } from "@ui/components/routes/SurfaceMixBar";
+import { ActivityDot } from "@ui/components/routes/ActivityDot";
 
 type SidePanel = "plan" | "pins" | "stats" | "saved";
 
@@ -538,7 +540,7 @@ export function RoutePlannerScreen({ routeId }: RoutePlannerScreenProps = {}) {
 
       {/* ── MOBILE BOTTOM SHEET ── */}
       <Surface variant="ghost" pad="none" className="bottom-sheet route-planner-bottom-sheet" data-snap={snap}>
-        <Button variant="ghost" className="handle"
+        <Button variant="ghost" data-role="handle"
           onClick={() => setSnap(s => s === 'peek' ? 'mid' : s === 'mid' ? 'full' : 'peek')}
           aria-label="Toggle sheet"
         />
@@ -677,9 +679,9 @@ function PlanPanel({
               id={a.id}
               label={a.label}
               dot={
-                <span data-id={a.id} className="activity-dot">
+                <ActivityDot data-id={a.id}>
                   <ActivityIcon size={10} />
-                </span>
+                </ActivityDot>
               }
               active={activity === a.id}
               onClick={() => setActivity(a.id)}
@@ -941,35 +943,9 @@ function StatsPanel({
           <span className="badge caption" title="Estimated from activity type — not from map data">est.</span>
         )}
       </Row>
-      <Row className="surface-mix-bar">
-        {SURFACES.map((s) =>
-          surfaceMix[s.key] > 0 ? (
-            <span
-              key={s.key}
-              className="surface-mix-segment"
-              data-surface={s.key}
-              // eslint-disable-next-line no-restricted-syntax -- Surface percentages drive segment widths through a CSS custom property.
-              style={
-                { "--mix-pct": `${surfaceMix[s.key]}%` } as React.CSSProperties
-              }
-              title={`${s.label}: ${surfaceMix[s.key]}%`}
-            />
-          ) : null,
-        )}
-      </Row>
-      <Cluster className="gap-1">
-        {SURFACES.filter((s) => surfaceMix[s.key] > 0).map((s) => (
-          <Row key={s.key} align="center" gap={1}>
-            <Row align="center" gap={1} className="caption">
-              <span className="surface-mix-swatch" data-surface={s.key} />
-              {s.label}
-            </Row>
-            <Text size="caption" color="faint">
-              {surfaceMix[s.key]}%
-            </Text>
-          </Row>
-        ))}
-      </Cluster>
+      <SurfaceMixBar
+        surfaces={SURFACES.map(s => ({ key: s.key, label: s.label, pct: surfaceMix[s.key] }))}
+      />
 
       <hr />
 
