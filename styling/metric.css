@@ -6,15 +6,60 @@
   align-items: baseline;
   gap: var(--s-2);
   font-family: var(--font-display);
-  font-weight: 400;
+  font-weight: 500;
   font-size: var(--t-2xl);
   line-height: 1;
   letter-spacing: -0.02em;
   color: var(--ink);
 
   &.sm { font-size: var(--t-xl); }
-  &.lg { font-size: var(--t-4xl); }
-  &.xl { font-size: var(--t-5xl); }
+  &.lg { font-size: var(--t-3xl); }
+  &.xl { font-size: var(--t-4xl); }
+
+  &.mono {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+  }
+}
+
+/* Unit label sitting beside a .metric value */
+.unit {
+  color: var(--ink-muted);
+  font-size: var(--t-sm);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.data-value {
+  &.data-value-date,
+  &.data-value-time {
+    font-size: var(--t-sm);
+  }
+}
+
+/* ════════════════════════════════════════════
+   ICON BOX — icon centered in a soft square container
+   Size via --icon-box-size.
+   ════════════════════════════════════════════ */
+.icon-frame {
+  width: var(--icon-box-size, 28px);
+  height: var(--icon-box-size, 28px);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  color: var(--ink-muted);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.sm { --icon-box-size: 22px; }
+  &.lg { --icon-box-size: 36px; }
+
+  &[data-tone="accent"]  { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface-2)); }
+  &[data-tone="success"] { color: var(--ok);     background: color-mix(in srgb, var(--ok)     12%, var(--surface-2)); }
+  &[data-tone="warning"] { color: var(--warn);   background: color-mix(in srgb, var(--warn)   12%, var(--surface-2)); }
+  &[data-tone="danger"]  { color: var(--bad);    background: color-mix(in srgb, var(--bad)    12%, var(--surface-2)); }
 }
 
 /* ════════════════════════════════════════════
@@ -26,14 +71,56 @@
   background: var(--surface-2);
   border-radius: var(--r-pill);
   overflow: hidden;
+
+  /* md: 8px track — used for macro/nutrition multi-segment bars */
+  &.md { --bar-height: var(--s-2); }
+
+  /* multi: flex-fill segments instead of a single .fill child */
+  &.multi {
+    background: none;
+    display: flex;
+    border-radius: var(--r-xs);
+  }
 }
 
 .fill {
   height: 100%;
   width: var(--fill, 50%);
   background: var(--bar-color, var(--accent));
-  border-radius: inherit;
   transition: width 0.4s var(--ease);
 
   &.done { --bar-color: var(--ok); }
+}
+
+/* ════════════════════════════════════════════
+   PROGRESS RING — conic-gradient donut
+   Drive via --ring-fill CSS custom property.
+   ════════════════════════════════════════════ */
+@property --ring-fill {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+.progress-ring {
+  --ring-size: 64px;
+  --ring-color: var(--accent);
+  --ring-inset: 54%;
+
+  width: var(--ring-size);
+  height: var(--ring-size);
+  border-radius: var(--r-pill);
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at center, var(--surface-1) 0 var(--ring-inset), transparent calc(var(--ring-inset) + 1%)),
+    conic-gradient(var(--ring-color) 0% var(--ring-fill), var(--surface-3) var(--ring-fill) 100%);
+  transition: --ring-fill var(--duration-medium) var(--ease);
+
+  &.sm { --ring-size: 48px; }
+  &.lg { --ring-size: 80px; }
+
+  &[data-tone="ok"]   { --ring-color: var(--ok); }
+  &[data-tone="warn"] { --ring-color: var(--warn); }
+  &[data-tone="bad"]  { --ring-color: var(--bad); }
 }

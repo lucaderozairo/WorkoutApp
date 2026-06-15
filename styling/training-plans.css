@@ -27,26 +27,26 @@
 
   &[data-sport="strength"],
   &[data-sport="lift"] {
-    background: color-mix(in oklab, var(--c-strength) 12%, var(--surface-2));
+    background: color-mix(in srgb, var(--c-strength) 12%, var(--surface-2));
   }
 
   &[data-sport="run"],
   &[data-sport="cardio"] {
-    background: color-mix(in oklab, var(--c-cardio) 12%, var(--surface-2));
+    background: color-mix(in srgb, var(--c-cardio) 12%, var(--surface-2));
   }
 
   &[data-sport="cycle"],
   &[data-sport="bike"] {
-    background: color-mix(in oklab, var(--c-nutrition) 12%, var(--surface-2));
+    background: color-mix(in srgb, var(--c-nutrition) 12%, var(--surface-2));
   }
 
   &[data-sport="swim"] {
-    background: color-mix(in oklab, var(--c-water) 12%, var(--surface-2));
+    background: color-mix(in srgb, var(--c-water) 12%, var(--surface-2));
   }
 
   &[data-sport="row"],
   &[data-sport="recovery"] {
-    background: color-mix(in oklab, var(--c-recovery) 12%, var(--surface-2));
+    background: color-mix(in srgb, var(--c-recovery) 12%, var(--surface-2));
   }
 }
 
