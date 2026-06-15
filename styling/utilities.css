@@ -1,9 +1,4 @@
 /* ── Border radius & shadow helpers ── */
-.radius-0 { border-radius: var(--border-radius-0); }
-.radius-1 { border-radius: var(--border-radius-1); }
-.radius-2 { border-radius: var(--border-radius-2); }
-.radius-3 { border-radius: var(--border-radius-3); }
-
 .shadow-sm { box-shadow: var(--box-shadow-sm); }
 .shadow-md { box-shadow: var(--box-shadow-md); }
 .shadow-lg { box-shadow: var(--box-shadow-lg); }
