@@ -1,7 +1,6 @@
-form {
+.form-padded {
   padding: var(--s-2);
   border-radius: var(--r-xs);
-  font-size: var(--t-md);
 }
 
 :is(

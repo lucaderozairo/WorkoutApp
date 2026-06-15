@@ -65,7 +65,7 @@ h4, h5, h6 {
 .negative { color: var(--bad); }
 .muted    { color: var(--ink-muted); }
 .faint    { color: var(--ink-faint); }
-.mono     { font-family: var(--font-mono); }
+.mono     { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 .uppercase { text-transform: uppercase; }
 
 /* Legacy size classes */
@@ -80,4 +80,4 @@ a {
 }
 
 /* Table default */
-table { text-align: left; }
+.table-default { text-align: left; }

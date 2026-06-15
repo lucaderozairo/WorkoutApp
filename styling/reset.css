@@ -26,11 +26,6 @@ body,
     color 0.18s var(--ease);
 }
 
-main {
-  padding: var(--s-3);
-  width: 100%;
-}
-
 /* Ensure display-forcing classes don't override the hidden attribute */
 [hidden] { display: none !important; }
 
