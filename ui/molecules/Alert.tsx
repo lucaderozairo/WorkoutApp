@@ -23,18 +23,14 @@ const SURFACE_VARIANT = {
   error:   'default',
 } as const;
 
-const EXTRA_CLASS: Record<AlertVariant, string> = {
-  info:    '',
-  success: '',
-  warn:    'warning',
-  error:   'warning',
-};
-
 export function Alert({ variant, title, message, dismissible = false, onDismiss, action, className }: AlertProps) {
-  const extra = [EXTRA_CLASS[variant], className].filter(Boolean).join(' ') || undefined;
-
   return (
-    <Surface variant={SURFACE_VARIANT[variant]} className={extra} role="alert">
+    <Surface
+      variant={SURFACE_VARIANT[variant]}
+      className={['alert', className].filter(Boolean).join(' ') || undefined}
+      data-tone={variant}
+      role="alert"
+    >
       <Row align="center">
         <Column className="min-w-0">
           {title && <strong>{title}</strong>}

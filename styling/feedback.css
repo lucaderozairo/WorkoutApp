@@ -6,6 +6,20 @@
   border-radius: var(--r-sm);
   background: var(--surface-2);
   border: 1px solid var(--line);
+
+  &[data-tone="info"]    { border: 1px solid var(--accent); background: var(--accent-soft); }
+  &[data-tone="success"] {
+    border: 1px solid color-mix(in srgb, var(--ok) 40%, transparent);
+    background: color-mix(in srgb, var(--ok) 8%, var(--surface-1));
+  }
+  &[data-tone="warn"] {
+    border: 1px solid color-mix(in srgb, var(--warn) 40%, transparent);
+    background: color-mix(in srgb, var(--warn) 8%, var(--surface-1));
+  }
+  &[data-tone="error"] {
+    border: 1px solid color-mix(in srgb, var(--bad) 40%, transparent);
+    background: color-mix(in srgb, var(--bad) 8%, var(--surface-1));
+  }
 }
 
 /* ── Toast stack — fixed container + item animation via nesting ── */
@@ -58,7 +72,4 @@
   border-radius: var(--r-sm);
   color: var(--ink-muted);
   background: var(--surface-2);
-  font-family: var(--font-mono);
-  font-size: var(--t-sm);
-  font-weight: 600;
 }
