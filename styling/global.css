@@ -12,7 +12,7 @@
 @import "./typography.css"     layer(base);
 /* ── Layout primitives + app shell ── */
 @import "./layout.css"         layer(layout);
-@import "./nav.css"            layer(atoms);
+@import "./app-shell.css"      layer(layout);
 @import "./containers.css"     layer(layout);
 /* ── Atoms (irreducible, generic) ── */
 @import "./surface.css"        layer(atoms);
@@ -29,6 +29,9 @@
 @import "./overlays.css"       layer(molecules);
 @import "./list.css"           layer(molecules);
 @import "./screen-header.css"  layer(molecules);
+/* ── Patterns (generic, reusable multi-molecule compositions) ── */
+@import "./patterns.css"       layer(patterns);
+@import "./card-scroller.css"  layer(patterns);
 /* ── Project (fitness-specific components + domain→token mapping) ── */
 @import "./project-activity.css" layer(project);
 @import "./calendar.css"       layer(project);

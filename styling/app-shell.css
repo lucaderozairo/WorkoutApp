@@ -33,6 +33,7 @@
     grid-area: content;
     overflow-y: auto;
     min-height: 0;
+    scroll-behavior: smooth;
 
     & > * {
       width: 100%;
@@ -105,8 +106,8 @@
       }
 
       &.active {
-        background: var(--ink);
-        color: var(--surface-1);
+        background: var(--accent);
+        color: var(--accent-ink);
       }
     }
   }
@@ -165,7 +166,7 @@
      ========================================================== */
 
   &.web {
-    grid-template-columns: auto 1fr;
+    grid-template-columns: [col] auto [col] 1fr;
     grid-template-rows: auto 1fr;
 
     grid-template-areas:
@@ -186,28 +187,38 @@
     }
 
     &:has(.navbar.open) {
-      grid-template-columns: auto 1fr;
       grid-template-areas:
         "menu header"
         "navbar content";
+      .content {
+        grid-column: col 1 / span 2;
+        opacity: 0.2;
+      }
+      .navbar {
+        z-index: var(--z-fixed);
+      }
     }
     &:not(:has(.navbar.open)) {
       grid-template-areas:
         "menu header"
         "content content";
-      
+
       .navbar {
-        
-      display:none;
+        display: none;
       }
     }
 
     @container (width >=768px) {
-      grid-template-columns: auto 1fr;
-
+      grid-template-columns: [col] auto [col] 1fr;
       grid-template-areas:
         "menu header"
         "navbar content";
+      &:has(.navbar.open) {
+        .content {
+          grid-column: col 2 / span 1;
+          opacity: 1;
+        }
+      }
     }
   }
 }
