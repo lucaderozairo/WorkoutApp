@@ -6,30 +6,11 @@
    ════════════════════════════════════════════ */
 .label {
   color: var(--ink);
-  font-size: var(--t-sm);
-  font-weight: 600;
-}
-
-.empty {
-  text-align: center;
-
-  & h3 {
-    margin: 0;
-  }
-
-  & p {
-    max-width: 48ch;
-    margin: 0;
-    text-wrap: pretty;
-  }
 }
 
 .badge {
   gap: var(--s-2);
   padding: var(--s-1) var(--s-3);
-  font-size: var(--t-xs);
-  font-weight: 500;
-  letter-spacing: 0.02em;
   color: var(--ink);
   background: var(--surface-2);
   border-radius: var(--r-pill);
@@ -43,7 +24,7 @@
     flex-shrink: 0;
   }
 
-  &.active { outline: 1.5px solid currentColor; font-weight: 600; }
+  &.active { outline: 1.5px solid currentColor; }
 
   /* Status (generic, project-agnostic) */
   &.ok     { --badge-color: var(--ok); }
@@ -51,6 +32,13 @@
   &.bad    { --badge-color: var(--bad); }
   &.accent { background: var(--accent); color: var(--accent-ink); }
   &.accent .dot { --dot-color: var(--accent-ink); }
+
+  /* Tinted: colored bg + text instead of dot-only. Domain name aliases live in project-activity.css */
+  &.tinted {
+    &.ok   { background: color-mix(in srgb, var(--ok)   15%, transparent); color: var(--ok); }
+    &.warn { background: color-mix(in srgb, var(--warn) 15%, transparent); color: var(--warn); }
+    &.bad  { background: color-mix(in srgb, var(--bad)  15%, transparent); color: var(--bad); }
+  }
 
   /* Sport / sleep / domain colors live in @layer project (project-activity.css) */
 
@@ -71,7 +59,7 @@
 
   &:hover  { color: var(--ink); border-color: var(--line-strong); }
   &.active { color: var(--ink); background: var(--surface-2); border-color: var(--line-strong); }
-  &.source { font-size: var(--t-xs); padding: var(--s-1) var(--s-2); }
+  &.source { padding: var(--s-1) var(--s-2); }
 }
 
 /* ════════════════════════════════════════════
@@ -79,7 +67,6 @@
    ════════════════════════════════════════════ */
 .tag {
   gap: var(--s-2);
-  font-size: var(--t-sm);
   color: var(--ink-muted);
 
   &::before {
@@ -111,4 +98,30 @@
 
   &.sm      { --dot-size: var(--s-2); opacity: 1; }
   &.stretch { width: var(--s-4); border-radius: var(--s-2); }
+}
+
+.status-dot {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+
+  &.status-live,
+  &.status-online,
+  &.status-success {
+    --dot-color: var(--ok);
+  }
+
+  &.status-warning,
+  &.status-syncing {
+    --dot-color: var(--warn);
+  }
+
+  &.status-error,
+  &.status-offline {
+    --dot-color: var(--bad);
+  }
+
+  &.status-idle {
+    --dot-color: var(--ink-faint);
+  }
 }

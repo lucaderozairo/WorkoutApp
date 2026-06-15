@@ -5,7 +5,8 @@
 
 /* Shared backdrop */
 .modal::backdrop,
-.action-sheet::backdrop {
+.action-sheet::backdrop,
+.drawer::backdrop {
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -46,6 +47,46 @@
 }
 @starting-style {
   .modal:popover-open { opacity: 0; transform: translateY(12px); }
+}
+
+.drawer {
+  display: none;
+  position: fixed;
+  inset-block: 0;
+  width: min(420px, calc(100vw - var(--s-6)));
+  max-height: 100dvh;
+  margin: 0;
+  padding: var(--s-4);
+  overflow: hidden;
+  border-radius: 0;
+  transition:
+    opacity var(--duration-medium) var(--ease),
+    transform var(--duration-medium) var(--ease),
+    overlay var(--duration-medium) allow-discrete,
+    display var(--duration-medium) allow-discrete;
+
+  &.drawer-right {
+    inset-inline: auto 0;
+    transform: translateX(12px);
+    border-left: 1px solid var(--line);
+  }
+
+  &.drawer-left {
+    inset-inline: 0 auto;
+    transform: translateX(-12px);
+    border-right: 1px solid var(--line);
+  }
+
+  &:popover-open {
+    display: block;
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@starting-style {
+  .drawer.drawer-right:popover-open { opacity: 0; transform: translateX(12px); }
+  .drawer.drawer-left:popover-open { opacity: 0; transform: translateX(-12px); }
 }
 
 /* ── Action sheet — bottom-pinned variant ── */
@@ -113,11 +154,6 @@
 }
 
 .filter-panel { min-width: 280px; }
-
-.exercise-suggestions {
-  min-width: 220px;
-  max-width: min(320px, calc(100vw - var(--s-4)));
-}
 
 /* ── Bottom sheet — mobile snap container ── */
 .bottom-sheet {

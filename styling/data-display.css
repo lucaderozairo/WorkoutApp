@@ -23,19 +23,8 @@
 .chart-ylabel {
   writing-mode: vertical-rl;
   transform: rotate(180deg);
-  font-size: var(--t-xs);
-  color: var(--ink-faint);
   text-align: center;
   flex-shrink: 0;
 }
 
-/* ════════════════════════════════════════════
-   TREND ITEM — health trend list row
-   ════════════════════════════════════════════ */
-.trend-item {
-  padding: var(--s-3) var(--s-5);
-  border-bottom: 1px solid var(--line);
 
-  &:last-child  { border-bottom: none; }
-  & > :first-child { flex: 1; }
-}

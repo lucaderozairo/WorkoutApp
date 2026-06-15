@@ -59,6 +59,13 @@
   }
 }
 
+/* ── Empty state ── */
+.empty {
+  text-align: center;
+  & h3 { margin: 0; }
+  & p { max-width: 48ch; margin: 0; text-wrap: pretty; }
+}
+
 .loading-state-skeleton {
   width: min(100%, 280px);
 }
