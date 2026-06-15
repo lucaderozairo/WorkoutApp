@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Download, MoreVertical, Pause, Play, Share2, Trash2, X } from 'lucide-react';
 import { Row, Column, Grid } from '@ui/layout';
 import { Surface, Text } from '@ui/atoms';
-import { Button } from '@ui/molecules';
+import { Button, Modal } from '@ui/molecules';
 
 export interface SessionHeaderProps {
   name: string;
@@ -103,26 +103,24 @@ export function SessionHeader({
       </Grid></Surface>
 
       {menuOpen && (
-        <div className="modal-overlay">
-          <Surface>
-            <Column>
-              <Row justify="between" align="center">
-                <Text size="detail">Session Options</Text>
-                <Button type="button" variant="ghost" size="icon" onClick={() => setMenuOpen(false)}>
-                  <X size={10} className="faint" />
-                </Button>
-              </Row>
-              <Button
-                type="button"
-                size="sm"
-                className="warning"
-                onClick={() => { setMenuOpen(false); onClearSession(); }}
-              >
-                <Trash2 size={9} /> Delete session
+        <Modal open onClose={() => setMenuOpen(false)} size="sm">
+          <Column>
+            <Row justify="between" align="center">
+              <Text size="detail">Session Options</Text>
+              <Button type="button" variant="ghost" size="icon" onClick={() => setMenuOpen(false)}>
+                <X size={10} className="faint" />
               </Button>
-            </Column>
-          </Surface>
-        </div>
+            </Row>
+            <Button
+              type="button"
+              size="sm"
+              className="error-tint"
+              onClick={() => { setMenuOpen(false); onClearSession(); }}
+            >
+              <Trash2 size={9} /> Delete session
+            </Button>
+          </Column>
+        </Modal>
       )}
     </Column>
   );

@@ -12,7 +12,7 @@ export function InjuryBanner({ conditions }: { conditions: UICondition[] }) {
   if (!active.length) return null;
 
   const top = worstActiveCondition(conditions)!;
-  const sevClass = top.severity === 'severe' ? 'warning' : 'caution';
+  const sevClass = top.severity === 'severe' ? 'error-tint' : 'caution';
 
   return (
     <Surface className={sevClass}>

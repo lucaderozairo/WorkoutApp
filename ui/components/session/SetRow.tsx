@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Check, MessageSquare, MoreVertical, Pencil, Trash2, X } from 'lucide-react';
+import { Calculator, Check, MessageSquare, MoreVertical, Pencil, Trash2, X } from 'lucide-react';
 import type { UISet } from '@features/training_log/projections/viewTypes';
 import type { SetMode } from '@data/static/exercises';
 import { Row, Column, Cluster, Spacer } from '@ui/layout';
 import { Surface, Text, Chip } from '@ui/atoms';
-import { Button } from '@ui/molecules';
+import { Button, Input, Textarea } from '@ui/molecules';
 
 export interface SetRowProps {
   num: number;
@@ -17,6 +17,8 @@ export interface SetRowProps {
   onDeleteRequest: () => void;
   onUpdate: (weightKg: number, reps: number) => void;
   onComment: (text: string) => void;
+  onToggleDropset?: () => void;
+  onPlateCalculator?: (weightKg: number) => void;
   currentMode: SetMode;
   availableModes: SetMode[];
   onSetModeChange: (mode: SetMode) => void;
@@ -25,9 +27,10 @@ export interface SetRowProps {
 
 export function SetRow({
   num, set, menuKey, openMenu, onOpenMenu, onToggleWarmup, onToggleDone, onDeleteRequest, onUpdate, onComment,
-  currentMode, availableModes, onSetModeChange, disabled = false,
+  onToggleDropset, onPlateCalculator, currentMode, availableModes, onSetModeChange, disabled = false,
 }: SetRowProps) {
-  const { w, r, done: _done, warmup, comment } = set;
+  const { w, r, done: _done, warmup, comment, setType } = set;
+  const isDropset = setType === 'dropset';
   const isOpen = openMenu === menuKey;
 
   const [wVal, setWVal] = useState(w !== '—' ? w : '');
@@ -54,19 +57,23 @@ export function SetRow({
 
   const label = warmup ? 'WU' : `S${num}`;
   const labelColor = warmup ? 'faint' : 'muted';
+  const numberClass = `mono num${warmup ? ' faint' : ''}`;
 
   return (
     <Column gap={1}>
       <Row align="center" justify="between">
-        <span className={`mono caption bold text-center set-number ${labelColor}`}>
-          {label}
-        </span>
+        <Row gap={1} align="center">
+          <span className={`mono caption bold text-center set-number ${labelColor}`}>
+            {label}
+          </span>
+          {isDropset && <Chip active>DROP</Chip>}
+        </Row>
         <Row className="min-w-0" align="center" gap={1}>
           {currentMode === 'wt-reps' && (
             <>
-              <input
+              <Input
                 type="number"
-                className={`mono num${warmup ? ' faint' : ''}`}
+                controlClassName={numberClass}
                 value={wVal}
                 placeholder="0"
                 min="0"
@@ -76,9 +83,9 @@ export function SetRow({
                 onBlur={e => commit(e.target.value, rVal)}
               />
               <Text size="caption" color={labelColor} mono className="set-sep">kg ×</Text>
-              <input
+              <Input
                 type="number"
-                className={`mono num${warmup ? ' faint' : ''}`}
+                controlClassName={numberClass}
                 value={rVal}
                 placeholder="1"
                 min="1"
@@ -88,14 +95,26 @@ export function SetRow({
                 onBlur={e => commit(wVal, e.target.value)}
               />
               <Text size="caption" color={labelColor} mono className="set-sep">reps</Text>
+              {onPlateCalculator && !warmup && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => onPlateCalculator(parseFloat(wVal) || 0)}
+                  title="Plate calculator"
+                >
+                  <Calculator size={10} className="faint" />
+                </Button>
+              )}
             </>
           )}
           {currentMode === 'reps' && (
             <>
               <Text size="caption" color={labelColor} mono className="set-sep">×</Text>
-              <input
+              <Input
                 type="number"
-                className={`mono num min-w-0${warmup ? ' faint' : ''}`}
+                className="min-w-0"
+                controlClassName={numberClass}
                 value={rVal}
                 placeholder="1"
                 min="1"
@@ -109,9 +128,9 @@ export function SetRow({
           )}
           {currentMode === 'time' && (
             <>
-              <input
+              <Input
                 type="number"
-                className={`mono num${warmup ? ' faint' : ''}`}
+                controlClassName={numberClass}
                 value={wVal}
                 placeholder="0"
                 min="0"
@@ -125,9 +144,9 @@ export function SetRow({
           )}
           {currentMode === 'dist' && (
             <>
-              <input
+              <Input
                 type="number"
-                className={`mono num${warmup ? ' faint' : ''}`}
+                controlClassName={numberClass}
                 value={wVal}
                 placeholder="0"
                 min="0"
@@ -141,9 +160,9 @@ export function SetRow({
           )}
           {currentMode === 'dist-time' && (
             <>
-              <input
+              <Input
                 type="number"
-                className={`mono num${warmup ? ' faint' : ''}`}
+                controlClassName={numberClass}
                 value={wVal}
                 placeholder="0"
                 min="0"
@@ -153,9 +172,9 @@ export function SetRow({
                 onBlur={e => commit(e.target.value, rVal)}
               />
               <Text size="caption" color={labelColor} mono className="set-sep">m</Text>
-              <input
+              <Input
                 type="number"
-                className={`mono num${warmup ? ' faint' : ''}`}
+                controlClassName={numberClass}
                 value={rVal}
                 placeholder="0"
                 min="0"
@@ -212,6 +231,11 @@ export function SetRow({
               <Button type="button" variant="ghost" size="sm" onClick={() => { onOpenMenu(null); setCommentOpen(v => !v); }}>
                 <MessageSquare size={9} /> {comment ? 'Edit note' : 'Add note'}
               </Button>
+              {onToggleDropset && !warmup && (
+                <Button type="button" variant="ghost" size="sm" onClick={() => { onToggleDropset(); onOpenMenu(null); }}>
+                  {isDropset ? 'Clear drop set' : 'Mark drop set'}
+                </Button>
+              )}
             </Row>
             <Text size="eyebrow">Set mode</Text>
             <Cluster gap={1}>
@@ -230,7 +254,7 @@ export function SetRow({
               <Button
                 type="button"
                 size="sm"
-                className="warning"
+                className="error-tint"
                 onClick={() => { onOpenMenu(null); onDeleteRequest(); }}
               >
                 <Trash2 size={9} /> Delete
@@ -243,7 +267,7 @@ export function SetRow({
       {!disabled && commentOpen && (
         <Row gap={1} align="start">
           <Button variant="ghost" size="icon" disabled><MessageSquare size={9} /></Button>
-          <textarea
+          <Textarea
             className="min-w-0"
             rows={3}
             placeholder="Add a note…"

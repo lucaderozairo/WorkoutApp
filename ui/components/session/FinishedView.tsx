@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Grid, Row, Column, Cluster, Spacer } from '@ui/layout';
 import { Surface, Text, Divider } from '@ui/atoms';
-import { Badge, Button } from '@ui/molecules';
+import { Badge, Button, Modal } from '@ui/molecules';
 import { useNavigate } from 'react-router-dom';
 import { Download, FileText, Gauge, Image, MoreVertical, Share2, Tag, Trash2, X } from 'lucide-react';
 import type { ActivityView } from '@features/training_log';
@@ -216,7 +216,19 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
                 );
               })()}
 
-              {(b.type === 'single' || b.type === 'superset' || b.type === 'circuit') && (
+              {b.type === 'transition' && (
+                <Row align="center" justify="between">
+                  <Row gap={1} align="center">
+                    <Badge dot>Transition</Badge>
+                    <Text size="detail">{b.exercises[0]?.name}</Text>
+                  </Row>
+                  {(b.exercises[0]?.cardioSet?.durationSeconds ?? 0) > 0 && (
+                    <Text size="caption" mono color="muted">{b.exercises[0]!.cardioSet!.durationSeconds}s</Text>
+                  )}
+                </Row>
+              )}
+
+              {(b.type === 'single' || b.type === 'superset' || b.type === 'circuit' || b.type === 'emom' || b.type === 'amrap') && (
                 <>
                   {b.type === 'single' ? (
                     <Row align="center" justify="between">
@@ -227,7 +239,10 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
                     </Row>
                   ) : (
                     <Row align="center" justify="between">
-                      <Badge dot>{b.label}</Badge>
+                      <Row gap={1} align="center">
+                        <Badge dot>{b.label}</Badge>
+                        {b.rounds != null && <Text size="caption" color="muted">{b.rounds} rounds</Text>}
+                      </Row>
                     </Row>
                   )}
                   {b.exercises.map((ex, i) => (
@@ -280,42 +295,38 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
 
       {/* menu modal */}
       {menuOpen && (
-        <div className="modal-overlay">
-          <Surface>
-            <Column>
-              <Row justify="between" align="center">
-                <Text size="detail">Session Options</Text>
-                <Button type="button" variant="ghost" size="icon" onClick={() => setMenuOpen(false)}>
-                  <X size={10} className="faint" />
-                </Button>
-              </Row>
-              {onEdit && <Button type="button" size="sm" onClick={() => { setMenuOpen(false); onEdit(); }}>Edit</Button>}
-              <Button type="button" size="sm" className="warning" onClick={() => { setMenuOpen(false); setDeleteConfirm(true); }}>
-                <Trash2 size={9} /> Delete session
+        <Modal open onClose={() => setMenuOpen(false)} size="sm">
+          <Column>
+            <Row justify="between" align="center">
+              <Text size="detail">Session Options</Text>
+              <Button type="button" variant="ghost" size="icon" onClick={() => setMenuOpen(false)}>
+                <X size={10} className="faint" />
               </Button>
-            </Column>
-          </Surface>
-        </div>
+            </Row>
+            {onEdit && <Button type="button" size="sm" onClick={() => { setMenuOpen(false); onEdit(); }}>Edit</Button>}
+            <Button type="button" size="sm" className="error-tint" onClick={() => { setMenuOpen(false); setDeleteConfirm(true); }}>
+              <Trash2 size={9} /> Delete session
+            </Button>
+          </Column>
+        </Modal>
       )}
 
       {/* delete confirm modal */}
       {deleteConfirm && (
-        <div className="modal-overlay">
-          <Surface>
-            <Column>
-              <Column gap={1}>
-                <Text as="h3">Delete session?</Text>
-                <Text size="caption" color="faint">This removes the entire session and cannot be undone.</Text>
-              </Column>
-              <Row justify="between">
-                <Button type="button" variant="secondary" onClick={() => setDeleteConfirm(false)}>Cancel</Button>
-                <Button type="button" className="warning" onClick={handleDelete}>
-                  <Trash2 size={12} /> Delete
-                </Button>
-              </Row>
+        <Modal open onClose={() => setDeleteConfirm(false)} size="sm">
+          <Column>
+            <Column gap={1}>
+              <Text as="h3">Delete session?</Text>
+              <Text size="caption" color="faint">This removes the entire session and cannot be undone.</Text>
             </Column>
-          </Surface>
-        </div>
+            <Row justify="between">
+              <Button type="button" variant="secondary" onClick={() => setDeleteConfirm(false)}>Cancel</Button>
+              <Button type="button" className="error-tint" onClick={handleDelete}>
+                <Trash2 size={12} /> Delete
+              </Button>
+            </Row>
+          </Column>
+        </Modal>
       )}
     </Column>
   );

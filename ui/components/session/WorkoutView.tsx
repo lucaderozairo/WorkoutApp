@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Download, Plus, Trash2 } from 'lucide-react';
-import { Row, Column } from '@ui/layout';
+import { Row, Column, Cluster } from '@ui/layout';
 import { Surface, Text } from '@ui/atoms';
-import { Button } from '@ui/molecules';
+import { Button, Modal } from '@ui/molecules';
 import { useCommand } from '@ui/bindings';
 import {
   handleRemoveBlock,
@@ -12,7 +12,15 @@ import {
   handleUpdateSetComment,
   handleLogCardioSet,
   handleDeleteSession,
+  handleSetBlockRounds,
+  handleChangeSetType,
+  handleAddBlock,
 } from '@features/training_log';
+import { ACTIVITY_ICONS } from '@ui/icons/activityIcons';
+import type { SportType } from '@shared/types';
+
+const MULTISPORT_SPORTS = new Set<SportType>(['multi', 'triathlon', 'duathlon', 'hyrox', 'obstacle_course']);
+const DISCIPLINE_SPORTS: SportType[] = ['swim', 'cycle', 'run', 'row', 'ski', 'hike', 'strength'];
 import type { ActivityView } from '@features/training_log';
 import type { StrengthSet, CardioSet } from '@features/training_log/domain/types';
 import type { Id } from '@shared/types';
@@ -24,6 +32,9 @@ import { SessionHeader } from './SessionHeader';
 import { triggerDownload } from '@shared/utils/csv';
 import { InjuryBanner } from './InjuryBanner';
 import { BlockCard } from './BlockCard';
+import { PlateCalculatorModal } from './PlateCalculatorModal';
+import { getPreviousPerformance, getOverloadHint } from '@features/progression';
+import type { PreviousExercisePerformance, ProgressiveOverloadHint } from '@shared/contracts';
 
 export interface WorkoutViewProps {
   session: ActivityView | null;
@@ -52,9 +63,29 @@ export function WorkoutView({
   const [deleteBlockAlert, setDeleteBlockAlert] = useState<string[] | null>(null);
   const [clearAlert, setClearAlert] = useState(false);
   const [acknowledged, setAcknowledged] = useState<Set<string>>(new Set());
+  const [autoRestEnabled, setAutoRestEnabled] = useState(false);
+  const [plateCalculatorTarget, setPlateCalculatorTarget] = useState<{ blockId: string; weightKg: number } | null>(null);
+  const [showDisciplinePicker, setShowDisciplinePicker] = useState(false);
   const [restTimer, setRestTimer] = useState<{ seconds: number; exerciseName: string } | null>(
     () => viewStore.get('rest_timer') ?? null
   );
+
+  const blockProgressionData = useMemo(() => {
+    if (!blocks) return {};
+    const map: Record<string, { performance: PreviousExercisePerformance | undefined; hint: ProgressiveOverloadHint }> = {};
+    for (const b of blocks) {
+      if (b.type === 'single' || b.type === 'superset' || b.type === 'circuit') {
+        for (const ex of b.exercises) {
+          const performance = getPreviousPerformance(ex.name) ?? undefined;
+          const maxW = performance?.maxWeightKg;
+          const currentW = Math.max(0, ...(ex.sets ?? []).map(s => parseFloat(s.w) || 0));
+          const hint = getOverloadHint(ex.name, currentW || maxW);
+          map[ex.name] = { performance, hint };
+        }
+      }
+    }
+    return map;
+  }, [blocks]);
   const restTimerRef = useRef(restTimer);
   useEffect(() => {
     restTimerRef.current = restTimer;
@@ -69,17 +100,28 @@ export function WorkoutView({
   const { dispatch: updateSetComment } = useCommand(handleUpdateSetComment);
   const { dispatch: logCardioSet } = useCommand(handleLogCardioSet);
   const { dispatch: deleteSession } = useCommand(handleDeleteSession);
+  const { dispatch: setBlockRounds } = useCommand(handleSetBlockRounds);
+  const { dispatch: changeSetType } = useCommand(handleChangeSetType);
+  const { dispatch: addBlock } = useCommand(handleAddBlock);
+
+  const isMultisport = session ? MULTISPORT_SPORTS.has(session.primarySport) : false;
 
   const blocksSig = domainBlocks.reduce((acc, b) =>
     acc + b.sets.reduce((s, set) => {
-      const ss = set as StrengthSet;
-      return s + (ss.weightKg ?? 0) * 100 + (ss.reps ?? 0);
+      const ss = set as {
+        weightKg?: number; reps?: number; distanceMeters?: number;
+        durationSeconds?: number; avgPowerWatts?: number; resistance?: number;
+      };
+      return s + (ss.weightKg ?? 0) * 100 + (ss.reps ?? 0)
+        + (ss.distanceMeters ?? 0) + (ss.durationSeconds ?? 0)
+        + (ss.avgPowerWatts ?? 0) + (ss.resistance ?? 0);
     }, b.sets.length),
     0);
   const groupsSig = domainBlocks.filter(b => b.supersetGroupId).length;
+  const metaSig = domainBlocks.map(b => `${b.blockType ?? ''}:${b.rounds ?? ''}`).join('|');
   useEffect(() => {
     setBlocks(domainBlocksToUIBlocks(domainBlocks));
-  }, [blocksSig, domainBlocks.length, groupsSig]);
+  }, [blocksSig, domainBlocks.length, groupsSig, metaSig]);
 
   const handleToggleDone = async (blockId: string, exIdx: number, setId: string) => {
     const block = blocks.find(b => b.id === blockId);
@@ -122,6 +164,33 @@ export function WorkoutView({
         }),
       };
     }));
+  };
+
+  const handleToggleDropset = async (blockId: string, exIdx: number, setId: string) => {
+    const block = blocks.find(b => b.id === blockId);
+    const ex = block?.exercises[exIdx];
+    const set = ex?.sets?.find(s => s.id === setId);
+    if (!set || !ex?.blockId || !session?.id) return;
+
+    const newType = set.setType === 'dropset' ? 'normal' : 'dropset';
+    setBlocks(prev => prev.map(b => {
+      if (b.id !== blockId) return b;
+      return {
+        ...b,
+        exercises: b.exercises.map((e, i) => {
+          if (i !== exIdx) return e;
+          return { ...e, sets: e.sets?.map(s => s.id === setId ? { ...s, setType: newType } : s) };
+        }),
+      };
+    }));
+
+    await changeSetType({
+      type: 'ChangeSetType',
+      sessionId: session.id,
+      blockId: ex.blockId as Id<'Block'>,
+      setNumber: set.setNumber,
+      setType: newType,
+    });
   };
 
   const handleCommentSet = async (blockId: string, exIdx: number, setId: string, text: string) => {
@@ -260,6 +329,76 @@ export function WorkoutView({
     }
   };
 
+  const handleSetRounds = async (blockIds: string[], rounds: number) => {
+    if (!session?.id) return;
+    for (const id of blockIds) {
+      await setBlockRounds({
+        type: 'SetBlockRounds',
+        sessionId: session.id,
+        blockId: id as Id<'Block'>,
+        rounds,
+      });
+    }
+  };
+
+  const handleAddCardioInterval = async (blockId: string) => {
+    if (!session?.id) return;
+    await logCardioSet({
+      type: 'LogCardioSet',
+      sessionId: session.id,
+      blockId: blockId as Id<'Block'>,
+      durationSeconds: 0,
+      distanceMeters: 0,
+    });
+  };
+
+  const handleUpdateCardioSet = async (blockId: string, setNumber: number, field: keyof UICardioSet, value: number) => {
+    if (!session?.id) return;
+    await updateSet({
+      type: 'UpdateSet',
+      sessionId: session.id,
+      blockId: blockId as Id<'Block'>,
+      setNumber,
+      ...(field === 'durationSeconds' && { durationSeconds: value }),
+      ...(field === 'distanceMeters' && { distanceMeters: value }),
+      ...(field === 'avgPowerWatts' && { avgPowerWatts: value }),
+      ...(field === 'resistance' && { resistance: value }),
+    });
+  };
+
+  const handleRemoveCardioSet = async (blockId: string, setNumber: number) => {
+    if (!session?.id) return;
+    await removeSet({ type: 'RemoveSet', sessionId: session.id, blockId: blockId as Id<'Block'>, setNumber });
+  };
+
+  const handleAddDiscipline = async (sport: SportType) => {
+    if (!session?.id) return;
+    setShowDisciplinePicker(false);
+    // Gym is a discipline, not an exercise — open the exercise picker so the user
+    // logs real exercises with sets, same as a standalone gym activity.
+    if (sport === 'strength') {
+      onAddExercise();
+      return;
+    }
+    await addBlock({
+      type: 'AddBlock',
+      sessionId: session.id,
+      exerciseName: ACTIVITY_ICONS[sport].label,
+      exerciseCategory: 'cardio',
+    });
+  };
+
+  const handleAddTransition = async () => {
+    if (!session?.id) return;
+    await addBlock({
+      type: 'AddBlock',
+      sessionId: session.id,
+      exerciseName: 'Transition',
+      exerciseCategory: 'cardio',
+      isTransition: true,
+    });
+  };
+
   const handleConfirmDeleteBlock = async () => {
     if (!session?.id || !deleteBlockAlert) return;
     for (const id of deleteBlockAlert) {
@@ -327,89 +466,124 @@ export function WorkoutView({
       <UndoToast />
 
       <Column>
-        {blocks.map((b, idx) => (
-          <BlockCard
-            key={b.id}
-            blockIndex={idx}
-            block={b}
-            openMenu={openMenu}
-            onOpenMenu={setOpenMenu}
-            onToggleWarmup={handleToggleWarmup}
-            onToggleDone={handleToggleDone}
-            onDeleteRequest={handleDeleteRequest}
-            onDeleteBlock={ids => setDeleteBlockAlert(ids)}
-            onAddSet={handleAddSet}
-            onUpdateSet={handleUpdateSetValues}
-            onCommentSet={handleCommentSet}
-            onUpdateCardio={handleUpdateCardio}
-            injuries={conditions}
-            acknowledged={acknowledged}
-            onAcknowledge={handleAcknowledge}
-            onStartRest={(exerciseName, seconds) => setRestTimer({ seconds, exerciseName })}
-          />
-        ))}
+        {blocks.map((b, idx) => {
+          const exName = b.exercises[0]?.name;
+          const pd = exName ? blockProgressionData[exName] : undefined;
+          return (
+            <BlockCard
+              key={b.id}
+              blockIndex={idx}
+              block={b}
+              openMenu={openMenu}
+              onOpenMenu={setOpenMenu}
+              onToggleWarmup={handleToggleWarmup}
+              onToggleDone={handleToggleDone}
+              onToggleDropset={handleToggleDropset}
+              onDeleteRequest={handleDeleteRequest}
+              onDeleteBlock={ids => setDeleteBlockAlert(ids)}
+              onAddSet={handleAddSet}
+              onUpdateSet={handleUpdateSetValues}
+              onCommentSet={handleCommentSet}
+              onUpdateCardio={handleUpdateCardio}
+              onUpdateCardioSet={handleUpdateCardioSet}
+              onAddCardioSet={handleAddCardioInterval}
+              onRemoveCardioSet={handleRemoveCardioSet}
+              injuries={conditions}
+              acknowledged={acknowledged}
+              onAcknowledge={handleAcknowledge}
+              onStartRest={(exerciseName, seconds) => setRestTimer({ seconds, exerciseName })}
+              previousPerformance={pd?.performance}
+              overloadHint={pd?.hint}
+              onPlateCalculator={(blockId, weightKg) => setPlateCalculatorTarget({ blockId, weightKg })}
+              autoRestEnabled={autoRestEnabled}
+              onToggleAutoRest={() => setAutoRestEnabled(v => !v)}
+              onSetRounds={handleSetRounds}
+            />
+          );
+        })}
 
         <Button type="button" variant="ghost" className="row" onClick={onAddExercise}>
           <Plus size={12} /> Add Exercise
         </Button>
+
+        {isMultisport && (
+          <Row gap={1}>
+            <Button type="button" variant="ghost" className="row" onClick={() => setShowDisciplinePicker(true)}>
+              <Plus size={12} /> Add Discipline
+            </Button>
+            <Button type="button" variant="ghost" className="row" onClick={handleAddTransition}>
+              <Plus size={12} /> Add Transition
+            </Button>
+          </Row>
+        )}
       </Column>
 
       {deleteAlert && (
-        <div className="modal-overlay">
-          <Surface>
-            <Column>
-              <Column gap={1}>
-                <Text size="detail">Delete set?</Text>
-                <Text size="detail" mono color="muted" className="num">{deleteAlert.label}</Text>
-                <Text size="caption" color="faint">This removes the set from your log.</Text>
-              </Column>
-              <Row justify="between">
-                <Button type="button" variant="ghost" onClick={() => setDeleteAlert(null)}>Cancel</Button>
-                <Button type="button" className="warning" onClick={handleConfirmDelete}>
-                  <Trash2 size={12} /> Delete
-                </Button>
-              </Row>
+        <Modal open onClose={() => setDeleteAlert(null)} size="sm">
+          <Column>
+            <Column gap={1}>
+              <Text size="detail">Delete set?</Text>
+              <Text size="detail" mono color="muted" className="num">{deleteAlert.label}</Text>
+              <Text size="caption" color="faint">This removes the set from your log.</Text>
             </Column>
-          </Surface>
-        </div>
+            <Row justify="between">
+              <Button type="button" variant="ghost" onClick={() => setDeleteAlert(null)}>Cancel</Button>
+              <Button type="button" className="error-tint" onClick={handleConfirmDelete}>
+                <Trash2 size={12} /> Delete
+              </Button>
+            </Row>
+          </Column>
+        </Modal>
       )}
 
       {deleteBlockAlert && (
-        <div className="modal-overlay">
-          <Surface>
-            <Column>
-              <Column gap={1}>
-                <Text size="detail">Delete exercise?</Text>
-                <Text size="caption" color="faint">This removes the exercise and all its sets.</Text>
-              </Column>
-              <Row justify="between">
-                <Button type="button" variant="ghost" onClick={() => setDeleteBlockAlert(null)}>Cancel</Button>
-                <Button type="button" className="warning" onClick={handleConfirmDeleteBlock}>
-                  <Trash2 size={12} /> Delete
-                </Button>
-              </Row>
+        <Modal open onClose={() => setDeleteBlockAlert(null)} size="sm">
+          <Column>
+            <Column gap={1}>
+              <Text size="detail">Delete exercise?</Text>
+              <Text size="caption" color="faint">This removes the exercise and all its sets.</Text>
             </Column>
-          </Surface>
-        </div>
+            <Row justify="between">
+              <Button type="button" variant="ghost" onClick={() => setDeleteBlockAlert(null)}>Cancel</Button>
+              <Button type="button" className="error-tint" onClick={handleConfirmDeleteBlock}>
+                <Trash2 size={12} /> Delete
+              </Button>
+            </Row>
+          </Column>
+        </Modal>
       )}
 
       {clearAlert && (
-        <div className="modal-overlay">
-          <Surface>
-            <Column>
-              <Column gap={1}>
-                <Text as="h3">Delete session?</Text>
-                <Text size="caption" color="faint">This removes the entire session and cannot be undone.</Text>
-              </Column>
-              <Row justify="between">
-                <Button type="button" variant="secondary" onClick={() => setClearAlert(false)}>Cancel</Button>
-                <Button type="button" className="warning" onClick={handleConfirmClearSession}>
-                  <Trash2 size={12} /> Delete
-                </Button>
-              </Row>
+        <Modal open onClose={() => setClearAlert(false)} size="sm">
+          <Column>
+            <Column gap={1}>
+              <Text as="h3">Delete session?</Text>
+              <Text size="caption" color="faint">This removes the entire session and cannot be undone.</Text>
             </Column>
-          </Surface>
-        </div>
+            <Row justify="between">
+              <Button type="button" variant="secondary" onClick={() => setClearAlert(false)}>Cancel</Button>
+              <Button type="button" className="error-tint" onClick={handleConfirmClearSession}>
+                <Trash2 size={12} /> Delete
+              </Button>
+            </Row>
+          </Column>
+        </Modal>
+      )}
+
+      {showDisciplinePicker && (
+        <Modal open onClose={() => setShowDisciplinePicker(false)} size="sm">
+          <Column>
+            <Text as="h3" size="detail">Add discipline</Text>
+            <Cluster gap={1}>
+              {DISCIPLINE_SPORTS.map(sport => (
+                <Button key={sport} type="button" variant="secondary" size="sm" onClick={() => handleAddDiscipline(sport)}>
+                  {ACTIVITY_ICONS[sport].label}
+                </Button>
+              ))}
+            </Cluster>
+            <Button type="button" variant="ghost" onClick={() => setShowDisciplinePicker(false)}>Cancel</Button>
+          </Column>
+        </Modal>
       )}
 
       {restTimer && (
@@ -420,6 +594,12 @@ export function WorkoutView({
           />
         </div>
       )}
+
+      <PlateCalculatorModal
+        open={plateCalculatorTarget !== null}
+        onClose={() => setPlateCalculatorTarget(null)}
+        initialWeightKg={plateCalculatorTarget?.weightKg ?? undefined}
+      />
     </Column>
   );
 }

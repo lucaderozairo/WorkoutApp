@@ -1,16 +1,20 @@
 import { useState } from 'react';
-import { AlertTriangle, MoreVertical, Trash2, X } from 'lucide-react';
+import { AlertTriangle, Minus, MoreVertical, Plus, Timer, Trash2, X } from 'lucide-react';
 import { Row, Column, Cluster } from '@ui/layout';
 import { Surface, Text, Chip, Divider } from '@ui/atoms';
-import { Badge, Button } from '@ui/molecules';
+import { Badge, Button, Input, Modal, Switch } from '@ui/molecules';
 import { ExerciseSection } from './ExerciseSection';
 import { CardioEditor } from './CardioEditor';
 import { CommentLine } from './CommentLine';
 import { SetsBarChart } from './SetsBarChart';
 import { SetRow } from './SetRow';
+import { PreviousPerformanceLine } from './PreviousPerformanceLine';
+import { OverloadHintLine } from './OverloadHintLine';
 import { getWarnings, worstSev } from '@features/training_log/projections/mappers';
+import { paceSecPerKm, formatPace } from '@shared/utils';
 import type { UIBlock, UICardioSet, UIExercise, UICondition } from '@features/training_log/projections/viewTypes';
 import type { SetMode } from '@data/static/exercises';
+import type { PreviousExercisePerformance, ProgressiveOverloadHint } from '@shared/contracts';
 
 export interface BlockCardProps {
   blockIndex: number;
@@ -19,16 +23,26 @@ export interface BlockCardProps {
   onOpenMenu: (key: string | null) => void;
   onToggleWarmup: (blockId: string, exIdx: number, setId: string) => void;
   onToggleDone: (blockId: string, exIdx: number, setId: string) => void;
+  onToggleDropset?: (blockId: string, exIdx: number, setId: string) => void;
   onDeleteRequest: (blockId: string, exIdx: number, setId: string, setIdx: number) => void;
   onDeleteBlock: (blockIds: string[]) => void;
   onAddSet: (blockId: string) => void;
   onUpdateSet: (blockId: string, setNumber: number, weightKg: number, reps: number) => void;
   onCommentSet: (blockId: string, exIdx: number, setId: string, text: string) => void;
   onUpdateCardio: (blockId: string, field: keyof UICardioSet, value: number) => void;
+  onUpdateCardioSet?: (blockId: string, setNumber: number, field: keyof UICardioSet, value: number) => void;
+  onAddCardioSet?: (blockId: string) => void;
+  onRemoveCardioSet?: (blockId: string, setNumber: number) => void;
   injuries: UICondition[];
   acknowledged: Set<string>;
   onAcknowledge: (name: string) => void;
   onStartRest: (exerciseName: string, seconds: number) => void;
+  previousPerformance?: PreviousExercisePerformance;
+  overloadHint?: ProgressiveOverloadHint;
+  onPlateCalculator?: (blockId: string, weightKg: number) => void;
+  autoRestEnabled?: boolean;
+  onToggleAutoRest?: () => void;
+  onSetRounds?: (blockIds: string[], rounds: number) => void;
 }
 
 const ALL_MODES: SetMode[] = ['wt-reps', 'reps', 'time', 'dist', 'dist-time'];
@@ -36,6 +50,8 @@ const ALL_MODES: SetMode[] = ['wt-reps', 'reps', 'time', 'dist', 'dist-time'];
 export function BlockCard({
   blockIndex, block, openMenu, onOpenMenu, onToggleWarmup, onToggleDone, onDeleteRequest, onDeleteBlock,
   onAddSet, onUpdateSet, onCommentSet, onUpdateCardio, injuries, acknowledged, onAcknowledge, onStartRest,
+  previousPerformance, overloadHint, onPlateCalculator, autoRestEnabled, onToggleAutoRest, onSetRounds, onToggleDropset,
+  onUpdateCardioSet, onAddCardioSet, onRemoveCardioSet,
 }: BlockCardProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showRestPicker, setShowRestPicker] = useState(false);
@@ -67,27 +83,69 @@ export function BlockCard({
   );
 
   const blockMenu = (
-    <div className="modal-overlay">
+    <Modal open onClose={closeMenu} size="sm">
+      <Column>
+        <Row justify="between" align="center">
+          <Text size="detail">{block.exerciseName}</Text>
+          <Button type="button" variant="ghost" size="icon" onClick={closeMenu}>
+            <X size={10} className="faint" />
+          </Button>
+        </Row>
+        {showRestPicker ? restPickerContent : (
+          <Button type="button" variant="secondary" size="sm" onClick={() => setShowRestPicker(true)}>
+            Rest timer
+          </Button>
+        )}
+        <Row align="center" justify="between">
+          <Row gap={1} align="center">
+            <Timer size={10} className="faint" />
+            <Text size="caption">Auto-rest</Text>
+          </Row>
+          <Switch
+            checked={autoRestEnabled ?? false}
+            onChange={() => onToggleAutoRest?.()}
+          />
+        </Row>
+        <Button type="button" size="sm" className="error-tint" onClick={() => { closeMenu(); onDeleteBlock(blockIds); }}>
+          <Trash2 size={9} /> Delete exercise
+        </Button>
+      </Column>
+    </Modal>
+  );
+
+  if (block.type === 'transition') {
+    const ex = block.exercises[0];
+    const seconds = ex?.cardioSets?.[0]?.durationSeconds ?? ex?.cardioSet?.durationSeconds ?? 0;
+    return (
       <Surface>
         <Column>
-          <Row justify="between" align="center">
-            <Text size="detail">{block.exerciseName}</Text>
-            <Button type="button" variant="ghost" size="icon" onClick={closeMenu}>
-              <X size={10} className="faint" />
+          <Row align="center" justify="between">
+            <Row gap={1} align="center">
+              <Badge dot>Transition</Badge>
+              <Text size="detail">{ex?.name}</Text>
+            </Row>
+            <Button type="button" variant="ghost" size="icon" onClick={() => setMenuOpen(v => !v)}>
+              <MoreVertical size={10} className="faint" />
             </Button>
           </Row>
-          {showRestPicker ? restPickerContent : (
-            <Button type="button" variant="secondary" size="sm" onClick={() => setShowRestPicker(true)}>
-              Rest timer
-            </Button>
-          )}
-          <Button type="button" size="sm" className="warning" onClick={() => { closeMenu(); onDeleteBlock(blockIds); }}>
-            <Trash2 size={9} /> Delete exercise
-          </Button>
+          {menuOpen && blockMenu}
+          <Row gap={1} align="center">
+            <Text size="eyebrow">Duration</Text>
+            <Input
+              type="number"
+              controlClassName="mono num"
+              defaultValue={seconds > 0 ? String(seconds) : ''}
+              placeholder="0"
+              min="0"
+              step="1"
+              onBlur={e => onUpdateCardio(block.id, 'durationSeconds', Math.max(0, parseInt(e.target.value) || 0))}
+            />
+            <Text size="caption" color="muted">sec</Text>
+          </Row>
         </Column>
       </Surface>
-    </div>
-  );
+    );
+  }
 
   if (block.type === 'stretch') {
     return (
@@ -124,6 +182,8 @@ export function BlockCard({
 
   if (block.type === 'cardio') {
     const ex = block.exercises[0];
+    const cardioSets = ex.cardioSets ?? [];
+    const multi = cardioSets.length > 1;
     return (
       <Surface>
         <Column>
@@ -137,10 +197,46 @@ export function BlockCard({
             </Row>
           </Row>
           {menuOpen && blockMenu}
-          <CardioEditor
-            cardioSet={ex.cardioSet ?? null}
-            onUpdate={(field, value) => onUpdateCardio(block.id, field, value)}
-          />
+          {cardioSets.length === 0 ? (
+            <CardioEditor
+              cardioSet={null}
+              onUpdate={(field, value) => onUpdateCardio(block.id, field, value)}
+            />
+          ) : (
+            cardioSets.map((cs, idx) => {
+              const pace = paceSecPerKm(cs.durationSeconds, cs.distanceMeters);
+              return (
+                <Column key={cs.setNumber} gap={1}>
+                  {(multi || onRemoveCardioSet) && (
+                    <Row align="center" justify="between">
+                      <Row gap={1} align="center">
+                        {multi && <Text size="eyebrow">Interval {idx + 1}</Text>}
+                        {pace > 0 && <Text size="caption" color="muted" mono>{formatPace(pace, { suffix: true })}</Text>}
+                      </Row>
+                      {onRemoveCardioSet && (multi || cardioSets.length > 1) && (
+                        <Button type="button" variant="ghost" size="icon" onClick={() => onRemoveCardioSet(block.id, cs.setNumber)}>
+                          <Trash2 size={9} className="faint" />
+                        </Button>
+                      )}
+                    </Row>
+                  )}
+                  <CardioEditor
+                    cardioSet={cs}
+                    onUpdate={(field, value) =>
+                      onUpdateCardioSet
+                        ? onUpdateCardioSet(block.id, cs.setNumber, field, value)
+                        : onUpdateCardio(block.id, field, value)
+                    }
+                  />
+                </Column>
+              );
+            })
+          )}
+          {onAddCardioSet && (
+            <Button type="button" variant="ghost" className="surface pad-sm" onClick={() => onAddCardioSet(block.id)}>
+              <Plus size={10} /> Add interval
+            </Button>
+          )}
         </Column>
       </Surface>
     );
@@ -179,6 +275,8 @@ export function BlockCard({
               ))}
             </Column>
           )}
+          {previousPerformance && <PreviousPerformanceLine performance={previousPerformance} />}
+          {overloadHint && <OverloadHintLine hint={overloadHint} />}
           {ex.comment && <CommentLine text={ex.comment} />}
           {ex.sets?.some(s => s.w !== '—') && (
             <SetsBarChart sets={ex.sets} />
@@ -199,6 +297,8 @@ export function BlockCard({
                   onDeleteRequest={() => onDeleteRequest(block.id, 0, s.id, j)}
                   onUpdate={(kg, reps) => onUpdateSet(block.id, s.setNumber, kg, reps)}
                   onComment={text => onCommentSet(block.id, 0, s.id, text)}
+                  onToggleDropset={onToggleDropset ? () => onToggleDropset(block.id, 0, s.id) : undefined}
+                  onPlateCalculator={onPlateCalculator ? (w) => onPlateCalculator(block.id, w) : undefined}
                   currentMode={getMode(ex)}
                   availableModes={getAvailableModes(ex)}
                   onSetModeChange={mode => setMode(ex, mode)}
@@ -212,7 +312,9 @@ export function BlockCard({
     );
   }
 
-  // Superset / Circuit
+  // Superset / Circuit / EMOM / AMRAP
+  const showRounds = block.type === 'circuit' || block.type === 'emom' || block.type === 'amrap';
+  const rounds = block.rounds ?? 1;
   return (
     <Surface>
       <Column>
@@ -220,6 +322,28 @@ export function BlockCard({
           <Row gap={1} align="center">
             <Text size="caption" color="muted">{blockIndex + 1}.</Text>
             <Badge dot>{block.label}</Badge>
+            {showRounds && onSetRounds && (
+              <Row gap={1} align="center">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  disabled={rounds <= 1}
+                  onClick={() => onSetRounds(blockIds, Math.max(1, rounds - 1))}
+                >
+                  <Minus size={10} className="faint" />
+                </Button>
+                <Text size="caption" mono>{rounds} {rounds === 1 ? 'round' : 'rounds'}</Text>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => onSetRounds(blockIds, rounds + 1)}
+                >
+                  <Plus size={10} className="faint" />
+                </Button>
+              </Row>
+            )}
           </Row>
           <Button type="button" variant="ghost" size="icon" onClick={() => setMenuOpen(v => !v)}>
             <MoreVertical size={10} className="faint" />
@@ -239,6 +363,8 @@ export function BlockCard({
               onAddSet={() => onAddSet(ex.blockId ?? block.id)}
               onUpdateSet={(setNumber, kg, reps) => onUpdateSet(ex.blockId ?? block.id, setNumber, kg, reps)}
               onCommentSet={(setId, text) => onCommentSet(block.id, i, setId, text)}
+              onToggleDropset={onToggleDropset ? setId => onToggleDropset(block.id, i, setId) : undefined}
+              onPlateCalculator={onPlateCalculator ? (w) => onPlateCalculator(block.id, w) : undefined}
               injuries={injuries}
               acknowledged={acknowledged}
               onAcknowledge={onAcknowledge}
