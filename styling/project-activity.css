@@ -40,13 +40,27 @@
 
   /* ── Dot: pain scale — bordered dot with surface base ── */
   &.pain {
-    --dot-size: var(--s-2-5, 10px);
+    --dot-size: var(--s-2-5);
     opacity: 1;
     background: var(--surface-2);
     border: 1px solid var(--line-strong);
 
     &[data-active="true"] { background: var(--bad); border-color: var(--bad); }
+
+    &.pain-control {
+      width: var(--dot-size);
+      min-height: var(--dot-size);
+      padding: 0;
+      border-radius: var(--r-pill);
+    }
   }
+}
+
+/* ── Badge: tinted readiness states (domain aliases for generic ok/warn/bad) ── */
+.badge.tinted {
+  &.good    { background: color-mix(in srgb, var(--ok)   15%, transparent); color: var(--ok); }
+  &.warning { background: color-mix(in srgb, var(--warn) 15%, transparent); color: var(--warn); }
+  &.poor    { background: color-mix(in srgb, var(--bad)  15%, transparent); color: var(--bad); }
 }
 
 /* ── Rarity text colors ── */
@@ -54,6 +68,22 @@
 .color-rare      { color: var(--color-rare); }
 .color-epic      { color: var(--color-epic); }
 .color-legendary { color: var(--color-legendary); }
+
+/* ── IconFrame: sport tones ── */
+.icon-frame {
+  &[data-sport="lift"]   { color: var(--c-strength);  background: color-mix(in srgb, var(--c-strength)  12%, var(--surface-2)); }
+  &[data-sport="run"]    { color: var(--c-cardio);    background: color-mix(in srgb, var(--c-cardio)    12%, var(--surface-2)); }
+  &[data-sport="cycle"]  { color: var(--c-nutrition); background: color-mix(in srgb, var(--c-nutrition) 12%, var(--surface-2)); }
+  &[data-sport="swim"]   { color: var(--c-water);     background: color-mix(in srgb, var(--c-water)     12%, var(--surface-2)); }
+  &[data-sport="rowing"] { color: var(--c-recovery);  background: color-mix(in srgb, var(--c-recovery)  12%, var(--surface-2)); }
+  &[data-sport="mind"]   { color: var(--c-mind);      background: color-mix(in srgb, var(--c-mind)      12%, var(--surface-2)); }
+}
+
+/* ── Sleep stage text colors ── */
+.deep-text  { color: var(--color-sleep-deep-text); }
+.rem-text   { color: var(--color-sleep-rem-text); }
+.light-text { color: var(--color-sleep-light-text); }
+.awake-text { color: var(--color-sleep-awake-text); }
 
 /* ── Avatar: project default portrait gradient ──
    Generic .avatar ships a neutral gradient; this restores the

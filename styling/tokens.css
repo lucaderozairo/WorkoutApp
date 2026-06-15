@@ -13,7 +13,7 @@
   --bad: #e25555;
 
   /* ── Sleep (kepx for existing sleep components) ── */
-  --color-sleep-awake: #8479d9;
+  --color-sleep-awake: #94a3b8;
   --color-sleep-light: #8479d9;
   --color-sleep-deep: #5f538b;
   --color-sleep-rem: #a35acd;
@@ -36,9 +36,10 @@
   --t-lg: 18px;
   --t-xl: 22px;
   --t-2xl: 28px;
-  --t-3xl: 40px;
-  --t-4xl: 56px;
-  --t-5xl: 80px;
+  --t-3xl: 32px;
+  --t-4xl: 40px;
+  --t-5xl: 56px;
+  --t-6xl: 80px;
   --t-emoji-sm: 28px;
   --t-emoji-md: 32px;
   --t-emoji-lg: 36px;
@@ -53,6 +54,8 @@
   --s-6: 32px;
   --s-7: 48px;
   --s-8: 64px;
+  --s-0-5: 2px;
+  --s-2-5: 10px;
 
   /* Backward-compat aliases */
   --spacing-1: var(--s-1);
@@ -144,7 +147,7 @@
      they reference tokens that are themselves theme-aware) */
   --color-primary: var(--accent);
   --color-accent: var(--accent);
-  --color-warning: var(--bad);
+  --color-warning: var(--warn);
   --color-success: var(--ok);
   --color-info: var(--c-recovery);
   --color-surface: var(--surface-2);
@@ -204,6 +207,7 @@
   --z-controls: 2;  /* sticky/fixed nav bars */
   --z-sticky:   3;  /* sticky section headers */
   --z-fixed:    4;  /* fixed banners (e.g. RestTimerAlert) */
+  --z-overlay:  5;  /* widget-context-menu; above --z-fixed. Only for non-Popover overlays. */
 }
 
 [data-theme="light"] {
@@ -215,9 +219,9 @@
 
 [data-theme="dark"] {
   color-scheme: dark;
-  --shadow-1: 0 1px 2px rgba(0, 2, 18, 0.6);
-  --shadow-2: 0 8px 32px rgba(0, 2, 18, 0.85);
-  --box-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-1: 0 1px 2px rgba(0, 4, 28, 0.72), 0 1px 1px rgba(0, 4, 28, 0.5);
+  --shadow-2: 0 8px 32px rgba(0, 4, 28, 0.9), 0 2px 6px rgba(0, 4, 28, 0.65);
+  --box-shadow-md: 0 4px 12px rgba(0, 4, 28, 0.72);
 }
 
 /* ════════════════════════════════════════════

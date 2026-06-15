@@ -1,6 +1,102 @@
+/* ── Widget grid — 2-col; full/compact modifiers on children ── */
+.home-widget-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-2);
+}
+
+.home-widget {
+  display: grid;
+  gap: var(--s-3);
+  min-height: 100px;
+
+  &.full    { grid-column: 1 / -1; }
+  &.compact { min-height: 116px; }
+  &.centered { justify-items: center; text-align: center; }
+
+  /* Taller multi-segment bar for the sleep widget context */
+  .bar.multi {
+    height: 22px;
+    border-radius: var(--r-sm);
+  }
+}
+
+/* ── Sleep widget internals ── */
+.sleep-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--s-3);
+  align-items: start;
+}
+
+.sleep-stage-labels {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s-2);
+}
+
+.stage-label {
+  display: grid;
+  gap: var(--s-1);
+  min-width: 0;
+  text-align: center;
+
+  strong { font-size: var(--t-sm); font-weight: 700; }
+}
+
+/* ── Score circle (e.g. sleep score) ── */
+.score-circle {
+  --score-color: var(--accent);
+
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-pill);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: var(--t-lg);
+  border: 2px solid color-mix(in srgb, var(--score-color) 40%, transparent);
+  background: color-mix(in srgb, var(--score-color) 12%, var(--surface-1));
+  color: var(--score-color);
+
+  &[data-tone="sleep"] { --score-color: var(--color-sleep-rem); }
+  &[data-tone="ok"]    { --score-color: var(--ok); }
+  &[data-tone="warn"]  { --score-color: var(--warn); }
+  &[data-tone="bad"]   { --score-color: var(--bad); }
+}
+
+/* ── Status word (readiness label) ── */
+.status-word {
+  font-size: var(--t-xs);
+  font-weight: 700;
+
+  &[data-tone="ok"]   { color: var(--ok); }
+  &[data-tone="warn"] { color: var(--warn); }
+  &[data-tone="bad"]  { color: var(--bad); }
+}
+
+/* ── Streak ── */
+.streak-icon { color: var(--warn); }
+
+/* ── Session card ── */
+.session-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.stat-tile-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s-2);
+}
+
 /* ── Sleep stages bar — extends .bar.multi; gap not tokenised (2px between segments) ── */
 .sleep-stages {
-  gap: 2px;
+  gap: var(--s-0-5);
 
   .sleep-stage-seg {
     &[data-stage="deep"]  { flex: 1.5; background: var(--c-recovery); }
@@ -45,9 +141,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: var(--t-xs);
-  font-weight: 600;
-  color: var(--ink);
 }
 
 /* ── Macro segments — domain fill colors for .bar.multi children ── */
@@ -66,18 +159,7 @@
 }
 
 /* ── Insight text ── */
-.home-widget-insight {
-  font-size: var(--t-sm);
-  line-height: var(--lh-normal);
-  color: var(--ink);
-}
-
 /* ── Upcoming time — typography only; layout via .spacer.shrink-0 in JSX ── */
-.upcoming-time {
-  font-size: var(--t-sm);
-  color: var(--ink-muted);
-}
-
 /* ── This Week dots — extends .dot atom ── */
 .week-dot {
   --dot-size: 24px;
