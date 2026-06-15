@@ -173,3 +173,29 @@
   &[data-today]  { border-color: var(--accent); }
   &[data-future] { opacity: 0.4; }
 }
+
+/* ── Widget grid (moved from layout — domain vocab belongs in project layer) ── */
+.widget-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-2);
+}
+
+.widget-cell {
+  min-width: 0;
+}
+
+.widget-add-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  padding: var(--s-3);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--r-md);
+  color: var(--ink-muted);
+  background: var(--surface-1);
+  cursor: pointer;
+
+  &:hover { background: var(--surface-2); }
+}
