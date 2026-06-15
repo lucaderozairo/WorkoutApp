@@ -44,9 +44,10 @@
   }
   &.modal-sm { max-width: var(--modal-sm); }
   &.modal-lg { max-width: var(--modal-lg); }
-}
-@starting-style {
-  .modal:popover-open { opacity: 0; transform: translateY(12px); }
+
+  @starting-style {
+    &:popover-open { opacity: 0; transform: translateY(12px); }
+  }
 }
 
 .drawer {
@@ -82,11 +83,11 @@
     opacity: 1;
     transform: translateX(0);
   }
-}
 
-@starting-style {
-  .drawer.drawer-right:popover-open { opacity: 0; transform: translateX(12px); }
-  .drawer.drawer-left:popover-open { opacity: 0; transform: translateX(-12px); }
+  @starting-style {
+    &.drawer-right:popover-open { opacity: 0; transform: translateX(12px); }
+    &.drawer-left:popover-open  { opacity: 0; transform: translateX(-12px); }
+  }
 }
 
 /* ── Action sheet — bottom-pinned variant ── */
@@ -153,7 +154,10 @@
   }
 }
 
-.filter-panel { min-width: 280px; }
+/* Standalone filter-panel popover — not inside .dropdown */
+.filter-panel {
+  min-width: 280px;
+}
 
 /* ── Bottom sheet — mobile snap container ── */
 .bottom-sheet {

@@ -1,0 +1,45 @@
+.card-scroller {
+  container-type: inline-size;
+
+  & .card-scroller-track {
+    --card-scroller-card-width: min(74vw, 320px);
+
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: var(--card-scroller-card-width);
+    gap: var(--s-3);
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    padding: var(--s-1) var(--s-1) var(--s-3);
+    scroll-behavior: smooth;
+    scroll-padding-inline: var(--s-1);
+    scroll-snap-type: inline mandatory;
+    scrollbar-color: var(--line-strong) transparent;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+
+    &[data-gap="0"] { gap: 0; }
+    &[data-gap="1"] { gap: var(--s-1); }
+    &[data-gap="2"] { gap: var(--s-2); }
+    &[data-gap="4"] { gap: var(--s-4); }
+    &[data-gap="5"] { gap: var(--s-5); }
+
+    @media (prefers-reduced-motion: reduce) {
+      scroll-behavior: auto;
+    }
+  }
+
+  @container (min-width: 720px) {
+    .card-scroller-track {
+      --card-scroller-card-width: minmax(300px, 0.34fr);
+    }
+  }
+}
+
+.card-scroller {
+  & .card-scroller-controls {
+    @media (max-width: 780px) {
+      display: none;
+    }
+  }
+}

@@ -26,8 +26,11 @@
   &.ok     { --badge-color: var(--ok); }
   &.warn   { --badge-color: var(--warn); }
   &.bad    { --badge-color: var(--bad); }
-  &.accent { background: var(--accent); color: var(--accent-ink); }
-  &.accent .dot { --dot-color: var(--accent-ink); }
+  &.accent {
+    background: var(--accent);
+    color: var(--accent-ink);
+    & .dot { --dot-color: var(--accent-ink); }
+  }
 
   /* Tinted: colored bg + text instead of dot-only. Domain name aliases live in project-activity.css */
   &.tinted {
