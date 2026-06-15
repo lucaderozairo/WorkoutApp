@@ -1,5 +1,5 @@
 /* ── Base button ── */
-:is(.button, .choice-card, input[type="button"], input[type="submit"], input[type="reset"], .custom-file-upload) {
+:is(button, .button, .choice-card, input[type="button"], input[type="submit"], input[type="reset"], .custom-file-upload) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -39,7 +39,7 @@
     color: var(--accent-ink);
     border-color: transparent;
     font-weight: 600;
-    &:not(:disabled):hover { filter: brightness(0.95); }
+    &:not(:disabled):hover { filter: brightness(0.88); transform: translateY(-1px); }
   }
 
   &.secondary {
@@ -76,6 +76,7 @@
   &.sm   { min-height: 32px; padding: var(--s-2) var(--s-3); font-size: var(--t-xs); }
   &.lg   { min-height: 48px; padding: var(--s-3) var(--s-5); font-size: var(--t-md); }
   &.icon { width: 40px; min-height: 40px; padding: 0; border-radius: var(--s-3); }
+  &.fab  { width: 56px; min-height: 56px; border-radius: var(--r-pill); box-shadow: var(--shadow-2); }
   &.block { width: 100%; }
   &.active { background: var(--surface-2); border-color: var(--line-strong); }
 
@@ -89,11 +90,9 @@
 }
 
 /* ── File upload ── */
-.custom-file-upload { background: var(--surface-1); color: var(--ink); }
 input[type="file"]  { display: none; }
 
 /* ── Form action buttons ── */
-input[type="submit"] { flex: 1 1 0; }
 input[type="reset"] {
   color: var(--ink-muted);
   border-color: var(--line-strong);

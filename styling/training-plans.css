@@ -55,11 +55,6 @@
   margin-top: var(--s-2);
 }
 
-/* ── Dashed outline button modifier ── */
-.dashed {
-  border-style: dashed;
-}
-
 .schedule-event-block {
   border-radius: var(--r-sm);
   padding: var(--s-2) var(--s-3);

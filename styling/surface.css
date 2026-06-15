@@ -6,16 +6,10 @@
   display: block;
   padding: var(--s-3);
 
-  &.pad-sm {
-    padding: var(--s-2);
-  }
-  &.pad-xs {
-    padding: var(--s-1);
-  }
-  &.pad-none {
-    padding: 0;
-    overflow: hidden;
-  }
+  &.pad-sm  { padding: var(--s-2); }
+  &.pad-xs  { padding: var(--s-1); }
+  &.pad-none { padding: 0; overflow: hidden; }
+  &.r-sm    { border-radius: var(--r-sm); }
 
   /* ── Visual variants ── */
   &.plain {
@@ -59,16 +53,11 @@
       background var(--duration-short) var(--ease),
       box-shadow var(--duration-short) var(--ease);
     &:hover {
-      background: color-mix(in srgb, var(--surface-1), var(--ink) 5%);
+      background: color-mix(in srgb, var(--surface-1), var(--ink) 8%);
     }
     &:active {
-      background: color-mix(in srgb, var(--surface-1), var(--ink) 10%);
+      background: color-mix(in srgb, var(--surface-1), var(--ink) 14%);
     }
   }
 
-  @media (max-width: 360px) {
-    padding: var(--s-3);
-    min-height: unset;
-    gap: var(--s-2);
-  }
 }

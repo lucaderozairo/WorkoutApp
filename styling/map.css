@@ -29,8 +29,6 @@
 }
 
 .route-map-canvas {
-  width: 100%;
-  height: 100%;
   position: absolute;
   inset: 0;
 }
@@ -98,4 +96,78 @@
   padding: var(--s-1) var(--s-2) !important;
 
   a { color: var(--accent) !important; }
+}
+
+/* Route preview map overrides: Leaflet injects these nodes outside our component classes. */
+.route-explore-map {
+  & .map-root,
+  & .layered,
+  & .layer,
+  & .route-map-canvas {
+    width: 100%;
+    height: 100%;
+    min-height: inherit;
+  }
+
+  & .leaflet-container {
+    background: var(--surface-2);
+    font-family: var(--font-ui);
+    cursor: pointer;
+  }
+
+  & .leaflet-tile-pane {
+    filter: saturate(0.88) contrast(0.96);
+  }
+
+  & .leaflet-overlay-pane svg {
+    overflow: visible;
+  }
+
+  & .leaflet-overlay-pane path {
+    stroke: var(--accent) !important;
+    stroke-width: var(--route-map-line-width) !important;
+    stroke-dasharray: none !important;
+    stroke-opacity: 1 !important;
+    opacity: 1 !important;
+    filter:
+      drop-shadow(0 0 1px var(--surface-1))
+      drop-shadow(0 2px 2px rgb(14 19 32 / 0.58));
+    vector-effect: non-scaling-stroke;
+  }
+
+  & .leaflet-marker-icon.route-anchor {
+    display: grid !important;
+    place-items: center;
+    width: var(--route-map-anchor-size) !important;
+    height: var(--route-map-anchor-size) !important;
+    margin-left: var(--route-map-anchor-offset) !important;
+    margin-top: var(--route-map-anchor-offset) !important;
+    background: transparent !important;
+    border: 0 !important;
+    opacity: 1 !important;
+    pointer-events: none !important;
+  }
+
+  & .leaflet-marker-icon.route-anchor .dot {
+    display: block !important;
+    width: var(--route-map-dot-size) !important;
+    height: var(--route-map-dot-size) !important;
+    border: var(--route-map-dot-border) solid var(--surface-1) !important;
+    border-radius: var(--r-pill) !important;
+    background: var(--accent) !important;
+    box-shadow: var(--route-map-dot-shadow) !important;
+    opacity: 1 !important;
+  }
+
+  & .leaflet-marker-icon.route-anchor.start .dot {
+    background: var(--ok) !important;
+  }
+
+  & .leaflet-marker-icon.route-anchor.end .dot {
+    background: var(--bad) !important;
+  }
+
+  & .leaflet-control-container {
+    display: none;
+  }
 }

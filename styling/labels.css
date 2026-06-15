@@ -4,10 +4,6 @@
 /* ════════════════════════════════════════════
    BADGE — status/category label with optional dot
    ════════════════════════════════════════════ */
-.label {
-  color: var(--ink);
-}
-
 .badge {
   gap: var(--s-2);
   padding: var(--s-1) var(--s-3);

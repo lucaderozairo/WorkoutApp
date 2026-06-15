@@ -12,8 +12,6 @@
   overflow-x: auto;
   flex-wrap: nowrap;
   white-space: nowrap;
-  -webkit-overflow-scrolling: touch;
-
   & .pill { flex-shrink: 0; }
 }
 
@@ -61,8 +59,8 @@
 .bottom-banner {
   position: fixed;
   bottom: calc(var(--nav-height) + var(--s-1));
-  left: var(--s-2, 12px);
-  right: var(--s-2, 12px);
+  left: var(--s-2);
+  right: var(--s-2);
   z-index: var(--z-fixed);
   overflow: hidden;
 }

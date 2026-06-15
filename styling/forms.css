@@ -81,13 +81,6 @@ input[type="range"]  { padding: 0; }
 
 .field-label-row {
   width: 100%;
-
-  & label,
-  & legend {
-    color: var(--ink);
-    font-size: var(--t-sm);
-    font-weight: 600;
-  }
 }
 
 .field-control {
@@ -224,7 +217,4 @@ input[type="range"]  { padding: 0; }
   min-width: 0;
 }
 
-.choice-title {
-  color: var(--ink);
-  font-weight: 600;
-}
+
