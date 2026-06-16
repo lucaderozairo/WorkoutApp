@@ -65,38 +65,17 @@
 
 .toggle,
 .breadcrumb-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--s-2);
   min-height: 40px;
-  padding: var(--s-1) var(--s-3);
-  font-family: var(--font-ui);
-  font-size: var(--t-sm);
-  font-weight: 500;
-  color: var(--ink);
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: var(--r-sm);
-  cursor: pointer;
+  background: transparent;     /* override button base surface-1 */
+  border-color: transparent;   /* override button base line-strong */
+  border-radius: var(--r-sm);  /* override button base --s-2 */
   transition:
     background-color var(--duration-short) var(--ease),
     border-color var(--duration-short) var(--ease),
-    color var(--duration-short) var(--ease),
+    color var(--duration-short) var(--ease), /* button base doesn't include color */
     transform var(--duration-short) var(--ease);
 
-  &:disabled {
-    cursor: default;
-    color: var(--ink-faint);
-  }
-
-  &:not(:disabled):hover {
-    background: var(--surface-2);
-  }
-
-  &:active {
-    transform: scale(0.98);
-  }
+  &:disabled { color: var(--ink-faint); } /* button base only sets cursor; add color */
 }
 
 .toggle-group {
@@ -199,42 +178,27 @@
 }
 
 .tab {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0;
-  background: var(--surface-1);
-  border: none;
-  box-shadow: none;
-  padding: var(--s-2);
-  font-family: var(--font-ui);
-  font-size: var(--t-sm);
-  font-weight: 500;
-  color: var(--ink-muted);
-  cursor: pointer;
+  border-radius: 0;                        /* override button base --s-2 */
+  border: none;                            /* override button base 1px solid */
   border-bottom: 2px solid transparent;
+  box-shadow: none;
+  padding: var(--s-2);                     /* override button base --s-1 --s-3 */
+  color: var(--ink-muted);                 /* override button base --ink */
   min-height: 40px;
   transition:
     background-color 0.12s var(--ease),
     color 0.12s var(--ease),
     border-color 0.12s var(--ease);
 
-  &:first-child {
-    border-top-left-radius: var(--r-sm);
-  }
-  &:last-child {
-    border-top-right-radius: var(--r-sm);
-  }
+  &:first-child { border-top-left-radius: var(--r-sm); }
+  &:last-child  { border-top-right-radius: var(--r-sm); }
 
   &.active {
     color: var(--ink);
     border-bottom-color: var(--accent);
-    background: var(--surface-1);
   }
 
-  &:hover:not(.active) {
-    background: var(--surface-2);
-  }
+  &:hover:not(.active) { background: var(--surface-2); }
 }
 
 .search-input {
