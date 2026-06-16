@@ -199,8 +199,7 @@ export function HomeChecklistWidget() {
 export function HomeWeatherWidget() {
   return (
     <Surface pad="sm" className="home-widget full" aria-labelledby="hw-weather-title">
-          <Column gap={2} className="min-w-0">
-            <Text size="eyebrow" id="hw-weather-title">Weather</Text>
+      <Text size="eyebrow" id="hw-weather-title">Weather</Text>
       <Row align="center" justify="between" gap={3}>
         <Row align="center" gap={3} className="min-w-0">
           <IconFrame size="xl" tone="accent">
@@ -229,7 +228,6 @@ export function HomeWeatherWidget() {
           </Column>
         </Row>
       </Row>
-      </Column>
     </Surface>
   );
 }
