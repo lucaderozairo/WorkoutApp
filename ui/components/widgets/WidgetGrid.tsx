@@ -1,26 +1,42 @@
-import { useWidgetGrid } from './useWidgetGrid';
 import { WIDGET_REGISTRY } from './widgetRegistry';
 import { WidgetContextMenu } from './WidgetContextMenu';
 import { WidgetAddPanel } from './WidgetAddPanel';
+import { Button } from '@ui/molecules';
+import type { ContextMenuState, WidgetDef, WidgetInstance, WidgetSize } from './widgetTypes';
 
-export function WidgetGrid() {
-  const {
-    widgets,
-    contextMenu,
-    setContextMenu,
-    addPanelOpen,
-    setAddPanelOpen,
-    activeIds,
-    setSize,
-    removeWidget,
-    addWidget,
-    handleDragStart,
-    handleDrop,
-    openContextMenu,
-    startLongPress,
-    cancelLongPress,
-  } = useWidgetGrid(WIDGET_REGISTRY);
+interface WidgetGridProps {
+  widgets: WidgetInstance[];
+  contextMenu: ContextMenuState | null;
+  setContextMenu: (v: ContextMenuState | null) => void;
+  addPanelOpen: boolean;
+  setAddPanelOpen: (v: boolean) => void;
+  activeIds: Set<string>;
+  setSize: (instanceId: string, size: WidgetSize) => void;
+  removeWidget: (instanceId: string) => void;
+  addWidget: (id: string) => void;
+  handleDragStart: (instanceId: string) => void;
+  handleDrop: (targetInstanceId: string) => void;
+  openContextMenu: (e: React.MouseEvent, instanceId: string) => void;
+  startLongPress: (e: React.PointerEvent, instanceId: string) => void;
+  cancelLongPress: () => void;
+}
 
+export function WidgetGrid({
+  widgets,
+  contextMenu,
+  setContextMenu,
+  addPanelOpen,
+  setAddPanelOpen,
+  activeIds,
+  setSize,
+  removeWidget,
+  addWidget,
+  handleDragStart,
+  handleDrop,
+  openContextMenu,
+  startLongPress,
+  cancelLongPress,
+}: WidgetGridProps) {
   const contextInstance = contextMenu
     ? widgets.find(w => w.instanceId === contextMenu.instanceId)
     : null;
@@ -54,14 +70,15 @@ export function WidgetGrid() {
           );
         })}
 
-        <button
+        <Button
           type="button"
+          variant="ghost"
           className="widget-add-tile"
           onClick={() => setAddPanelOpen(true)}
           aria-label="Add widget"
         >
           +
-        </button>
+        </Button>
       </div>
 
       {contextMenu && contextInstance && contextDef && (

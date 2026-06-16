@@ -1,0 +1,3776 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Dashboard Suite</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/font/css/geist.min.css">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --bg: oklch(97% 0.005 240);
+      --surface: oklch(100% 0 0);
+      --surface-2: oklch(95% 0.004 240);
+      --surface-3: oklch(93% 0.005 242);
+      --fg: oklch(18% 0.012 250);
+      --fg-secondary: oklch(40% 0.012 250);
+      --muted: oklch(54% 0.012 250);
+      --border: oklch(92% 0.005 250);
+      --accent: oklch(66% 0.16 235);
+      --accent-hover: oklch(60% 0.18 235);
+      --accent-light: oklch(90% 0.06 235);
+      --accent-gradient: linear-gradient(135deg, oklch(66% 0.16 235), oklch(56% 0.18 245));
+      --success: oklch(60% 0.18 145);
+      --success-light: oklch(88% 0.08 145);
+      --warn: oklch(70% 0.16 85);
+      --warn-light: oklch(92% 0.08 85);
+      --danger: oklch(55% 0.22 25);
+      --danger-light: oklch(90% 0.08 25);
+      --purple: oklch(62% 0.18 280);
+      --purple-light: oklch(90% 0.06 280);
+      --teal: oklch(70% 0.16 200);
+      --teal-light: oklch(88% 0.08 200);
+      --indigo: oklch(60% 0.14 260);
+      --indigo-light: oklch(88% 0.06 260);
+      --font-display: 'Geist', 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      --font-body: 'Geist', 'SF Pro Text', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      --font-mono: 'Geist Mono', 'JetBrains Mono', ui-monospace, Menlo, monospace;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --shadow-sm: 0 1px 2px oklch(0% 0 0 / 6%);
+      --shadow-md: 0 2px 8px oklch(0% 0 0 / 8%);
+      --shadow-lg: 0 4px 20px oklch(0% 0 0 / 10%);
+      --nav-width: 240px;
+      --content-max: 960px;
+      --z-nav: 100;
+      --z-overlay: 200;
+      --z-fab: 60;
+      --transition-fast: .15s;
+      --transition-med: .25s;
+      --transition-slow: .4s
+    }
+
+    .dark {
+      --bg: oklch(14% 0.025 260);
+      --surface: oklch(18% 0.025 260);
+      --surface-2: oklch(22% 0.025 260);
+      --surface-3: oklch(25% 0.025 260);
+      --fg: oklch(95% 0.005 240);
+      --fg-secondary: oklch(80% 0.005 240);
+      --muted: oklch(60% 0.005 240);
+      --border: oklch(26% 0.025 260);
+      --accent-light: oklch(30% 0.08 235);
+      --success-light: oklch(28% 0.08 145);
+      --warn-light: oklch(30% 0.08 85);
+      --danger-light: oklch(30% 0.08 25);
+      --purple-light: oklch(28% 0.06 280);
+      --teal-light: oklch(28% 0.06 200);
+      --indigo-light: oklch(26% 0.05 260);
+      --shadow-sm: 0 1px 2px oklch(0% 0 0 / 20%);
+      --shadow-md: 0 2px 8px oklch(0% 0 0 / 30%);
+      --shadow-lg: 0 4px 20px oklch(0% 0 0 / 35%)
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: inherit;
+      font-size: inherit
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none
+    }
+
+    input,
+    select,
+    textarea {
+      font-family: var(--font-body);
+      font-size: 14px;
+      background: var(--surface);
+      color: var(--fg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      outline: none;
+      transition: border-color .2s;
+      width: 100%
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--accent)
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px
+    }
+
+    .app-shell {
+      display: flex;
+      min-height: 100vh
+    }
+
+    .nav {
+      width: var(--nav-width);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: var(--z-nav);
+      overflow-y: auto;
+      transition: transform .3s
+    }
+
+    .nav-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .nav-close {
+      display: none
+    }
+
+    .nav-body {
+      flex: 1;
+      padding: 12px 0
+    }
+
+    .nav-footer {
+      padding: 12px 20px;
+      border-top: 1px solid var(--border)
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--fg-secondary);
+      width: 100%;
+      text-align: left;
+      transition: background .15s, color .15s;
+      min-height: 44px
+    }
+
+    .nav-item:hover {
+      background: var(--surface-2);
+      color: var(--fg)
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+      background: var(--accent-light)
+    }
+
+    .nav-item.indent {
+      padding-left: 52px;
+      font-weight: 400;
+      font-size: 13px
+    }
+
+    .nav-item .nav-item-icon {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .nav-item.indent .nav-item-icon {
+      width: 16px;
+      height: 16px
+    }
+
+    .nav-category-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      width: 100%;
+      text-align: left;
+      min-height: 44px
+    }
+
+    .nav-category-header:hover {
+      color: var(--fg)
+    }
+
+    .nav-chevron {
+      margin-left: auto;
+      width: 16px;
+      height: 16px;
+      transition: transform .2s;
+      flex-shrink: 0
+    }
+
+    .nav-category-header.expanded .nav-chevron {
+      transform: rotate(180deg)
+    }
+
+    .nav-sublist {
+      overflow: hidden;
+      transition: max-height .25s;
+      max-height: 0
+    }
+
+    .nav-sublist.open {
+      max-height: 500px
+    }
+
+    .main {
+      flex: 1;
+      margin-left: var(--nav-width);
+      min-height: 100vh
+    }
+
+    .top-bar {
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 10
+    }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: 600;
+      flex: 1
+    }
+
+    .icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      transition: background .15s;
+      flex-shrink: 0
+    }
+
+    .icon-btn:hover {
+      background: var(--surface-2)
+    }
+
+    .view {
+      display: none;
+      padding: 24px;
+      max-width: var(--content-max);
+      margin: 0 auto
+    }
+
+    .view.active {
+      display: block
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px
+    }
+
+    .section-desc {
+      font-size: 13px;
+      color: var(--fg-secondary);
+      margin-bottom: 16px
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: var(--shadow-sm)
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--fg-secondary)
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 12px
+    }
+
+    .metric-tile {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 4px
+    }
+
+    .metric-tile .metric-label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500
+    }
+
+    .metric-tile .metric-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--fg);
+      line-height: 1.1
+    }
+
+    .metric-tile .metric-change {
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px
+    }
+
+    .metric-tile .metric-change.up {
+      color: var(--success)
+    }
+
+    .metric-tile .metric-change.down {
+      color: var(--danger)
+    }
+
+    .sparkline {
+      width: 100%;
+      height: 32px;
+      margin-top: 8px
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+      transition: background .15s, color .15s;
+      min-height: 44px
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover)
+    }
+
+    .btn-secondary {
+      background: var(--surface-2);
+      color: var(--fg)
+    }
+
+    .btn-secondary:hover {
+      background: var(--border)
+    }
+
+    .btn-ghost {
+      color: var(--fg-secondary)
+    }
+
+    .btn-ghost:hover {
+      background: var(--surface-2);
+      color: var(--fg)
+    }
+
+    .btn-sm {
+      padding: 4px 10px;
+      font-size: 12px;
+      min-height: 32px
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600
+    }
+
+    .badge-accent {
+      background: var(--accent-light);
+      color: var(--accent)
+    }
+
+    .badge-success {
+      background: var(--success-light);
+      color: var(--success)
+    }
+
+    .badge-warn {
+      background: var(--warn-light);
+      color: var(--warn)
+    }
+
+    .badge-danger {
+      background: var(--danger-light);
+      color: var(--danger)
+    }
+
+    .badge-purple {
+      background: var(--purple-light);
+      color: var(--purple)
+    }
+
+    .bubble {
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      max-width: 80%;
+      font-size: 14px;
+      line-height: 1.4
+    }
+
+    .bubble-sent {
+      background: var(--accent);
+      color: #fff;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px
+    }
+
+    .bubble-received {
+      background: var(--surface-2);
+      color: var(--fg);
+      align-self: flex-start;
+      border-bottom-left-radius: 4px
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 14px;
+      flex-shrink: 0
+    }
+
+    .avatar-sm {
+      width: 32px;
+      height: 32px;
+      font-size: 12px
+    }
+
+    .avatar-lg {
+      width: 64px;
+      height: 64px;
+      font-size: 22px
+    }
+
+    .readiness-ring {
+      width: 140px;
+      height: 140px
+    }
+
+    .readiness-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 20px
+    }
+
+    .readiness-sub {
+      font-size: 13px;
+      color: var(--fg-secondary);
+      margin-top: 4px
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: var(--surface-2);
+      border-radius: 999px;
+      overflow: hidden
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width .6s
+    }
+
+    .progress-fill.accent {
+      background: var(--accent)
+    }
+
+    .progress-fill.success {
+      background: var(--success)
+    }
+
+    .progress-fill.warn {
+      background: var(--warn)
+    }
+
+    .bar-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 160px;
+      padding: 0 8px
+    }
+
+    .bar-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      height: 100%
+    }
+
+    .bar-track {
+      flex: 1;
+      width: 100%;
+      background: var(--surface-2);
+      border-radius: 4px 4px 0 0;
+      position: relative;
+      display: flex;
+      align-items: flex-end
+    }
+
+    .bar-fill {
+      width: 100%;
+      background: var(--accent);
+      border-radius: 4px 4px 0 0;
+      transition: height .5s;
+      min-height: 4px
+    }
+
+    .bar-label {
+      font-size: 11px;
+      color: var(--muted)
+    }
+
+    .bar-value {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--fg-secondary)
+    }
+
+    .tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: none;
+      z-index: 50;
+      padding: 4px 0 env(safe-area-inset-bottom, 4px)
+    }
+
+    .tab-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 6px 0;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--muted);
+      transition: color .15s;
+      min-height: 56px
+    }
+
+    .tab-item.active {
+      color: var(--accent)
+    }
+
+    .tab-item svg {
+      width: 22px;
+      height: 22px
+    }
+
+    .fab {
+      position: fixed;
+      bottom: 76px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: var(--z-fab);
+      box-shadow: 0 4px 14px var(--accent);
+      cursor: pointer;
+      transition: transform .2s
+    }
+
+    .fab:hover {
+      transform: scale(1.05)
+    }
+
+    .fab.show {
+      display: flex
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: oklch(0% 0 0 / 40%);
+      z-index: var(--z-overlay);
+      display: none
+    }
+
+    .overlay.show {
+      display: block
+    }
+
+    .session-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      gap: 14px
+    }
+
+    .session-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .session-info {
+      flex: 1;
+      min-width: 0
+    }
+
+    .session-title {
+      font-size: 14px;
+      font-weight: 600
+    }
+
+    .session-meta {
+      font-size: 12px;
+      color: var(--fg-secondary);
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap
+    }
+
+    .session-stats {
+      text-align: right;
+      flex-shrink: 0
+    }
+
+    .session-stats .stat-value {
+      font-size: 16px;
+      font-weight: 700
+    }
+
+    .session-stats .stat-label {
+      font-size: 11px;
+      color: var(--muted)
+    }
+
+    .session-date-header {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      padding: 16px 0 8px;
+      margin-top: 8px;
+      border-top: 1px solid var(--border)
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px
+    }
+
+    .filter-bar input {
+      flex: 1;
+      min-width: 160px
+    }
+
+    .filter-bar select {
+      width: auto;
+      min-width: 120px;
+      padding: 8px 10px
+    }
+
+    .route-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 8px
+    }
+
+    .route-name {
+      font-size: 15px;
+      font-weight: 600
+    }
+
+    .route-stats {
+      display: flex;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--fg-secondary)
+    }
+
+    .route-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap
+    }
+
+    .notif-item {
+      display: flex;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start
+    }
+
+    .notif-item:last-child {
+      border-bottom: none
+    }
+
+    .notif-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0
+    }
+
+    .notif-body {
+      flex: 1;
+      min-width: 0
+    }
+
+    .notif-text {
+      font-size: 14px;
+      margin-bottom: 2px
+    }
+
+    .notif-time {
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    .forecast-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .forecast-card:last-child {
+      border-bottom: none
+    }
+
+    .forecast-day {
+      width: 80px;
+      font-size: 13px;
+      font-weight: 500;
+      flex-shrink: 0
+    }
+
+    .forecast-temp {
+      display: flex;
+      gap: 8px;
+      font-size: 13px
+    }
+
+    .forecast-temp .high {
+      font-weight: 600
+    }
+
+    .forecast-temp .low {
+      color: var(--muted)
+    }
+
+    .suitability {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px
+    }
+
+    .suitability .badge {
+      font-size: 12px;
+      padding: 4px 12px
+    }
+
+    .achievement-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 12px 0
+    }
+
+    .achievement-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 16px 8px;
+      background: var(--surface-2);
+      border-radius: var(--radius-md);
+      text-align: center
+    }
+
+    .ach-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px
+    }
+
+    .ach-name {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--fg-secondary)
+    }
+
+    .goal-item {
+      margin-bottom: 16px
+    }
+
+    .goal-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 13px
+    }
+
+    .goal-label {
+      font-weight: 500
+    }
+
+    .goal-progress {
+      font-size: 12px;
+      color: var(--fg-secondary)
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 16px
+    }
+
+    .cal-header {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      padding: 4px 0
+    }
+
+    .cal-day {
+      text-align: center;
+      padding: 8px 4px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      position: relative
+    }
+
+    .cal-day.has-activity {
+      background: var(--accent-light);
+      color: var(--accent);
+      font-weight: 600
+    }
+
+    .cal-day.today {
+      border: 1px solid var(--accent)
+    }
+
+    .cal-day.other-month {
+      color: var(--border)
+    }
+
+    .plan-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 12px
+    }
+
+    .plan-name {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px
+    }
+
+    .plan-desc {
+      font-size: 13px;
+      color: var(--fg-secondary);
+      margin-bottom: 12px
+    }
+
+    .plan-phases {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap
+    }
+
+    .phase-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0
+    }
+
+    .phase-dot.completed {
+      background: var(--success)
+    }
+
+    .phase-dot.active {
+      background: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-light)
+    }
+
+    .phase-dot.upcoming {
+      background: var(--border)
+    }
+
+    .phase-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-left: 4px
+    }
+
+    .type-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px
+    }
+
+    .type-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 20px 8px;
+      background: var(--surface-2);
+      border: 2px solid transparent;
+      border-radius: var(--radius-md);
+      transition: all .15s;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--fg-secondary);
+      min-height: 80px
+    }
+
+    .type-item:hover {
+      border-color: var(--border);
+      background: var(--surface)
+    }
+
+    .type-item.selected {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      color: var(--accent)
+    }
+
+    .type-item svg {
+      width: 28px;
+      height: 28px
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px
+    }
+
+    .meta-item {
+      background: var(--surface-2);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      text-align: center
+    }
+
+    .meta-value {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.2
+    }
+
+    .meta-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px
+    }
+
+    .split-row {
+      display: flex;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px
+    }
+
+    .split-row:last-child {
+      border-bottom: none
+    }
+
+    .split-row .split-km {
+      width: 50px;
+      font-weight: 600;
+      flex-shrink: 0
+    }
+
+    .split-row .split-stat {
+      flex: 1;
+      text-align: center;
+      color: var(--fg-secondary)
+    }
+
+    .form-group {
+      margin-bottom: 14px
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 4px;
+      color: var(--fg-secondary)
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .settings-group {
+      margin-bottom: 24px
+    }
+
+    .settings-group-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .settings-row:last-child {
+      border-bottom: none
+    }
+
+    .settings-label {
+      font-size: 14px
+    }
+
+    .settings-value {
+      font-size: 14px;
+      color: var(--fg-secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background: var(--border);
+      border-radius: 12px;
+      flex-shrink: 0
+    }
+
+    .toggle.on {
+      background: var(--accent)
+    }
+
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform .2s
+    }
+
+    .toggle.on::after {
+      transform: translateX(20px)
+    }
+
+    .post-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow-sm)
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px
+    }
+
+    .post-user {
+      font-weight: 600;
+      font-size: 14px
+    }
+
+    .post-time {
+      font-size: 12px;
+      color: var(--muted);
+      margin-left: auto
+    }
+
+    .post-content {
+      font-size: 14px;
+      margin-bottom: 10px;
+      line-height: 1.5
+    }
+
+    .post-stats {
+      display: flex;
+      gap: 16px;
+      padding: 8px 0;
+      margin: 10px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--fg-secondary)
+    }
+
+    .post-actions {
+      display: flex;
+      gap: 8px
+    }
+
+    .post-actions .btn {
+      flex: 1;
+      justify-content: center
+    }
+
+    .conv-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+      color: inherit;
+      font-size: inherit
+    }
+
+    .conv-item:hover {
+      background: var(--surface-2)
+    }
+
+    .conv-item.active {
+      background: var(--accent-light)
+    }
+
+    .conv-info {
+      flex: 1;
+      min-width: 0
+    }
+
+    .conv-name {
+      font-weight: 600;
+      font-size: 14px
+    }
+
+    .conv-preview {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .conv-time {
+      font-size: 11px;
+      color: var(--muted);
+      flex-shrink: 0
+    }
+
+    .conv-unread {
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .messages-area {
+      display: flex;
+      flex-direction: column;
+      height: 400px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden
+    }
+
+    .msg-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .msg-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px
+    }
+
+    .msg-input {
+      display: flex;
+      gap: 8px;
+      padding: 12px 16px;
+      border-top: 1px solid var(--border)
+    }
+
+    .msg-input input {
+      flex: 1
+    }
+
+    .map-placeholder {
+      background: var(--surface-2);
+      border-radius: var(--radius-md);
+      height: 240px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      border: 2px dashed var(--border)
+    }
+
+    .ongoing-banner {
+      background: linear-gradient(135deg, var(--accent-light), var(--success-light));
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px
+    }
+
+    .ongoing-info {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .ongoing-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--success);
+      animation: pulse 1.5s infinite
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .4
+      }
+    }
+
+    .ongoing-title {
+      font-size: 14px;
+      font-weight: 600
+    }
+
+    .ongoing-meta {
+      font-size: 12px;
+      color: var(--fg-secondary)
+    }
+
+    .feed-item {
+      display: flex;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .feed-item:last-child {
+      border-bottom: none
+    }
+
+    .feed-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .feed-body {
+      flex: 1;
+      font-size: 13px
+    }
+
+    .feed-time {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px
+    }
+
+    .friends-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px
+    }
+
+    .friend-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm)
+    }
+
+    .friend-item:hover {
+      background: var(--surface-2)
+    }
+
+    .friend-name {
+      font-size: 13px;
+      font-weight: 500
+    }
+
+    .friend-status {
+      font-size: 11px;
+      color: var(--muted)
+    }
+
+    .segmented {
+      display: flex;
+      background: var(--surface-2);
+      border-radius: var(--radius-sm);
+      padding: 3px;
+      margin-bottom: 16px
+    }
+
+    .seg-item {
+      flex: 1;
+      text-align: center;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--fg-secondary);
+      transition: all .15s
+    }
+
+    .seg-item.active {
+      background: var(--surface);
+      color: var(--fg);
+      box-shadow: var(--shadow-sm)
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 500;
+      background: var(--surface-2);
+      color: var(--fg-secondary)
+    }
+
+    .flex {
+      display: flex
+    }
+
+    .flex-col {
+      flex-direction: column
+    }
+
+    .items-center {
+      align-items: center
+    }
+
+    .gap-8 {
+      gap: 8px
+    }
+
+    .gap-12 {
+      gap: 12px
+    }
+
+    .gap-16 {
+      gap: 16px
+    }
+
+    .mb-8 {
+      margin-bottom: 8px
+    }
+
+    .mb-12 {
+      margin-bottom: 12px
+    }
+
+    .mb-16 {
+      margin-bottom: 16px
+    }
+
+    .mb-20 {
+      margin-bottom: 20px
+    }
+
+    .mt-8 {
+      margin-top: 8px
+    }
+
+    .mt-12 {
+      margin-top: 12px
+    }
+
+    .mt-16 {
+      margin-top: 16px
+    }
+
+    .w-full {
+      width: 100%
+    }
+
+    .text-center {
+      text-align: center
+    }
+
+    .text-sm {
+      font-size: 13px
+    }
+
+    .text-xs {
+      font-size: 11px;
+      color: var(--muted)
+    }
+
+    .truncate {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    /* === Enhanced Visual Treatments === */
+    .card-elevated {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-md)
+    }
+
+    .card-gradient {
+      background: linear-gradient(135deg, var(--surface), var(--accent-light));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-md)
+    }
+
+    .card-flush {
+      background: var(--surface-2);
+      border-radius: var(--radius-md);
+      padding: 16px
+    }
+
+    .section-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 16px 0
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 500
+    }
+
+    .pill-accent {
+      background: var(--accent);
+      color: #fff
+    }
+
+    .pill-success {
+      background: var(--success);
+      color: #fff
+    }
+
+    .pill-warn {
+      background: var(--warn);
+      color: oklch(18% 0.012 250)
+    }
+
+    .pill-danger {
+      background: var(--danger);
+      color: #fff
+    }
+
+    .pill-ghost {
+      background: var(--surface-2);
+      color: var(--fg-secondary)
+    }
+
+    .stat-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap
+    }
+
+    .stat-block {
+      flex: 1;
+      min-width: 80px;
+      text-align: center;
+      padding: 12px 8px;
+      background: var(--surface-2);
+      border-radius: var(--radius-md)
+    }
+
+    .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.1;
+      font-family: var(--font-mono)
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px
+    }
+
+    .stat-row-compact {
+      display: flex;
+      gap: 8px
+    }
+
+    .stat-block-compact {
+      flex: 1;
+      min-width: 60px;
+      text-align: center;
+      padding: 8px 4px;
+      background: var(--surface-2);
+      border-radius: var(--radius-sm)
+    }
+
+    .stat-block-compact .stat-value {
+      font-size: 16px
+    }
+
+    .tag-group {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap
+    }
+
+    .glow-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      animation: pulse 1.5s infinite
+    }
+
+    .glow-dot.accent {
+      background: var(--accent)
+    }
+
+    .glow-dot.success {
+      background: var(--success)
+    }
+
+    .glow-dot.warn {
+      background: var(--warn)
+    }
+
+    .glow-dot.danger {
+      background: var(--danger)
+    }
+
+    .inset-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 16px
+    }
+
+    .fade-in {
+      animation: fadeIn .35s ease
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .bg-subtle-grid {
+      background-image: radial-gradient(var(--border) 1px, transparent 0);
+      background-size: 20px 20px
+    }
+
+    .bg-accent-soft {
+      background: linear-gradient(135deg, var(--accent-light), transparent 60%)
+    }
+
+    .text-accent {
+      color: var(--accent)
+    }
+
+    .text-success {
+      color: var(--success)
+    }
+
+    .text-warn {
+      color: var(--warn)
+    }
+
+    .text-danger {
+      color: var(--danger)
+    }
+
+    .text-muted {
+      color: var(--muted)
+    }
+
+    .text-purple {
+      color: var(--purple)
+    }
+
+    .heading-lg {
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.2;
+      font-family: var(--font-display)
+    }
+
+    .heading-md {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.3
+    }
+
+    .heading-sm {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.4
+    }
+
+    @media(max-width:768px) {
+      .nav {
+        transform: translateX(-100%)
+      }
+
+      .nav.open {
+        transform: translateX(0)
+      }
+
+      .nav-close {
+        display: flex
+      }
+
+      .main {
+        margin-left: 0
+      }
+
+      .tab-bar {
+        display: flex
+      }
+
+      .view {
+        padding: 16px;
+        padding-bottom: 80px
+      }
+
+      .top-bar {
+        padding: 12px 16px
+      }
+
+      .grid-4 {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .grid-3 {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .readiness-ring {
+        width: 120px;
+        height: 120px
+      }
+
+      .fab {
+        bottom: 72px;
+        right: 16px
+      }
+
+      .type-grid {
+        grid-template-columns: repeat(3, 1fr)
+      }
+
+      .achievement-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .messages-split {
+        grid-template-columns: 1fr !important
+      }
+
+      .conv-list {
+        max-height: 200px;
+        overflow-y: auto
+      }
+
+      .heading-lg {
+        font-size: 20px
+      }
+
+      .stat-row {
+        gap: 8px
+      }
+
+      .stat-block {
+        padding: 10px 6px
+      }
+    }
+
+    @media(max-width:480px) {
+
+      .grid-2,
+      .grid-3,
+      .grid-4 {
+        grid-template-columns: 1fr
+      }
+
+      .meta-grid {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .type-grid {
+        grid-template-columns: repeat(3, 1fr)
+      }
+
+      .card {
+        padding: 14px
+      }
+
+      .card-elevated {
+        padding: 16px
+      }
+
+      .metric-tile {
+        padding: 14px
+      }
+
+      .readiness-container {
+        padding: 20px
+      }
+
+      .readiness-ring {
+        width: 100px;
+        height: 100px
+      }
+
+      .heading-lg {
+        font-size: 18px
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <div id="overlay" class="overlay" onclick="closeNav()"></div>
+    <nav id="nav" class="nav">
+      <div class="nav-header">
+        <span class="nav-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 6v6l4 2" />
+          </svg>Dashboard</span>
+        <button id="nav-close" class="nav-close icon-btn" aria-label="Close" onclick="closeNav()"><svg width="20"
+            height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg></button>
+      </div>
+      <div class="nav-body">
+        <button class="nav-item active" data-view="home"><span class="nav-item-icon"><svg width="20" height="20"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg></span>Home</button>
+        <div class="nav-category"><button class="nav-category-header expanded" data-category="cardio"><span
+              class="nav-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+              </svg></span>Cardio<svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <polyline points="6 9 12 15 18 9" />
+            </svg></button>
+          <div class="nav-sublist open"><button class="nav-item indent" data-view="route-planner">Route
+              Planner</button><button class="nav-item indent" data-view="saved-routes">Saved Routes</button></div>
+        </div>
+        <div class="nav-category"><button class="nav-category-header expanded" data-category="health"><span
+              class="nav-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M19 14c1.5-2.5 2-5 2-5" />
+                <path d="M3 12s1-4 4-4 4 4 4 4-1 4-4 4-4-4-4-4z" />
+              </svg></span>Health<svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <polyline points="6 9 12 15 18 9" />
+            </svg></button>
+          <div class="nav-sublist open"><button class="nav-item indent" data-view="health">Overview</button><button
+              class="nav-item indent" data-view="notifications">Notifications</button><button class="nav-item indent"
+              data-view="weather">Weather</button></div>
+        </div>
+        <button class="nav-item" data-view="profile"><span class="nav-item-icon"><svg width="20" height="20"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg></span>Profile</button>
+        <div class="nav-category"><button class="nav-category-header expanded" data-category="progress-cat"><span
+              class="nav-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <line x1="18" y1="20" x2="18" y2="10" />
+                <line x1="12" y1="20" x2="12" y2="4" />
+                <line x1="6" y1="20" x2="6" y2="14" />
+              </svg></span>Progress<svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <polyline points="6 9 12 15 18 9" />
+            </svg></button>
+          <div class="nav-sublist open"><button class="nav-item indent" data-view="progress">Progress</button><button
+              class="nav-item indent" data-view="exercise-history">Exercise History</button><button
+              class="nav-item indent" data-view="training-plans">Training Plans</button></div>
+        </div>
+        <div class="nav-category"><button class="nav-category-header expanded" data-category="session-cat"><span
+              class="nav-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                <line x1="3" y1="9" x2="21" y2="9" />
+                <line x1="9" y1="21" x2="9" y2="9" />
+              </svg></span>Session<svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <polyline points="6 9 12 15 18 9" />
+            </svg></button>
+          <div class="nav-sublist open"><button class="nav-item indent" data-view="sessions">Log</button><button
+              class="nav-item indent" data-view="new-session">New Session</button><button class="nav-item indent"
+              data-view="edit-session">Edit Session</button><button class="nav-item indent"
+              data-view="finish-session">Finish Session</button><button class="nav-item indent"
+              data-view="session-detail">Session Detail</button></div>
+        </div>
+        <button class="nav-item" data-view="settings"><span class="nav-item-icon"><svg width="20" height="20"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg></span>Settings</button>
+        <div class="nav-category"><button class="nav-category-header expanded" data-category="social-cat"><span
+              class="nav-item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg></span>Social<svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <polyline points="6 9 12 15 18 9" />
+            </svg></button>
+          <div class="nav-sublist open"><button class="nav-item indent" data-view="social">Social</button><button
+              class="nav-item indent" data-view="messages">Messages</button></div>
+        </div>
+      </div>
+      <div class="nav-footer">
+        <button id="theme-btn-nav" class="btn btn-secondary w-full" style="justify-content:center;gap:8px"
+          onclick="toggleTheme()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            class="theme-icon-light">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+          </svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            class="theme-icon-dark" style="display:none">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+          <span id="theme-label">Light Mode</span>
+        </button>
+      </div>
+    </nav>
+    <main class="main">
+      <header class="top-bar">
+        <button id="menu-btn" class="icon-btn" aria-label="Open navigation" onclick="openNav()"><svg width="22"
+            height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg></button>
+        <h1 class="page-title" id="page-title">Home</h1>
+        <button id="theme-btn-top" class="icon-btn" aria-label="Toggle theme" onclick="toggleTheme()"
+          style="position:relative">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            class="theme-icon-light">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+          </svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            class="theme-icon-dark" style="display:none;position:absolute">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+        </button>
+      </header>
+      <!-- 1. Home -->
+      <div class="view active" data-view="home">
+        <div class="card-gradient mb-16" style="display:flex;flex-wrap:wrap;gap:20px;align-items:center">
+          <div style="flex:0 0 auto;display:flex;flex-direction:column;align-items:center">
+            <svg viewBox="0 0 120 120" style="width:120px;height:120px">
+              <circle cx="60" cy="60" r="52" fill="none" stroke="var(--border)" stroke-width="6" />
+              <circle cx="60" cy="60" r="52" fill="none" stroke="var(--accent)" stroke-width="6"
+                stroke-dasharray="326.73" stroke-dashoffset="58.81" stroke-linecap="round"
+                transform="rotate(-90 60 60)" /><text x="60" y="52" text-anchor="middle" fill="var(--fg)" font-size="28"
+                font-weight="700" font-family="var(--font-display)">82</text><text x="60" y="72" text-anchor="middle"
+                fill="var(--fg-secondary)" font-size="10" font-family="var(--font-body)"
+                letter-spacing="1">READINESS</text>
+            </svg>
+            <div style="font-size:12px;color:var(--fg-secondary);margin-top:4px">Good recovery</div>
+          </div>
+          <div style="flex:1;min-width:200px">
+            <div class="heading-md mb-8">Welcome back, Jordan</div>
+            <div style="font-size:13px;color:var(--fg-secondary);margin-bottom:12px">You have a scheduled <strong
+                style="color:var(--accent)">5K Tempo Run</strong> today at 6:30 AM</div>
+            <div class="stat-row-compact" style="max-width:320px">
+              <div class="stat-block-compact">
+                <div class="stat-value">12</div>
+                <div class="stat-label">day streak</div>
+              </div>
+              <div class="stat-block-compact">
+                <div class="stat-value" style="color:var(--success)">92%</div>
+                <div class="stat-label">recovery</div>
+              </div>
+              <div class="stat-block-compact">
+                <div class="stat-value" style="color:var(--warn)">7.4h</div>
+                <div class="stat-label">sleep</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+          <div class="metric-tile">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+              <div class="inset-icon" style="background:var(--accent-light);color:var(--accent)"><svg width="16"
+                  height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg></div><span class="metric-label">Heart Rate</span>
+            </div><span class="metric-value">68</span>
+            <div style="display:flex;align-items:center;gap:8px"><span class="metric-change up">+2 bpm</span><span
+                style="font-size:11px;color:var(--muted)">resting</span></div><svg class="sparkline"
+              viewBox="0 0 100 30" preserveAspectRatio="none">
+              <polyline points="0,20 10,18 20,22 30,15 40,17 50,10 60,14 70,8 80,12 90,6 100,9" fill="none"
+                stroke="var(--accent)" stroke-width="2" />
+            </svg>
+          </div>
+          <div class="metric-tile">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+              <div class="inset-icon" style="background:var(--success-light);color:var(--success)"><svg width="16"
+                  height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg></div><span class="metric-label">Steps</span>
+            </div><span class="metric-value">7,432</span>
+            <div style="display:flex;align-items:center;gap:8px"><span class="metric-change up">+12%</span><span
+                style="font-size:11px;color:var(--muted)">vs yesterday</span></div><svg class="sparkline"
+              viewBox="0 0 100 30" preserveAspectRatio="none">
+              <polyline points="0,25 10,20 20,22 30,15 40,10 50,18 60,12 70,8 80,14 90,5 100,7" fill="none"
+                stroke="var(--success)" stroke-width="2" />
+            </svg>
+          </div>
+          <div class="metric-tile">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+              <div class="inset-icon" style="background:var(--purple-light);color:var(--purple)"><svg width="16"
+                  height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2z" />
+                  <path d="M10 7h4" />
+                </svg></div><span class="metric-label">Sleep</span>
+            </div><span class="metric-value">7h 24m</span>
+            <div style="display:flex;align-items:center;gap:8px"><span class="metric-change down">-18m</span><span
+                style="font-size:11px;color:var(--muted)">below target</span></div><svg class="sparkline"
+              viewBox="0 0 100 30" preserveAspectRatio="none">
+              <polyline points="0,10 10,15 20,8 30,12 40,5 50,18 60,10 70,14 80,20 90,15 100,18" fill="none"
+                stroke="var(--purple)" stroke-width="2" />
+            </svg>
+          </div>
+          <div class="metric-tile">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+              <div class="inset-icon" style="background:var(--warn-light);color:var(--warn)"><svg width="16" height="16"
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path
+                    d="M12 20v-6M12 8h.01M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                </svg></div><span class="metric-label">Calories</span>
+            </div><span class="metric-value">1,890</span>
+            <div style="display:flex;align-items:center;gap:8px"><span class="metric-change up">+340</span><span
+                style="font-size:11px;color:var(--muted)">today</span></div><svg class="sparkline" viewBox="0 0 100 30"
+              preserveAspectRatio="none">
+              <polyline points="0,22 10,18 20,20 30,12 40,15 50,8 60,10 70,4 80,6 90,2 100,3" fill="none"
+                stroke="var(--warn)" stroke-width="2" />
+            </svg>
+          </div>
+        </div>
+        <div class="flex gap-8 mb-16" style="flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="alert('Starting a new workout session...')"><svg width="16"
+              height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="5 3 19 12 5 21 5 3" />
+            </svg>Start Workout</button>
+          <button class="btn btn-secondary" onclick="alert('Log your weight...')"><svg width="16" height="16"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="1" x2="12" y2="23" />
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+            </svg>Log Weight</button>
+          <button class="btn btn-secondary" onclick="alert('Add a quick note...')"><svg width="16" height="16"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+            </svg>Add Note</button>
+          <button class="btn btn-secondary" onclick="switchView('weather')"><svg width="16" height="16"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" />
+            </svg>Weather</button>
+        </div>
+        <div class="card-elevated">
+          <div class="card-header" style="margin-bottom:0;padding-bottom:12px;border-bottom:1px solid var(--border)">
+            <span class="card-title">Recent Activity</span><button id="feed-toggle" class="btn btn-sm btn-ghost">Show
+              More</button></div>
+          <div id="activity-feed">
+            <div class="feed-item">
+              <div class="feed-icon" style="background:var(--success-light);color:var(--success)"><svg width="14"
+                  height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="5 3 19 12 5 21 5 3" />
+                </svg></div>
+              <div class="feed-body">
+                <div class="feed-text">Completed <strong>Morning Run</strong> &mdash; 8.2 km in 45 min</div>
+                <div class="feed-time">2 hours ago</div>
+              </div>
+            </div>
+            <div class="feed-item">
+              <div class="feed-icon" style="background:var(--accent-light);color:var(--accent)"><svg width="14"
+                  height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg></div>
+              <div class="feed-body">
+                <div class="feed-text">Rest day &mdash; <strong>HRV</strong> measured at 42ms</div>
+                <div class="feed-time">Yesterday at 7:30 AM</div>
+              </div>
+            </div>
+            <div class="feed-item">
+              <div class="feed-icon" style="background:var(--warn-light);color:var(--warn)"><svg width="14" height="14"
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 20h9" />
+                  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                </svg></div>
+              <div class="feed-body">
+                <div class="feed-text">Logged weight: <strong>72.4 kg</strong> (&darr; 0.6 kg)</div>
+                <div class="feed-time">Yesterday at 6:45 AM</div>
+              </div>
+            </div>
+            <div class="feed-item">
+              <div class="feed-icon" style="background:var(--purple-light);color:var(--purple)"><svg width="14"
+                  height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg></div>
+              <div class="feed-body">
+                <div class="feed-text">New achievement: <strong>Early Bird</strong> &mdash; 5 AM workouts x10</div>
+                <div class="feed-time">2 days ago</div>
+              </div>
+            </div>
+            <div class="feed-item">
+              <div class="feed-icon" style="background:var(--accent-light);color:var(--accent)"><svg width="14"
+                  height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg></div>
+              <div class="feed-body">
+                <div class="feed-text">Friend <strong>Alex M.</strong> completed a 100 km cycling ride</div>
+                <div class="feed-time">2 days ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 2. Sessions -->
+      <div class="view" data-view="sessions">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+            <line x1="3" y1="9" x2="21" y2="9" />
+            <line x1="9" y1="21" x2="9" y2="9" />
+          </svg>Training Log</div>
+        <div class="card-flush mb-16">
+          <div class="filter-bar" style="margin-bottom:0"><input type="text" id="session-search"
+              placeholder="Search sessions..." oninput="renderSessions()" style="background:var(--surface)"><select
+              id="session-type-filter" onchange="renderSessions()" style="background:var(--surface)">
+              <option value="all">All Types</option>
+              <option value="run">Run</option>
+              <option value="cycle">Cycle</option>
+              <option value="swim">Swim</option>
+              <option value="strength">Strength</option>
+              <option value="hiit">HIIT</option>
+              <option value="yoga">Yoga</option>
+            </select><select id="session-sort" onchange="renderSessions()" style="background:var(--surface)">
+              <option value="date-desc">Newest First</option>
+              <option value="date-asc">Oldest First</option>
+              <option value="duration">Duration</option>
+              <option value="distance">Distance</option>
+            </select></div>
+        </div>
+        <div class="ongoing-banner">
+          <div class="ongoing-info">
+            <div class="ongoing-dot"
+              style="width:10px;height:10px;background:var(--success);border-radius:50%;animation:pulse 1.5s infinite">
+            </div>
+            <div>
+              <div class="ongoing-title">Ongoing Session</div>
+              <div class="ongoing-meta">Started 32 min ago &bull; 4.2 km &bull; Outdoor Run</div>
+            </div>
+          </div><button class="btn btn-sm btn-primary" onclick="switchView('finish-session')">Finish</button>
+        </div>
+        <div id="sessions-list"></div>
+      </div>
+      <!-- 3. Route Planner -->
+      <div class="view" data-view="route-planner">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>Route Planner</div>
+        <div class="map-placeholder mb-16"
+          style="height:200px;background:var(--surface-2);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--muted);font-size:14px;border:2px dashed var(--border);position:relative;overflow:hidden">
+          <div
+            style="position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,var(--accent-light) 0%,transparent 50%),radial-gradient(circle at 70% 40%,var(--success-light) 0%,transparent 50%)">
+          </div><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+            style="position:relative;z-index:1;opacity:.5">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg><span style="position:relative;z-index:1;opacity:.6">Interactive map loading...</span>
+        </div>
+        <div class="card-elevated mb-16">
+          <div class="grid-2">
+            <div class="form-group"><label class="form-label">Start Location</label><input type="text"
+                placeholder="Current location" value="Home"></div>
+            <div class="form-group"><label class="form-label">Destination</label><input type="text"
+                placeholder="Enter destination"></div>
+          </div>
+          <div class="divider"></div>
+          <div class="section-label" style="font-size:11px;border:none;margin-bottom:12px;letter-spacing:.6px">
+            Preferences</div>
+          <div class="flex gap-8" style="flex-wrap:wrap"><button class="btn btn-sm btn-primary"
+              onclick="alert('Avoid hills enabled')">Avoid Hills</button><button class="btn btn-sm btn-secondary"
+              onclick="alert('Paved only enabled')">Paved Only</button><button class="btn btn-sm btn-secondary"
+              onclick="alert('Loop route selected')">Loop</button><button class="btn btn-sm btn-secondary"
+              onclick="alert('Out and back selected')">Out &amp; Back</button></div>
+          <div class="divider"></div>
+          <div class="stat-row">
+            <div class="stat-block">
+              <div class="stat-value">12.4</div>
+              <div class="stat-label">km</div>
+            </div>
+            <div class="stat-block">
+              <div class="stat-value">245m</div>
+              <div class="stat-label">elevation</div>
+            </div>
+            <div class="stat-block">
+              <div class="stat-value">1h 15m</div>
+              <div class="stat-label">est. time</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 4. Saved Routes -->
+      <div class="view" data-view="saved-routes">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>Saved Routes</div>
+        <div class="card-flush mb-16">
+          <div class="segmented" id="route-segments" style="margin-bottom:0"><button class="seg-item active"
+              data-route-type="all" onclick="filterRoutes('all')">All</button><button class="seg-item"
+              data-route-type="run" onclick="filterRoutes('run')">Running</button><button class="seg-item"
+              data-route-type="cycle" onclick="filterRoutes('cycle')">Cycling</button><button class="seg-item"
+              data-route-type="walk" onclick="filterRoutes('walk')">Walking</button></div>
+        </div>
+        <div id="routes-container" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="route-card" data-type="run" style="border-left:3px solid var(--accent)">
+            <div class="route-name">Lakeside Loop</div>
+            <div class="route-stats"><span>8.2 km</span><span>&bull; 45m</span><span>&bull; 62m elev</span></div>
+            <div class="route-tags"><span class="chip">Running</span><span class="chip">Beginner</span></div>
+          </div>
+          <div class="route-card" data-type="run" style="border-left:3px solid var(--accent)">
+            <div class="route-name">Hill Climb Challenge</div>
+            <div class="route-stats"><span>10.5 km</span><span>&bull; 1h 05m</span><span>&bull; 320m elev</span></div>
+            <div class="route-tags"><span class="chip">Running</span><span class="chip">Advanced</span></div>
+          </div>
+          <div class="route-card" data-type="cycle" style="border-left:3px solid var(--success)">
+            <div class="route-name">Coastal Century Prep</div>
+            <div class="route-stats"><span>42 km</span><span>&bull; 1h 45m</span><span>&bull; 210m elev</span></div>
+            <div class="route-tags"><span class="chip">Cycling</span><span class="chip">Endurance</span></div>
+          </div>
+          <div class="route-card" data-type="cycle" style="border-left:3px solid var(--success)">
+            <div class="route-name">Mountain Trail</div>
+            <div class="route-stats"><span>28 km</span><span>&bull; 2h 10m</span><span>&bull; 580m elev</span></div>
+            <div class="route-tags"><span class="chip">Cycling</span><span class="chip">MTB</span></div>
+          </div>
+          <div class="route-card" data-type="walk" style="border-left:3px solid var(--purple)">
+            <div class="route-name">Neighbourhood Stroll</div>
+            <div class="route-stats"><span>3.2 km</span><span>&bull; 40m</span><span>&bull; 12m elev</span></div>
+            <div class="route-tags"><span class="chip">Walking</span><span class="chip">Easy</span></div>
+          </div>
+          <div class="route-card" data-type="walk" style="border-left:3px solid var(--purple)">
+            <div class="route-name">Park Circuit</div>
+            <div class="route-stats"><span>5 km</span><span>&bull; 55m</span><span>&bull; 28m elev</span></div>
+            <div class="route-tags"><span class="chip">Walking</span><span class="chip">Moderate</span></div>
+          </div>
+        </div>
+      </div>
+      <!-- 5. Health -->
+      <div class="view" data-view="health">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M19 14c1.5-2.5 2-5 2-5" />
+            <path d="M3 12s1-4 4-4 4 4 4 4-1 4-4 4-4-4-4-4z" />
+          </svg>Health Overview</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">
+          <div class="card" style="text-align:center;border-top:3px solid var(--accent);padding:16px 10px">
+            <div
+              style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">
+              HR</div>
+            <div style="font-size:28px;font-weight:700;color:var(--accent);line-height:1">68</div>
+            <div style="font-size:12px;color:var(--fg-secondary)">bpm</div><span class="badge badge-success mt-8"
+              style="margin-top:8px">Normal</span>
+          </div>
+          <div class="card" style="text-align:center;border-top:3px solid var(--purple);padding:16px 10px">
+            <div
+              style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">
+              HRV</div>
+            <div style="font-size:28px;font-weight:700;color:var(--purple);line-height:1">42</div>
+            <div style="font-size:12px;color:var(--fg-secondary)">ms</div><span class="badge badge-accent mt-8"
+              style="margin-top:8px">Balanced</span>
+          </div>
+          <div class="card" style="text-align:center;border-top:3px solid var(--teal);padding:16px 10px">
+            <div
+              style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">
+              Sleep</div>
+            <div style="font-size:28px;font-weight:700;color:var(--teal);line-height:1">7.4</div>
+            <div style="font-size:12px;color:var(--fg-secondary)">hours</div><span class="badge badge-warn mt-8"
+              style="margin-top:8px">Below Target</span>
+          </div>
+          <div class="card" style="text-align:center;border-top:3px solid var(--indigo);padding:16px 10px">
+            <div
+              style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">
+              Resp</div>
+            <div style="font-size:28px;font-weight:700;color:var(--indigo);line-height:1">14</div>
+            <div style="font-size:12px;color:var(--fg-secondary)">/min</div><span class="badge badge-success mt-8"
+              style="margin-top:8px">Normal</span>
+          </div>
+        </div>
+        <div class="card-elevated">
+          <div class="card-header"><span class="card-title">7-Day HRV Trend</span><span class="card-subtitle">+3ms vs
+              last week</span></div>
+          <div style="display:flex;align-items:flex-end;gap:6px;height:110px;padding:8px 4px;margin-bottom:8px">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center">
+              <div
+                style="width:100%;background:var(--surface-2);border-radius:3px 3px 0 0;flex:1;display:flex;align-items:flex-end">
+                <div
+                  style="width:100%;height:65%;background:linear-gradient(to top,var(--accent),var(--purple));border-radius:3px 3px 0 0;transition:height .5s">
+                </div>
+              </div><span style="font-size:9px;color:var(--muted);margin-top:4px">Mon</span>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center">
+              <div
+                style="width:100%;background:var(--surface-2);border-radius:3px 3px 0 0;flex:1;display:flex;align-items:flex-end">
+                <div
+                  style="width:100%;height:72%;background:linear-gradient(to top,var(--accent),var(--purple));border-radius:3px 3px 0 0;transition:height .5s">
+                </div>
+              </div><span style="font-size:9px;color:var(--muted);margin-top:4px">Tue</span>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center">
+              <div
+                style="width:100%;background:var(--surface-2);border-radius:3px 3px 0 0;flex:1;display:flex;align-items:flex-end">
+                <div
+                  style="width:100%;height:48%;background:linear-gradient(to top,var(--accent),var(--purple));border-radius:3px 3px 0 0;transition:height .5s">
+                </div>
+              </div><span style="font-size:9px;color:var(--muted);margin-top:4px">Wed</span>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center">
+              <div
+                style="width:100%;background:var(--surface-2);border-radius:3px 3px 0 0;flex:1;display:flex;align-items:flex-end">
+                <div
+                  style="width:100%;height:80%;background:linear-gradient(to top,var(--accent),var(--purple));border-radius:3px 3px 0 0;transition:height .5s">
+                </div>
+              </div><span style="font-size:9px;color:var(--muted);margin-top:4px">Thu</span>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center">
+              <div
+                style="width:100%;background:var(--surface-2);border-radius:3px 3px 0 0;flex:1;display:flex;align-items:flex-end">
+                <div
+                  style="width:100%;height:55%;background:linear-gradient(to top,var(--accent),var(--purple));border-radius:3px 3px 0 0;transition:height .5s">
+                </div>
+              </div><span style="font-size:9px;color:var(--muted);margin-top:4px">Fri</span>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center">
+              <div
+                style="width:100%;background:var(--surface-2);border-radius:3px 3px 0 0;flex:1;display:flex;align-items:flex-end">
+                <div
+                  style="width:100%;height:90%;background:linear-gradient(to top,var(--accent),var(--purple));border-radius:3px 3px 0 0;transition:height .5s">
+                </div>
+              </div><span style="font-size:9px;color:var(--muted);margin-top:4px">Sat</span>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center">
+              <div
+                style="width:100%;background:var(--surface-2);border-radius:3px 3px 0 0;flex:1;display:flex;align-items:flex-end">
+                <div
+                  style="width:100%;height:60%;background:linear-gradient(to top,var(--accent),var(--purple));border-radius:3px 3px 0 0;transition:height .5s">
+                </div>
+              </div><span style="font-size:9px;color:var(--muted);margin-top:4px">Sun</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;font-size:12px;padding-top:8px;border-top:1px solid var(--border)">
+            <span>HRV: <strong class="text-success">&uarr; 3ms</strong></span><span>Sleep: <strong
+                class="text-danger">&darr; 24m</strong></span></div>
+        </div>
+      </div>
+      <!-- 6. Notifications -->
+      <div class="view" data-view="notifications">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>Notifications</div>
+        <div class="card-elevated" style="padding:4px 0">
+          <div class="notif-item" style="padding:14px 20px">
+            <div class="notif-dot" style="background:var(--success)"></div>
+            <div class="notif-body">
+              <div class="notif-text"><strong>Achievement Unlocked:</strong> Early Bird &mdash; 10 workouts before 6 AM
+              </div>
+              <div class="notif-time">2 hours ago</div>
+            </div><button class="btn btn-sm btn-ghost" onclick="this.parentElement.remove()"><svg width="14" height="14"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg></button>
+          </div>
+          <div class="notif-item"
+            style="padding:14px 20px;background:var(--accent-light);margin:0 -1px;border-radius:0">
+            <div class="notif-dot" style="background:var(--accent)"></div>
+            <div class="notif-body">
+              <div class="notif-text"><strong>Session Reminder:</strong> Your scheduled run starts in 30 minutes</div>
+              <div class="notif-time">Today at 5:30 AM</div>
+            </div><button class="btn btn-sm btn-ghost" onclick="this.parentElement.remove()"><svg width="14" height="14"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg></button>
+          </div>
+          <div class="notif-item" style="padding:14px 20px">
+            <div class="notif-dot" style="background:var(--warn)"></div>
+            <div class="notif-body">
+              <div class="notif-text"><strong>Low HRV Alert:</strong> Your HRV is 12% below baseline. Consider rest
+                today.</div>
+              <div class="notif-time">Today at 7:00 AM</div>
+            </div><button class="btn btn-sm btn-ghost" onclick="this.parentElement.remove()"><svg width="14" height="14"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg></button>
+          </div>
+          <div class="notif-item" style="padding:14px 20px">
+            <div class="notif-dot" style="background:var(--purple)"></div>
+            <div class="notif-body">
+              <div class="notif-text"><strong>New Follower:</strong> Sarah K. started following you</div>
+              <div class="notif-time">Yesterday</div>
+            </div><button class="btn btn-sm btn-ghost" onclick="this.parentElement.remove()"><svg width="14" height="14"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg></button>
+          </div>
+          <div class="notif-item" style="padding:14px 20px">
+            <div class="notif-dot" style="background:var(--success)"></div>
+            <div class="notif-body">
+              <div class="notif-text"><strong>Goal Progress:</strong> You're 75% of the way to your monthly distance
+                goal</div>
+              <div class="notif-time">Yesterday</div>
+            </div><button class="btn btn-sm btn-ghost" onclick="this.parentElement.remove()"><svg width="14" height="14"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg></button>
+          </div>
+          <div class="notif-item" style="padding:14px 20px">
+            <div class="notif-dot" style="background:var(--accent)"></div>
+            <div class="notif-body">
+              <div class="notif-text"><strong>Weather Update:</strong> Ideal running conditions &mdash; 16&deg;C, light
+                breeze</div>
+              <div class="notif-time">Yesterday</div>
+            </div><button class="btn btn-sm btn-ghost" onclick="this.parentElement.remove()"><svg width="14" height="14"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg></button>
+          </div>
+          <div class="notif-item" style="padding:14px 20px">
+            <div class="notif-dot" style="background:var(--danger)"></div>
+            <div class="notif-body">
+              <div class="notif-text"><strong>Incomplete Session:</strong> Yesterday's swim session wasn't saved</div>
+              <div class="notif-time">2 days ago</div>
+            </div><button class="btn btn-sm btn-ghost" onclick="this.parentElement.remove()"><svg width="14" height="14"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg></button>
+          </div>
+          <div class="notif-item" style="padding:14px 20px">
+            <div class="notif-dot" style="background:var(--purple)"></div>
+            <div class="notif-body">
+              <div class="notif-text"><strong>Community:</strong> Added to "Morning Runners" group</div>
+              <div class="notif-time">3 days ago</div>
+            </div><button class="btn btn-sm btn-ghost" onclick="this.parentElement.remove()"><svg width="14" height="14"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg></button>
+          </div>
+        </div>
+      </div>
+      <!-- 7. Weather -->
+      <div class="view" data-view="weather">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" />
+          </svg>Weather</div>
+        <div class="card-gradient mb-16 text-center" style="padding:28px 24px">
+          <div style="display:flex;align-items:center;justify-content:center;gap:12px"><svg width="48" height="48"
+              viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5">
+              <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" />
+            </svg>
+            <div>
+              <div style="font-size:52px;font-weight:700;color:var(--fg);line-height:1">72&deg;</div>
+              <div style="font-size:15px;font-weight:500;color:var(--fg-secondary)">Feels like 68&deg; &mdash; Partly
+                Cloudy</div>
+            </div>
+          </div>
+          <div class="stat-row" style="margin-top:16px;max-width:400px;margin-left:auto;margin-right:auto">
+            <div class="stat-block">
+              <div class="stat-value" style="font-size:16px">12 mph</div>
+              <div class="stat-label">Wind</div>
+            </div>
+            <div class="stat-block">
+              <div class="stat-value" style="font-size:16px">55%</div>
+              <div class="stat-label">Humidity</div>
+            </div>
+            <div class="stat-block">
+              <div class="stat-value" style="font-size:16px">4</div>
+              <div class="stat-label">UV Index</div>
+            </div>
+          </div>
+        </div>
+        <div class="section-label" style="border:none;margin-bottom:12px">5-Day Forecast</div>
+        <div class="card-elevated" style="padding:8px 16px">
+          <div class="forecast-card"><span class="forecast-day">Tomorrow</span><svg width="22" height="22"
+              viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="1.5">
+              <circle cx="12" cy="12" r="5" />
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+            </svg><span class="forecast-temp" style="flex:1"><span class="high">74&deg;</span><span class="low">/
+                58&deg;</span></span></div>
+          <div class="forecast-card"><span class="forecast-day">Thu</span><svg width="22" height="22"
+              viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5">
+              <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" />
+            </svg><span class="forecast-temp" style="flex:1"><span class="high">78&deg;</span><span class="low">/
+                62&deg;</span></span></div>
+          <div class="forecast-card"><span class="forecast-day">Fri</span><svg width="22" height="22"
+              viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5">
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z" />
+            </svg><span class="forecast-temp" style="flex:1"><span class="high">65&deg;</span><span class="low">/
+                52&deg;</span></span></div>
+          <div class="forecast-card"><span class="forecast-day">Sat</span><svg width="22" height="22"
+              viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="1.5">
+              <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+            </svg><span class="forecast-temp" style="flex:1"><span class="high">64&deg;</span><span class="low">/
+                50&deg;</span></span></div>
+          <div class="forecast-card" style="border-bottom:none"><span class="forecast-day">Sun</span><svg width="22"
+              height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5">
+              <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" />
+            </svg><span class="forecast-temp" style="flex:1"><span class="high">70&deg;</span><span class="low">/
+                55&deg;</span></span></div>
+        </div>
+        <div class="card-flush mt-16">
+          <div class="suitability" style="margin-top:0"><span class="badge badge-success">Running &check;
+              Ideal</span><span class="badge badge-success">Cycling &check; Good</span><span
+              class="badge badge-warn">Swimming &#9888; Windy</span><span class="badge badge-success">Hiking &check;
+              Great</span></div>
+        </div>
+      </div>
+      <!-- 8. Profile -->
+      <div class="view" data-view="profile">
+        <div class="card-gradient mb-16" style="padding:0;overflow:hidden">
+          <div
+            style="padding:28px 24px;text-align:center;background:linear-gradient(180deg,transparent 0%,var(--surface) 100%)">
+            <div class="avatar avatar-lg"
+              style="width:72px;height:72px;font-size:26px;margin:0 auto 12px;border:3px solid var(--surface);box-shadow:var(--shadow-md)">
+              JD</div>
+            <div class="heading-md">Jordan Davis</div>
+            <div style="font-size:13px;color:var(--fg-secondary);margin-top:2px">Marathon runner &middot; 142 sessions
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--border)">
+            <div style="text-align:center;padding:14px 8px;border-right:1px solid var(--border)">
+              <div class="stat-value">142</div>
+              <div class="stat-label">Sessions</div>
+            </div>
+            <div style="text-align:center;padding:14px 8px;border-right:1px solid var(--border)">
+              <div class="stat-value text-accent">82</div>
+              <div class="stat-label">Readiness</div>
+            </div>
+            <div style="text-align:center;padding:14px 8px">
+              <div class="stat-value text-success">12</div>
+              <div class="stat-label">Day Streak</div>
+            </div>
+          </div>
+        </div>
+        <div class="section-label" style="border:none;margin-bottom:12px"><svg width="14" height="14"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon
+              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+          </svg>Achievements</div>
+        <div class="achievement-grid">
+          <div class="achievement-item">
+            <div class="ach-icon" style="background:var(--success-light)">&#127941;</div>
+            <div class="ach-name">100 Sessions</div><span class="badge badge-success"
+              style="font-size:10px">Earned</span>
+          </div>
+          <div class="achievement-item">
+            <div class="ach-icon" style="background:var(--accent-light)">&#127749;</div>
+            <div class="ach-name">Early Bird</div><span class="badge badge-success" style="font-size:10px">Earned</span>
+          </div>
+          <div class="achievement-item">
+            <div class="ach-icon" style="background:var(--warn-light)">&#128293;</div>
+            <div class="ach-name">7-Day Streak</div><span class="badge badge-success"
+              style="font-size:10px">Earned</span>
+          </div>
+          <div class="achievement-item">
+            <div class="ach-icon" style="background:var(--purple-light)">&#127942;</div>
+            <div class="ach-name">Marathon</div><span class="badge badge-success" style="font-size:10px">Earned</span>
+          </div>
+        </div>
+        <div class="section-label" style="border:none;margin-bottom:12px;margin-top:16px"><svg width="14" height="14"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>Preferences</div>
+        <div class="card-elevated">
+          <div class="settings-row"><span class="settings-label">Units</span><span class="settings-value">Metric (km,
+              kg)</span></div>
+          <div class="settings-row"><span class="settings-label">Notifications</span>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="settings-row"><span class="settings-label">Dark Mode</span>
+            <div class="toggle on" onclick="toggleTheme()"></div>
+          </div>
+          <div class="settings-row" style="border-bottom:none"><span class="settings-label">Share Data</span>
+            <div class="toggle" onclick="this.classList.toggle('on')"></div>
+          </div>
+        </div>
+      </div>
+      <!-- 9. Progress -->
+      <div class="view" data-view="progress">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <line x1="18" y1="20" x2="18" y2="10" />
+            <line x1="12" y1="20" x2="12" y2="4" />
+            <line x1="6" y1="20" x2="6" y2="14" />
+          </svg>Weekly Progress</div>
+        <div class="card-elevated mb-16">
+          <div class="card-header" style="margin-bottom:12px"><span class="card-title">Distance (km)</span><span
+              class="card-subtitle">This week &middot; 28.8 km total</span></div>
+          <div class="bar-chart">
+            <div class="bar-item">
+              <div class="bar-track">
+                <div class="bar-fill" style="height:60%;background:linear-gradient(to top,var(--accent),var(--purple))">
+                </div>
+              </div><span class="bar-label">Mon</span><span class="bar-value">3.2</span>
+            </div>
+            <div class="bar-item">
+              <div class="bar-track">
+                <div class="bar-fill" style="height:75%;background:linear-gradient(to top,var(--accent),var(--purple))">
+                </div>
+              </div><span class="bar-label">Tue</span><span class="bar-value">5.1</span>
+            </div>
+            <div class="bar-item">
+              <div class="bar-track">
+                <div class="bar-fill"
+                  style="height:100%;background:linear-gradient(to top,var(--accent),var(--purple))"></div>
+              </div><span class="bar-label">Wed</span><span class="bar-value">8.2</span>
+            </div>
+            <div class="bar-item">
+              <div class="bar-track">
+                <div class="bar-fill" style="height:45%;background:linear-gradient(to top,var(--accent),var(--purple))">
+                </div>
+              </div><span class="bar-label">Thu</span><span class="bar-value">2.0</span>
+            </div>
+            <div class="bar-item">
+              <div class="bar-track">
+                <div class="bar-fill" style="height:85%;background:linear-gradient(to top,var(--accent),var(--purple))">
+                </div>
+              </div><span class="bar-label">Fri</span><span class="bar-value">6.5</span>
+            </div>
+            <div class="bar-item">
+              <div class="bar-track">
+                <div class="bar-fill" style="height:55%;background:linear-gradient(to top,var(--accent),var(--purple))">
+                </div>
+              </div><span class="bar-label">Sat</span><span class="bar-value">3.8</span>
+            </div>
+            <div class="bar-item">
+              <div class="bar-track">
+                <div class="bar-fill" style="height:0%;min-height:0"></div>
+              </div><span class="bar-label">Sun</span><span class="bar-value">Rest</span>
+            </div>
+          </div>
+        </div>
+        <div class="stat-row mb-16">
+          <div class="stat-block">
+            <div class="stat-value">142</div>
+            <div class="stat-label">Total Sessions</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-value">847</div>
+            <div class="stat-label">km Volume</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-value text-success">12</div>
+            <div class="stat-label">Day Streak</div>
+          </div>
+        </div>
+        <div class="section-label" style="border:none;margin-bottom:12px"><svg width="14" height="14"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+          </svg>Goals</div>
+        <div class="card-elevated">
+          <div class="goal-item">
+            <div class="goal-header"><span class="goal-label">Monthly Distance</span><span class="goal-progress">45 / 80
+                km</span></div>
+            <div class="progress-bar">
+              <div class="progress-fill accent" style="width:56%"></div>
+            </div>
+          </div>
+          <div class="goal-item">
+            <div class="goal-header"><span class="goal-label">Weekly Sessions</span><span class="goal-progress">4 /
+                5</span></div>
+            <div class="progress-bar">
+              <div class="progress-fill success" style="width:80%"></div>
+            </div>
+          </div>
+          <div class="goal-item">
+            <div class="goal-header"><span class="goal-label">Rest Days</span><span class="goal-progress">2 / 3</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill warn" style="width:66%"></div>
+            </div>
+          </div>
+          <div class="goal-item" style="margin-bottom:0">
+            <div class="goal-header"><span class="goal-label">Strength Sessions</span><span class="goal-progress">3 /
+                8</span></div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width:37%;background:var(--purple)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 10. Exercise History -->
+      <div class="view" data-view="exercise-history">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+            <line x1="3" y1="9" x2="21" y2="9" />
+          </svg>Exercise History</div>
+        <div class="card-elevated mb-16">
+          <div class="flex items-center gap-8 mb-12"><button class="btn btn-sm btn-ghost"><svg width="16" height="16"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6" />
+              </svg></button><span style="font-size:14px;font-weight:600;flex:1;text-align:center">June
+              2026</span><button class="btn btn-sm btn-ghost"><svg width="16" height="16" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6" />
+              </svg></button></div>
+          <div class="cal-grid">
+            <div class="cal-header">Sun</div>
+            <div class="cal-header">Mon</div>
+            <div class="cal-header">Tue</div>
+            <div class="cal-header">Wed</div>
+            <div class="cal-header">Thu</div>
+            <div class="cal-header">Fri</div>
+            <div class="cal-header">Sat</div>
+            <div class="cal-day other-month">31</div>
+            <div class="cal-day has-activity">1</div>
+            <div class="cal-day">2</div>
+            <div class="cal-day has-activity">3</div>
+            <div class="cal-day">4</div>
+            <div class="cal-day">5</div>
+            <div class="cal-day">6</div>
+            <div class="cal-day">7</div>
+            <div class="cal-day has-activity">8</div>
+            <div class="cal-day">9</div>
+            <div class="cal-day">10</div>
+            <div class="cal-day has-activity">11</div>
+            <div class="cal-day">12</div>
+            <div class="cal-day">13</div>
+            <div class="cal-day has-activity">14</div>
+            <div class="cal-day">15</div>
+            <div class="cal-day">16</div>
+            <div class="cal-day">17</div>
+            <div class="cal-day">18</div>
+            <div class="cal-day">19</div>
+            <div class="cal-day">20</div>
+            <div class="cal-day">21</div>
+            <div class="cal-day">22</div>
+            <div class="cal-day">23</div>
+            <div class="cal-day">24</div>
+            <div class="cal-day">25</div>
+            <div class="cal-day">26</div>
+            <div class="cal-day">27</div>
+            <div class="cal-day">28</div>
+            <div class="cal-day">29</div>
+            <div class="cal-day">30</div>
+          </div>
+        </div>
+        <div class="section-label" style="border:none;margin-bottom:12px">Recent</div>
+        <div class="session-card mb-10" style="border-left:3px solid var(--accent)">
+          <div class="session-icon" style="background:var(--accent-light);color:var(--accent)"><svg width="18"
+              height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg></div>
+          <div class="session-info">
+            <div class="session-title">Morning Run</div>
+            <div class="session-meta"><span>Jun 3</span><span>45 min</span><span>8.2 km</span></div>
+          </div>
+          <div class="session-stats">
+            <div class="stat-value" style="color:var(--accent);font-size:15px">520</div>
+            <div class="stat-label">kcal</div>
+          </div>
+        </div>
+        <div class="session-card mb-10" style="border-left:3px solid var(--success)">
+          <div class="session-icon" style="background:var(--success-light);color:var(--success)"><svg width="18"
+              height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg></div>
+          <div class="session-info">
+            <div class="session-title">Afternoon Ride</div>
+            <div class="session-meta"><span>Jun 2</span><span>60 min</span><span>20.5 km</span></div>
+          </div>
+          <div class="session-stats">
+            <div class="stat-value" style="color:var(--success);font-size:15px">440</div>
+            <div class="stat-label">kcal</div>
+          </div>
+        </div>
+        <div class="session-card mb-10" style="border-left:3px solid var(--purple)">
+          <div class="session-icon" style="background:var(--purple-light);color:var(--purple)"><svg width="18"
+              height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg></div>
+          <div class="session-info">
+            <div class="session-title">Pool Swim</div>
+            <div class="session-meta"><span>Jun 1</span><span>35 min</span><span>1.8 km</span></div>
+          </div>
+          <div class="session-stats">
+            <div class="stat-value" style="color:var(--purple);font-size:15px">320</div>
+            <div class="stat-label">kcal</div>
+          </div>
+        </div>
+        <div class="session-card mb-10" style="border-left:3px solid var(--warn)">
+          <div class="session-icon" style="background:var(--warn-light);color:var(--warn)"><svg width="18" height="18"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg></div>
+          <div class="session-info">
+            <div class="session-title">Upper Body Strength</div>
+            <div class="session-meta"><span>May 31</span><span>50 min</span><span>&mdash;</span></div>
+          </div>
+          <div class="session-stats">
+            <div class="stat-value" style="color:var(--warn);font-size:15px">380</div>
+            <div class="stat-label">kcal</div>
+          </div>
+        </div>
+        <div class="session-card" style="border-left:3px solid var(--teal)">
+          <div class="session-icon" style="background:var(--teal);color:#fff"><svg width="18" height="18"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg></div>
+          <div class="session-info">
+            <div class="session-title">HIIT Circuit</div>
+            <div class="session-meta"><span>May 30</span><span>30 min</span><span>&mdash;</span></div>
+          </div>
+          <div class="session-stats">
+            <div class="stat-value" style="color:var(--teal);font-size:15px">410</div>
+            <div class="stat-label">kcal</div>
+          </div>
+        </div>
+      </div>
+      <!-- 11. Training Plans -->
+      <div class="view" data-view="training-plans">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" y1="13" x2="8" y2="13" />
+            <line x1="16" y1="17" x2="8" y2="17" />
+          </svg>Training Plans</div>
+        <div class="plan-card" style="border-left:4px solid var(--accent)">
+          <div class="flex items-center gap-12 mb-8"><span class="badge badge-accent"
+              style="font-size:10px">Active</span><span style="font-size:12px;color:var(--muted)">Week 5 of 8</span>
+          </div>
+          <div class="plan-name">5K Improvement</div>
+          <div class="plan-desc">8-week program to improve your 5K time</div>
+          <div class="plan-phases"><span class="phase-dot completed"></span><span
+              class="phase-dot completed"></span><span class="phase-dot completed"></span><span
+              class="phase-dot completed"></span><span class="phase-dot active"></span><span
+              class="phase-dot upcoming"></span><span class="phase-dot upcoming"></span><span
+              class="phase-dot upcoming"></span></div>
+        </div>
+        <div class="plan-card" style="border-left:4px solid var(--purple)">
+          <div class="flex items-center gap-12 mb-8"><span class="badge badge-purple"
+              style="font-size:10px">Upcoming</span><span style="font-size:12px;color:var(--muted)">Starts July 1</span>
+          </div>
+          <div class="plan-name">Marathon Prep</div>
+          <div class="plan-desc">16-week marathon training program</div>
+          <div class="plan-phases"><span class="phase-dot upcoming"></span><span class="phase-dot upcoming"></span><span
+              class="phase-dot upcoming"></span><span class="phase-dot upcoming"></span></div>
+        </div>
+        <div class="plan-card" style="border-left:4px solid var(--success)">
+          <div class="flex items-center gap-12 mb-8"><span class="badge badge-success"
+              style="font-size:10px">Active</span><span style="font-size:12px;color:var(--muted)">Week 7 of 12</span>
+          </div>
+          <div class="plan-name">Strength Builder</div>
+          <div class="plan-desc">12-week strength program focusing on compound lifts</div>
+          <div class="plan-phases"><span class="phase-dot completed"></span><span
+              class="phase-dot completed"></span><span class="phase-dot completed"></span><span
+              class="phase-dot completed"></span><span class="phase-dot completed"></span><span
+              class="phase-dot completed"></span><span class="phase-dot active"></span><span
+              class="phase-dot upcoming"></span><span class="phase-dot upcoming"></span><span
+              class="phase-dot upcoming"></span><span class="phase-dot upcoming"></span><span
+              class="phase-dot upcoming"></span></div>
+        </div>
+      </div>
+      <!-- 12. New Session -->
+      <div class="view" data-view="new-session">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>New Session</div>
+        <div class="card-flush mb-16">
+          <div class="section-label" style="font-size:10px;border:none;margin-bottom:8px;letter-spacing:.5px">Activity
+            Type</div>
+          <div class="type-grid"><button class="type-item selected" onclick="selectType(this)"><svg viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>Run</button><button class="type-item" onclick="selectType(this)"><svg viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>Cycle</button><button class="type-item" onclick="selectType(this)"><svg viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>Swim</button><button class="type-item" onclick="selectType(this)"><svg viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>Strength</button><button class="type-item" onclick="selectType(this)"><svg viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>HIIT</button><button class="type-item" onclick="selectType(this)"><svg viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>Yoga</button></div>
+        </div>
+        <div class="card-elevated">
+          <div class="form-group"><label class="form-label">Duration (minutes)</label><input type="number" value="30"
+              min="1" max="999"></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Distance (km)</label><input type="text"
+                placeholder="e.g. 5.0"></div>
+            <div class="form-group"><label class="form-label">Calories</label><input type="number"
+                placeholder="e.g. 300"></div>
+          </div>
+          <div class="form-group"><label class="form-label">Notes</label><textarea
+              placeholder="How did it feel? Any highlights?"></textarea></div>
+          <div class="flex gap-8"><button class="btn btn-primary" onclick="alert('Session saved!')">Save
+              Session</button><button class="btn btn-secondary" onclick="switchView('sessions')">Cancel</button></div>
+        </div>
+      </div>
+      <!-- 13. Edit Session -->
+      <div class="view" data-view="edit-session">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+          </svg>Edit Session</div>
+        <div class="card-flush mb-16">
+          <div class="section-label" style="font-size:10px;border:none;margin-bottom:8px;letter-spacing:.5px">Activity
+            Type</div>
+          <div class="type-grid"><button class="type-item selected" onclick="selectType(this)"><svg viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>Run</button><button class="type-item" onclick="selectType(this)"><svg viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>Cycle</button><button class="type-item" onclick="selectType(this)"><svg viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>Swim</button><button class="type-item" onclick="selectType(this)"><svg viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>Strength</button><button class="type-item" onclick="selectType(this)"><svg viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>HIIT</button><button class="type-item" onclick="selectType(this)"><svg viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>Yoga</button></div>
+        </div>
+        <div class="card-elevated">
+          <div class="form-group"><label class="form-label">Duration (minutes)</label><input type="number" value="45"
+              min="1" max="999"></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Distance (km)</label><input type="text" value="8.2"></div>
+            <div class="form-group"><label class="form-label">Calories</label><input type="number" value="520"></div>
+          </div>
+          <div class="form-group"><label class="form-label">Date</label><input type="date" value="2026-06-03"></div>
+          <div class="form-group"><label
+              class="form-label">Notes</label><textarea>Great morning run. Felt strong throughout.</textarea></div>
+          <div class="flex gap-8"><button class="btn btn-primary" onclick="alert('Session updated!')">Update
+              Session</button><button class="btn btn-secondary" onclick="switchView('sessions')">Cancel</button></div>
+        </div>
+      </div>
+      <!-- 14. Finish Session -->
+      <div class="view" data-view="finish-session">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <polygon points="5 3 19 12 5 21 5 3" />
+          </svg>Finish Session</div>
+        <div class="card-gradient mb-16" style="padding:20px">
+          <div class="flex items-center gap-12 mb-12">
+            <div class="avatar"
+              style="background:var(--accent-light);color:var(--accent);width:48px;height:48px;font-size:24px">&#127939;
+            </div>
+            <div>
+              <div class="heading-sm">Outdoor Run</div>
+              <div style="font-size:13px;color:var(--fg-secondary)">Started 45 minutes ago</div>
+            </div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-block">
+              <div class="stat-value">45</div>
+              <div class="stat-label">min</div>
+            </div>
+            <div class="stat-block">
+              <div class="stat-value">8.2</div>
+              <div class="stat-label">km</div>
+            </div>
+            <div class="stat-block">
+              <div class="stat-value">5:29</div>
+              <div class="stat-label">min/km</div>
+            </div>
+            <div class="stat-block">
+              <div class="stat-value">520</div>
+              <div class="stat-label">kcal</div>
+            </div>
+          </div>
+        </div>
+        <div class="card-elevated">
+          <div class="form-group"><label class="form-label">Notes</label><textarea
+              placeholder="How did it feel? Any highlights?">Felt great today! Consistent pace throughout.</textarea>
+          </div>
+          <div class="flex gap-8"><button class="btn btn-primary" onclick="alert('Session saved to log!')">Save
+              Session</button><button class="btn btn-secondary" onclick="alert('Session discarded')">Discard</button>
+          </div>
+        </div>
+      </div>
+      <!-- 15. Session Detail -->
+      <div class="view" data-view="session-detail">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>Session Detail</div>
+        <div class="card-elevated mb-16" style="border-left:4px solid var(--accent)">
+          <div class="flex items-center gap-12">
+            <div class="avatar"
+              style="background:var(--accent-light);color:var(--accent);width:48px;height:48px;font-size:24px">&#127939;
+            </div>
+            <div>
+              <div class="heading-sm">Morning Run</div>
+              <div style="font-size:13px;color:var(--fg-secondary)">June 3, 2026 at 6:30 AM</div>
+            </div>
+          </div>
+        </div>
+        <div class="stat-row mb-16">
+          <div class="stat-block">
+            <div class="stat-value">45</div>
+            <div class="stat-label">min</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-value">8.2</div>
+            <div class="stat-label">km</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-value">5:29</div>
+            <div class="stat-label">pace</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-value">520</div>
+            <div class="stat-label">kcal</div>
+          </div>
+        </div>
+        <div class="card-elevated">
+          <div class="card-title mb-12">Splits</div>
+          <div class="split-row" style="padding:10px 0"><span class="split-km">km 1</span><span
+              class="split-stat">5:15</span><span class="split-stat">152 bpm</span><span class="split-stat">105
+              kcal</span></div>
+          <div class="split-row" style="padding:10px 0"><span class="split-km">km 2</span><span
+              class="split-stat">5:22</span><span class="split-stat">155 bpm</span><span class="split-stat">108
+              kcal</span></div>
+          <div class="split-row" style="padding:10px 0"><span class="split-km">km 3</span><span
+              class="split-stat">5:30</span><span class="split-stat">158 bpm</span><span class="split-stat">112
+              kcal</span></div>
+          <div class="split-row" style="padding:10px 0"><span class="split-km">km 4</span><span
+              class="split-stat">5:35</span><span class="split-stat">156 bpm</span><span class="split-stat">106
+              kcal</span></div>
+          <div class="split-row" style="padding:10px 0;border-bottom:none"><span class="split-km">km 5</span><span
+              class="split-stat">5:45</span><span class="split-stat">150 bpm</span><span class="split-stat">89
+              kcal</span></div>
+        </div>
+        <div class="card-flush mt-12">
+          <div class="card-title mb-8" style="font-size:13px">Notes</div>
+          <div class="text-sm" style="color:var(--fg-secondary)">Great morning run. Felt strong throughout. Consistent
+            pace, slightly tired on the last km.</div>
+        </div>
+        <div class="flex gap-8 mt-12"><button class="btn btn-secondary"
+            onclick="switchView('edit-session')">Edit</button><button class="btn btn-secondary"
+            onclick="switchView('sessions')">Back to Log</button></div>
+      </div>
+      <!-- 16. Settings -->
+      <div class="view" data-view="settings">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>Settings</div>
+        <div class="settings-group">
+          <div class="settings-group-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg> Profile</div>
+          <div class="card-elevated" style="padding:4px 0">
+            <div class="settings-row" style="padding:12px 16px"><span class="settings-label">Name</span><span
+                class="settings-value">Jordan Davis</span></div>
+            <div class="settings-row" style="padding:12px 16px"><span class="settings-label">Email</span><span
+                class="settings-value">jordan@example.com</span></div>
+            <div class="settings-row" style="padding:12px 16px;border-bottom:none"><span
+                class="settings-label">Location</span><span class="settings-value">San Francisco, CA</span></div>
+          </div>
+        </div>
+        <div class="settings-group">
+          <div class="settings-group-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="1" x2="12" y2="23" />
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+            </svg> Units</div>
+          <div class="card-elevated" style="padding:4px 0">
+            <div class="settings-row" style="padding:12px 16px"><span class="settings-label">Distance</span><span
+                class="settings-value">Kilometers</span></div>
+            <div class="settings-row" style="padding:12px 16px"><span class="settings-label">Weight</span><span
+                class="settings-value">Kilograms</span></div>
+            <div class="settings-row" style="padding:12px 16px;border-bottom:none"><span
+                class="settings-label">Temperature</span><span class="settings-value">Fahrenheit</span></div>
+          </div>
+        </div>
+        <div class="settings-group">
+          <div class="settings-group-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+            </svg> Notifications</div>
+          <div class="card-elevated" style="padding:4px 0">
+            <div class="settings-row" style="padding:12px 16px"><span class="settings-label">Push Notifications</span>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="settings-row" style="padding:12px 16px"><span class="settings-label">Session Reminders</span>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="settings-row" style="padding:12px 16px"><span class="settings-label">Achievement Alerts</span>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="settings-row" style="padding:12px 16px;border-bottom:none"><span class="settings-label">Weather
+                Updates</span>
+              <div class="toggle" onclick="this.classList.toggle('on')"></div>
+            </div>
+          </div>
+        </div>
+        <div class="settings-group">
+          <div class="settings-group-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+              <line x1="3" y1="9" x2="21" y2="9" />
+            </svg> Privacy</div>
+          <div class="card-elevated" style="padding:4px 0">
+            <div class="settings-row" style="padding:12px 16px"><span class="settings-label">Public Profile</span>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="settings-row" style="padding:12px 16px;border-bottom:none"><span class="settings-label">Share
+                Activity</span>
+              <div class="toggle" onclick="this.classList.toggle('on')"></div>
+            </div>
+          </div>
+        </div>
+        <div class="settings-group">
+          <div class="settings-group-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg> About</div>
+          <div class="card-elevated" style="padding:4px 0">
+            <div class="settings-row" style="padding:12px 16px"><span class="settings-label">Version</span><span
+                class="settings-value">2.4.1</span></div>
+            <div class="settings-row" style="padding:12px 16px;border-bottom:none"><span
+                class="settings-label">Licenses</span><span class="settings-value">MIT License</span></div>
+          </div>
+        </div>
+      </div>
+      <!-- 17. Social -->
+      <div class="view" data-view="social">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>Social Feed</div>
+        <div class="post-card" style="border-left:3px solid var(--accent)">
+          <div class="post-header">
+            <div class="avatar">AM</div>
+            <div>
+              <div class="post-user">Alex Morgan</div>
+              <div style="font-size:12px;color:var(--muted)">Just now</div>
+            </div><span class="badge badge-accent" style="font-size:9px;margin-left:auto">New</span>
+          </div>
+          <div class="post-content">Just finished a 100 km cycling ride! New personal record. The coastal route was
+            amazing today.</div>
+          <div class="post-stats"><span>&#128147; 24 likes</span><span>&#128172; 8 comments</span></div>
+          <div class="post-actions"><button class="btn btn-sm btn-secondary" onclick="alert('Liked!')">&#128147;
+              Like</button><button class="btn btn-sm btn-secondary" onclick="alert('Comment...')">&#128172;
+              Comment</button><button class="btn btn-sm btn-secondary" onclick="alert('Shared!')">&#128257;
+              Share</button></div>
+        </div>
+        <div class="post-card">
+          <div class="post-header">
+            <div class="avatar">SK</div>
+            <div>
+              <div class="post-user">Sarah Kim</div>
+              <div style="font-size:12px;color:var(--muted)">2 hours ago</div>
+            </div>
+          </div>
+          <div class="post-content">New PR on my 5K! 22:34. All those interval sessions are finally paying off.
+            &#127939;</div>
+          <div class="post-stats"><span>&#128147; 18 likes</span><span>&#128172; 5 comments</span></div>
+          <div class="post-actions"><button class="btn btn-sm btn-secondary" onclick="alert('Liked!')">&#128147;
+              Like</button><button class="btn btn-sm btn-secondary" onclick="alert('Comment...')">&#128172;
+              Comment</button><button class="btn btn-sm btn-secondary" onclick="alert('Shared!')">&#128257;
+              Share</button></div>
+        </div>
+        <div class="post-card">
+          <div class="post-header">
+            <div class="avatar">MR</div>
+            <div>
+              <div class="post-user">Marcus Reed</div>
+              <div style="font-size:12px;color:var(--muted)">5 hours ago</div>
+            </div>
+          </div>
+          <div class="post-content">Anyone have recommendations for good trail running shoes? Looking to upgrade before
+            my next ultra.</div>
+          <div class="post-stats"><span>&#128147; 12 likes</span><span>&#128172; 14 comments</span></div>
+          <div class="post-actions"><button class="btn btn-sm btn-secondary" onclick="alert('Liked!')">&#128147;
+              Like</button><button class="btn btn-sm btn-secondary" onclick="alert('Comment...')">&#128172;
+              Comment</button><button class="btn btn-sm btn-secondary" onclick="alert('Shared!')">&#128257;
+              Share</button></div>
+        </div>
+        <div class="section-label" style="border:none;margin-bottom:12px;margin-top:16px"><svg width="14" height="14"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+          </svg>Friends</div>
+        <div class="card-elevated" style="padding:8px 4px">
+          <div class="friends-list">
+            <div class="friend-item">
+              <div class="avatar avatar-sm">AM</div>
+              <div>
+                <div class="friend-name">Alex Morgan</div>
+                <div class="friend-status">Online now</div>
+              </div><span class="pill pill-success" style="margin-left:auto;font-size:9px">Online</span>
+            </div>
+            <div class="friend-item">
+              <div class="avatar avatar-sm">SK</div>
+              <div>
+                <div class="friend-name">Sarah Kim</div>
+                <div class="friend-status">Active 2h ago</div>
+              </div>
+            </div>
+            <div class="friend-item">
+              <div class="avatar avatar-sm">MR</div>
+              <div>
+                <div class="friend-name">Marcus Reed</div>
+                <div class="friend-status">Active 1h ago</div>
+              </div>
+            </div>
+            <div class="friend-item">
+              <div class="avatar avatar-sm">JL</div>
+              <div>
+                <div class="friend-name">Jessica Lee</div>
+                <div class="friend-status">Active 30m ago</div>
+              </div>
+            </div>
+            <div class="friend-item">
+              <div class="avatar avatar-sm">TW</div>
+              <div>
+                <div class="friend-name">Tom Wilson</div>
+                <div class="friend-status">Online now</div>
+              </div><span class="pill pill-success" style="margin-left:auto;font-size:9px">Online</span>
+            </div>
+            <div class="friend-item">
+              <div class="avatar avatar-sm">EP</div>
+              <div>
+                <div class="friend-name">Emma Patel</div>
+                <div class="friend-status">Active 4h ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 18. Messages -->
+      <div class="view" data-view="messages">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>Messages</div>
+        <div class="messages-split" style="display:grid;grid-template-columns:1fr 2fr;gap:12px">
+          <div class="conv-list card-elevated" style="padding:4px 0;overflow:hidden">
+            <div class="conv-item active"
+              onclick="this.parentElement.querySelectorAll('.conv-item').forEach(function(e){e.classList.remove('active')});this.classList.add('active')">
+              <div class="avatar avatar-sm">AM</div>
+              <div class="conv-info">
+                <div class="conv-name">Alex Morgan</div>
+                <div class="conv-preview">Great ride today!</div>
+              </div>
+              <div class="conv-time">2m</div>
+              <div class="conv-unread">3</div>
+            </div>
+            <div class="conv-item"
+              onclick="this.parentElement.querySelectorAll('.conv-item').forEach(function(e){e.classList.remove('active')});this.classList.add('active')">
+              <div class="avatar avatar-sm">SK</div>
+              <div class="conv-info">
+                <div class="conv-name">Sarah Kim</div>
+                <div class="conv-preview">Want to run tomorrow morning?</div>
+              </div>
+              <div class="conv-time">1h</div>
+            </div>
+            <div class="conv-item"
+              onclick="this.parentElement.querySelectorAll('.conv-item').forEach(function(e){e.classList.remove('active')});this.classList.add('active')">
+              <div class="avatar avatar-sm">MR</div>
+              <div class="conv-info">
+                <div class="conv-name">Marcus Reed</div>
+                <div class="conv-preview">Check out this new trail</div>
+              </div>
+              <div class="conv-time">3h</div>
+            </div>
+            <div class="conv-item"
+              onclick="this.parentElement.querySelectorAll('.conv-item').forEach(function(e){e.classList.remove('active')});this.classList.add('active')">
+              <div class="avatar avatar-sm">JL</div>
+              <div class="conv-info">
+                <div class="conv-name">Jessica Lee</div>
+                <div class="conv-preview">Thanks for the tips!</div>
+              </div>
+              <div class="conv-time">1d</div>
+            </div>
+            <div class="conv-item"
+              onclick="this.parentElement.querySelectorAll('.conv-item').forEach(function(e){e.classList.remove('active')});this.classList.add('active')">
+              <div class="avatar avatar-sm">EP</div>
+              <div class="conv-info">
+                <div class="conv-name">Emma Patel</div>
+                <div class="conv-preview">See you at the race</div>
+              </div>
+              <div class="conv-time">2d</div>
+            </div>
+          </div>
+          <div>
+            <div class="messages-area"
+              style="border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden">
+              <div class="msg-header">
+                <div class="avatar avatar-sm">AM</div><span>Alex Morgan</span>
+              </div>
+              <div class="msg-body"
+                style="background:var(--surface-2);padding:16px;display:flex;flex-direction:column;gap:10px;min-height:300px">
+                <div class="bubble bubble-received"
+                  style="background:var(--surface);color:var(--fg);align-self:flex-start;border-bottom-left-radius:4px">
+                  Hey! How was your run today?</div>
+                <div class="bubble bubble-sent"
+                  style="background:var(--accent);color:#fff;align-self:flex-end;border-bottom-right-radius:4px">It was
+                  great! 8.2 km at a solid pace.</div>
+                <div class="bubble bubble-received"
+                  style="background:var(--surface);color:var(--fg);align-self:flex-start;border-bottom-left-radius:4px">
+                  Nice! I just did 100 km cycling. Feeling amazing.</div>
+                <div class="bubble bubble-sent"
+                  style="background:var(--accent);color:#fff;align-self:flex-end;border-bottom-right-radius:4px">That's
+                  incredible! What route did you take?</div>
+                <div class="bubble bubble-received"
+                  style="background:var(--surface);color:var(--fg);align-self:flex-start;border-bottom-left-radius:4px">
+                  Coastal route. Perfect weather for it.</div>
+                <div class="bubble bubble-sent"
+                  style="background:var(--accent);color:#fff;align-self:flex-end;border-bottom-right-radius:4px">We
+                  should plan a group ride this weekend</div>
+                <div class="bubble bubble-received"
+                  style="background:var(--surface);color:var(--fg);align-self:flex-start;border-bottom-left-radius:4px">
+                  Absolutely! Let me check my schedule</div>
+              </div>
+              <div class="msg-input" style="display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border)">
+                <input type="text" placeholder="Type a message..."><button class="btn btn-primary btn-sm"
+                  onclick="alert('Message sent!')">Send</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- END_VIEWS -->
+    </main>
+    <nav class="tab-bar" id="tab-bar">
+      <button class="tab-item active" data-view="home" onclick="switchView('home')"><svg viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg><span>Home</span></button>
+      <button class="tab-item" data-view="sessions" onclick="switchView('sessions')"><svg viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+        </svg><span>Sessions</span></button>
+      <button class="tab-item" data-view="health" onclick="switchView('health')"><svg viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <path d="M19 14c1.5-2.5 2-5 2-5" />
+          <path d="M3 12s1-4 4-4 4 4 4 4-1 4-4 4-4-4-4-4z" />
+        </svg><span>Health</span></button>
+      <button class="tab-item" data-view="progress" onclick="switchView('progress')"><svg viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="20" x2="18" y2="10" />
+          <line x1="12" y1="20" x2="12" y2="4" />
+          <line x1="6" y1="20" x2="6" y2="14" />
+        </svg><span>Progress</span></button>
+      <button class="tab-item" data-view="profile" onclick="switchView('profile')"><svg viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg><span>Profile</span></button>
+    </nav>
+    <button id="fab" class="fab" onclick="alert('Start a new session!')"><svg width="24" height="24" viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg></button>
+  </div>
+  <script>
+    (function () {
+      var viewNames = { home: 'Home', sessions: 'Session Log', 'route-planner': 'Route Planner', 'saved-routes': 'Saved Routes', health: 'Health Overview', notifications: 'Notifications', weather: 'Weather', profile: 'Profile', progress: 'Progress', 'exercise-history': 'Exercise History', 'training-plans': 'Training Plans', 'new-session': 'New Session', 'edit-session': 'Edit Session', 'finish-session': 'Finish Session', 'session-detail': 'Session Detail', settings: 'Settings', social: 'Social Feed', messages: 'Messages' };
+      var theme = localStorage.getItem('theme');
+      var isDark = theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme:dark)').matches);
+      if (isDark) { document.documentElement.classList.add('dark') }
+      var els = document.querySelectorAll('.theme-icon-light,.theme-icon-dark');
+      for (var i = 0; i < els.length; i++) { var e = els[i]; e.style.display = e.classList.contains(isDark ? 'theme-icon-dark' : 'theme-icon-light') ? '' : 'none' }
+      var lb = document.getElementById('theme-label'); if (lb) { lb.textContent = isDark ? 'Dark Mode' : 'Light Mode' }
+      function toggleTheme() {
+        var isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        var els = document.querySelectorAll('.theme-icon-light,.theme-icon-dark');
+        for (var i = 0; i < els.length; i++) { var e = els[i]; e.style.display = e.classList.contains(isDark ? 'theme-icon-dark' : 'theme-icon-light') ? '' : 'none' }
+        var lb = document.getElementById('theme-label'); if (lb) { lb.textContent = isDark ? 'Dark Mode' : 'Light Mode' }
+      }
+      function openNav() { document.getElementById('nav').classList.add('open'); document.getElementById('overlay').classList.add('show') }
+      function closeNav() { document.getElementById('nav').classList.remove('open'); document.getElementById('overlay').classList.remove('show') }
+      function switchView(name) {
+        var views = document.querySelectorAll('.view');
+        for (var i = 0; i < views.length; i++) { views[i].classList.remove('active') }
+        var target = document.querySelector('.view[data-view="' + name + '"]');
+        if (target) { target.classList.add('active') }
+        var navItems = document.querySelectorAll('.nav-item[data-view]');
+        for (var i = 0; i < navItems.length; i++) { navItems[i].classList.toggle('active', navItems[i].getAttribute('data-view') === name) }
+        var tabItems = document.querySelectorAll('.tab-item');
+        for (var i = 0; i < tabItems.length; i++) { tabItems[i].classList.toggle('active', tabItems[i].getAttribute('data-view') === name) }
+        var title = document.getElementById('page-title');
+        if (title) { title.textContent = viewNames[name] || name }
+        history.replaceState(null, '', '#' + name);
+        closeNav();
+        var fab = document.getElementById('fab');
+        if (fab) { fab.classList.toggle('show', name === 'sessions' || name === 'home') }
+      }
+      function routeFromHash() {
+        var hash = location.hash.replace('#', '');
+        if (hash && viewNames[hash]) { switchView(hash) } else { switchView('home') }
+      }
+      window.addEventListener('hashchange', routeFromHash);
+      routeFromHash();
+      var catHeaders = document.querySelectorAll('.nav-category-header');
+      for (var i = 0; i < catHeaders.length; i++) {
+        catHeaders[i].addEventListener('click', function () {
+          var sub = this.nextElementSibling;
+          if (sub && sub.classList.contains('nav-sublist')) {
+            var isOpen = sub.classList.toggle('open');
+            this.classList.toggle('expanded', isOpen);
+          }
+        })
+      }
+      var navItems = document.querySelectorAll('.nav-item[data-view]');
+      for (var i = 0; i < navItems.length; i++) {
+        navItems[i].addEventListener('click', function (e) {
+          var view = this.getAttribute('data-view');
+          if (view) { switchView(view) }
+        })
+      }
+      window.switchView = switchView; window.toggleTheme = toggleTheme; window.openNav = openNav; window.closeNav = closeNav; window.renderSessions = renderSessions; window.filterRoutes = filterRoutes; window.selectType = selectType;
+      var sessionData = [
+        { id: 1, type: 'run', date: '2026-06-03', duration: 45, distance: 8.2, title: 'Morning Run', calories: 520, avgHr: 152 },
+        { id: 2, type: 'cycle', date: '2026-06-02', duration: 60, distance: 20.5, title: 'Afternoon Ride', calories: 440, avgHr: 138 },
+        { id: 3, type: 'swim', date: '2026-06-01', duration: 35, distance: 1.8, title: 'Pool Laps', calories: 320, avgHr: 148 },
+        { id: 4, type: 'strength', date: '2026-05-31', duration: 50, distance: 0, title: 'Upper Body', calories: 380, avgHr: 125 },
+        { id: 5, type: 'hiit', date: '2026-05-30', duration: 30, distance: 0, title: 'HIIT Circuit', calories: 410, avgHr: 165 },
+        { id: 6, type: 'run', date: '2026-05-29', duration: 55, distance: 10.2, title: 'Tempo Run', calories: 650, avgHr: 158 },
+        { id: 7, type: 'cycle', date: '2026-05-28', duration: 75, distance: 28.0, title: 'Weekend Ride', calories: 580, avgHr: 142 },
+        { id: 8, type: 'yoga', date: '2026-05-27', duration: 40, distance: 0, title: 'Morning Yoga Flow', calories: 160, avgHr: 95 },
+        { id: 9, type: 'run', date: '2026-05-26', duration: 25, distance: 3.5, title: 'Easy Recovery', calories: 210, avgHr: 138 },
+        { id: 10, type: 'swim', date: '2026-05-25', duration: 45, distance: 2.4, title: 'Endurance Swim', calories: 420, avgHr: 152 }
+      ];
+      var typeIcons = { run: '🏃', cycle: '🚴', swim: '🏊', strength: '🏋️', hiit: '💪', yoga: '🧘' };
+      var typeColors = { run: 'var(--accent)', cycle: 'var(--success)', swim: 'var(--teal)', strength: 'var(--purple)', hiit: 'var(--warn)', yoga: 'var(--indigo)' };
+      var typeBgColors = { run: 'var(--accent-light)', cycle: 'var(--success-light)', swim: 'var(--teal-light)', strength: 'var(--purple-light)', hiit: 'var(--warn-light)', yoga: 'var(--indigo-light)' };
+      function renderSessions() {
+        var list = document.getElementById('sessions-list');
+        if (!list) return;
+        var search = (document.getElementById('session-search') || {}).value || '';
+        var typeFilter = (document.getElementById('session-type-filter') || {}).value || 'all';
+        var sort = (document.getElementById('session-sort') || {}).value || 'date-desc';
+        var filtered = sessionData.filter(function (s) {
+          if (typeFilter !== 'all' && s.type !== typeFilter) return false;
+          if (search && s.title.toLowerCase().indexOf(search.toLowerCase()) === -1 && s.notes && s.notes.toLowerCase().indexOf(search.toLowerCase()) === -1) return false;
+          return true;
+        });
+        filtered.sort(function (a, b) {
+          if (sort === 'date-desc') return b.date.localeCompare(a.date);
+          if (sort === 'date-asc') return a.date.localeCompare(b.date);
+          if (sort === 'duration') return b.duration - a.duration;
+          if (sort === 'distance') return b.distance - a.distance;
+          return 0;
+        });
+        var groups = {};
+        for (var i = 0; i < filtered.length; i++) {
+          var s = filtered[i];
+          var d = new Date(s.date);
+          var key = d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+          if (!groups[key]) groups[key] = [];
+          groups[key].push(s);
+        }
+        var html = '';
+        var keys = Object.keys(groups);
+        if (keys.length === 0) {
+          html = '<div class="card-elevated text-center" style="padding:32px"><div style="font-size:14px;color:var(--muted)">No sessions found</div></div>';
+        } else {
+          for (var g = 0; g < keys.length; g++) {
+            var dateKey = keys[g];
+            html += '<div class="session-date-header">' + dateKey + '</div>';
+            var sessions = groups[dateKey];
+            for (var j = 0; j < sessions.length; j++) {
+              var se = sessions[j];
+              var icon = typeIcons[se.type] || '🏃';
+              var color = typeColors[se.type] || 'var(--accent)';
+              var bg = typeBgColors[se.type] || 'var(--accent-light)';
+              html += '<div class="session-card mb-8" style="border-left:3px solid ' + color + '">';
+              html += '<div class="session-icon" style="background:' + bg + ';color:' + color + '">' + icon + '</div>';
+              html += '<div class="session-info"><div class="session-title">' + se.title + '</div>';
+              html += '<div class="session-meta"><span>' + se.duration + ' min</span>';
+              if (se.distance > 0) html += '<span>' + se.distance + ' km</span>';
+              html += '<span>' + se.calories + ' kcal</span></div></div>';
+              html += '<div class="session-stats"><div class="stat-value" style="color:' + color + '">' + (se.avgHr || '--') + '</div><div class="stat-label">avg HR</div></div>';
+              html += '</div>';
+            }
+          }
+        }
+        list.innerHTML = html;
+      }
+      renderSessions();
+      function filterRoutes(type) {
+        var items = document.querySelectorAll('#routes-container .route-card');
+        var segs = document.querySelectorAll('.seg-item');
+        for (var i = 0; i < segs.length; i++) { segs[i].classList.toggle('active', segs[i].getAttribute('data-route-type') === type) }
+        for (var i = 0; i < items.length; i++) {
+          var show = type === 'all' || items[i].getAttribute('data-type') === type;
+          items[i].style.display = show ? '' : 'none';
+        }
+      }
+      function selectType(el, type) {
+        var items = document.querySelectorAll('.type-item');
+        for (var i = 0; i < items.length; i++) { items[i].classList.remove('selected') }
+        el.classList.add('selected');
+      }
+      function toggleFeed() {
+        var feed = document.getElementById('activity-feed');
+        var btn = document.getElementById('feed-toggle');
+        if (!feed || !btn) return;
+        var items = feed.querySelectorAll('.feed-item');
+        var isCollapsed = items.length > 3 && items[3].style.display === 'none';
+        for (var i = 3; i < items.length; i++) { items[i].style.display = isCollapsed ? '' : 'none' }
+        btn.textContent = isCollapsed ? 'Show Less' : 'Show More';
+      }
+      var ft = document.getElementById('feed-toggle');
+      if (ft) { ft.addEventListener('click', toggleFeed) }
+      var feedItems = document.querySelectorAll('#activity-feed .feed-item');
+      for (var i = 3; i < feedItems.length; i++) { feedItems[i].style.display = 'none' }
+      routeFromHash();
+      window.switchView = switchView; window.openNav = openNav; window.closeNav = closeNav; window.toggleTheme = toggleTheme; window.renderSessions = renderSessions; window.filterRoutes = filterRoutes; window.selectType = selectType;
+    })();
+  </script>
+</body>
+
+</html>

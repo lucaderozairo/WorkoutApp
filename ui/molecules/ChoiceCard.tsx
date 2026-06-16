@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Text } from '@ui/atoms/Text';
 import { Row } from '@ui/layout/Row';
 import { Column } from '@ui/layout/Column';
 
@@ -36,9 +37,9 @@ export function ChoiceCard({
       <Row align="center" gap={3} className="choice-card-inner">
         {leading && <span className="choice-leading">{leading}</span>}
         <Column gap={1} className="choice-copy">
-          <span className="choice-title">{title}</span>
-          {description && <span className="caption muted">{description}</span>}
-          {metadata && <span className="caption faint">{metadata}</span>}
+          <Text bold className="choice-title">{title}</Text>
+          {description && <Text size="caption" color="muted">{description}</Text>}
+          {metadata && <Text size="caption" color="faint">{metadata}</Text>}
         </Column>
         {trailing && <span className="choice-trailing">{trailing}</span>}
       </Row>

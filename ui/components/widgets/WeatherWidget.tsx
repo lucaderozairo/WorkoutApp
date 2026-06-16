@@ -1,7 +1,7 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Grid, Row, Column } from '@ui/layout';
 import { Surface, Text, Divider } from '@ui/atoms';
-import { Badge, Button } from '@ui/molecules';
+import { Badge, Button, Modal } from '@ui/molecules';
 import {
   ResponsiveContainer,
   ComposedChart, Bar, Line,
@@ -9,7 +9,7 @@ import {
   XAxis, YAxis, Tooltip,
   ReferenceLine,
 } from 'recharts';
-import { SparklineArea } from '@ui/patterns/charts/domain-charts';
+import { SparklineArea } from '@ui/components/charts/domain-charts';
 
 const HOURLY_TEMP = [
   { x: '9am', y: 14 },
@@ -210,35 +210,39 @@ export function WeatherWidget() {
       </Column></Surface>
 
       {detailOpen && (
-        <div className="modal-overlay" onClick={() => setDetailOpen(false)}>
-          <div onClick={(e: React.MouseEvent) => e.stopPropagation()}>
-            <Surface as="section"><Column>
+        <Modal open onClose={() => setDetailOpen(false)} size="lg">
+          <Column>
               <Row as="header" justify="between" align="center">
                 <Text as="h3">Weather Detail</Text>
                 <Button variant="ghost" size="icon" onClick={() => setDetailOpen(false)}>✕</Button>
               </Row>
 
               <Row className="tabs">
-                <button
+                <Button
+                  type="button"
+                  variant="ghost"
                   className={`tab${activeTab === 'forecast' ? ' active' : ''}`}
                   onClick={() => setActiveTab('forecast')}
-                >7-Day</button>
-                <button
+                >7-Day</Button>
+                <Button
+                  type="button"
+                  variant="ghost"
                   className={`tab${activeTab === 'precip' ? ' active' : ''}`}
                   onClick={() => setActiveTab('precip')}
-                >Rain</button>
-                <button
+                >Rain</Button>
+                <Button
+                  type="button"
+                  variant="ghost"
                   className={`tab${activeTab === 'aqi' ? ' active' : ''}`}
                   onClick={() => setActiveTab('aqi')}
-                >Air</button>
+                >Air</Button>
               </Row>
 
               {activeTab === 'forecast' && <DailyForecastChart />}
               {activeTab === 'precip' && <PrecipitationChart />}
               {activeTab === 'aqi' && <AirQualityPanel />}
-            </Column></Surface>
-          </div>
-        </div>
+          </Column>
+        </Modal>
       )}
     </>
   );

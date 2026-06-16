@@ -1,8 +1,8 @@
 import { useState, type CSSProperties } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Row, Column } from '@ui/layout';
-import { Surface } from '@ui/atoms';
-import { Button } from '@ui/molecules';
+import { Row, Column, Layer, Layered } from '@ui/layout';
+import { Surface, Text } from '@ui/atoms';
+import { Button, PageControl } from '@ui/molecules';
 
 type Slide = string | { src: string; caption?: string };
 
@@ -25,7 +25,7 @@ export function Carousel({ slides }: CarouselProps) {
 
   return (
     <Column gap={1}>
-      <div className="carousel relative clip">
+      <Layered className="carousel" clip>
         {/* eslint-disable-next-line no-restricted-syntax -- Active slide drives the tokenized transform custom property at runtime. */}
         <div className="row track" style={trackStyle}>
           {slides.map((slide, i) => {
@@ -34,26 +34,26 @@ export function Carousel({ slides }: CarouselProps) {
           })}
         </div>
         {current.caption && (
-          <Row justify="center" className="slide-caption">{current.caption}</Row>
+          <Row justify="center" className="slide-caption">
+            <Text size="caption">{current.caption}</Text>
+          </Row>
         )}
         {len > 1 && idx > 0 && (
-          <Button variant="ghost" size="icon" className="absolute bottom left" onClick={e => { e.stopPropagation(); setIdx(i => i - 1); }}>
-            <ChevronLeft size={14} strokeWidth={2.5} />
-          </Button>
+          <Layer pin="bottom-left" z="controls">
+            <Button variant="ghost" size="icon" onClick={e => { e.stopPropagation(); setIdx(i => i - 1); }}>
+              <ChevronLeft size={14} strokeWidth={2.5} />
+            </Button>
+          </Layer>
         )}
         {len > 1 && idx < len - 1 && (
-          <Button variant="ghost" size="icon" className="absolute bottom right" onClick={e => { e.stopPropagation(); setIdx(i => i + 1); }}>
-            <ChevronRight size={14} strokeWidth={2.5} />
-          </Button>
+          <Layer pin="bottom-right" z="controls">
+            <Button variant="ghost" size="icon" onClick={e => { e.stopPropagation(); setIdx(i => i + 1); }}>
+              <ChevronRight size={14} strokeWidth={2.5} />
+            </Button>
+          </Layer>
         )}
-      </div>
-      {len > 1 && (
-        <Row gap={1} justify="center">
-          {slides.map((_, i) => (
-            <span key={i} className={`dot sm ${i === idx ? ' active stretch' : ''} interactive`} onClick={e => { e.stopPropagation(); setIdx(i); }} />
-          ))}
-        </Row>
-      )}
+      </Layered>
+      <PageControl count={len} index={idx} label="Media slides" onChange={setIdx} />
     </Column>
   );
 }

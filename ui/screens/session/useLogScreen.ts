@@ -6,6 +6,7 @@ import {
   handleAddToSuperset,
   handleDeleteSession,
   handleSetBlockType,
+  handleSetBlockRounds,
   handleUpdateSessionStartTime,
   getActivityHistory,
 } from '@features/training_log';
@@ -129,6 +130,7 @@ export function useLogScreen() {
   const { dispatch: addBlock } = useCommand(handleAddBlock);
   const { dispatch: addToSuperset } = useCommand(handleAddToSuperset);
   const { dispatch: setBlockType } = useCommand(handleSetBlockType);
+  const { dispatch: setBlockRounds } = useCommand(handleSetBlockRounds);
   const { dispatch: updateStartTime } = useCommand(handleUpdateSessionStartTime);
   const { dispatch: deleteStrengthSession } = useCommand(handleDeleteSession);
   const { dispatch: deleteCardioSession } = useCommand(handleDeleteCardioSession);
@@ -148,32 +150,46 @@ export function useLogScreen() {
   async function handlePickerCommit(
     selections: Array<{ name: string; category: ExerciseCategory }>,
     blockType: typeof BT_OPTIONS[number],
+    rounds?: number,
   ) {
     if (!session?.id) return;
-    const isGrouped = (blockType === 'Superset' || blockType === 'Circuit') && selections.length >= 2;
+
+    if (blockType === 'Standard') {
+      for (const s of selections) {
+        await addBlock({ type: 'AddBlock', sessionId: session.id, exerciseName: s.name, exerciseCategory: s.category });
+      }
+      return;
+    }
+
+    // Structured block: Superset relies on grouping (blockType stays default);
+    // Circuit/EMOM/AMRAP carry an explicit blockType and optional round count.
+    const domainBlockType =
+      blockType === 'Circuit' ? 'circuit' as const :
+        blockType === 'EMOM' ? 'emom' as const :
+          blockType === 'AMRAP' ? 'amrap' as const : null;
+    const isGrouped = selections.length >= 2;
+    const blockIds = selections.map(() => cryptoIdGenerator.next<'Block'>());
+
+    for (let i = 0; i < selections.length; i++) {
+      await addBlock({
+        type: 'AddBlock',
+        sessionId: session.id,
+        exerciseName: selections[i].name,
+        exerciseCategory: selections[i].category,
+        blockId: blockIds[i],
+      });
+      if (domainBlockType) {
+        await setBlockType({ type: 'SetBlockType', sessionId: session.id, blockId: blockIds[i], blockType: domainBlockType });
+        if (rounds != null) {
+          await setBlockRounds({ type: 'SetBlockRounds', sessionId: session.id, blockId: blockIds[i], rounds });
+        }
+      }
+    }
 
     if (isGrouped) {
       const groupId = cryptoIdGenerator.next<'SupersetGroup'>();
-      const blockIds = selections.map(() => cryptoIdGenerator.next<'Block'>());
-      const isCircuit = blockType === 'Circuit';
-      for (let i = 0; i < selections.length; i++) {
-        await addBlock({
-          type: 'AddBlock',
-          sessionId: session.id,
-          exerciseName: selections[i].name,
-          exerciseCategory: selections[i].category,
-          blockId: blockIds[i],
-        });
-        if (isCircuit) {
-          await setBlockType({ type: 'SetBlockType', sessionId: session.id, blockId: blockIds[i], blockType: 'circuit' });
-        }
-      }
       for (const blockId of blockIds) {
         await addToSuperset({ type: 'AddToSuperset', sessionId: session.id, blockId, groupId });
-      }
-    } else {
-      for (const s of selections) {
-        await addBlock({ type: 'AddBlock', sessionId: session.id, exerciseName: s.name, exerciseCategory: s.category });
       }
     }
   }

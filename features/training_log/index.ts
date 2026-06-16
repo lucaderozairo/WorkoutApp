@@ -107,7 +107,7 @@ export {
   recentExercisesProjection,
 } from './projections';
 
-export type { TrainingDashboardView } from './projections/dashboard';
+export type { TrainingDashboardView } from './projections/dashboardTypes';
 export { registerTrainingDashboardProjection } from './projections/dashboard';
 
 export type {

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Button } from '@ui/molecules/Button';
 import { Surface } from '@ui/atoms/Surface';
+import { Text } from '@ui/atoms';
 import { Row } from '@ui/layout/Row';
 import { Column } from '@ui/layout/Column';
 
@@ -34,7 +35,7 @@ export function Alert({ variant, title, message, dismissible = false, onDismiss,
       <Row align="center">
         <Column className="min-w-0">
           {title && <strong>{title}</strong>}
-          <span className="caption">{message}</span>
+          <Text as="span" size="caption">{message}</Text>
         </Column>
         {action}
         {dismissible && onDismiss && (

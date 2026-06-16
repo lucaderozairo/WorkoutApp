@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 import { useId } from 'react';
+import { Surface } from '@ui/atoms';
+import { Column } from '@ui/layout';
 import { Button } from '@ui/molecules/Button';
 
 interface DropdownItem {
@@ -29,25 +31,29 @@ export function Dropdown({ trigger, items, align = 'right' }: DropdownProps) {
   return (
     <>
       <Button type="button" variant="ghost" popoverTarget={pid}>{trigger}</Button>
-      <div
+      <Surface
+        as="div"
         id={pid}
         popover="auto"
-        className={`dropdown surface column gap-1 menu-popover popover-bottom ${alignClass}`}
+        pad="sm"
+        className={`dropdown menu-popover popover-bottom ${alignClass}`}
       >
-        {items.map((item, i) => (
-          <Button
-            key={i}
-            variant="ghost"
-            block
-            disabled={item.disabled}
-            leading={item.icon}
-            className={item.destructive ? 'negative' : undefined}
-            onClick={() => { item.onClick(); document.getElementById(pid)?.hidePopover(); }}
-          >
-            {item.label}
-          </Button>
-        ))}
-      </div>
+        <Column gap={1}>
+          {items.map((item, i) => (
+            <Button
+              key={i}
+              variant="ghost"
+              block
+              disabled={item.disabled}
+              leading={item.icon}
+              className={item.destructive ? 'negative' : undefined}
+              onClick={() => { item.onClick(); document.getElementById(pid)?.hidePopover(); }}
+            >
+              {item.label}
+            </Button>
+          ))}
+        </Column>
+      </Surface>
     </>
   );
 }

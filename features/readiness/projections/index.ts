@@ -24,7 +24,7 @@ export const todayReadinessProjection = new ProjectionBuilder<
   ReadinessEvent
 >(
   'today_readiness',
-  { score: 0, sleep: 0, energy: 0, soreness: 0, mood: 0, hasEntry: false },
+  { score: 0, sleep: 0, energy: 0, soreness: 0, mood: 0, hasEntry: false, source: 'manual' },
   {
     ReadinessLogged: applyReadinessLogged,
   }
@@ -76,5 +76,5 @@ export const subjectiveRPEProjection = new ProjectionBuilder<
   }
 );
 
-export type { SleepTrendView, WeeklyTrendEntry, SleepScorePoint } from './sleepTrend';
+export type { SleepTrendView, WeeklyTrendEntry, SleepScorePoint } from './sleepTrendTypes';
 export { registerSleepTrendProjection } from './sleepTrend';

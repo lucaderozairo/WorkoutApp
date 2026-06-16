@@ -33,7 +33,7 @@ export function ExerciseHistoryChart({ points, bands, dividers, xMax, yMax, form
     <Surface as="section" className="pad-sm column">
       <Text size="caption">Weight over time</Text>
       <Row align="center">
-        <Text className="chart-ylabel">kg</Text>
+        <Text size="caption" color="faint" className="chart-ylabel">kg</Text>
         <ResponsiveContainer width="100%" height={CHART_H.md}>
           <LineChart data={points} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
             <XAxis

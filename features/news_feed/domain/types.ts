@@ -1,22 +1,7 @@
 import type { Id, DomainEvent } from '@shared/types';
+import type { Deal, Headline } from '@shared/contracts';
 
-export interface Headline {
-  id: Id<'Headline'>;
-  title: string;
-  source: string;
-  url: string;
-  publishedAt: number;
-  isRead: boolean;
-}
-
-export interface Deal {
-  id: Id<'Deal'>;
-  title: string;
-  brand: string;
-  discountPercent: number;
-  url: string;
-  expiresAt: number | null;
-}
+export type { Deal, Headline } from '@shared/contracts';
 
 export interface NewsFeedState {
   headlines: Headline[];

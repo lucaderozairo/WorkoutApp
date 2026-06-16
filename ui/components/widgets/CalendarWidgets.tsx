@@ -1,6 +1,6 @@
 import { useQuery } from '@ui/bindings';
 import { Grid, Row, Column } from '@ui/layout';
-import { Surface, Text } from '@ui/atoms';
+import { DataValue, Surface, Text } from '@ui/atoms';
 import { Badge, Button } from '@ui/molecules';
 import type { SportType } from '@features/training_log/domain/types';
 import type { MockCalendarEvent } from '@features/scheduling';
@@ -25,7 +25,7 @@ export function CalendarGrid({ year, month }: { year: number; month: number }) {
   return (
     <Grid variant="cal">
       {DAY_LABELS.map(label => (
-        <span key={label} className="day">{label}</span>
+        <Text key={label} size="caption" className="day">{label}</Text>
       ))}
       {cells.map((day, i) => {
         if (day === null) return <span key={`e-${i}`} className="day" />;
@@ -33,10 +33,16 @@ export function CalendarGrid({ year, month }: { year: number; month: number }) {
         const primarySport = (workoutCalendar[day] ?? [])[0];
 
         return (
-          <button key={day} className="day column gap-1" {...(isToday ? { 'data-today': '' } : {})}>
-            <span>{day}</span>
+          <Button
+            key={day}
+            type="button"
+            variant="ghost"
+            className="day column gap-1"
+            {...(isToday ? { 'data-today': '' } : {})}
+          >
+            <Text size="caption">{day}</Text>
             <span className={`dot ${primarySport ?? 'transparent'}`} />
-          </button>
+          </Button>
         );
       })}
     </Grid>
@@ -64,8 +70,8 @@ export function CalendarLarge() {
             <Surface key={ev.day}>
               <Row align="center" gap={1}>
                 <div>
-                  <span className="eyebrow text-9">{ev.month}</span>
-                  <span className="calendar-event-day">{ev.day}</span>
+                  <Text size="eyebrow" className="text-9">{ev.month}</Text>
+                  <DataValue value={ev.day} size="sm" className="calendar-event-day" />
                 </div>
                 <Column gap={1} className="min-w-0">
                   <Row justify="between" align="center">

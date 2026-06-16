@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Row } from '../layout/Row';
 import { Column } from '../layout/Column';
+import { Text } from '../atoms/Text';
 
 interface ListProps {
   divided?: boolean;
@@ -33,7 +34,7 @@ export function ListItem({ leading, trailing, label, sublabel, interactive = fal
         {(label || sublabel) && (
           <Column className="min-w-0">
             {label && <span>{label}</span>}
-            {sublabel && <span className="caption muted">{sublabel}</span>}
+            {sublabel && <Text as="span" size="caption" color="muted">{sublabel}</Text>}
           </Column>
         )}
         {trailing && <span className="list-trailing">{trailing}</span>}

@@ -8,6 +8,7 @@ interface ColumnProps {
   as?: ElementType;
   className?: string;
   'aria-describedby'?: string;
+  'aria-labelledby'?: string;
   children: ReactNode;
   onClick?: () => void;
 }
@@ -19,9 +20,19 @@ export function Column({
   as: Tag = 'div',
   className,
   'aria-describedby': ariaDescribedBy,
+  'aria-labelledby': ariaLabelledBy,
   children,
   onClick,
 }: ColumnProps) {
   const classes = layoutClasses({ base: 'column', gap, defaultGap: 4, align, justify, className });
-  return <Tag className={classes} aria-describedby={ariaDescribedBy} onClick={onClick}>{children}</Tag>;
+  return (
+    <Tag
+      className={classes}
+      aria-describedby={ariaDescribedBy}
+      aria-labelledby={ariaLabelledBy}
+      onClick={onClick}
+    >
+      {children}
+    </Tag>
+  );
 }

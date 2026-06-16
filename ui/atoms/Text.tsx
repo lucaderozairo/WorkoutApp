@@ -1,9 +1,9 @@
-import type { ElementType, ReactNode } from 'react';
+import type { AllHTMLAttributes, ElementType, ReactNode } from 'react';
 
 type TextSize = 'body' | 'detail' | 'caption' | 'eyebrow';
 type TextColor = 'default' | 'muted' | 'faint' | 'positive' | 'negative';
 
-interface TextProps {
+interface TextProps extends Omit<AllHTMLAttributes<HTMLElement>, 'color' | 'as' | 'size'> {
   size?: TextSize;
   color?: TextColor;
   mono?: boolean;
@@ -40,6 +40,7 @@ export function Text({
   as: Tag = 'span',
   className,
   children,
+  ...rest
 }: TextProps) {
   const classes = [
     SIZE_CLASS[size],
@@ -51,5 +52,5 @@ export function Text({
     className,
   ].filter(Boolean).join(' ');
 
-  return <Tag className={classes || undefined}>{children}</Tag>;
+  return <Tag className={classes || undefined} {...rest}>{children}</Tag>;
 }

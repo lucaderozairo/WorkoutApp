@@ -28,9 +28,9 @@ export function StrengthActivityCard({ session }: { session: ActivityHistoryItem
             </Row>
           </Column>
         </Row>
-        <time className="caption muted" dateTime={new Date(session.startedAt).toISOString()}>
+        <Text as="time" size="caption" color="muted" dateTime={new Date(session.startedAt).toISOString()}>
           {timeAgo(session.startedAt)}
-        </time>
+        </Text>
       </Row>
       <h3 className="interactive" onClick={() => navigate(`/sessions/${session.id}`)}>{session.name}</h3>
       <Row align="center">
@@ -83,9 +83,9 @@ export function CardioActivityCard({ session }: { session: CardioSession }) {
             </Row>
           </Column>
         </Row>
-        <time className="caption muted" dateTime={new Date(session.startedAt).toISOString()}>
+        <Text as="time" size="caption" color="muted" dateTime={new Date(session.startedAt).toISOString()}>
           {timeAgo(session.startedAt)}
-        </time>
+        </Text>
       </Row>
       <h3 className="interactive" onClick={() => navigate(`/sessions/${session.id}`)}>{title}</h3>
       <Row align="center">

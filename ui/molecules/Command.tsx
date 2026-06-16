@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { useMemo, useState } from 'react';
+import { Text } from '@ui/atoms';
 
 export interface CommandItem {
   id: string;
@@ -47,7 +48,7 @@ export function Command({ items, placeholder = 'Search commands', emptyMessage =
           >
             {item.label}
           </button>
-        )) : <span className="caption muted command-empty">{emptyMessage}</span>}
+        )) : <Text as="span" size="caption" color="muted" className="command-empty">{emptyMessage}</Text>}
       </div>
     </div>
   );

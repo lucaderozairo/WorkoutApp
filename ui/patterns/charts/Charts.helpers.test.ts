@@ -1,9 +1,9 @@
-import { describe, it, expect } from 'vitest';
+﻿import { describe, it, expect } from 'vitest';
 import {
   gpsPointsToHRSeries,
   gpsPointsToPaceSeries,
   gpsPointsToElevationSeries,
-} from '@ui/patterns/charts/domain-charts';
+} from '@ui/components/charts/domain-charts';
 import type { GpsPoint } from '@data/sources/files/gps';
 
 const pt = (overrides: Partial<GpsPoint> & { timestamp: string }): GpsPoint => ({

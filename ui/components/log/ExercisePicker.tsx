@@ -5,11 +5,15 @@ import type { ExerciseCategory } from '@features/training_log';
 import { EXERCISE_GROUPS, BT_OPTIONS } from '@features/training_log/projections/viewTypes';
 import { Row, Column, Cluster } from '@ui/layout';
 import { Surface, Text, Chip } from '@ui/atoms';
-import { Badge, Button } from '@ui/molecules';
+import { Badge, Button, Input } from '@ui/molecules';
 
 export interface ExercisePickerProps {
   onClose: () => void;
-  onCommit: (selections: Array<{ name: string; category: ExerciseCategory }>, blockType: typeof BT_OPTIONS[number]) => void;
+  onCommit: (
+    selections: Array<{ name: string; category: ExerciseCategory }>,
+    blockType: typeof BT_OPTIONS[number],
+    rounds?: number,
+  ) => void;
 }
 
 export function ExercisePicker({ onClose, onCommit }: ExercisePickerProps) {
@@ -17,8 +21,13 @@ export function ExercisePicker({ onClose, onCommit }: ExercisePickerProps) {
   const [muscleGroup, setMuscleGroup] = useState<typeof EXERCISE_GROUPS[number]>('All');
   const [blockType, setBlockType] = useState<typeof BT_OPTIONS[number]>('Standard');
   const [pending, setPending] = useState<string[]>([]);
+  const [rounds, setRounds] = useState(1);
 
-  const isMulti = blockType === 'Superset' || blockType === 'Circuit';
+  // Superset/Circuit/EMOM/AMRAP use the multi-select flow. Superset & Circuit need
+  // ≥2 exercises; EMOM/AMRAP are valid with a single movement.
+  const isMulti = blockType !== 'Standard';
+  const minSelections = blockType === 'Superset' || blockType === 'Circuit' ? 2 : 1;
+  const roundsCapable = blockType === 'Circuit' || blockType === 'EMOM' || blockType === 'AMRAP';
 
   const filtered = EXERCISES.filter(ex => {
     const groupOk = muscleGroup === 'All'
@@ -49,8 +58,12 @@ export function ExercisePicker({ onClose, onCommit }: ExercisePickerProps) {
   };
 
   const handleCommit = () => {
-    if (pending.length === 0) return;
-    onCommit(pending.map(name => ({ name, category: EXERCISES.find(e => e.name === name)?.category ?? 'strength' })), blockType);
+    if (pending.length < minSelections) return;
+    onCommit(
+      pending.map(name => ({ name, category: EXERCISES.find(e => e.name === name)?.category ?? 'strength' })),
+      blockType,
+      roundsCapable ? rounds : undefined,
+    );
     onClose();
   };
 
@@ -69,14 +82,14 @@ export function ExercisePicker({ onClose, onCommit }: ExercisePickerProps) {
             <Chip
               key={bt}
               active={blockType === bt}
-              onClick={() => { setBlockType(bt); setMuscleGroup('All'); setPending([]); }}
+              onClick={() => { setBlockType(bt); setMuscleGroup('All'); setPending([]); setRounds(1); }}
             >
               {bt}
             </Chip>
           ))}
         </Cluster>
 
-        <input
+        <Input
           type="text"
           value={search}
           onChange={e => setSearch(e.target.value)}
@@ -97,8 +110,22 @@ export function ExercisePicker({ onClose, onCommit }: ExercisePickerProps) {
 
         {isMulti && (
           <Text size="caption" color="faint">
-            Select 2 or more exercises, then tap Add.
+            {minSelections >= 2
+              ? `Select ${minSelections} or more exercises, then tap Add.`
+              : 'Select one or more exercises, then tap Add.'}
           </Text>
+        )}
+
+        {roundsCapable && (
+          <Row gap={1} align="center">
+            <Text size="caption" color="muted">Rounds</Text>
+            <Input
+              type="number"
+              min={1}
+              value={rounds}
+              onChange={e => setRounds(Math.max(1, parseInt(e.target.value) || 1))}
+            />
+          </Row>
         )}
 
         <Column>
@@ -138,13 +165,13 @@ export function ExercisePicker({ onClose, onCommit }: ExercisePickerProps) {
             <Text size="caption" color="muted">No exercises found</Text>
           )}
 
-          {isMulti && pending.length >= 2 && (
+          {isMulti && pending.length >= minSelections && (
             <Button variant="secondary" onClick={handleCommit}>
-              Add {pending.length} exercises to {blockType}
+              Add {pending.length} {pending.length === 1 ? 'exercise' : 'exercises'} to {blockType}
             </Button>
           )}
 
-          {isMulti && pending.length === 1 && (
+          {isMulti && pending.length < minSelections && pending.length > 0 && (
             <Text size="caption" color="muted">Select at least one more exercise.</Text>
           )}
 

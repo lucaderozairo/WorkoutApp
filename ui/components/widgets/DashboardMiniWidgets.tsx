@@ -1,4 +1,4 @@
-import { ScoreRing, SleepStagesBar, SparklineArea, fmtMin } from '@ui/patterns/charts/domain-charts';
+﻿import { ScoreRing, SleepStagesBar, SparklineArea, fmtMin } from '@ui/components/charts/domain-charts';
 import { Grid, Row, Column, Cluster, Spacer } from '@ui/layout';
 import { Surface, Text, Metric, Divider } from '@ui/atoms';
 import { Badge } from '@ui/molecules';
@@ -271,9 +271,9 @@ export function CalendarDashWidget({ size, appointments }: { size: WidgetSize; a
               <Row key={a.id} align="center" gap={1}>
                 <div className="dot bg-primary" />
                 <Text size="caption" className="min-w-0">{a.title}</Text>
-                <time className="caption faint">
+                <Text as="time" size="caption" color="faint">
                   {new Date(a.scheduledAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
-                </time>
+                </Text>
               </Row>
             ))}
           </Column>

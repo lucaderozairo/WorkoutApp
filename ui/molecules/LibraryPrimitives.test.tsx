@@ -2,6 +2,8 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { Button } from './Button';
 import { Dropdown } from './Dropdown';
+import { FloatingPanel } from './FloatingPanel';
+import { FloatingToolbar } from './FloatingToolbar';
 import { Popover } from './Popover';
 import { Tabs } from './Tabs';
 
@@ -52,5 +54,31 @@ describe('Popover and Dropdown', () => {
 
     expect(document.querySelector('.dropdown')).toHaveClass('menu-popover', 'popover-align-start');
     expect(document.querySelector('.dropdown .button')).toHaveClass('button', 'ghost', 'block');
+  });
+});
+
+describe('FloatingPanel and FloatingToolbar', () => {
+  it('composes panel surfaces inside typed layers', () => {
+    render(
+      <FloatingPanel pin="top-right" z="sticky" variant="flat" pad="xs">
+        Filters
+      </FloatingPanel>,
+    );
+
+    const layer = screen.getByText('Filters').closest('.layer');
+    expect(layer).toHaveClass('layer-pin-top-right', 'layer-z-sticky');
+    expect(screen.getByText('Filters')).toHaveClass('surface', 'flat', 'pad-xs');
+  });
+
+  it('composes accessible floating toolbars', () => {
+    render(
+      <FloatingToolbar pin="bottom-left" aria-label="Map tools">
+        <Button variant="ghost" size="icon-sm" aria-label="Zoom in">+</Button>
+      </FloatingToolbar>,
+    );
+
+    const toolbar = screen.getByRole('navigation', { name: 'Map tools' });
+    expect(toolbar).toHaveClass('surface');
+    expect(toolbar.closest('.layer')).toHaveClass('layer-pin-bottom-left', 'layer-z-controls');
   });
 });

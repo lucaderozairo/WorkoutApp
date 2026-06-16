@@ -1,21 +1,7 @@
 import type { DomainEvent } from '@shared/types';
+import type { SportSuitability, SuitabilityEntry, WeatherCondition } from '@shared/contracts';
 
-export interface WeatherCondition {
-  tempCelsius: number;
-  humidity: number;
-  windKph: number;
-  description: string;
-  icon: string;
-  fetchedAt: number;
-}
-
-export type SportSuitability = 'excellent' | 'good' | 'fair' | 'poor';
-
-export interface SuitabilityEntry {
-  sport: string;
-  suitability: SportSuitability;
-  reason: string;
-}
+export type { SportSuitability, SuitabilityEntry, WeatherCondition } from '@shared/contracts';
 
 export interface ConditionsState {
   current: WeatherCondition | null;

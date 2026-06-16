@@ -2,25 +2,7 @@ import { viewStore } from '@data/projections/views';
 // eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
 import { getActivityHistory } from '@features/training_log';
 import type { PersonalRecord, ChartAnnotation } from '../domain/types';
-
-export interface StatsSummary {
-  totalSessions: number;
-  totalVolumeKg: number;
-  liftSessions: number;
-  cardioSessions: number;
-  kmRan: number;
-  kmCycled: number;
-  kmSwum: number;
-  kmRowed: number;
-}
-
-export interface ActivityFeedEntry {
-  id: string;
-  type: 'lift' | 'cardio' | 'mobility' | 'other';
-  date: string;
-  title: string;
-  metric: string;
-}
+import type { ActivityFeedEntry, StatsSummary } from './types';
 
 export function getPersonalRecords(): PersonalRecord[] {
   return viewStore.get('personal_records') ?? [];

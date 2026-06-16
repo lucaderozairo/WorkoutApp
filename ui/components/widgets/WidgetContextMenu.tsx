@@ -1,6 +1,7 @@
 import { useEffect, useRef, type CSSProperties } from 'react';
 import { Column, Row } from '@ui/layout';
 import { Text } from '@ui/atoms';
+import { Button } from '@ui/molecules';
 import type { WidgetDef, WidgetInstance, WidgetSize } from './widgetTypes';
 
 const SIZE_LABELS: Record<WidgetSize, string> = {
@@ -52,9 +53,10 @@ export function WidgetContextMenu({ x, y, instance, def, onSetSize, onRemove, on
           const supported = def.sizes.includes(size);
           const active = instance.size === size;
           return (
-            <button
+            <Button
               key={size}
               role="menuitem"
+              variant="ghost"
               className={`menu-item${active ? ' active' : ''}`}
               disabled={!supported}
               onClick={() => onSetSize(instance.instanceId, size)}
@@ -63,19 +65,20 @@ export function WidgetContextMenu({ x, y, instance, def, onSetSize, onRemove, on
                 <span>{size === 'sm' ? 'Small' : size === 'wide' ? 'Wide' : size === 'md' ? 'Medium' : 'Large'}</span>
                 <Text size="caption" color="muted">{SIZE_LABELS[size]}</Text>
               </Row>
-            </button>
+            </Button>
           );
         })}
         {def.removable !== false && (
           <>
             <div className="divider" />
-            <button
+            <Button
               role="menuitem"
+              variant="ghost"
               className="menu-item menu-item--danger"
               onClick={() => onRemove(instance.instanceId)}
             >
               Remove
-            </button>
+            </Button>
           </>
         )}
       </Column>

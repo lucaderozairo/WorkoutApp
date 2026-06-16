@@ -12,8 +12,9 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { HealthChartsList } from './HealthChartsList';
-import { Row, Column, Cluster } from '@ui/layout';
-import { Surface, Text, Chip } from '@ui/atoms';
+import { Row, Column } from '@ui/layout';
+import { Surface, Text } from '@ui/atoms';
+import { Button, FileDropSurface, Input } from '@ui/molecules';
 
 const USER_ID = 'user-001' as Id<'User'>;
 
@@ -45,6 +46,36 @@ export function SleepView() {
     }
   };
 
+  function importSleepCsv(file: File | undefined) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      dispatchImportSleepFromCSV({ type: 'ImportSleepFromCSV', userId: USER_ID, csvText: reader.result as string });
+    };
+    reader.readAsText(file);
+  }
+
+  function importYearTrend(file: File | undefined) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setWeeklyTrend(parseGarminSleepYearCSV(reader.result as string));
+    };
+    reader.readAsText(file);
+  }
+
+  function renderSubjectiveLogForm() {
+    return (
+      <Row>
+        <Input type="number" step="1" min="1" max="10" placeholder="Sleep" value={slSleep} onChange={e => setSlSleep(e.target.value)} />
+        <Input type="number" step="1" min="1" max="10" placeholder="Energy" value={slEnergy} onChange={e => setSlEnergy(e.target.value)} />
+        <Input type="number" step="1" min="1" max="10" placeholder="Soreness" value={slSoreness} onChange={e => setSlSoreness(e.target.value)} />
+        <Input type="number" step="1" min="1" max="10" placeholder="Mood" value={slMood} onChange={e => setSlMood(e.target.value)} />
+        <Button variant="primary" size="sm" onClick={handleLog}>Log</Button>
+      </Row>
+    );
+  }
+
   return (
     <Column>
       <HealthChartsList slug="sleep" height={100} />
@@ -53,40 +84,12 @@ export function SleepView() {
         <header className="row between">
           <h3>Sleep</h3>
           <div className="row">
-            <label className="secondary small">
-              Import Day CSV
-              <input
-                type="file"
-                accept=".csv"
-                onChange={e => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  const reader = new FileReader();
-                  reader.onload = () => {
-                    dispatchImportSleepFromCSV({ type: 'ImportSleepFromCSV', userId: USER_ID, csvText: reader.result as string });
-                  };
-                  reader.readAsText(file);
-                  e.target.value = '';
-                }}
-              />
-            </label>
-            <label className="secondary small">
-              Import Year Trend
-              <input
-                type="file"
-                accept=".csv"
-                onChange={e => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  const reader = new FileReader();
-                  reader.onload = () => {
-                    setWeeklyTrend(parseGarminSleepYearCSV(reader.result as string));
-                  };
-                  reader.readAsText(file);
-                  e.target.value = '';
-                }}
-              />
-            </label>
+            <FileDropSurface accept=".csv" onFiles={files => importSleepCsv(files[0])}>
+              <Text size="caption">Import Day CSV</Text>
+            </FileDropSurface>
+            <FileDropSurface accept=".csv" onFiles={files => importYearTrend(files[0])}>
+              <Text size="caption">Import Year Trend</Text>
+            </FileDropSurface>
           </div>
         </header>
 
@@ -94,11 +97,11 @@ export function SleepView() {
           <>
             {sleepEntries[0].source !== 'manual' && (
               <div className="column">
-                <span className="label">GARMIN MEASURED</span>
+                <Text size="eyebrow">GARMIN MEASURED</Text>
                 <div className="row between">
                   <div>
                     <p className="value">{sleepEntries[0].sleepScore ?? '—'}</p>
-                    <span className="caption">{sleepEntries[0].quality ?? '—'}</span>
+                    <Text as="span" size="caption">{sleepEntries[0].quality ?? '—'}</Text>
                   </div>
                   <div className="row">
                     <span className="pill">Deep {fmtMin(sleepEntries[0].deepMin)}</span>
@@ -122,30 +125,24 @@ export function SleepView() {
             )}
 
             <div className="column">
-              <span className="label">SUBJECTIVE</span>
+              <Text size="eyebrow">SUBJECTIVE</Text>
               <div className="row">
-                <span className="caption">Sleep</span>
+                <Text as="span" size="caption">Sleep</Text>
                 <span className="value">{sleepEntries[0].sleepQuality ?? '—'}</span>
-                <span className="caption">Energy</span>
+                <Text as="span" size="caption">Energy</Text>
                 <span className="value">{sleepEntries[0].energy ?? '—'}</span>
-                <span className="caption">Soreness</span>
+                <Text as="span" size="caption">Soreness</Text>
                 <span className="value">{sleepEntries[0].soreness ?? '—'}</span>
-                <span className="caption">Mood</span>
+                <Text as="span" size="caption">Mood</Text>
                 <span className="value">{sleepEntries[0].mood ?? '—'}</span>
               </div>
-              <div className="row">
-                <input type="number" step="1" min="1" max="10" placeholder="Sleep" value={slSleep} onChange={e => setSlSleep(e.target.value)} />
-                <input type="number" step="1" min="1" max="10" placeholder="Energy" value={slEnergy} onChange={e => setSlEnergy(e.target.value)} />
-                <input type="number" step="1" min="1" max="10" placeholder="Soreness" value={slSoreness} onChange={e => setSlSoreness(e.target.value)} />
-                <input type="number" step="1" min="1" max="10" placeholder="Mood" value={slMood} onChange={e => setSlMood(e.target.value)} />
-                <button className="primary small" onClick={handleLog}>Log</button>
-              </div>
+              {renderSubjectiveLogForm()}
             </div>
 
             <div className="column gap-0">
               {sleepEntries.slice(0, 7).map(entry => (
                 <div key={entry.id} className="row between">
-                  <time className="caption">{entry.date ?? new Date(entry.loggedAt).toLocaleDateString()}</time>
+                  <Text as="time" size="caption">{entry.date ?? new Date(entry.loggedAt).toLocaleDateString()}</Text>
                   <div className="row">
                     {entry.source !== 'manual' && entry.sleepScore !== null && (
                       <span className="pill">{entry.sleepScore} {entry.quality}</span>
@@ -160,26 +157,20 @@ export function SleepView() {
           </>
         ) : (
           <>
-            <p className="caption">No sleep entries yet.</p>
-            <div className="row">
-              <input type="number" step="1" min="1" max="10" placeholder="Sleep" value={slSleep} onChange={e => setSlSleep(e.target.value)} />
-              <input type="number" step="1" min="1" max="10" placeholder="Energy" value={slEnergy} onChange={e => setSlEnergy(e.target.value)} />
-              <input type="number" step="1" min="1" max="10" placeholder="Soreness" value={slSoreness} onChange={e => setSlSoreness(e.target.value)} />
-              <input type="number" step="1" min="1" max="10" placeholder="Mood" value={slMood} onChange={e => setSlMood(e.target.value)} />
-              <button className="primary small" onClick={handleLog}>Log</button>
-            </div>
+            <Text as="p" size="caption">No sleep entries yet.</Text>
+            {renderSubjectiveLogForm()}
           </>
         )}
 
         {weeklyTrend.length > 0 && (
           <div className="column">
-            <span className="label">SLEEP TREND</span>
+            <Text size="eyebrow">SLEEP TREND</Text>
             <div className="row between">
-              <span className="caption">Score (left axis) · Duration (right axis)</span>
+              <Text as="span" size="caption">Score (left axis) · Duration (right axis)</Text>
               <div className="row">
-                <span className="caption">Need {fmtMin(weeklyTrend[weeklyTrend.length - 1].avgSleepNeedMin)}</span>
-                <span className="caption">Bed {weeklyTrend[weeklyTrend.length - 1].avgBedtime}</span>
-                <span className="caption">Wake {weeklyTrend[weeklyTrend.length - 1].avgWakeTime}</span>
+                <Text as="span" size="caption">Need {fmtMin(weeklyTrend[weeklyTrend.length - 1].avgSleepNeedMin)}</Text>
+                <Text as="span" size="caption">Bed {weeklyTrend[weeklyTrend.length - 1].avgBedtime}</Text>
+                <Text as="span" size="caption">Wake {weeklyTrend[weeklyTrend.length - 1].avgWakeTime}</Text>
               </div>
             </div>
             <ResponsiveContainer width="100%" height={160}>

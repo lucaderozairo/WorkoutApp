@@ -45,6 +45,7 @@ export interface SegmentView {
   rounds?: number;
   restSeconds?: number;
   supersetGroupId?: Id<'SupersetGroup'>;
+  isTransition?: boolean;
 }
 
 export interface ActivityView {
@@ -167,12 +168,12 @@ export const sessionProjection = new ProjectionBuilder<ActivitiesState, Training
 
     BlockAdded: (state, event) => {
       if (event.type !== 'BlockAdded') return state;
-      const { sessionId, blockId, exerciseName, exerciseCategory, order } = event.payload;
+      const { sessionId, blockId, exerciseName, exerciseCategory, order, isTransition } = event.payload;
       return updateActivity(state, sessionId, a => ({
         ...a,
         segments: [
           ...a.segments,
-          { id: blockId, exerciseName, exerciseCategory, sets: [], notes: '', order },
+          { id: blockId, exerciseName, exerciseCategory, sets: [], notes: '', order, ...(isTransition ? { isTransition: true } : {}) },
         ],
       }));
     },

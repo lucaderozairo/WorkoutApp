@@ -1,0 +1,1009 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Home Port Mockup</title>
+    <style>
+      @layer tokens, base, project;
+
+      @layer tokens {
+        :root {
+          color-scheme: light;
+          --c-strength: #e8785a;
+          --c-cardio: #ef4a4a;
+          --c-recovery: #7b9ef8;
+          --c-nutrition: #6fbf73;
+          --c-water: #4dc8f0;
+          --c-mind: #b57bdc;
+          --ok: #6fbf73;
+          --warn: #e8a33d;
+          --bad: #e25555;
+          --color-sleep-awake: #8479d9;
+          --color-sleep-light: #8479d9;
+          --color-sleep-deep: #5f538b;
+          --color-sleep-rem: #a35acd;
+          --font-ui: "Geist", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+          --t-xs: 12px;
+          --t-sm: 14px;
+          --t-md: 16px;
+          --t-lg: 18px;
+          --t-xl: 22px;
+          --t-2xl: 28px;
+          --s-1: 4px;
+          --s-2: 8px;
+          --s-3: 12px;
+          --s-4: 16px;
+          --s-5: 24px;
+          --s-6: 32px;
+          --r-xs: 4px;
+          --r-sm: 8px;
+          --r-md: 14px;
+          --r-lg: 20px;
+          --r-pill: 999px;
+          --surface-0: #f4f6fb;
+          --surface-1: #ffffff;
+          --surface-2: #ebf0fa;
+          --surface-3: #dde5f5;
+          --ink: #0e1320;
+          --ink-muted: #4a5270;
+          --ink-faint: #8e96b0;
+          --line: #dde5f5;
+          --line-strong: #c5d0e8;
+          --accent: #4f8ef7;
+          --accent-ink: #ffffff;
+          --accent-soft: #c5d9fc;
+          --shadow-1: 0 1px 2px rgb(14 19 32 / 6%), 0 1px 1px rgb(14 19 32 / 4%);
+          --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+          --duration-short: 150ms;
+        }
+      }
+
+      @layer base {
+        * {
+          box-sizing: border-box;
+        }
+
+        body {
+          min-height: 100vh;
+          margin: 0;
+          background:
+            linear-gradient(180deg, rgb(255 255 255 / 72%), transparent 220px),
+            var(--surface-0);
+          color: var(--ink);
+          font-family: var(--font-ui);
+          line-height: 1.4;
+        }
+
+        button {
+          font: inherit;
+        }
+
+        svg {
+          display: block;
+          flex: none;
+        }
+      }
+
+      @layer project {
+        .home-phone-screen {
+          width: min(100%, 430px);
+          min-height: 100vh;
+          margin: 0 auto;
+          padding: var(--s-4) var(--s-4) var(--s-6);
+        }
+
+        .grid {
+          display: grid;
+        }
+
+        .column {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .row {
+          display: flex;
+          flex-direction: row;
+        }
+
+        .gap-1 {
+          gap: var(--s-1);
+        }
+
+        .gap-2 {
+          gap: var(--s-2);
+        }
+
+        .gap-3 {
+          gap: var(--s-3);
+        }
+
+        .gap-4 {
+          gap: var(--s-4);
+        }
+
+        .align-center {
+          align-items: center;
+        }
+
+        .align-start {
+          align-items: flex-start;
+        }
+
+        .justify-between {
+          justify-content: space-between;
+        }
+
+        .min-w-0 {
+          min-width: 0;
+        }
+
+        .truncate {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .home-greeting {
+          padding-block: var(--s-2) var(--s-1);
+        }
+
+        .eyebrow {
+          color: var(--ink-muted);
+          font-size: var(--t-xs);
+          font-weight: 600;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
+
+        h1,
+        h2,
+        h3,
+        p {
+          margin: 0;
+        }
+
+        h1 {
+          color: var(--ink);
+          font-size: var(--t-2xl);
+          font-weight: 650;
+          letter-spacing: 0;
+          line-height: 1.12;
+          text-wrap: balance;
+        }
+
+        .detail {
+          color: var(--ink-muted);
+          font-size: var(--t-sm);
+        }
+
+        .caption {
+          color: var(--ink-muted);
+          font-weight: 600;
+          font-size: var(--t-xs);
+        }
+
+        .muted {
+          color: var(--ink-muted);
+        }
+
+        .faint {
+          color: var(--ink-faint);
+        }
+
+        .bold {
+          font-weight: 700;
+        }
+
+        .mono {
+          font-family: var(--font-mono);
+          font-variant-numeric: tabular-nums;
+        }
+
+        .surface {
+          background: var(--surface-1);
+          border: 1px solid var(--line);
+          border-radius: var(--r-md);
+          box-shadow: var(--shadow-1);
+
+          &.ghost {
+            background: transparent;
+            border-color: transparent;
+            box-shadow: none;
+          }
+
+          &.flat {
+            background: var(--surface-2);
+            border-color: transparent;
+            box-shadow: none;
+          }
+        }
+
+        .pad-sm {
+          padding: var(--s-4);
+        }
+
+        .pad-xs {
+          padding: var(--s-2);
+        }
+
+        .button {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 40px;
+          border: 1px solid var(--line-strong);
+          border-radius: var(--r-sm);
+          background: var(--surface-1);
+          color: var(--ink);
+          cursor: pointer;
+          font-size: var(--t-sm);
+          font-weight: 500;
+          padding: var(--s-1) var(--s-3);
+          white-space: nowrap;
+
+          &.ghost {
+            border-color: transparent;
+            background: transparent;
+            color: var(--ink);
+          }
+
+          &.sm {
+            min-height: 32px;
+            padding: var(--s-2) var(--s-3);
+            font-size: var(--t-xs);
+            font-weight: 600;
+          }
+        }
+
+        .split-tabs {
+          overflow: hidden;
+        }
+
+        .tabs {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .tab {
+          min-height: 44px;
+          border: 0;
+          border-bottom: 2px solid transparent;
+          background: transparent;
+          color: var(--ink-muted);
+          cursor: pointer;
+          font-size: var(--t-sm);
+          font-weight: 600;
+
+          &[aria-selected="true"] {
+            border-bottom-color: var(--accent);
+            color: var(--ink);
+          }
+        }
+
+        .split-tabs-panel {
+          display: none;
+          padding: var(--s-4);
+
+          &[data-active="true"] {
+            display: grid;
+            gap: var(--s-3);
+          }
+        }
+
+        .home-list-item {
+          display: grid;
+          grid-template-columns: auto minmax(0, 1fr) auto;
+          align-items: center;
+          gap: var(--s-3);
+          min-height: 44px;
+        }
+
+        .icon-box {
+          display: grid;
+          width: 40px;
+          height: 40px;
+          place-items: center;
+          border-radius: var(--r-sm);
+          background: var(--surface-2);
+          color: var(--ink-muted);
+
+          &.accent {
+            background: var(--accent-soft);
+            color: var(--accent);
+          }
+
+          &.strength {
+            background: color-mix(in srgb, var(--c-strength) 18%, white);
+            color: var(--c-strength);
+          }
+
+          &.cardio {
+            background: color-mix(in srgb, var(--c-cardio) 14%, white);
+            color: var(--c-cardio);
+          }
+        }
+
+        .list-title {
+          color: var(--ink);
+          font-size: var(--t-sm);
+          font-weight: 600;
+        }
+
+        .week-strip {
+          display: grid;
+          grid-template-columns: repeat(7, 1fr);
+          gap: var(--s-1);
+        }
+
+        .week-day {
+          display: grid;
+          justify-items: center;
+          gap: var(--s-1);
+        }
+
+        .week-dot {
+          display: grid;
+          width: 28px;
+          height: 28px;
+          place-items: center;
+          border: 2px solid var(--line);
+          border-radius: var(--r-pill);
+          background: var(--surface-2);
+          color: var(--ink-faint);
+          font-size: var(--t-xs);
+
+          &.done {
+            border-color: var(--accent);
+            background: var(--accent-soft);
+            color: var(--accent);
+          }
+
+          &.today {
+            border-color: var(--accent);
+          }
+        }
+
+        .widget-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: var(--s-2);
+        }
+
+        .home-widget {
+          display: grid;
+          gap: var(--s-3);
+          min-height: 100px;
+        }
+
+        .home-widget-full {
+          grid-column: 1 / -1;
+        }
+
+        .home-widget-compact {
+          min-height: 116px;
+        }
+
+        .sleep-main {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) auto;
+          gap: var(--s-3);
+          align-items: start;
+        }
+
+        .metric {
+          display: inline-flex;
+          align-items: baseline;
+          gap: var(--s-1);
+          color: var(--ink);
+          font-family: var(--font-mono);
+          font-variant-numeric: tabular-nums;
+          font-weight: 700;
+          letter-spacing: 0;
+          line-height: 1;
+        }
+
+        .metric.xl {
+          color: var(--ink);
+          font-size: 32px;
+        }
+
+        .metric.lg {
+          color: var(--ink);
+          font-size: var(--t-2xl);
+        }
+
+        .unit {
+          color: var(--ink-muted);
+          font-size: var(--t-sm);
+          font-weight: 500;
+        }
+
+        .score-circle {
+          display: grid;
+          width: 56px;
+          height: 56px;
+          place-items: center;
+          border: 2px solid color-mix(in srgb, var(--color-sleep-rem) 42%, white);
+          border-radius: var(--r-pill);
+          background: color-mix(in srgb, var(--color-sleep-rem) 14%, white);
+          color: var(--color-sleep-rem-text, var(--color-sleep-rem));
+          font-size: var(--t-lg);
+          font-weight: 700;
+        }
+
+        .stage-bar {
+          display: flex;
+          height: 22px;
+          overflow: hidden;
+          border-radius: var(--r-sm);
+          background: var(--surface-2);
+
+          span {
+            display: block;
+          }
+        }
+
+        .stage-deep {
+          flex: 25;
+          background: var(--color-sleep-deep);
+        }
+
+        .stage-rem {
+          flex: 22;
+          background: var(--color-sleep-rem);
+        }
+
+        .stage-light {
+          flex: 45;
+          background: var(--color-sleep-light);
+        }
+
+        .stage-awake {
+          flex: 8;
+          background: var(--color-sleep-awake);
+        }
+
+        .sleep-stage-labels,
+        .stat-tile-row {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: var(--s-2);
+        }
+
+        .stage-label {
+          display: grid;
+          gap: var(--s-1);
+          min-width: 0;
+          text-align: center;
+
+          strong {
+            font-size: var(--t-xs);
+            font-weight: 700;
+          }
+
+          span {
+            color: var(--ink-faint);
+            font-size: var(--t-xs);
+            font-weight: 600;
+          }
+        }
+
+        .deep-text {
+          color: var(--color-sleep-deep);
+        }
+
+        .rem-text {
+          color: var(--color-sleep-rem);
+        }
+
+        .light-text {
+          color: var(--color-sleep-light);
+        }
+
+        .awake-text {
+          color: var(--color-sleep-awake);
+        }
+
+        .weather-layout {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) auto;
+          gap: var(--s-3);
+          align-items: center;
+        }
+
+        .weather-primary {
+          display: flex;
+          align-items: center;
+          gap: var(--s-3);
+          min-width: 0;
+        }
+
+        .weather-metrics {
+          display: flex;
+          gap: var(--s-3);
+        }
+
+        .weather-metric {
+          display: grid;
+          justify-items: center;
+          gap: var(--s-1);
+          color: var(--ink-muted);
+          font-size: var(--t-xs);
+          font-weight: 600;
+
+          strong {
+            color: var(--ink-muted);
+            font-size: var(--t-xs);
+            font-weight: 700;
+          }
+        }
+
+        .event-row,
+        .check-row {
+          display: grid;
+          grid-template-columns: auto minmax(0, 1fr) auto;
+          align-items: center;
+          gap: var(--s-3);
+          min-height: 24px;
+        }
+
+        .event-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: var(--r-pill);
+          background: var(--event-color);
+        }
+
+        .event-blue {
+          --event-color: var(--accent);
+        }
+
+        .event-green {
+          --event-color: var(--ok);
+        }
+
+        .event-amber {
+          --event-color: var(--warn);
+        }
+
+        .event-name,
+        .check-label {
+          color: var(--ink);
+          font-size: var(--t-sm);
+          font-weight: 500;
+        }
+
+        .add-affordance {
+          display: grid;
+          width: 28px;
+          height: 28px;
+          place-items: center;
+          border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--line));
+          border-radius: var(--r-sm);
+          background: var(--accent-soft);
+          color: var(--accent);
+          font-size: var(--t-lg);
+          line-height: 1;
+        }
+
+        .check-row {
+          grid-template-columns: auto minmax(0, 1fr);
+          border: 0;
+          background: transparent;
+          cursor: pointer;
+          padding: 0;
+          text-align: left;
+
+          .check-icon {
+            display: grid;
+            width: 20px;
+            height: 20px;
+            place-items: center;
+            border: 1.5px solid var(--line-strong);
+            border-radius: var(--r-pill);
+            color: transparent;
+          }
+
+          &[aria-pressed="true"] {
+            .check-icon {
+              border-color: var(--ok);
+              background: var(--ok);
+              color: white;
+            }
+
+            .check-label {
+              color: var(--ink-muted);
+              text-decoration: line-through;
+            }
+          }
+        }
+
+        .readiness-card {
+          justify-items: center;
+          text-align: center;
+        }
+
+        .ring {
+          display: grid;
+          width: 56px;
+          height: 56px;
+          place-items: center;
+          border-radius: var(--r-pill);
+          background:
+            radial-gradient(circle at center, var(--surface-1) 0 54%, transparent 55%),
+            conic-gradient(var(--ok) 0 82%, var(--surface-3) 82% 100%);
+
+          strong {
+            color: var(--ok);
+            font-size: var(--t-sm);
+            font-weight: 700;
+          }
+        }
+
+        .status-word {
+          color: var(--ok);
+          font-size: var(--t-xs);
+          font-weight: 700;
+        }
+
+        .streak-layout {
+          display: flex;
+          align-items: center;
+          gap: var(--s-2);
+        }
+
+        .streak-icon {
+          color: var(--warn);
+        }
+
+        .session-head {
+          display: grid;
+          grid-template-columns: auto minmax(0, 1fr) auto;
+          align-items: center;
+          gap: var(--s-3);
+        }
+
+        .stat-tile-row {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        .q-tile {
+          min-width: 0;
+
+          strong {
+            color: var(--ink);
+            font-size: var(--t-sm);
+            font-weight: 600;
+          }
+
+          span {
+            color: var(--ink-faint);
+            font-size: var(--t-xs);
+            font-weight: 600;
+          }
+        }
+
+        .chevron {
+          color: var(--ink-faint);
+        }
+
+        @media (max-width: 360px) {
+          .home-phone-screen {
+            padding-inline: var(--s-3);
+          }
+
+          .home-widget {
+            padding: var(--s-3);
+          }
+
+          .weather-layout {
+            grid-template-columns: 1fr;
+          }
+
+          .weather-metrics {
+            justify-content: space-between;
+          }
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="home-phone-screen" aria-label="Home prototype">
+      <div class="column gap-4">
+        <header class="surface ghost column gap-1 home-greeting">
+          <span class="eyebrow">Friday · June 12</span>
+          <h1>Good morning, Alex.</h1>
+          <p class="detail">Two workouts this week.</p>
+        </header>
+
+        <section class="surface split-tabs" aria-label="Training overview">
+          <div class="tabs" role="tablist" aria-label="Home summary">
+            <button class="tab" id="tab-upcoming" type="button" role="tab" aria-selected="true" aria-controls="panel-upcoming">Upcoming</button>
+            <button class="tab" id="tab-week" type="button" role="tab" aria-selected="false" aria-controls="panel-week">This Week</button>
+          </div>
+          <div class="split-tabs-panel" id="panel-upcoming" role="tabpanel" aria-labelledby="tab-upcoming" data-active="true">
+            <div class="home-list-item">
+              <span class="icon-box accent" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M7 7h10M6 11h12M8 3v4M16 3v4M6 5h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <div class="column gap-1 min-w-0">
+                <p class="list-title truncate">Upper Body Strength</p>
+                <p class="caption muted">Tomorrow</p>
+              </div>
+              <span class="caption muted mono">09:00</span>
+            </div>
+            <div class="home-list-item">
+              <span class="icon-box cardio" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 14h3l2-5 4 10 2-5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <div class="column gap-1 min-w-0">
+                <p class="list-title truncate">5 km Easy Run</p>
+                <p class="caption muted">Sunday</p>
+              </div>
+              <span class="caption muted mono">07:30</span>
+            </div>
+          </div>
+          <div class="split-tabs-panel" id="panel-week" role="tabpanel" aria-labelledby="tab-week" data-active="false">
+            <div class="week-strip" aria-label="Week training status">
+              <span class="week-day"><span class="week-dot done">✓</span><span class="caption muted">M</span></span>
+              <span class="week-day"><span class="week-dot">T</span><span class="caption muted">T</span></span>
+              <span class="week-day"><span class="week-dot done">✓</span><span class="caption muted">W</span></span>
+              <span class="week-day"><span class="week-dot">T</span><span class="caption muted">T</span></span>
+              <span class="week-day"><span class="week-dot today">F</span><span class="caption muted">F</span></span>
+              <span class="week-day"><span class="week-dot">S</span><span class="caption muted">S</span></span>
+              <span class="week-day"><span class="week-dot">S</span><span class="caption muted">S</span></span>
+            </div>
+            <p class="detail">2 sessions completed this week</p>
+          </div>
+        </section>
+
+        <section class="column gap-3" aria-labelledby="widgets-title">
+          <div class="row align-center justify-between">
+            <h2 class="eyebrow" id="widgets-title">Widgets</h2>
+            <button class="button ghost sm" type="button">Edit</button>
+          </div>
+
+          <div class="widget-grid">
+            <article class="surface pad-sm home-widget home-widget-full" aria-labelledby="sleep-title">
+              <div class="sleep-main">
+                <div class="column gap-1 min-w-0">
+                  <h3 class="eyebrow" id="sleep-title">Sleep</h3>
+                  <p class="metric xl">7h 24m</p>
+                  <p class="detail mono">22:48 → 06:12</p>
+                </div>
+                <div class="column gap-1 align-center">
+                  <div class="score-circle mono">84</div>
+                  <p class="caption faint">score</p>
+                </div>
+              </div>
+              <div class="stage-bar" aria-label="Sleep stages">
+                <span class="stage-deep" title="Deep 25%"></span>
+                <span class="stage-rem" title="REM 22%"></span>
+                <span class="stage-light" title="Light 45%"></span>
+                <span class="stage-awake" title="Awake 8%"></span>
+              </div>
+              <div class="sleep-stage-labels">
+                <div class="stage-label">
+                  <strong class="mono deep-text">1h 51m</strong>
+                  <span>Deep</span>
+                </div>
+                <div class="stage-label">
+                  <strong class="mono rem-text">1h 38m</strong>
+                  <span>REM</span>
+                </div>
+                <div class="stage-label">
+                  <strong class="mono light-text">3h 20m</strong>
+                  <span>Light</span>
+                </div>
+                <div class="stage-label">
+                  <strong class="mono awake-text">35m</strong>
+                  <span>Awake</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="surface pad-sm home-widget home-widget-full" aria-labelledby="weather-title">
+              <div class="weather-layout">
+                <div class="weather-primary">
+                  <span class="icon-box accent" aria-hidden="true">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                      <path d="M7 18h10a4 4 0 0 0 0-8 6 6 0 0 0-11.5 2A3 3 0 0 0 7 18Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                    </svg>
+                  </span>
+                  <div class="column gap-1 min-w-0">
+                    <p><span class="metric lg">18</span><span class="unit">°C</span></p>
+                    <p class="detail">Partly cloudy</p>
+                  </div>
+                </div>
+                <div class="weather-metrics" aria-label="Weather details">
+                  <div class="weather-metric">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M4 8h11a3 3 0 1 0-3-3M4 13h15M4 18h10a3 3 0 1 1-3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                    </svg>
+                    <strong class="mono">12 km/h</strong>
+                  </div>
+                  <div class="weather-metric">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 3s6 6.1 6 11a6 6 0 0 1-12 0c0-4.9 6-11 6-11Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                    </svg>
+                    <strong class="mono">65%</strong>
+                  </div>
+                  <div class="weather-metric">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 4v2M12 18v2M4 12h2M18 12h2M6.6 6.6 8 8M16 16l1.4 1.4M17.4 6.6 16 8M8 16l-1.4 1.4M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                    </svg>
+                    <strong class="mono">UV 3</strong>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="surface pad-sm home-widget home-widget-full" aria-labelledby="calendar-title">
+              <h3 class="eyebrow" id="calendar-title">Today</h3>
+              <div class="grid gap-3">
+                <div class="event-row">
+                  <span class="event-dot event-blue" aria-hidden="true"></span>
+                  <span class="event-name truncate">Team standup</span>
+                  <span class="caption muted mono">10:00</span>
+                </div>
+                <div class="event-row">
+                  <span class="event-dot event-green" aria-hidden="true"></span>
+                  <span class="event-name truncate">Physio appointment</span>
+                  <span class="caption muted mono">14:00</span>
+                </div>
+                <div class="event-row">
+                  <span class="event-dot event-amber" aria-hidden="true"></span>
+                  <span class="event-name truncate">Dinner with Tom</span>
+                  <span class="caption muted mono">19:00</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="surface pad-sm home-widget home-widget-compact readiness-card" aria-labelledby="readiness-title">
+              <h3 class="eyebrow" id="readiness-title">Readiness</h3>
+              <div class="ring" aria-label="Readiness 82 out of 100">
+                <strong class="mono">82</strong>
+              </div>
+              <p class="status-word">Good</p>
+            </article>
+
+            <article class="surface pad-sm home-widget home-widget-compact" aria-labelledby="streak-title">
+              <h3 class="eyebrow" id="streak-title">Streak</h3>
+              <div class="streak-layout">
+                <svg class="streak-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 22a7 7 0 0 0 7-7c0-4-3-7-5-10-.4 2.3-1.5 3.8-3.5 5.2C8.4 11.7 7 13.4 7 16a5 5 0 0 0 5 6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                </svg>
+                <span class="metric lg">6</span>
+              </div>
+              <p class="detail">days in a row</p>
+            </article>
+
+            <article class="surface pad-sm home-widget home-widget-full" aria-labelledby="checklist-title">
+              <div class="row align-center justify-between gap-3">
+                <h3 class="eyebrow" id="checklist-title">Checklist</h3>
+                <span class="add-affordance" aria-hidden="true">+</span>
+              </div>
+              <div class="grid gap-3">
+                <button class="check-row" type="button" aria-pressed="true">
+                  <span class="check-icon" aria-hidden="true">✓</span>
+                  <span class="check-label truncate">Buy protein powder</span>
+                </button>
+                <button class="check-row" type="button" aria-pressed="false">
+                  <span class="check-icon" aria-hidden="true">✓</span>
+                  <span class="check-label truncate">Book next physio</span>
+                </button>
+                <button class="check-row" type="button" aria-pressed="false">
+                  <span class="check-icon" aria-hidden="true">✓</span>
+                  <span class="check-label truncate">Stretch after run</span>
+                </button>
+                <button class="check-row" type="button" aria-pressed="false">
+                  <span class="check-icon" aria-hidden="true">✓</span>
+                  <span class="check-label truncate">Drink 2 L water</span>
+                </button>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="column gap-3" aria-labelledby="sessions-title">
+          <div class="row align-center justify-between">
+            <h2 class="eyebrow" id="sessions-title">Last Sessions</h2>
+            <button class="button ghost sm" type="button">See all</button>
+          </div>
+          <div class="grid gap-2">
+            <article class="surface pad-sm grid gap-3">
+              <div class="session-head">
+                <span class="icon-box strength" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M6 8v8M18 8v8M3 10v4M21 10v4M6 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                  </svg>
+                </span>
+                <div class="column gap-1 min-w-0">
+                  <p class="list-title truncate">Upper Body Strength</p>
+                  <p class="caption muted">Yesterday</p>
+                </div>
+                <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="stat-tile-row">
+                <div class="surface flat pad-xs q-tile column gap-1">
+                  <strong class="mono truncate">52 min</strong>
+                  <span class="truncate">Duration</span>
+                </div>
+                <div class="surface flat pad-xs q-tile column gap-1">
+                  <strong class="mono truncate">18 sets</strong>
+                  <span class="truncate">Volume</span>
+                </div>
+                <div class="surface flat pad-xs q-tile column gap-1">
+                  <strong class="mono truncate">6 ex</strong>
+                  <span class="truncate">Exercises</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="surface pad-sm grid gap-3">
+              <div class="session-head">
+                <span class="icon-box cardio" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 14h3l2-5 4 10 2-5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <div class="column gap-1 min-w-0">
+                  <p class="list-title truncate">5 km Easy Run</p>
+                  <p class="caption muted">Monday</p>
+                </div>
+                <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="stat-tile-row">
+                <div class="surface flat pad-xs q-tile column gap-1">
+                  <strong class="mono truncate">28 min</strong>
+                  <span class="truncate">Duration</span>
+                </div>
+                <div class="surface flat pad-xs q-tile column gap-1">
+                  <strong class="mono truncate">5.1 km</strong>
+                  <span class="truncate">Distance</span>
+                </div>
+                <div class="surface flat pad-xs q-tile column gap-1">
+                  <strong class="mono truncate">5:29</strong>
+                  <span class="truncate">Pace</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      const tabs = document.querySelectorAll('[role="tab"]');
+      const panels = document.querySelectorAll('[role="tabpanel"]');
+
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          tabs.forEach((item) => item.setAttribute('aria-selected', String(item === tab)));
+          panels.forEach((panel) => {
+            panel.dataset.active = String(panel.id === tab.getAttribute('aria-controls'));
+          });
+        });
+      });
+
+      document.querySelectorAll('.check-row').forEach((row) => {
+        row.addEventListener('click', () => {
+          const next = row.getAttribute('aria-pressed') !== 'true';
+          row.setAttribute('aria-pressed', String(next));
+        });
+      });
+    </script>
+  </body>
+</html>

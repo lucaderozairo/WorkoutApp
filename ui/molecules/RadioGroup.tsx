@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Cluster } from '@ui/layout/Cluster';
 import { Column } from '@ui/layout/Column';
+import { Text } from '@ui/atoms';
 import { Fieldset } from './Field';
 
 export interface RadioOption {
@@ -66,7 +67,7 @@ export function RadioGroup({
               <span className="radio-mark" aria-hidden />
               <Column gap={0} className="radio-copy">
                 <span>{option.label}</span>
-                {option.description && <span className="caption muted">{option.description}</span>}
+                {option.description && <Text as="span" size="caption" color="muted">{option.description}</Text>}
               </Column>
             </label>
           );

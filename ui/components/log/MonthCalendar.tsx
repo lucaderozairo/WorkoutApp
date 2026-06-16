@@ -79,7 +79,9 @@ export function MonthCalendar({ sessions, typeFilter, renderFilter }: Props) {
           const isToday = key === todayKey;
           const isSelected = key === selectedKey;
           return (
-            <button
+            <Button
+              type="button"
+              variant="ghost"
               key={key}
               className={`day column align-center${isSelected && !isToday ? ' surface selected' : ''}`}
               {...(isToday ? { 'data-today': true } : {})}
@@ -90,7 +92,7 @@ export function MonthCalendar({ sessions, typeFilter, renderFilter }: Props) {
                 ? <span className={`dot sm${isToday ? '' : ' active'}`} />
                 : <span className="dot sm invisible" />
               }
-            </button>
+            </Button>
           );
         })}
       </Grid>

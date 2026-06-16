@@ -1,8 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCommand, useQuery } from '@ui/bindings';
-import { handleStartSession, handleAddBlock } from '@features/training_log';
-import type { SavedTemplate } from '@features/planning';
+import { handleStartSession, handleAddBlock, handleStartSessionFromTemplate } from '@features/training_log';
+import type { RecentRoutine, WorkoutTemplate } from '@features/templates';
+import {
+  getRecentRoutines,
+  handleDeleteTemplate,
+  handleDuplicateTemplate,
+  handleRemoveTemplateExercise,
+  handleRenameTemplate,
+  handleReorderTemplateExercises,
+  handleSetTemplateFavorite,
+} from '@features/templates';
 
 import { defaultSessionName } from '@features/planning/domain/utils';
 import type { SportType } from '@features/training_log/domain/types';
@@ -15,6 +24,12 @@ export const PINNED_ACTIVITIES: SportType[] = ['strength', 'run', 'cycle', 'hike
 
 export const ROUTE_ACTIVITIES = new Set<SportType>([
   'run', 'cycle', 'hike', 'ski', 'snowboard', 'kayak', 'surf', 'climb', 'row',
+]);
+
+// Multi-discipline events start empty so the user sequences disciplines (and
+// transitions) themselves inside the session, rather than getting one auto block.
+export const MULTISPORT_ACTIVITIES = new Set<SportType>([
+  'multi', 'triathlon', 'duathlon', 'hyrox', 'obstacle_course',
 ]);
 
 export const MORE_CATEGORIES: { label: string; sports: SportType[] }[] = [
@@ -53,16 +68,25 @@ export function useNewSession() {
   const [waypoints] = useState<[number, number][]>(returned.waypoints ?? []);
   const [routeKm] = useState(returned.distanceKm ?? 0);
   const [nameTouched, setNameTouched] = useState(!!returned.callerState?.name);
-  const [pendingTemplate, setPendingTemplate] = useState<SavedTemplate | null>(null);
+  const [pendingTemplate, setPendingTemplate] = useState<WorkoutTemplate | RecentRoutine | null>(null);
 
-  const savedTemplates = (useQuery<SavedTemplate[]>('saved_templates') ?? []) as SavedTemplate[];
+  const savedTemplates = (useQuery<WorkoutTemplate[]>('template_list') ?? []) as WorkoutTemplate[];
+  useQuery('sessions');
+  const recentRoutines = getRecentRoutines();
 
   useEffect(() => {
     if (!nameTouched) setName(defaultSessionName(selected));
   }, [selected, nameTouched]);
 
   const { dispatch: startSession } = useCommand(handleStartSession);
+  const { dispatch: startSessionFromTemplate } = useCommand(handleStartSessionFromTemplate);
   const { dispatch: addBlock } = useCommand(handleAddBlock);
+  const { dispatch: renameTemplate } = useCommand(handleRenameTemplate);
+  const { dispatch: duplicateTemplate } = useCommand(handleDuplicateTemplate);
+  const { dispatch: deleteTemplate } = useCommand(handleDeleteTemplate);
+  const { dispatch: removeTemplateExercise } = useCommand(handleRemoveTemplateExercise);
+  const { dispatch: reorderTemplateExercises } = useCommand(handleReorderTemplateExercises);
+  const { dispatch: setTemplateFavorite } = useCommand(handleSetTemplateFavorite);
 
 
   function recordRecentSport(sport: SportType) {
@@ -71,31 +95,81 @@ export function useNewSession() {
     viewStore.set('wapp_recent_sports', [sport, ...current].slice(0, 10));
   }
 
-  function handleLoadTemplate(template: SavedTemplate) {
+  function handleLoadTemplate(template: WorkoutTemplate | RecentRoutine) {
     setSelected(template.primarySport);
     setName(template.name);
     setNameTouched(true);
     setPendingTemplate(template);
   }
 
+  async function handleRenameSavedTemplate(templateId: string, currentName: string) {
+    const next = window.prompt('Template name', currentName);
+    if (!next || next.trim() === currentName) return;
+    await renameTemplate({ type: 'RenameTemplate', templateId, name: next });
+  }
+
+  async function handleDuplicateSavedTemplate(templateId: string) {
+    await duplicateTemplate({ type: 'DuplicateTemplate', templateId });
+  }
+
+  async function handleDeleteSavedTemplate(templateId: string) {
+    if (!window.confirm('Delete this template?')) return;
+    await deleteTemplate({ type: 'DeleteTemplate', templateId });
+    if (pendingTemplate?.id === templateId) setPendingTemplate(null);
+  }
+
+  async function handleToggleFavorite(template: WorkoutTemplate) {
+    await setTemplateFavorite({
+      type: 'SetTemplateFavorite',
+      templateId: template.id,
+      favorite: !template.favorite,
+    });
+  }
+
+  async function handleMoveTemplateExercise(template: WorkoutTemplate, exerciseId: string, direction: -1 | 1) {
+    const index = template.exercises.findIndex(exercise => exercise.id === exerciseId);
+    const nextIndex = index + direction;
+    if (index < 0 || nextIndex < 0 || nextIndex >= template.exercises.length) return;
+    const exerciseIds = template.exercises.map(exercise => exercise.id);
+    const [moved] = exerciseIds.splice(index, 1);
+    exerciseIds.splice(nextIndex, 0, moved);
+    await reorderTemplateExercises({
+      type: 'ReorderTemplateExercises',
+      templateId: template.id,
+      exerciseIds,
+    });
+  }
+
+  async function handleRemoveSavedTemplateExercise(templateId: string, exerciseId: string) {
+    await removeTemplateExercise({
+      type: 'RemoveTemplateExercise',
+      templateId,
+      exerciseId,
+    });
+  }
+
   async function handleNewSession() {
     recordRecentSport(selected);
+
+    if (pendingTemplate) {
+      const result = await startSessionFromTemplate({
+        type: 'StartSessionFromTemplate',
+        userId: USER_ID,
+        name,
+        primarySport: pendingTemplate.primarySport,
+        exercises: pendingTemplate.exercises,
+      });
+      if (!result.ok) return;
+      navigate(`/sessions/${result.value!.sessionId}`);
+      return;
+    }
 
     const result = await startSession({ type: 'StartSession', userId: USER_ID, name, primarySport: selected });
     if (!result.ok) return;
 
     const sessionId = result.value!.sessionId as Id<'Session'>;
 
-    if (pendingTemplate) {
-      for (const ex of pendingTemplate.exercises) {
-        await addBlock({
-          type: 'AddBlock',
-          sessionId,
-          exerciseName: ex.name,
-          exerciseCategory: 'strength',
-        });
-      }
-    } else if (selected !== 'strength') {
+    if (selected !== 'strength' && !MULTISPORT_ACTIVITIES.has(selected)) {
       const category = selected === 'mobility' || selected === 'yoga' || selected === 'stretch'
         ? 'mobility' as const
         : 'cardio' as const;
@@ -111,7 +185,7 @@ export function useNewSession() {
   }
 
   function handleAddRoute() {
-    navigate('/plan-route', {
+    navigate('/routes/new', {
       state: {
         waypoints,
         profile: selected === 'cycle' ? 'bike' : 'foot',
@@ -122,7 +196,7 @@ export function useNewSession() {
   }
 
   function handleSavedRoutes() {
-    navigate('/saved-routes', {
+    navigate('/routes', {
       state: { returnTo: '/sessions/new', callerState: { selected, name, date } },
     });
   }
@@ -140,8 +214,15 @@ export function useNewSession() {
     routeKm,
     routeLabel,
     savedTemplates,
+    recentRoutines,
     pendingTemplate,
     handleLoadTemplate,
+    handleRenameSavedTemplate,
+    handleDuplicateSavedTemplate,
+    handleDeleteSavedTemplate,
+    handleToggleFavorite,
+    handleMoveTemplateExercise,
+    handleRemoveSavedTemplateExercise,
     handleNewSession,
     handleAddRoute,
     handleSavedRoutes,

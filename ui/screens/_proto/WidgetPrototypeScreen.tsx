@@ -18,7 +18,7 @@ import { HabitsWidget } from '@ui/components/widgets/HabitsWidget';
 import { MonthlyDistanceWidget } from '@ui/components/widgets/MonthlyDistanceWidget';
 import { InsightsWidget } from '@ui/components/widgets/InsightsWidget';
 import { ChartContainer } from '@ui/patterns/charts/charts';
-import { Grid, Row, Column, Cluster } from '@ui/layout';
+import { Grid, Row, Column, Cluster, Layer, Layered } from '@ui/layout';
 import { Surface, Text } from '@ui/atoms';
 import { Button } from '@ui/molecules';
 import { useWidgetPrototype, type WidgetSize, type WidgetInstance, type WidgetDef } from './useWidgetPrototype';
@@ -68,10 +68,8 @@ interface WidgetCardProps {
 function WidgetCard({ def, instance, editMode, delay, onRemove, onCycleSize, onDragStart, onDragOver, onDrop }: WidgetCardProps) {
   const { Component } = def;
   return (
-    <Surface
-      variant="ghost"
-      pad="none"
-      className={`widget-${instance.size} relative widget-delay-${delay} ${editMode ? 'widget-edit' : 'widget-enter'}`}
+    <Layered
+      className={`widget-${instance.size} widget-delay-${delay} ${editMode ? 'widget-edit' : 'widget-enter'}`}
       draggable={editMode}
       onDragStart={() => onDragStart(def.id)}
       onDragOver={e => { e.preventDefault(); onDragOver(e); }}
@@ -80,24 +78,24 @@ function WidgetCard({ def, instance, editMode, delay, onRemove, onCycleSize, onD
       {editMode && (
         <>
           <Button
-            variant="ghost"
+            variant="destructive"
             size="icon-sm"
-            className="widget-remove"
             onClick={e => { e.stopPropagation(); onRemove(def.id); }}
             aria-label="Remove widget"
           >×</Button>
           <Button
             variant="ghost"
             size="icon-sm"
-            className="widget-resize"
             onClick={e => { e.stopPropagation(); onCycleSize(def.id); }}
             aria-label="Resize widget"
             title={`Current: ${instance.size}`}
           >⤢</Button>
         </>
       )}
-      <Component size={instance.size} />
-    </Surface>
+      <Surface variant="ghost" pad="none">
+        <Component size={instance.size} />
+      </Surface>
+    </Layered>
   );
 }
 
@@ -165,18 +163,6 @@ export function WidgetPrototypeScreen() {
         .widget-delay-525 { --anim-delay: 525ms; }
         .widget-delay-560 { --anim-delay: 560ms; }
         .widget-edit  { animation: wiggle .35s ease-in-out infinite; cursor: grab; }
-        .widget-remove {
-          position: absolute; top: -10px; left: -10px; z-index: 20;
-          width: 22px; height: 22px; padding: 0; border-radius: var(--r-pill);
-          background: var(--bad); color: #fff; border: 2px solid var(--surface-0);
-          font-size: 13px; font-weight: 700; cursor: pointer; line-height: 1;
-        }
-        .widget-resize {
-          position: absolute; top: -10px; right: -10px; z-index: 20;
-          width: 22px; height: 22px; padding: 0; border-radius: var(--r-pill);
-          background: var(--surface-3); border: 2px solid var(--line-strong);
-          cursor: pointer; font-size: 11px; line-height: 1;
-        }
       `}</style>
 
       <Column>
@@ -203,7 +189,7 @@ export function WidgetPrototypeScreen() {
           })}
         </Grid>
 
-        <Row gap={1} className="pad-top">
+        <Row gap={1}>
           {editMode ? (
             <>
               <Button variant="primary" size="sm" onClick={exitEdit}>Done</Button>

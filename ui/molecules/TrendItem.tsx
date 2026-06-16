@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { Row } from '@ui/layout/Row';
+import { Text } from '@ui/atoms';
 
 interface TrendItemProps {
   label: ReactNode;
@@ -12,7 +13,7 @@ export function TrendItem({ label, value, trailing, className }: TrendItemProps)
   return (
     <Row align="center" className={['trend-item', className].filter(Boolean).join(' ')}>
       <div className="min-w-0">{label}</div>
-      <span className="caption muted">{value}</span>
+      <Text as="span" size="caption" color="muted">{value}</Text>
       {trailing}
     </Row>
   );

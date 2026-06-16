@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Text } from '@ui/atoms';
 
 type ChartHeight = 'sm' | 'md' | 'lg' | 'xl';
 
@@ -21,7 +22,7 @@ export function ChartContainer({ height = 'md', loading = false, empty = false, 
   if (empty) {
     return (
       <div className={`${classes} chart-container-empty`}>
-        <span className="caption muted">{emptyMessage}</span>
+        <Text as="span" size="caption" color="muted">{emptyMessage}</Text>
       </div>
     );
   }

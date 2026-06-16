@@ -22,4 +22,4 @@ export type {
 } from './domain/types';
 
 // Query / view-model types consumed by UI.
-export type { AchievementView } from './queries';
+export type { AchievementView } from './queries/types';

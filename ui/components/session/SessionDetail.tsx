@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import type { ActivityView, ActivityHistoryItem } from '@features/training_log';
 import type { CardioSession } from '@features/cardio';
@@ -8,7 +8,7 @@ import type { SetEntry, StrengthSet } from '@features/training_log/domain/types'
 import type { GpsTrack } from '@data/sources/files/gps';
 import { SessionGpsPreview } from './SessionGpsPreview';
 import { ImportModal } from '../modals/ImportModal';
-import { HROverTimeChart, PaceOverTimeChart, ElevationProfileChart, KmSplitsTable } from '@ui/patterns/charts/domain-charts';
+import { HROverTimeChart, PaceOverTimeChart, ElevationProfileChart, KmSplitsTable } from '@ui/components/charts/domain-charts';
 import ChartContainer from '@ui/patterns/charts/charts';
 import { ChevronLeft, Pencil, Share2, Image, MapPin, HeartPulse, TrendingUp, Mountain, Timer, Trophy, Heart, MessageCircle } from 'lucide-react';
 import { getActivityLabel } from '@ui/icons/activityIcons';
@@ -16,7 +16,7 @@ import type { SportType } from '@features/training_log/domain/types';
 import { Carousel } from '@ui/components/shared/Carousel';
 import { Row, Column, Cluster, Grid } from '@ui/layout';
 import { Surface, Text, Chip, Table, TableRow, TableCell } from '@ui/atoms';
-import { Badge, Button, EditableTitle } from '@ui/molecules';
+import { Badge, Button, EditableTitle, Input, Modal } from '@ui/molecules';
 import { SportIcon } from '@ui/atoms/icons/SportIcon';
 import { CategoryIcon } from '@ui/atoms/icons/CategoryIcon';
 import { formatDuration, formatPace, paceSecPerKm } from '@shared/utils';
@@ -78,8 +78,9 @@ function SocialBar({ session }: { session: CardioSession }) {
           </Chip>
         ))}
         {showRanWithInput && (
-          <input
-            className="input input--sm"
+          <Input
+            className="min-w-0"
+            controlClassName="input--sm"
             placeholder="Name"
             value={ranWithDraft}
             onChange={e => setRanWithDraft(e.target.value)}
@@ -115,7 +116,7 @@ function SessionSetChart({ sets }: { sets: SetEntry[] }) {
   }));
   return (
     <Row align="center">
-      <Text className="chart-ylabel">kg</Text>
+      <Text size="caption" color="faint" className="chart-ylabel">kg</Text>
       <ChartContainer data={data} chartType={"sets-bar"} />
     </Row>
   );
@@ -668,10 +669,8 @@ export function SessionDetail({ session, onClose, onEdit, onShare, onExportJson,
   }
 
   return (
-    <div className="modal-overlay" onClick={handleClose}>
-      <div onClick={e => e.stopPropagation()}>
-      <Surface as="section">
-        <Column>
+    <Modal open onClose={handleClose} size="lg">
+      <Column>
           <Row justify="between" align="center">
             {header}
             <Button type="button" variant="ghost" size="icon" onClick={handleClose}>✕</Button>
@@ -685,9 +684,7 @@ export function SessionDetail({ session, onClose, onEdit, onShare, onExportJson,
           <Row as="footer" justify="between" align="center">
             <Button type="button" variant="ghost"><Share2 size={14} /> Share</Button>
           </Row>
-        </Column>
-      </Surface>
-      </div>
-    </div>
+      </Column>
+    </Modal>
   );
 }

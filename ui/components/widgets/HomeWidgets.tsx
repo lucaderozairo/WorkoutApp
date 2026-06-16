@@ -1,8 +1,8 @@
-import type React from 'react';
+﻿import type React from 'react';
 import { Surface, Text, Metric } from '@ui/atoms';
 import { Badge } from '@ui/molecules';
 import { Column, Row, Spacer } from '@ui/layout';
-import { SparklineArea } from '@ui/patterns/charts/domain-charts';
+import { SparklineArea } from '@ui/components/charts/domain-charts';
 import { useQuery } from '@ui/bindings';
 import type { TodayReadinessView, SleepTrendView } from '@features/readiness/contract';
 import type { WidgetSize } from './widgetTypes';
@@ -71,7 +71,7 @@ export function ReadinessHomeWidget({ size }: { size: WidgetSize }) {
           <Text size="caption" color="muted">Readiness</Text>
           <div className="readiness-ring-wrap">
             <RingProgress score={score} color={ringColor} />
-            <span className="readiness-ring-label mono">{hasEntry ? score : '—'}</span>
+            <Metric value={hasEntry ? score : '—'} size="sm" className="readiness-ring-label" />
           </div>
         </Column>
       </Surface>
@@ -562,11 +562,11 @@ export function InsightsHomeWidget({ size }: { size: WidgetSize }) {
           <Text size="caption" color="muted">Insight</Text>
           <Badge>New</Badge>
         </Row>
-        <em className="min-w-0 home-widget-insight">
+        <Text as="em" size="detail" className="min-w-0">
           {size === 'sm'
             ? 'Best sleep follows rest days.'
             : 'Your best sleep scores follow rest days. Consider scheduling rest tomorrow.'}
-        </em>
+        </Text>
       </Column>
     </Surface>
   );

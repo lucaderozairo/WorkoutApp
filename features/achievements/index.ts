@@ -16,7 +16,7 @@ export type {
 
 export { ACHIEVEMENT_DEFINITIONS } from './domain/types';
 
-export type { AchievementView } from './queries';
+export type { AchievementView } from './queries/types';
 
 export { achievementsProjection } from './projections';
 

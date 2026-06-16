@@ -15,6 +15,8 @@ import { ActivityFeedWidget } from './ActivityFeedWidget';
 import { CaloriesWidget } from './CaloriesWidget';
 import { PlanAdherenceWidget } from './PlanAdherenceWidget';
 import { MonthlyDistanceWidget } from './MonthlyDistanceWidget';
+import { NextWorkoutWidget } from './NextWorkoutWidget';
+import { LastSessionWidget } from './LastSessionWidget';
 
 export const WIDGET_REGISTRY: WidgetDef[] = [
   { id: 'sleep',          label: 'Sleep',            defaultSize: 'md',   sizes: ['sm', 'wide', 'md', 'lg'], Component: SleepHomeWidget },
@@ -31,4 +33,6 @@ export const WIDGET_REGISTRY: WidgetDef[] = [
   { id: 'plan-adherence', label: 'Plan Adherence',   defaultSize: 'wide', sizes: ['wide', 'md'],             Component: PlanAdherenceWidget },
   { id: 'monthly-dist',   label: 'Monthly Distance', defaultSize: 'wide', sizes: ['wide', 'md'],             Component: MonthlyDistanceWidget },
   { id: 'insights',       label: 'Insights',         defaultSize: 'wide', sizes: ['sm', 'wide', 'md', 'lg'], Component: InsightsHomeWidget },
+  { id: 'next-workout',   label: 'Next Workout',     defaultSize: 'sm',   sizes: ['sm', 'wide'],             Component: NextWorkoutWidget },
+  { id: 'last-session',   label: 'Last Session',     defaultSize: 'wide', sizes: ['sm', 'wide'],             Component: LastSessionWidget },
 ];

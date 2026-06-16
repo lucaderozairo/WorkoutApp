@@ -1,11 +1,11 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useQuery, useCommand } from '@ui/bindings';
 import { handleUpdateProfile, handleSetUnitPreference } from '@features/profile';
 import type { Id } from '@shared/types';
 import { useDataTransfer } from '@ui/components/transfer';
 import { Row, Column } from '@ui/layout';
-import { Surface, Text } from '@ui/atoms';
-import { Button, Switch } from '@ui/molecules';
+import { Text } from '@ui/atoms';
+import { Button, FileDropSurface, Modal, Switch } from '@ui/molecules';
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -26,7 +26,6 @@ export function SettingsContent() {
   });
   const [units, setUnits] = useState<'metric' | 'imperial'>('metric');
   const [importStatus, setImportStatus] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { dispatch: dispatchUpdateProfile } = useCommand(handleUpdateProfile);
   const { dispatch: setUnitsCmd } = useCommand(handleSetUnitPreference);
@@ -52,12 +51,10 @@ export function SettingsContent() {
     setUnits('imperial');
   };
 
-  const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleImportFile = async (file: File | undefined) => {
     if (!file) return;
     const summary = await importFile(file);
     setImportStatus(summary.message);
-    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const clearAllData = () => {
@@ -91,16 +88,9 @@ export function SettingsContent() {
             <Text size="caption">Import history</Text>
             {importStatus && <Text size="caption">{importStatus}</Text>}
           </Column>
-          <Button variant="secondary" size="sm" onClick={() => fileInputRef.current?.click()}>
-            Import
-          </Button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".json,.csv"
-            hidden
-            onChange={handleImportFile}
-          />
+          <FileDropSurface accept=".json,.csv" onFiles={files => handleImportFile(files[0])}>
+            <Text size="caption">Import</Text>
+          </FileDropSurface>
         </Row>
         <Row justify="between" align="center">
           <Text size="caption">Clear All Data</Text>
@@ -121,22 +111,14 @@ export function SettingsContent() {
 
 export function SettingsModal({ onClose }: SettingsModalProps) {
   return (
-    <div
-      className="modal-overlay"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}>
-      <div onClick={e => e.stopPropagation()}>
-        <Surface as="section">
-          <Column>
+    <Modal open onClose={onClose}>
+      <Column>
             <Row justify="between" align="center">
               <Text as="h3">Settings</Text>
               <Button variant="ghost" size="sm" onClick={onClose}>✕</Button>
             </Row>
             <SettingsContent />
-          </Column>
-        </Surface>
-      </div>
-    </div>
+      </Column>
+    </Modal>
   );
 }

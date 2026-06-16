@@ -55,6 +55,7 @@
 
   &.sm { --icon-box-size: 22px; }
   &.lg { --icon-box-size: 36px; }
+  &.xl { --icon-box-size: 40px; }
 
   &[data-tone="accent"]  { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface-2)); }
   &[data-tone="success"] { color: var(--ok);     background: color-mix(in srgb, var(--ok)     12%, var(--surface-2)); }

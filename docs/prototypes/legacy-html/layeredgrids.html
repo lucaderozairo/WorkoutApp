@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .web.layout {
+            height: 100%;
+            display: grid;
+            grid-gap: 10px;
+            grid-template-areas: "menu header" "mobile-navbar content" "footer footer";
+
+            grid-template-columns: [col] minmax(200px, auto) [col] 1fr;
+            grid-template-rows: auto 1fr auto;
+
+            background-color: #fff;
+            color: #444;
+
+
+            .box {
+                background-color: #444;
+                color: #fff;
+                border-radius: 5px;
+                padding: 20px;
+                font-size: 150%;
+                z-index: 10;
+
+            }
+
+            .menu {
+                grid-area: menu;
+            }
+
+            header {
+                grid-area: header;
+            }
+
+            aside {
+                grid-area: nav;
+                display: none;
+            }
+
+            nav.mobile {
+                grid-area: mobile-navbar;
+                background-color: rgb(160, 160, 0);
+                z-index: 20;
+            }
+
+            footer {
+                grid-area: footer;
+            }
+
+            main {
+                grid-area: content;
+                grid-column: col 1 / span 2;
+            }
+
+            @container (min-width:768px) {
+
+                grid-template-columns: [col] minmax(300px, auto) [col] 1fr;
+                grid-template-areas: "menu header" " content" "footer footer";
+
+                aside.nav {
+                    display: grid;
+                    grid-area: nav;
+                }
+
+                nav.mobile {
+                    display: none;
+                    grid-column: unset;
+                }
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+    <div class="web layout">
+        <div class="box menu">Menu</div>
+        <header class="box">Header</header>
+        <aside class="box nav">Nav</aside>
+        <nav class="box mobile">Mobile - Nav</nav>
+        <main class="box">Content</main>
+        <footer class="box">Footer</footer>
+    </div>
+    <script src="" async defer></script>
+</body>
+
+</html>

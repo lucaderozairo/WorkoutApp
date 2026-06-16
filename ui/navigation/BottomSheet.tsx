@@ -11,7 +11,7 @@ interface BottomSheetProps {
 export function BottomSheet({ snap, children }: BottomSheetProps) {
   return (
     <div className="bottom-sheet" data-snap={snap}>
-      <div className="handle" />
+      <div data-role="handle" />
       <div className="body">{children}</div>
     </div>
   );

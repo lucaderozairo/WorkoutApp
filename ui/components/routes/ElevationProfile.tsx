@@ -1,6 +1,7 @@
 import { useRef, type PointerEvent as ReactPointerEvent } from 'react';
 import { Mountain } from 'lucide-react';
 import type { ElevationSample } from '@features/routes/contract';
+import { Text } from '@ui/atoms';
 
 const VIEW_W = 1000;
 const VIEW_H = 220;
@@ -103,9 +104,9 @@ export function ElevationProfile({ samples, hoveredIndex, onHover }: ElevationPr
       <div className="elevation-profile-readout" aria-hidden>
         {active ? (
           <>
-            <span className="mono">{active.distanceKm.toFixed(2)} km</span>
-            <span className="mono">{Math.round(active.elevationM)} m</span>
-            <span className="mono">{active.grade.toFixed(1)}%</span>
+            <Text as="span" mono>{active.distanceKm.toFixed(2)} km</Text>
+            <Text as="span" mono>{Math.round(active.elevationM)} m</Text>
+            <Text as="span" mono>{active.grade.toFixed(1)}%</Text>
           </>
         ) : (
           <>

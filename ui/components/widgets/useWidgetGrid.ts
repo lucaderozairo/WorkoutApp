@@ -1,15 +1,19 @@
 import { useRef, useState } from 'react';
 import type { ContextMenuState, WidgetDef, WidgetInstance, WidgetSize } from './widgetTypes';
+import { loadGoal, saveGoal, GOAL_PRESETS, type WidgetGoal } from './widgetGoalPresets';
 
 export type { ContextMenuState, WidgetDef, WidgetInstance, WidgetSize };
 
-const STORAGE_KEY = 'widget-grid-v1';
+const STORAGE_KEY = 'widget-grid-v2';
 
 const DEFAULT_LAYOUT: WidgetInstance[] = [
-  { id: 'sleep', instanceId: 'sleep', size: 'md' },
-  { id: 'readiness', instanceId: 'readiness', size: 'sm' },
-  { id: 'hrv', instanceId: 'hrv', size: 'sm' },
-  { id: 'weather', instanceId: 'weather', size: 'lg' },
+  { id: 'sleep',        instanceId: 'sleep',        size: 'md'   },
+  { id: 'readiness',    instanceId: 'readiness',    size: 'sm'   },
+  { id: 'hrv',          instanceId: 'hrv',          size: 'sm'   },
+  { id: 'next-workout', instanceId: 'next-workout', size: 'wide' },
+  { id: 'weather',      instanceId: 'weather',      size: 'md'   },
+  { id: 'habits',       instanceId: 'habits',       size: 'wide' },
+  { id: 'last-session', instanceId: 'last-session', size: 'wide' },
 ];
 
 function loadLayout(): WidgetInstance[] {
@@ -26,10 +30,17 @@ function saveLayout(layout: WidgetInstance[]): void {
   } catch {}
 }
 
+function isUnmodifiedDefault(layout: WidgetInstance[], goal: WidgetGoal): boolean {
+  const preset = GOAL_PRESETS[goal];
+  if (layout.length !== preset.length) return false;
+  return layout.every((w, i) => w.id === preset[i].id && w.size === preset[i].size);
+}
+
 export function useWidgetGrid(registry: WidgetDef[]) {
   const [widgets, setWidgetsRaw] = useState<WidgetInstance[]>(loadLayout);
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
   const [addPanelOpen, setAddPanelOpen] = useState(false);
+  const [goal, setGoalRaw] = useState<WidgetGoal>(loadGoal);
   const dragId = useRef<string | null>(null);
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -77,6 +88,24 @@ export function useWidgetGrid(registry: WidgetDef[]) {
     dragId.current = null;
   }
 
+  function applyGoal(newGoal: WidgetGoal, force = false): boolean {
+    const current = widgets;
+    const currentGoal = goal;
+    const isDefault = isUnmodifiedDefault(current, currentGoal);
+    if (!isDefault && !force) {
+      return false;
+    }
+    const preset = GOAL_PRESETS[newGoal];
+    setWidgetsRaw(() => {
+      const next = preset.map(w => ({ ...w }));
+      saveLayout(next);
+      return next;
+    });
+    setGoalRaw(newGoal);
+    saveGoal(newGoal);
+    return true;
+  }
+
   function openContextMenu(e: React.MouseEvent, instanceId: string) {
     e.preventDefault();
     setContextMenu({ instanceId, x: e.clientX, y: e.clientY });
@@ -106,6 +135,8 @@ export function useWidgetGrid(registry: WidgetDef[]) {
     addPanelOpen,
     setAddPanelOpen,
     activeIds,
+    goal,
+    applyGoal,
     setSize,
     removeWidget,
     addWidget,

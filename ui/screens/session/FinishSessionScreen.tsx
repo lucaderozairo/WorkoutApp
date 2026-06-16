@@ -1,6 +1,7 @@
 import type { ChangeEvent } from 'react';
 import { RPE_VALUES, SUGGESTED_TAGS, useFinishSession } from './useFinishSession';
 import { Grid, Row, Column, Spacer } from '@ui/layout';
+import { Text } from '@ui/atoms';
 
 import { ChipGroup, PhotoGallery, DetailRow, Badge, Button, Input, Textarea } from '@ui/molecules';
 
@@ -38,7 +39,7 @@ export function FinishSessionScreen() {
         <Row gap={1}>
           <Button variant="ghost" onClick={() => navigate('/sessions')}>Back</Button>
         </Row>
-        <p className="caption">Session not found.</p>
+        <Text as="p" size="caption">Session not found.</Text>
       </Column>
     );
   }
@@ -69,7 +70,7 @@ export function FinishSessionScreen() {
 
       <Column gap={1}>
         <Row justify="between" align="center">
-          <span className="caption">Review</span>
+          <Text as="span" size="caption">Review</Text>
           {displaySession.segments.length > 0 && (
             <Button variant="ghost" size="sm" onClick={handleSaveAsTemplate}>Save as template</Button>
           )}
@@ -82,12 +83,12 @@ export function FinishSessionScreen() {
       {!finished && (
         <>
           <Column gap={1}>
-            <span className="caption">Session RPE</span>
+            <Text as="span" size="caption">Session RPE</Text>
             <ChipGroup options={RPE_VALUES} isActive={n => rpe === n} onToggle={setRpe} />
           </Column>
 
           <Column gap={1}>
-            <span className="caption">Tags</span>
+            <Text as="span" size="caption">Tags</Text>
             <ChipGroup options={SUGGESTED_TAGS} isActive={t => tags.includes(t)} onToggle={toggleTag} />
           </Column>
         </>
@@ -105,13 +106,13 @@ export function FinishSessionScreen() {
         <>
           {rpe !== null && (
             <Row gap={1} align="center">
-              <span className="caption">RPE</span>
+              <Text as="span" size="caption">RPE</Text>
               <Badge active>{rpe}</Badge>
             </Row>
           )}
           {tags.length > 0 && (
             <Row gap={1} align="center" wrap>
-              <span className="caption">Tags</span>
+              <Text as="span" size="caption">Tags</Text>
               {tags.map(t => (
                 <Badge key={t} dot>{t}</Badge>
               ))}

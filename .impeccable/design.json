@@ -1,0 +1,233 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-05T00:00:00.000Z",
+  "title": "Design System: WorkoutApp",
+  "extensions": {
+    "colorMeta": {
+      "accent": {
+        "role": "primary",
+        "displayName": "Instrument Blue",
+        "canonical": "#4f8ef7",
+        "darkCanonical": "#6ba3ff",
+        "tonalRamp": ["#0a1a3d", "#0d2460", "#153585", "#1e48aa", "#2d60cc", "#4f8ef7", "#7aaefb", "#a3c6fc", "#c5d9fc", "#e8f0fe"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Observatory Night",
+        "canonical": "#0e1320",
+        "darkCanonical": "#e8eefa",
+        "tonalRamp": ["#070a13", "#0e1320", "#1a2035", "#2a3350", "#3d4d70", "#5a6890", "#8090b8", "#aab4d0", "#cdd4e8", "#ebeff8"]
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Muted Navy",
+        "canonical": "#4a5270",
+        "darkCanonical": "#8a93b2",
+        "tonalRamp": ["#1a1e2a", "#252b3d", "#30395a", "#3d4970", "#4a5270", "#6a7490", "#8a93b2", "#aab3cc", "#cad0e0", "#e8ebf4"]
+      },
+      "surface-1": {
+        "role": "neutral",
+        "displayName": "Cold White",
+        "canonical": "#ffffff",
+        "darkCanonical": "#0f1525",
+        "tonalRamp": ["#0f1525", "#171e30", "#1f2840", "#2a3555", "#3d4f78", "#6680aa", "#9aaed0", "#c5d3e8", "#e8edf8", "#ffffff"]
+      },
+      "ok": {
+        "role": "semantic",
+        "displayName": "Signal Green",
+        "canonical": "#6fbf73",
+        "tonalRamp": ["#1a3d1c", "#24582a", "#2e7038", "#3d8f48", "#52a85c", "#6fbf73", "#8ed095", "#aaddb0", "#c8eacb", "#e6f5e7"]
+      },
+      "warn": {
+        "role": "semantic",
+        "displayName": "Caution Amber",
+        "canonical": "#e8a33d",
+        "tonalRamp": ["#3d2000", "#6a3800", "#955200", "#b86a00", "#d08020", "#e8a33d", "#f0b860", "#f5cc88", "#f8ddb0", "#fceedd"]
+      },
+      "bad": {
+        "role": "semantic",
+        "displayName": "Alert Red",
+        "canonical": "#e25555",
+        "tonalRamp": ["#3d0a0a", "#6a1010", "#951818", "#b82828", "#cc3c3c", "#e25555", "#ea7878", "#f09898", "#f5b8b8", "#fad8d8"]
+      },
+      "c-cardio": {
+        "role": "domain",
+        "displayName": "Cardio Red",
+        "canonical": "#ef4a4a",
+        "tonalRamp": ["#400a0a", "#6b1010", "#981818", "#c22020", "#d83838", "#ef4a4a", "#f47070", "#f898a0", "#fbbec0", "#fde0e0"]
+      },
+      "c-strength": {
+        "role": "domain",
+        "displayName": "Strength Coral",
+        "canonical": "#e8785a",
+        "tonalRamp": ["#3d1408", "#6a2210", "#952e18", "#b84030", "#d06050", "#e8785a", "#f09880", "#f5b4a0", "#f8cfc0", "#fce7e0"]
+      },
+      "c-recovery": {
+        "role": "domain",
+        "displayName": "Recovery Periwinkle",
+        "canonical": "#7b9ef8",
+        "tonalRamp": ["#0a1840", "#102460", "#183888", "#2450b0", "#4870d0", "#7b9ef8", "#9ab8fb", "#baccfc", "#d5e0fd", "#edf0fe"]
+      },
+      "c-nutrition": {
+        "role": "domain",
+        "displayName": "Nutrition Green",
+        "canonical": "#6fbf73",
+        "tonalRamp": ["#1a3d1c", "#24582a", "#2e7038", "#3d8f48", "#52a85c", "#6fbf73", "#8ed095", "#aaddb0", "#c8eacb", "#e6f5e7"]
+      },
+      "c-water": {
+        "role": "domain",
+        "displayName": "Water Cyan",
+        "canonical": "#4dc8f0",
+        "tonalRamp": ["#083040", "#0d4860", "#126088", "#1878b0", "#2ca0d0", "#4dc8f0", "#78d8f5", "#a0e5f8", "#c5effb", "#e4f8fd"]
+      },
+      "c-mind": {
+        "role": "domain",
+        "displayName": "Mind Violet",
+        "canonical": "#b57bdc",
+        "tonalRamp": ["#200a38", "#381060", "#501888", "#6828a8", "#8848c8", "#b57bdc", "#c89de8", "#d8bcf2", "#e8d5f8", "#f4eafc"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Section hero headings (h1). text-wrap: balance." },
+      "headline": { "displayName": "Headline", "purpose": "Screen and panel titles (h2). text-wrap: balance." },
+      "title": { "displayName": "Title", "purpose": "Sub-section headings (h3). text-wrap: balance." },
+      "body": { "displayName": "Body", "purpose": "Primary reading text, button labels, input values." },
+      "label": { "displayName": "Label / Eyebrow", "purpose": "Section markers, nav labels. UPPERCASE, tracked. Used sparingly." },
+      "mono": { "displayName": "Mono / Data", "purpose": "ALL numbers, statistics, paces, distances, durations. Applied via .mono class. Never use the UI font for a measurement." }
+    },
+    "shadows": [
+      { "name": "ambient-lift", "value": "0 1px 2px rgba(14,19,32,0.06), 0 1px 1px rgba(14,19,32,0.04)", "purpose": "Resting cards and inputs. Barely perceptible — surface reads as lifted due to tonal contrast, not shadow." },
+      { "name": "overlay", "value": "0 8px 32px rgba(14,19,32,0.10), 0 2px 6px rgba(14,19,32,0.06)", "purpose": "Dropdowns, modals, sticky headers, floating panels." },
+      { "name": "ambient-lift-dark", "value": "0 1px 2px rgba(0,2,18,0.60)", "purpose": "Dark-mode resting card shadow." },
+      { "name": "overlay-dark", "value": "0 8px 32px rgba(0,2,18,0.85)", "purpose": "Dark-mode overlay shadow." }
+    ],
+    "motion": [
+      { "name": "ease-out-expo", "value": "cubic-bezier(0.2, 0.8, 0.2, 1)", "purpose": "All state transitions. Default easing." },
+      { "name": "duration-short", "value": "150ms", "purpose": "Micro-interactions: hover, focus, active states." },
+      { "name": "duration-medium", "value": "300ms", "purpose": "Panel transitions, modal open/close, toast appear." },
+      { "name": "duration-long", "value": "500ms", "purpose": "Page-level transitions and slow reveal animations." }
+    ],
+    "breakpoints": [
+      { "name": "mobile-s", "value": "500px", "notes": "Icon-only tab bar, single column" },
+      { "name": "mobile", "value": "780px", "notes": "Bottom tab bar, stacked layouts" },
+      { "name": "desktop", "value": "781px+", "notes": "Left rail, max-width 960px content, two-pane layouts" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Single most important action per screen. Accent background, white text.",
+      "html": "<button class=\"ds-btn-primary\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" fill=\"currentColor\" viewBox=\"0 0 256 256\"><path d=\"M224,128a96,96,0,1,1-96-96A96,96,0,0,1,224,128Z\" opacity=\"0.2\"/><path d=\"M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z\"/></svg> Save route</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; min-height: 40px; background: #4f8ef7; color: #ffffff; border: none; border-radius: 8px; font-family: 'Geist', system-ui, sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: filter 0.12s cubic-bezier(0.2,0.8,0.2,1), transform 0.12s cubic-bezier(0.2,0.8,0.2,1); white-space: nowrap; } .ds-btn-primary:hover { filter: brightness(0.95); } .ds-btn-primary:active { transform: scale(0.98); } .ds-btn-primary:focus-visible { outline: 2px solid #4f8ef7; outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.4; cursor: default; pointer-events: none; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Icon-only and low-emphasis actions. No visual weight at rest.",
+      "html": "<button class=\"ds-btn-ghost\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" viewBox=\"0 0 24 24\"><path d=\"m15 18-6-6 6-6\"/></svg></button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 4px 12px; min-height: 40px; background: transparent; color: #0e1320; border: none; border-radius: 8px; font-family: 'Geist', system-ui, sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.12s cubic-bezier(0.2,0.8,0.2,1), transform 0.12s cubic-bezier(0.2,0.8,0.2,1); } .ds-btn-ghost:hover { background: #ebf0fa; } .ds-btn-ghost:active { transform: scale(0.98); } .ds-btn-ghost:focus-visible { outline: 2px solid #4f8ef7; outline-offset: 2px; }"
+    },
+    {
+      "name": "Default Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Standard secondary action. Surface background with border.",
+      "html": "<button class=\"ds-btn-default\">Export</button>",
+      "css": ".ds-btn-default { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; min-height: 40px; background: #ffffff; color: #0e1320; border: 1px solid #c5d0e8; border-radius: 8px; font-family: 'Geist', system-ui, sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.12s cubic-bezier(0.2,0.8,0.2,1), transform 0.12s cubic-bezier(0.2,0.8,0.2,1); } .ds-btn-default:hover { background: #ebf0fa; } .ds-btn-default:active { transform: scale(0.98); } .ds-btn-default:focus-visible { outline: 2px solid #4f8ef7; outline-offset: 2px; }"
+    },
+    {
+      "name": "Surface Card",
+      "kind": "card",
+      "refersTo": "surface-default",
+      "description": "Primary container. White background, line border, 14px radius, ambient lift shadow.",
+      "html": "<div class=\"ds-surface\"><span class=\"ds-eyebrow\">THIS WEEK</span><div class=\"ds-stat\"><span class=\"ds-stat-value\">42.3</span><span class=\"ds-stat-unit\">km</span></div></div>",
+      "css": ".ds-surface { background: #ffffff; border: 1px solid #dde5f5; border-radius: 14px; box-shadow: 0 1px 2px rgba(14,19,32,0.06), 0 1px 1px rgba(14,19,32,0.04); padding: 16px; display: flex; flex-direction: column; gap: 8px; } .ds-eyebrow { font-family: 'Geist', system-ui, sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: #4a5270; } .ds-stat { display: flex; align-items: baseline; gap: 4px; } .ds-stat-value { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 40px; font-weight: 400; color: #0e1320; line-height: 1; } .ds-stat-unit { font-family: 'Geist', system-ui, sans-serif; font-size: 13px; color: #4a5270; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input-default",
+      "description": "Standard text field. Line-strong border, sm radius, accent focus ring.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Route name…\" />",
+      "css": ".ds-input { background: #ffffff; color: #0e1320; padding: 4px 12px; border: 1px solid #c5d0e8; border-radius: 8px; font-family: 'Geist', system-ui, sans-serif; font-size: 16px; min-height: 32px; width: 100%; transition: border-color 0.12s cubic-bezier(0.2,0.8,0.2,1); outline: none; } .ds-input::placeholder { color: #8e96b0; } .ds-input:hover { border-color: #8e96b0; } .ds-input:focus { border-color: #4f8ef7; outline: 2px solid #4f8ef7; outline-offset: 0; } .ds-input.ds-error { border-color: #e25555; }"
+    },
+    {
+      "name": "Nav Item (Desktop Rail)",
+      "kind": "nav",
+      "refersTo": "button-ghost",
+      "description": "Left sidebar navigation item. Icon + label, full width, active = ink fill.",
+      "html": "<a class=\"ds-nav-item ds-nav-active\" href=\"#\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"currentColor\" viewBox=\"0 0 256 256\"><path d=\"M224,128a96,96,0,1,1-96-96A96,96,0,0,1,224,128Z\" opacity=\"0.2\"/><path d=\"M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,0,128,216Z\"/></svg>Dashboard</a>",
+      "css": ".ds-nav-item { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 16px; border-radius: 8px; color: #4a5270; font-family: 'Geist', system-ui, sans-serif; font-size: 16px; font-weight: 500; text-decoration: none; transition: background 0.12s cubic-bezier(0.2,0.8,0.2,1), color 0.12s cubic-bezier(0.2,0.8,0.2,1); } .ds-nav-item:hover { background: #ebf0fa; color: #0e1320; } .ds-nav-active { background: #0e1320; color: #ffffff; } .ds-nav-active:hover { background: #0e1320; color: #ffffff; }"
+    },
+    {
+      "name": "Chip",
+      "kind": "chip",
+      "refersTo": "chip-default",
+      "description": "Interactive filter / segment toggle. Pill shape, transparent at rest.",
+      "html": "<div style=\"display:flex;gap:8px\"><button class=\"ds-chip\">All</button><button class=\"ds-chip ds-chip-active\">Running</button><button class=\"ds-chip\">Cycling</button></div>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; background: transparent; border: 1px solid #dde5f5; border-radius: 999px; font-family: 'Geist', system-ui, sans-serif; font-size: 13px; color: #4a5270; cursor: pointer; transition: all 0.12s cubic-bezier(0.2,0.8,0.2,1); } .ds-chip:hover { color: #0e1320; border-color: #c5d0e8; } .ds-chip-active { color: #0e1320; background: #ebf0fa; border-color: #c5d0e8; }"
+    },
+    {
+      "name": "Empty State",
+      "kind": "custom",
+      "description": "Centred placeholder for empty lists or unavailable sections.",
+      "html": "<div class=\"ds-empty\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"48\" height=\"48\" fill=\"#8e96b0\" viewBox=\"0 0 256 256\"><path d=\"M229.66,218.34l-50.07-50.07a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.31ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z\"/></svg><h3 class=\"ds-empty-title\">No routes yet</h3><p class=\"ds-empty-sub\">Plan a route to see it here.</p><button class=\"ds-btn-primary\" style=\"margin-top:8px\">Plan a route</button></div>",
+      "css": ".ds-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 8px; padding: 48px 24px; } .ds-empty-title { font-family: 'Geist', system-ui, sans-serif; font-size: 18px; font-weight: 600; color: #0e1320; margin: 0; } .ds-empty-sub { font-family: 'Geist', system-ui, sans-serif; font-size: 16px; color: #4a5270; margin: 0; max-width: 240px; } .ds-btn-primary { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; min-height: 40px; background: #4f8ef7; color: #ffffff; border: none; border-radius: 8px; font-family: 'Geist', system-ui, sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; }"
+    },
+    {
+      "name": "Stat Tile Row",
+      "kind": "custom",
+      "description": "Row of equal-width stat tiles. Value in Geist Mono, label in eyebrow style.",
+      "html": "<div class=\"ds-stat-row\"><div class=\"ds-stat-tile\"><span class=\"ds-stat-num\">7 min</span><span class=\"ds-stat-lbl\">Time</span></div><div class=\"ds-stat-tile\"><span class=\"ds-stat-num\">+12 m</span><span class=\"ds-stat-lbl\">Gain</span></div><div class=\"ds-stat-tile\"><span class=\"ds-stat-num\">87</span><span class=\"ds-stat-lbl\">kcal</span></div></div>",
+      "css": ".ds-stat-row { display: flex; gap: 8px; } .ds-stat-tile { flex: 1; background: #ebf0fa; border-radius: 14px; padding: 12px; display: flex; flex-direction: column; align-items: center; gap: 4px; } .ds-stat-num { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 13px; font-weight: 400; color: #0e1320; } .ds-stat-lbl { font-family: 'Geist', system-ui, sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: #4a5270; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Instrument Panel",
+    "overview": "This is a performance tracking instrument, not a fitness app. Every element on screen exists to carry a measurement, create space for one, or help the athlete navigate to one faster. The design earns trust the way equipment earns trust: by being consistent, accurate, and completely undecorated.\n\nThe palette is cool and clinical — near-white surfaces lit from a neutral overhead, navy ink with no warmth in it, a single clear-sky-blue accent used only where action is required. The type is a single geometric sans (Geist) running at calibrated weights, with Geist Mono reserved entirely for numbers and statistics. Nothing flickers. Nothing cheers. The athlete came here to read data, not to be motivated.\n\nThis system explicitly rejects the Apple Fitness+ / glossy lifestyle direction: no hero photography, no motivational copy, no gradient accents, no decorative motion. If the user notices the design more than the numbers, something went wrong. Success looks like the interface disappearing into the task.",
+    "keyCharacteristics": [
+      "Geist single-family type system; all numerics in Geist Mono",
+      "Cool blue-tinted neutral surfaces, #0e1320 near-black ink",
+      "Single accent (#4f8ef7) — appears on ≤1 element per screen at rest",
+      "Flat-by-default elevation; tonal surface layering instead of shadows",
+      "150ms micro-interactions, 300ms panel transitions; no choreographed sequences",
+      "Full light/dark support via CSS light-dark(); high-contrast mode via [data-contrast=\"high\"]",
+      "Domain color vocabulary for activity categories (strength, cardio, recovery, nutrition, water, mind)"
+    ],
+    "rules": [
+      { "name": "The One Voice Rule", "body": "The accent (#4f8ef7) appears on at most one element per screen at rest — the current nav item, the focused input, or the primary CTA. Never two accented elements visible simultaneously.", "section": "colors" },
+      { "name": "The Domain Palette Rule", "body": "Activity colors exist only to distinguish categories in charts, chips, and status indicators. They never decorate structural UI elements (headers, cards, borders).", "section": "colors" },
+      { "name": "The Mono Numbers Rule", "body": "Every measurement, distance, duration, pace, and statistic renders in Geist Mono. No exceptions.", "section": "typography" },
+      { "name": "The Eyebrow Budget Rule", "body": "Uppercase tracked labels (--t-xs, .eyebrow) may appear at the top of a distinct section to orient the user. One eyebrow per logical grouping, not one per element.", "section": "typography" },
+      { "name": "The Flat-by-Default Rule", "body": "Surfaces are flat at rest. Shadow-1 appears only on cards that need to read as lifted; Shadow-2 appears only when content floats above page content. Hover shadows are never added to interactive cards.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use Geist Mono for every number, statistic, pace, and measurement — .mono class.",
+      "Do use Phosphor Icons: outline weight for default/inactive, fill weight for active/selected.",
+      "Do compose layout from primitives (.row.align-center.gap-2) before writing new rules.",
+      "Do use gap on the parent container for sibling spacing — never margin-top/bottom/right on individual elements.",
+      "Do hit 44px minimum touch targets on all interactive elements.",
+      "Do use --ink-muted for secondary labels and --ink-faint for placeholders and disabled content.",
+      "Do put destructive actions in a visually separated section with --bad tint background.",
+      "Do include a CTA in every empty state that has a clear next action.",
+      "Do show real data — never permanent dashes or skeleton placeholders as finished UI.",
+      "Do respect prefers-reduced-motion: crossfade or instant transition, never blocked content."
+    ],
+    "donts": [
+      "Don't add inline style=\"\" attributes — all styling through tokens and CSS classes.",
+      "Don't use emoji in UI chrome — Phosphor icons only.",
+      "Don't display more than one accent-background element visible at a time.",
+      "Don't nest elevated cards (.surface with shadow inside another .surface with shadow).",
+      "Don't put a theme toggle or branding in any screen header bar — Settings only.",
+      "Don't use margin-top/bottom/right on siblings — use gap on the parent.",
+      "Don't hardcode hex or px values outside styling/tokens.css — always reference a token.",
+      "Don't use decorative or choreographed animation — motion conveys state, not personality.",
+      "Don't introduce domain vocabulary into the atoms, molecules, or layout CSS layers.",
+      "Don't produce designs that look like Apple Fitness+ — the interface is a cockpit, not a magazine spread.",
+      "Don't design for engagement; design for legibility. If the athlete notices the design more than the numbers, something went wrong."
+    ]
+  }
+}

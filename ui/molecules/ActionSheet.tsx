@@ -2,6 +2,7 @@ import type { ReactNode, ToggleEvent } from 'react';
 import { useEffect, useRef } from 'react';
 import { Button } from '@ui/molecules/Button';
 import { Column } from '@ui/layout/Column';
+import { Text } from '@ui/atoms';
 
 interface ActionSheetItem {
   label: string;
@@ -43,7 +44,7 @@ export function ActionSheet({ open, onClose, title, items }: ActionSheetProps) {
     >
       <div className="handle" />
       <Column className="body">
-        {title && <span className="caption muted">{title}</span>}
+        {title && <Text as="span" size="caption" color="muted">{title}</Text>}
         {items.map((item, i) => (
           <Button
             key={i}

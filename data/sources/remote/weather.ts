@@ -1,5 +1,4 @@
-// eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
-import type { WeatherCondition, SuitabilityEntry } from '@features/conditions';
+import type { SuitabilityEntry, WeatherCondition } from '@shared/contracts';
 
 const CACHE_DURATION_MS = 30 * 60 * 1000; // 30 minutes
 

@@ -1,5 +1,6 @@
 import type { ReactNode, ToggleEvent } from 'react';
 import { useId, useEffect, useRef } from 'react';
+import { Surface } from '@ui/atoms';
 import { Button } from './Button';
 
 type Position = 'top' | 'bottom' | 'left' | 'right';
@@ -48,7 +49,6 @@ export function Popover({
 
   const panelClasses = [
     'popover',
-    'surface',
     'menu-popover',
     `popover-${position}`,
     `popover-align-${align}`,
@@ -58,17 +58,19 @@ export function Popover({
   return (
     <>
       <Button type="button" variant="ghost" className={triggerClassName} popoverTarget={pid}>{trigger}</Button>
-      <div
+      <Surface
         ref={ref}
+        as="div"
         id={pid}
         popover="auto"
+        pad="sm"
         className={panelClasses}
         onToggle={controlled ? (e: ToggleEvent<HTMLDivElement>) => {
           if (e.newState === 'closed' && open) onClose?.();
         } : undefined}
       >
         {children}
-      </div>
+      </Surface>
     </>
   );
 }

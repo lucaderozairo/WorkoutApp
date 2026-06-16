@@ -3,7 +3,7 @@ import { useQuery } from '@ui/bindings';
 import { viewStore } from '@data/projections/views';
 import { Row, Column } from '@ui/layout';
 import { Surface, Text } from '@ui/atoms';
-import { Button } from '@ui/molecules';
+import { Button, Input } from '@ui/molecules';
 
 export function EditDisplayNameWidget() {
   const displayName = useQuery<string>('display_name');
@@ -31,7 +31,7 @@ export function EditDisplayNameWidget() {
       <Column gap={1} justify="between" className="widget-1x1">
         <Text size="eyebrow">Display Name</Text>
         {editing ? (
-          <input
+          <Input
             type="text"
             value={draft}
             onChange={e => setDraft(e.target.value)}
@@ -39,7 +39,7 @@ export function EditDisplayNameWidget() {
             autoFocus
           />
         ) : (
-          <input type="text" value={displayName ?? ''} readOnly disabled />
+          <Input type="text" value={displayName ?? ''} readOnly disabled />
         )}
 
         {editing ? (

@@ -8,6 +8,7 @@ import { useQuery } from '@ui/bindings'
 import type { HealthChartDef, HealthChartMap } from '@features/health'
 import { Row, Column, Cluster } from '@ui/layout'
 import { Surface, Text, Chip, Divider } from '@ui/atoms';
+import { Input } from '@ui/molecules'
 
 // ─── Types & Registry ───────────────────────────────────────────────────────
 
@@ -186,9 +187,9 @@ export function HealthOverviewTab() {
 
       {/* Search bar */}
       <Row align="center">
-        <Search size={16} className="faint" />
-        <input
-          className="input min-w-0"
+        <Input
+          className="min-w-0"
+          leading={<Search size={16} className="faint" />}
           placeholder="Search categories…"
           aria-label="Search health categories"
           value={query}

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Text } from '@ui/atoms/Text';
 import { Row } from '@ui/layout/Row';
 
 interface DetailRowProps {
@@ -14,8 +15,8 @@ export function DetailRow({ label, value, mono = false, className }: DetailRowPr
   return (
     <div className="q-row">
       <Row justify="between" align="center" className={className}>
-        <span className="caption">{label}</span>
-        <span className={mono ? 'caption mono' : 'value'}>{value}</span>
+        <Text size="caption">{label}</Text>
+        {mono ? <Text size="caption" mono>{value}</Text> : <Text className="value">{value}</Text>}
       </Row>
     </div>
   );

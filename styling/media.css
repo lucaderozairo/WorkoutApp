@@ -38,8 +38,6 @@
   padding: var(--s-2);
   background: linear-gradient(to top, color-mix(in srgb, black, transparent 40%) 0%, transparent 100%);
   color: var(--accent-ink);
-  font-size: var(--t-xs);
-  font-weight: 500;
   z-index: var(--z-content);
 }
 

@@ -54,6 +54,13 @@ export type {
   PreviousExerciseSet,
   ProgressiveOverloadHint,
 } from './strength';
+export type {
+  Deal,
+  Headline,
+  SportSuitability,
+  SuitabilityEntry,
+  WeatherCondition,
+} from './remote-sources';
 
 export type ChartType =
   | 'bar' | 'line' | 'area' | 'composed'

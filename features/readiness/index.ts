@@ -59,5 +59,5 @@ export {
 
 export type { SleepSession } from './domain/mock-types';
 
-export type { SleepTrendView, WeeklyTrendEntry, SleepScorePoint } from './projections/sleepTrend';
+export type { SleepTrendView, WeeklyTrendEntry, SleepScorePoint } from './projections/sleepTrendTypes';
 export { registerSleepTrendProjection } from './projections/sleepTrend';

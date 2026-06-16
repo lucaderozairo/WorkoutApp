@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Complete Activity Icon Picker</title>
+
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+
+  <!-- Google Material Symbols -->
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,0,0"
+  />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --surface-2: #222;
+      --surface-hover: #2a2a2a;
+
+      --border: #2d2d2d;
+      --border-hover: #555;
+
+      --text: #e8e8e8;
+      --muted: #666;
+      --muted-2: #555;
+
+      --accent: #6c8fff;
+      --accent-bg: #1a2040;
+    }
+
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 24px;
+    }
+
+    h1 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #b8b8b8;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      font-size: .8rem;
+      color: #6d6d6d;
+      margin-bottom: 32px;
+      max-width: 900px;
+      line-height: 1.5;
+    }
+
+    .section-label {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 36px 0 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #222;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 12px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 12px 12px;
+    }
+
+    .card-title {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: #777;
+      margin-bottom: 12px;
+    }
+
+    .candidates {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .candidate {
+      flex: 1;
+      min-width: 60px;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+
+      background: var(--surface-2);
+      border: 1.5px solid #2f2f2f;
+      border-radius: 10px;
+
+      padding: 12px 4px 8px;
+
+      cursor: pointer;
+
+      transition:
+        background .15s,
+        border-color .15s,
+        transform .15s;
+    }
+
+    .candidate:hover {
+      background: var(--surface-hover);
+      border-color: var(--border-hover);
+      transform: translateY(-1px);
+    }
+
+    .candidate.selected {
+      border-color: var(--accent);
+      background: var(--accent-bg);
+    }
+
+    .candidate i,
+    .candidate .material-symbols-rounded {
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    .label {
+      font-size: .58rem;
+      color: var(--muted-2);
+      text-align: center;
+      line-height: 1.25;
+      font-family: ui-monospace, monospace;
+      word-break: break-word;
+    }
+
+    .candidate.selected .label {
+      color: #9fb5ff;
+    }
+
+    .google {
+      font-variation-settings:
+        'FILL' 0,
+        'wght' 500,
+        'GRAD' 0,
+        'opsz' 24;
+    }
+
+    @media (max-width: 700px) {
+      body {
+        padding: 16px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Activity Icon Picker</h1>
+
+  <p class="subtitle">
+    Complete activity icon catalogue combining Phosphor and Google Material Symbols.
+    Click a candidate to select it for that sport/activity type.
+  </p>
+
+  <script>
+    document.addEventListener('click', e => {
+      const candidate = e.target.closest('.candidate');
+
+      if (!candidate) return;
+
+      const card = candidate.closest('.card');
+
+      card
+        .querySelectorAll('.candidate')
+        .forEach(el => el.classList.remove('selected'));
+
+      candidate.classList.add('selected');
+    });
+  </script>
+
+  <!-- ====================================================== -->
+  <!-- Outdoor endurance -->
+  <!-- ====================================================== -->
+
+  <p class="section-label">Outdoor endurance</p>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-title">run</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <i class="ph ph-person-simple-run"></i>
+          <span class="label">ph/person-simple-run</span>
+        </div>
+
+        <div class="candidate">
+          <span class="material-symbols-rounded google">directions_run</span>
+          <span class="label">g/directions_run</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">trail run</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">terrain</span>
+          <span class="label">g/terrain</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-person-simple-run"></i>
+          <span class="label">ph/person-simple-run</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">walk</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">directions_walk</span>
+          <span class="label">g/directions_walk</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-person-simple-walk"></i>
+          <span class="label">ph/person-simple-walk</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">cycle</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">directions_bike</span>
+          <span class="label">g/directions_bike</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-person-simple-bike"></i>
+          <span class="label">ph/person-simple-bike</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">mountain bike</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">directions_bike</span>
+          <span class="label">g/directions_bike</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-bicycle"></i>
+          <span class="label">ph/bicycle</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">ebike</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">electric_bike</span>
+          <span class="label">g/electric_bike</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-bicycle"></i>
+          <span class="label">ph/bicycle</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">hiking</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">hiking</span>
+          <span class="label">g/hiking</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-person-simple-hike"></i>
+          <span class="label">ph/person-simple-hike</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ====================================================== -->
+  <!-- Water sports -->
+  <!-- ====================================================== -->
+
+  <p class="section-label">Water sports</p>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-title">swim</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">pool</span>
+          <span class="label">g/pool</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-person-simple-swim"></i>
+          <span class="label">ph/person-simple-swim</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">surfing</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">surfing</span>
+          <span class="label">g/surfing</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-waves"></i>
+          <span class="label">ph/waves</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">kayaking</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">kayaking</span>
+          <span class="label">g/kayaking</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-boat"></i>
+          <span class="label">ph/boat</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">rowing</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">rowing</span>
+          <span class="label">g/rowing</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-boat"></i>
+          <span class="label">ph/boat</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">scuba diving</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">scuba_diving</span>
+          <span class="label">g/scuba_diving</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-waves"></i>
+          <span class="label">ph/waves</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ====================================================== -->
+  <!-- Winter sports -->
+  <!-- ====================================================== -->
+
+  <p class="section-label">Winter sports</p>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-title">skiing</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">downhill_skiing</span>
+          <span class="label">g/downhill_skiing</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-person-simple-ski"></i>
+          <span class="label">ph/person-simple-ski</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">snowboarding</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">snowboarding</span>
+          <span class="label">g/snowboarding</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-person-simple-snowboard"></i>
+          <span class="label">ph/person-simple-snowboard</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">ice skating</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">ice_skating</span>
+          <span class="label">g/ice_skating</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-snowflake"></i>
+          <span class="label">ph/snowflake</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ====================================================== -->
+  <!-- Team sports -->
+  <!-- ====================================================== -->
+
+  <p class="section-label">Team sports</p>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-title">football / soccer</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">sports_soccer</span>
+          <span class="label">g/sports_soccer</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-soccer-ball"></i>
+          <span class="label">ph/soccer-ball</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">basketball</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">sports_basketball</span>
+          <span class="label">g/sports_basketball</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-basketball"></i>
+          <span class="label">ph/basketball</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">tennis</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">sports_tennis</span>
+          <span class="label">g/sports_tennis</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-tennis-ball"></i>
+          <span class="label">ph/tennis-ball</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">golf</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">sports_golf</span>
+          <span class="label">g/sports_golf</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-golf"></i>
+          <span class="label">ph/golf</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">baseball</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">sports_baseball</span>
+          <span class="label">g/sports_baseball</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-baseball"></i>
+          <span class="label">ph/baseball</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">volleyball</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">sports_volleyball</span>
+          <span class="label">g/sports_volleyball</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-volleyball"></i>
+          <span class="label">ph/volleyball</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ====================================================== -->
+  <!-- Combat / fitness -->
+  <!-- ====================================================== -->
+
+  <p class="section-label">Combat / fitness</p>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-title">gym</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">exercise</span>
+          <span class="label">g/exercise</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-barbell"></i>
+          <span class="label">ph/barbell</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">martial arts</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">sports_martial_arts</span>
+          <span class="label">g/sports_martial_arts</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-person-simple-throw"></i>
+          <span class="label">ph/person-simple-throw</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">mma</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">sports_mma</span>
+          <span class="label">g/sports_mma</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-boxing-glove"></i>
+          <span class="label">ph/boxing-glove</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">gymnastics</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">sports_gymnastics</span>
+          <span class="label">g/sports_gymnastics</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-person-simple"></i>
+          <span class="label">ph/person-simple</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ====================================================== -->
+  <!-- Wellness -->
+  <!-- ====================================================== -->
+
+  <p class="section-label">Wellness / recovery</p>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-title">yoga / meditation</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">self_improvement</span>
+          <span class="label">g/self_improvement</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-flower-lotus"></i>
+          <span class="label">ph/flower-lotus</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">sauna</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">sauna</span>
+          <span class="label">g/sauna</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-fire"></i>
+          <span class="label">ph/fire</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">heart rate activity</div>
+
+      <div class="candidates">
+
+        <div class="candidate selected">
+          <span class="material-symbols-rounded google">ecg_heart</span>
+          <span class="label">g/ecg_heart</span>
+        </div>
+
+        <div class="candidate">
+          <i class="ph ph-heartbeat"></i>
+          <span class="label">ph/heartbeat</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

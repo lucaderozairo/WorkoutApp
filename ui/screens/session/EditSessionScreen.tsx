@@ -8,7 +8,7 @@ import { useQuery, useCommand } from '@ui/bindings';
 import type { ActivitiesState, ExerciseCategory } from '@features/training_log';
 import {
   handleDeleteSession,
-  handleAddBlock, handleAddToSuperset, handleSetBlockType,
+  handleAddBlock, handleAddToSuperset, handleSetBlockType, handleSetBlockRounds,
   handleRenameSession,
   handleUpdateSessionStartTime,
   handleUpdateSessionNote,
@@ -76,6 +76,7 @@ export function EditSessionScreen() {
   const { dispatch: addBlock } = useCommand(handleAddBlock);
   const { dispatch: addToSuperset } = useCommand(handleAddToSuperset);
   const { dispatch: setBlockType } = useCommand(handleSetBlockType);
+  const { dispatch: setBlockRounds } = useCommand(handleSetBlockRounds);
 
   if (!session) {
     return (
@@ -141,32 +142,45 @@ export function EditSessionScreen() {
   const handlePickerCommit = async (
     selections: Array<{ name: string; category: ExerciseCategory }>,
     blockType: typeof BT_OPTIONS[number],
+    rounds?: number,
   ) => {
     if (!strengthSession?.id) return;
-    const isGrouped = (blockType === 'Superset' || blockType === 'Circuit') && selections.length >= 2;
+
+    if (blockType === 'Standard') {
+      for (const s of selections) {
+        await addBlock({ type: 'AddBlock', sessionId: strengthSession.id, exerciseName: s.name, exerciseCategory: s.category });
+      }
+      setShowPicker(false);
+      return;
+    }
+
+    const domainBlockType =
+      blockType === 'Circuit' ? 'circuit' as const :
+        blockType === 'EMOM' ? 'emom' as const :
+          blockType === 'AMRAP' ? 'amrap' as const : null;
+    const isGrouped = selections.length >= 2;
+    const blockIds = selections.map(() => cryptoIdGenerator.next<'Block'>());
+
+    for (let i = 0; i < selections.length; i++) {
+      await addBlock({
+        type: 'AddBlock',
+        sessionId: strengthSession.id,
+        exerciseName: selections[i].name,
+        exerciseCategory: selections[i].category,
+        blockId: blockIds[i],
+      });
+      if (domainBlockType) {
+        await setBlockType({ type: 'SetBlockType', sessionId: strengthSession.id, blockId: blockIds[i], blockType: domainBlockType });
+        if (rounds != null) {
+          await setBlockRounds({ type: 'SetBlockRounds', sessionId: strengthSession.id, blockId: blockIds[i], rounds });
+        }
+      }
+    }
 
     if (isGrouped) {
       const groupId = cryptoIdGenerator.next<'SupersetGroup'>();
-      const blockIds = selections.map(() => cryptoIdGenerator.next<'Block'>());
-      const isCircuit = blockType === 'Circuit';
-      for (let i = 0; i < selections.length; i++) {
-        await addBlock({
-          type: 'AddBlock',
-          sessionId: strengthSession.id,
-          exerciseName: selections[i].name,
-          exerciseCategory: selections[i].category,
-          blockId: blockIds[i],
-        });
-        if (isCircuit) {
-          await setBlockType({ type: 'SetBlockType', sessionId: strengthSession.id, blockId: blockIds[i], blockType: 'circuit' });
-        }
-      }
       for (const blockId of blockIds) {
         await addToSuperset({ type: 'AddToSuperset', sessionId: strengthSession.id, blockId, groupId });
-      }
-    } else {
-      for (const s of selections) {
-        await addBlock({ type: 'AddBlock', sessionId: strengthSession.id, exerciseName: s.name, exerciseCategory: s.category });
       }
     }
 
@@ -246,7 +260,7 @@ export function EditSessionScreen() {
           </>
         )}
 
-        <Textarea label="Notes" value={notes} onChange={e => setNotes(e.target.value)} placeholder="Session notes�" rows={3} />
+        <Textarea label="Notes" value={notes} onChange={e => setNotes(e.target.value)} placeholder="Session notes->" rows={3} />
 
         <PhotoGallery photos={photos} onAdd={addPhotos} onRemove={removePhoto} />
 

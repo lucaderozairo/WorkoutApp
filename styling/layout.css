@@ -12,6 +12,11 @@
 @property --place-self     { syntax: '*'; inherits: false; initial-value: auto; }
 @property --area           { syntax: '*'; inherits: false; initial-value: auto; }
 @property --layer-z        { syntax: '<integer>'; inherits: false; initial-value: 1; }
+@property --frame-max      { syntax: '*'; inherits: false; initial-value: 960px; }
+@property --frame-pad      { syntax: '<length>'; inherits: false; initial-value: 16px; }
+@property --sticky-offset  { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --split-primary  { syntax: '*'; inherits: false; initial-value: minmax(280px, 360px); }
+@property --split-secondary { syntax: '*'; inherits: false; initial-value: minmax(0, 1fr); }
 
 /* ── Grid container — all config via CSS variables set by Grid.tsx ── */
 .grid {
@@ -221,7 +226,7 @@
 /* ── Flex layout primitives ── */
 
 /* Shared utilities — defined once via :is() to avoid duplication */
-:is(.row, .column, .cluster) {
+:is(.row, .column, .cluster, .stack) {
   display: flex;
 
   /* gap scale — mirrors token scale directly (gap-{n} = --s-{n}) */
@@ -252,6 +257,7 @@
 /* direction + default gap per primitive */
 .row    { flex-direction: row;    gap: var(--s-3); }
 .column { flex-direction: column; gap: var(--s-4); }
+.stack  { flex-direction: column; gap: var(--s-4); }
 
 /* .cluster: wrapping row for chips/tags — stays independent (different default gap, always wraps).
    Gap modifiers come from the shared :is(.row, .column, .cluster) rule above. */
@@ -276,6 +282,107 @@
   &.scroll {
     overflow-y: auto;
     scrollbar-width: none;
+  }
+}
+
+/* Adaptive layout primitives */
+.responsive-frame {
+  container: responsive-frame / inline-size;
+  width: 100%;
+  max-width: var(--frame-max);
+  margin-inline: auto;
+  padding-inline: var(--frame-pad);
+  min-width: 0;
+
+  &.responsive-frame-max-form { --frame-max: 480px; }
+  &.responsive-frame-max-content { --frame-max: 960px; }
+  &.responsive-frame-max-wide { --frame-max: 1200px; }
+  &.responsive-frame-max-none { --frame-max: none; }
+
+  &.responsive-frame-pad-none { --frame-pad: 0; }
+  &.responsive-frame-pad-sm { --frame-pad: var(--s-2); }
+  &.responsive-frame-pad-md { --frame-pad: var(--s-4); }
+  &.responsive-frame-pad-lg { --frame-pad: var(--s-6); }
+
+  &.responsive-frame-mobile { --frame-max: none; --frame-pad: var(--s-3); }
+  &.responsive-frame-tablet { --frame-max: 720px; }
+  &.responsive-frame-desktop { --frame-max: 960px; }
+  &.responsive-frame-wide { --frame-max: 1200px; }
+
+}
+
+@media (max-width: 599px) {
+  .responsive-frame.responsive-frame-auto {
+    --frame-max: none;
+    --frame-pad: var(--s-3);
+  }
+}
+
+.sticky-region {
+  position: sticky;
+  z-index: var(--z-sticky);
+  background: var(--surface-0);
+
+  &.sticky-region-top {
+    top: var(--sticky-offset);
+  }
+
+  &.sticky-region-bottom {
+    bottom: var(--sticky-offset);
+  }
+
+  &.sticky-offset-app {
+    --sticky-offset: var(--appbar-h, 0px);
+  }
+
+  &.elevated {
+    border-block: 1px solid var(--line);
+    box-shadow: var(--shadow-1);
+  }
+}
+
+.split-pane {
+  container: split-pane / inline-size;
+  display: grid;
+  grid-template-columns: var(--split-primary) var(--split-secondary);
+  gap: var(--s-4);
+  min-width: 0;
+  width: 100%;
+
+  &.split-pane-sidebar-main {
+    --split-primary: minmax(280px, 360px);
+    --split-secondary: minmax(0, 1fr);
+  }
+
+  &.split-pane-main-detail {
+    --split-primary: minmax(0, 1fr);
+    --split-secondary: minmax(320px, 440px);
+  }
+
+  & > * {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 599px) {
+  .split-pane.split-pane-collapse-mobile {
+    grid-template-columns: 1fr;
+
+    &.split-pane-default-primary .split-pane-secondary,
+    &.split-pane-default-secondary .split-pane-primary {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: 1023px) {
+  .split-pane.split-pane-collapse-tablet {
+    grid-template-columns: 1fr;
+
+    &.split-pane-default-primary .split-pane-secondary,
+    &.split-pane-default-secondary .split-pane-primary {
+      display: none;
+    }
   }
 }
 

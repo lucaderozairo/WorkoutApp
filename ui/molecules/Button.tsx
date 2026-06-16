@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { Spinner } from '../atoms/Spinner';
 import { Icon } from '../atoms/Icon';
@@ -32,7 +33,7 @@ const SIZE_CLASS: Record<Size, string> = {
   'icon-sm': 'icon sm',
 };
 
-export function Button({
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button({
   variant = 'secondary',
   size = 'md',
   leading,
@@ -45,7 +46,7 @@ export function Button({
   className,
   children,
   ...rest
-}: ButtonProps) {
+}, ref) {
   const classes = [
     'button',
     VARIANT_CLASS[variant],
@@ -64,10 +65,10 @@ export function Button({
   // button CSS is already display:inline-flex align-items:center gap:s-2 —
   // no wrapper needed for leading/trailing slots
   return (
-    <button className={classes} disabled={disabled || loading} {...rest}>
+    <button ref={ref} data-ui="button" className={classes} disabled={disabled || loading} {...rest}>
       {leading}
       {children}
       {trailingSlot}
     </button>
   );
-}
+});

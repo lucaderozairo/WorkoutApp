@@ -8,6 +8,7 @@ export interface UISet {
   done: boolean;
   warmup: boolean;
   comment: string | null;
+  setType?: 'normal' | 'dropset' | 'emom' | 'amrap';
 }
 
 export interface UICardioSet {
@@ -28,9 +29,10 @@ export interface UIExercise {
   setMode?: SetMode;
   sets?: UISet[];
   cardioSet?: UICardioSet | null;
+  cardioSets?: UICardioSet[];
 }
 
-export type UIBlockType = 'single' | 'superset' | 'circuit' | 'stretch' | 'cardio';
+export type UIBlockType = 'single' | 'superset' | 'circuit' | 'emom' | 'amrap' | 'stretch' | 'cardio' | 'transition';
 
 export interface UIBlock {
   id: string;
@@ -40,6 +42,7 @@ export interface UIBlock {
   exercises: UIExercise[];
   memberBlockIds?: string[];
   restSeconds?: number;
+  rounds?: number;
   exerciseName: string;
 }
 
@@ -62,4 +65,4 @@ export interface DeleteTarget {
 
 export const EXERCISE_GROUPS = ['All', 'Chest', 'Back', 'Shoulders', 'Biceps', 'Triceps', 'Legs', 'Cardio', 'Mobility'] as const;
 
-export const BT_OPTIONS = ['Standard', 'Superset', 'Circuit'] as const;
+export const BT_OPTIONS = ['Standard', 'Superset', 'Circuit', 'EMOM', 'AMRAP'] as const;

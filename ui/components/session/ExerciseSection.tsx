@@ -20,6 +20,8 @@ export interface ExerciseSectionProps {
   onAddSet: () => void;
   onUpdateSet: (setNumber: number, weightKg: number, reps: number) => void;
   onCommentSet: (setId: string, text: string) => void;
+  onToggleDropset?: (setId: string) => void;
+  onPlateCalculator?: (weightKg: number) => void;
   injuries: UICondition[];
   acknowledged: Set<string>;
   onAcknowledge: (name: string) => void;
@@ -30,7 +32,7 @@ export interface ExerciseSectionProps {
 
 export function ExerciseSection({
   ex, openMenu, onOpenMenu, onToggleWarmup, onToggleDone, onDeleteRequest, onAddSet, onUpdateSet, onCommentSet,
-  injuries, acknowledged, onAcknowledge, currentMode, availableModes, onSetModeChange,
+  onToggleDropset, onPlateCalculator, injuries, acknowledged, onAcknowledge, currentMode, availableModes, onSetModeChange,
 }: ExerciseSectionProps) {
   const warnings = getWarnings(ex.name, injuries);
   const isAcked = acknowledged.has(ex.name);
@@ -81,6 +83,8 @@ export function ExerciseSection({
               onDeleteRequest={() => onDeleteRequest(s.id, j)}
               onUpdate={(kg, reps) => onUpdateSet(s.setNumber, kg, reps)}
               onComment={text => onCommentSet(s.id, text)}
+              onToggleDropset={onToggleDropset ? () => onToggleDropset(s.id) : undefined}
+              onPlateCalculator={onPlateCalculator}
               currentMode={currentMode}
               availableModes={availableModes}
               onSetModeChange={onSetModeChange}

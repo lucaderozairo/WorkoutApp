@@ -1,0 +1,82 @@
+import type { SavedRoute } from '@features/routes';
+import type { Id } from '@shared/types';
+
+export const MOCK_SAVED_ROUTES: SavedRoute[] = [
+  {
+    id: 'seed-route-hyde-park-loop' as Id<'SavedRoute'>,
+    name: 'Hyde Park Loop',
+    description: 'A classic circuit of Hyde Park and Kensington Gardens. Flat, well-surfaced paths.',
+    profile: 'foot',
+    waypoints: [
+      [51.5029, -0.1516],
+      [51.5136, -0.1586],
+      [51.5116, -0.1739],
+      [51.5048, -0.1869],
+      [51.5029, -0.1516],
+    ],
+    distanceKm: 4.2,
+    createdAt: 1_700_000_000_000,
+    updatedAt: 1_700_000_000_000,
+  },
+  {
+    id: 'seed-route-south-bank' as Id<'SavedRoute'>,
+    name: 'South Bank to Tower Bridge',
+    description: 'Run along the Thames from Westminster to Tower Bridge, past the Tate Modern and Bankside.',
+    profile: 'foot',
+    waypoints: [
+      [51.5007, -0.1246],
+      [51.5056, -0.1152],
+      [51.5080, -0.1031],
+      [51.5063, -0.0912],
+      [51.5052, -0.0790],
+    ],
+    distanceKm: 7.8,
+    createdAt: 1_700_000_100_000,
+    updatedAt: 1_700_000_100_000,
+  },
+  {
+    id: 'seed-route-regents-canal' as Id<'SavedRoute'>,
+    name: "Regent's Canal Walk",
+    description: "From Little Venice through Camden to Victoria Park. London's best towpath run.",
+    profile: 'foot',
+    waypoints: [
+      [51.5218, -0.1800],
+      [51.5363, -0.1479],
+      [51.5440, -0.1007],
+      [51.5332, -0.0488],
+    ],
+    distanceKm: 11.4,
+    createdAt: 1_700_000_200_000,
+    updatedAt: 1_700_000_200_000,
+  },
+  {
+    id: 'seed-route-kensington-richmond' as Id<'SavedRoute'>,
+    name: 'Kensington to Richmond',
+    description: 'West London cycle route following the Thames corridor to Richmond Park.',
+    profile: 'bike',
+    waypoints: [
+      [51.4994, -0.1774],
+      [51.4861, -0.2071],
+      [51.4786, -0.2358],
+      [51.4688, -0.2868],
+    ],
+    distanceKm: 9.2,
+    createdAt: 1_700_000_300_000,
+    updatedAt: 1_700_000_300_000,
+  },
+  {
+    id: 'seed-route-lee-valley' as Id<'SavedRoute'>,
+    name: 'Lee Valley Greenway',
+    description: 'Follow the River Lee north through Walthamstow Marshes to Hertford. Flat and fast.',
+    profile: 'bike',
+    waypoints: [
+      [51.5616, -0.0520],
+      [51.5884, -0.0598],
+      [51.6455, -0.0299],
+      [51.6879, -0.0079],
+    ],
+    distanceKm: 23.5,
+    createdAt: 1_700_000_400_000,
+    updatedAt: 1_700_000_400_000,
+  },
+];

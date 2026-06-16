@@ -47,7 +47,7 @@ export function ActivitiesTab() {
               <Text>{post.sessionName ?? 'Workout'}</Text>
               {post.sport && <Text color="muted">{SPORT_LABELS[post.sport] ?? post.sport}</Text>}
             </Column>
-            <time className="mono muted">{timeAgo(post.createdAt)}</time>
+            <Text as="time" mono color="muted">{timeAgo(post.createdAt)}</Text>
           </Row>
           <Text color="muted">{post.body}</Text>
           <Row>

@@ -30,6 +30,7 @@
   /* ---------- CONTENT ---------- */
 
   .content {
+    padding: var(--s-2);
     grid-area: content;
     overflow-y: auto;
     min-height: 0;

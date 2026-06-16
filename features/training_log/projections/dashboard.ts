@@ -1,14 +1,7 @@
 import { viewStore } from '@data/projections/views';
 import type { ActivitiesState } from './index';
+import type { TrainingDashboardView } from './dashboardTypes';
 import { getActivityHistory } from '../queries';
-
-// ─── View types ───────────────────────────────────────────────
-
-export interface TrainingDashboardView {
-  streak: number;
-  workoutsThisWeek: number;
-  totalSessions: number;
-}
 
 // ─── Helpers ──────────────────────────────────────────────────
 
@@ -49,8 +42,10 @@ export function registerTrainingDashboardProjection(): void {
 
   const initial = computeDashboard(viewStore.get('sessions'));
   viewStore.set('training_log_dashboard', initial);
+  viewStore.set('activity_history', getActivityHistory());
 
   viewStore.subscribe('sessions', (state) => {
     viewStore.set('training_log_dashboard', computeDashboard(state));
+    viewStore.set('activity_history', getActivityHistory());
   });
 }

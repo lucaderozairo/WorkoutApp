@@ -1,0 +1,106 @@
+/* Route planner — design tokens (Geist + light/dark) */
+:root {
+  --c-strength: #e8785a;
+  --c-cardio:   #ef4a4a;
+  --c-recovery: #7b9ef8;
+  --c-nutrition:#6fbf73;
+  --c-water:    #4dc8f0;
+  --c-mind:     #b57bdc;
+  --ok: #6fbf73;
+  --warn: #e8a33d;
+  --bad: #e25555;
+
+  --font-display: "Geist", Georgia, serif;
+  --font-ui:      "Geist", system-ui, -apple-system, sans-serif;
+  --font-mono:    "Geist Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  --t-xs: 11px; --t-sm: 13px; --t-md: 15px; --t-lg: 18px;
+  --t-xl: 22px; --t-2xl: 28px; --t-3xl: 40px; --t-4xl: 56px; --t-5xl: 80px;
+
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px;
+  --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px;
+
+  --r-xs: 4px; --r-sm: 8px; --r-md: 14px; --r-lg: 20px; --r-pill: 999px;
+
+  --ease: cubic-bezier(.2,.8,.2,1);
+  --duration-short: 150ms;
+  --duration-medium: 300ms;
+
+  /* activity */
+  --c-run:   #ef4a4a;
+  --c-cycle: #6fbf73;
+  --c-hike:  #e8a33d;
+  --c-walk:  #7b9ef8;
+
+  /* terrain palette */
+  --terrain-water: #C9DEF0;
+  --terrain-park:  #DDEBD2;
+  --terrain-park-strong: #BFD9AE;
+  --terrain-park-deep: #9CC084;
+  --terrain-road:  #FFFFFF;
+  --terrain-road-edge: #D9D9D9;
+  --terrain-trail: #B89A6B;
+  --terrain-bg:    #F2EFE6;
+  --terrain-build: #E8E4D9;
+  --terrain-contour: rgba(120, 100, 70, 0.18);
+}
+
+[data-theme="light"] {
+  --surface-0: #f4f6fb;
+  --surface-1: #ffffff;
+  --surface-2: #ebf0fa;
+  --surface-3: #dde5f5;
+  --ink: #0e1320;
+  --ink-muted: #4a5270;
+  --ink-faint: #8e96b0;
+  --line: #dde5f5;
+  --line-strong: #c5d0e8;
+  --accent: #4f8ef7;
+  --accent-ink: #ffffff;
+  --accent-soft: #c5d9fc;
+  --shadow-1: 0 1px 2px rgba(14,19,32,.06), 0 1px 1px rgba(14,19,32,.04);
+  --shadow-2: 0 8px 32px rgba(14,19,32,.10), 0 2px 6px rgba(14,19,32,.06);
+}
+[data-theme="dark"] {
+  --surface-0: #0a0e1a;
+  --surface-1: #11162a;
+  --surface-2: #181f3a;
+  --surface-3: #232c4f;
+  --ink: #e8eefa;
+  --ink-muted: #8a93b2;
+  --ink-faint: #4a5270;
+  --line: #232c4f;
+  --line-strong: #2f3a63;
+  --accent: #6ba3ff;
+  --accent-ink: #050c20;
+  --accent-soft: #1a2a55;
+  --shadow-1: 0 1px 2px rgba(0,2,18,.5);
+  --shadow-2: 0 8px 32px rgba(0,2,18,.85);
+
+  --terrain-water: #1F3550;
+  --terrain-park:  #1F3528;
+  --terrain-park-strong: #2A4A35;
+  --terrain-park-deep: #3A6448;
+  --terrain-road:  #2C3450;
+  --terrain-road-edge: #3A4570;
+  --terrain-trail: #6E5A3C;
+  --terrain-bg:    #0F1525;
+  --terrain-build: #1A2240;
+  --terrain-contour: rgba(180, 200, 240, 0.10);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body, #root {
+  height: 100%; width: 100%;
+  font-family: var(--font-ui);
+  background: var(--surface-0);
+  color: var(--ink);
+  font-size: var(--t-md);
+  font-weight: 500;
+  line-height: 1.5;
+  transition: background-color .2s var(--ease), color .2s var(--ease);
+}
+::selection { background: var(--accent); color: var(--accent-ink); }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.eyebrow { font-size: var(--t-xs); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); font-weight: 500; }

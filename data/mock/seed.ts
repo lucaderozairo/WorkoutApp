@@ -1,6 +1,7 @@
 import { viewStore } from '@data/projections/views';
 import { MOCK_SESSIONS_STATE, MOCK_EXERCISE_SETS } from './sessions';
 import { MOCK_CARDIO_SESSIONS } from './cardio';
+import { MOCK_SAVED_ROUTES } from './routes';
 import { MOCK_SLEEP_WEEK } from './sleep';
 import { MOCK_POSTS, MOCK_SUGGESTED_GROUPS, MOCK_UPCOMING_EVENTS } from './social';
 import { MOCK_NUTRITION_ENTRIES } from './nutrition';
@@ -16,6 +17,7 @@ import type { ProgressionState, VolumeEntry } from '@features/progression';
 import type { RecentCardioView } from '@features/cardio';
 import type { ActivitiesState } from '@features/training_log';
 import type { SleepEntryView } from '@features/readiness';
+import type { SavedRoute } from '@features/routes';
 import type { Id } from '@shared/types';
 
 function buildProgressions(): ProgressionState {
@@ -103,6 +105,14 @@ export function seedMockDataIfEmpty(): void {
     );
   if (progressionsStale) {
     viewStore.set('exercise_progressions', buildProgressions());
+  }
+
+  // ── Routes ──────────────────────────────────────────────────────────────────
+  const existingRoutes = viewStore.get<SavedRoute[]>('saved_routes') ?? [];
+  const existingIds = new Set(existingRoutes.map(r => r.id));
+  const missingRoutes = MOCK_SAVED_ROUTES.filter(r => !existingIds.has(r.id));
+  if (missingRoutes.length > 0) {
+    viewStore.set('saved_routes', [...existingRoutes, ...missingRoutes]);
   }
 
   // ── Sleep ───────────────────────────────────────────────────────────────────

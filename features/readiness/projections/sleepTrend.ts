@@ -1,31 +1,12 @@
 import { viewStore } from '@data/projections/views';
-import type { SleepEntryView } from './index';
+import type { SleepEntryView } from '../domain/reducers';
+import type { SleepScorePoint, SleepTrendView, WeeklyTrendEntry } from './sleepTrendTypes';
 import { sleepEntryToSession } from '../queries';
-import type { SleepSession } from '../domain/mock-types';
 
 // ─── Constants ────────────────────────────────────────────────
 
 const GOAL_MINUTES = 480; // 8h
 const DAY_LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'] as const;
-
-// ─── View types ───────────────────────────────────────────────
-
-export interface WeeklyTrendEntry {
-  day: string;
-  value: number;
-  goal: number;
-}
-
-export interface SleepScorePoint {
-  x: string;
-  y: number;
-}
-
-export interface SleepTrendView {
-  weeklyTrend: WeeklyTrendEntry[];
-  scoreHistory: SleepScorePoint[];
-  lastNight: SleepSession | null;
-}
 
 // ─── Computation ──────────────────────────────────────────────
 

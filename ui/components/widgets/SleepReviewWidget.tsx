@@ -1,10 +1,10 @@
-import {
+﻿import {
   ResponsiveContainer,
   BarChart, Bar,
   XAxis, YAxis, Tooltip, Cell,
 } from 'recharts';
 
-import { ScoreRing, fmtMin, TOOLTIP_STYLE, TICK } from '@ui/patterns/charts/domain-charts';
+import { ScoreRing, fmtMin, TOOLTIP_STYLE, TICK } from '@ui/components/charts/domain-charts';
 import type { SleepSession } from '@features/readiness';
 import { Row, Column, Spacer } from '@ui/layout';
 import { Surface, Text } from '@ui/atoms';

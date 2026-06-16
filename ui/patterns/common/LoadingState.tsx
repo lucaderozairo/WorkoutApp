@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Spinner } from '@ui/atoms/Spinner';
 import { Skeleton } from '@ui/atoms/Skeleton';
 import { Surface } from '@ui/atoms/Surface';
+import { Text } from '@ui/atoms/Text';
 import { Column } from '@ui/layout/Column';
 
 type LoadingStateKind = 'loading' | 'empty' | 'error';
@@ -35,11 +36,11 @@ export function LoadingState({
             ))}
           </Column>
         ) : (
-          <span className="loading-state-mark" aria-hidden>{state === 'error' ? '!' : 'i'}</span>
+          <Text size="detail" mono bold className="loading-state-mark" aria-hidden>{state === 'error' ? '!' : 'i'}</Text>
         )}
         {isLoading && <Spinner size="sm" />}
         {title && <h3>{title}</h3>}
-        {message && <p className="caption muted">{message}</p>}
+        {message && <Text as="p" size="caption" color="muted">{message}</Text>}
         {action}
       </Column>
     </Surface>

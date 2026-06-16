@@ -1,5 +1,5 @@
-import { ScoreRing, SleepStagesBar, fmtMin, PositiveNegativeChart, SparklineArea } from '@ui/patterns/charts/domain-charts';
-import type { PositiveNegativeEntry } from '@ui/patterns/charts/domain-charts';
+﻿import { ScoreRing, SleepStagesBar, fmtMin, PositiveNegativeChart, SparklineArea } from '@ui/components/charts/domain-charts';
+import type { PositiveNegativeEntry } from '@ui/components/charts/domain-charts';
 import type { SleepSession } from '@features/readiness';
 import { Row, Column, Cluster, Grid } from '@ui/layout';
 import { Surface, Text, Divider } from '@ui/atoms';

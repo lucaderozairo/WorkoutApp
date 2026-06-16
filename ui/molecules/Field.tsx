@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { useId } from 'react';
+import { Text } from '@ui/atoms/Text';
 import { Row } from '@ui/layout/Row';
 import { Column } from '@ui/layout/Column';
 
@@ -52,18 +53,18 @@ export function Field({ id, label, hint, error, required, optional, className, c
     <Column gap={1} className={['field', invalid ? 'has-error' : '', className].filter(Boolean).join(' ')}>
       {label && (
         <Row align="baseline" justify="between" gap={2} className="field-label-row">
-          <label htmlFor={controlId}>{label}</label>
-          {required && <span className="caption muted">Required</span>}
-          {optional && !required && <span className="caption muted">Optional</span>}
+          <Text as="label" size="detail" bold htmlFor={controlId}>{label}</Text>
+          {required && <Text size="caption" color="muted">Required</Text>}
+          {optional && !required && <Text size="caption" color="muted">Optional</Text>}
         </Row>
       )}
       {typeof children === 'function'
         ? children({ id: controlId, describedBy, invalid })
         : children}
       {error ? (
-        <span id={errorId} className="caption negative">{error}</span>
+        <Text id={errorId} size="caption" color="negative">{error}</Text>
       ) : hint ? (
-        <span id={hintId} className="caption muted">{hint}</span>
+        <Text id={hintId} size="caption" color="muted">{hint}</Text>
       ) : null}
     </Column>
   );
@@ -83,15 +84,15 @@ export function Fieldset({ legend, hint, error, required, optional, className, c
       {...(describedBy ? { 'aria-describedby': describedBy } : {})}
     >
       <Row as="legend" align="baseline" justify="between" gap={2} className="field-label-row">
-        <span>{legend}</span>
-        {required && <span className="caption muted">Required</span>}
-        {optional && !required && <span className="caption muted">Optional</span>}
+        <Text size="detail" bold>{legend}</Text>
+        {required && <Text size="caption" color="muted">Required</Text>}
+        {optional && !required && <Text size="caption" color="muted">Optional</Text>}
       </Row>
       {children}
       {error ? (
-        <span id={errorId} className="caption negative">{error}</span>
+        <Text id={errorId} size="caption" color="negative">{error}</Text>
       ) : hint ? (
-        <span id={hintId} className="caption muted">{hint}</span>
+        <Text id={hintId} size="caption" color="muted">{hint}</Text>
       ) : null}
     </Column>
   );

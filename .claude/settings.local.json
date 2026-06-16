@@ -160,7 +160,33 @@
       "Bash(rtk tsc *)",
       "Bash(rtk vitest *)",
       "Bash(rtk lint *)",
-      "Bash(git rm *)"
+      "Bash(git rm *)",
+      "Bash(rtk npm *)",
+      "Bash(scripts/start-server.sh --project-dir \"c:/Users/Deroz01/Documents/Coding Projects/Workout App/workoutApp\")",
+      "Skill(update-config)",
+      "Skill(update-config:*)",
+      "Bash(rtk wc *)",
+      "Bash(python3)",
+      "Bash(rtk proxy *)",
+      "Bash(echo \"---exit $?---\")",
+      "Bash(python3 -c \"from graphify.watch import _rebuild_code; from pathlib import Path; _rebuild_code\\(Path\\('.'\\)\\)\")",
+      "Bash(rtk npx *)",
+      "PowerShell(graphify export *)",
+      "PowerShell(rtk npm run test -- --passWithNoTests 2>&1)",
+      "PowerShell(rtk npm run build 2>&1)",
+      "PowerShell(rtk rg \"nowrap\" ui/atoms/Text.tsx -n 2>&1)",
+      "PowerShell(rtk rg \"active\\\\?\" ui/molecules/Button.tsx -n 2>&1)",
+      "PowerShell(rtk rg \"icon-sm\" ui/molecules/Button.tsx -n 2>&1)",
+      "PowerShell(rtk npm run lint:ui 2>&1)",
+      "PowerShell(cd \"C:\\\\Users\\\\Deroz01\\\\Documents\\\\Coding Projects\\\\Workout App\\\\workoutApp\"; \\(Get-Content \"docs/superpowers/plans/2026-06-05-raw-element-elimination.md\" -Raw\\) -replace '- \\\\[ \\\\]', '- [x]' | Set-Content \"docs/superpowers/plans/2026-06-05-raw-element-elimination.md\" -Encoding utf8)",
+      "WebFetch(domain:mobbin.com)",
+      "Bash(cd \"/c/Users/Deroz01/Documents/Coding Projects/Workout App/workoutApp\" && rm \"ui/screens/home/HomeSections.tsx\" && rtk git add -u \"ui/screens/home/HomeSections.tsx\")",
+      "Bash(node .agents/skills/impeccable/scripts/live.mjs)",
+      "Bash(node .agents/skills/impeccable/scripts/live-status.mjs)",
+      "Bash(node .agents/skills/impeccable/scripts/live-poll.mjs)"
+    ],
+    "additionalDirectories": [
+      "c:\\c\\Users\\Deroz01\\Documents\\Coding Projects\\Workout App\\workoutApp\\ui\\screens\\home"
     ]
   },
   "enabledMcpjsonServers": [

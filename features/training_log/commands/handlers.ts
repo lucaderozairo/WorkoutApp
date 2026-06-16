@@ -2,6 +2,7 @@ import type { Result } from '@shared/types';
 import { ok, err } from '@shared/types';
 import type {
   StartSession,
+  StartSessionFromTemplate,
   AddBlock,
   LogStrengthSet,
   LogCardioSet,
@@ -41,6 +42,7 @@ import {
   sessionProjection,
   recentExercisesProjection,
 } from '../projections';
+import { getActivityHistory } from '../queries';
 
 // Cross-feature policies/projections are wired centrally in app/registry/bootstrap.ts.
 // This handler registers only training_log's own projections.
@@ -57,6 +59,7 @@ export function applyAll(events: TrainingLogEvent[]): void {
   viewStore.set('sessions', sessions);
   viewStore.set('active_session', sessions.activeId ? sessions.byId[sessions.activeId] ?? null : null);
   viewStore.set('recent_exercises', recentExercisesProjection.getState());
+  viewStore.set('activity_history', getActivityHistory());
 }
 
 const commitTrainingLogEvents = defineCommand<TrainingLogEvent[], Result<void, string>>({
@@ -100,6 +103,48 @@ export async function handleStartSession(cmd: StartSession): Promise<Result<{ se
   return commitSessionStartedEvents({ events, sessionId });
 }
 
+export async function handleStartSessionFromTemplate(
+  cmd: StartSessionFromTemplate,
+): Promise<Result<{ sessionId: string }, string>> {
+  if (!cmd.name.trim()) return err('Session name is required');
+  if (cmd.exercises.length === 0) return err('Template must have at least one exercise');
+
+  const sessionId = cryptoIdGenerator.next<'Session'>();
+  const timestamp = systemClock.now();
+  const events: TrainingLogEvent[] = [
+    {
+      type: 'SessionStarted',
+      aggregateId: cmd.userId,
+      aggregateType: 'User',
+      timestamp,
+      version: 1,
+      payload: {
+        sessionId,
+        userId: cmd.userId,
+        name: cmd.name.trim(),
+        primarySport: cmd.primarySport,
+      },
+    },
+    ...cmd.exercises.map((exercise, order): TrainingLogEvent => ({
+      type: 'BlockAdded',
+      aggregateId: sessionId,
+      aggregateType: 'Session',
+      timestamp,
+      version: 1,
+      payload: {
+        sessionId,
+        blockId: cryptoIdGenerator.next<'Block'>(),
+        exerciseId: cryptoIdGenerator.next<'Exercise'>(),
+        exerciseName: exercise.name,
+        exerciseCategory: exercise.category,
+        order,
+      },
+    })),
+  ];
+
+  return commitSessionStartedEvents({ events, sessionId });
+}
+
 export async function handleAddBlock(cmd: AddBlock): Promise<Result<void, string>> {
   if (!cmd.exerciseName.trim()) return err('Exercise name is required');
 
@@ -122,6 +167,7 @@ export async function handleAddBlock(cmd: AddBlock): Promise<Result<void, string
       exerciseName: cmd.exerciseName.trim(),
       exerciseCategory: cmd.exerciseCategory,
       order,
+      ...(cmd.isTransition ? { isTransition: true } : {}),
     },
   }];
 

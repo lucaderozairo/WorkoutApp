@@ -7,7 +7,7 @@ export function PlanRouteWidget() {
   const navigate = useNavigate();
 
   function handlePlan() {
-    navigate('/plan-route', {
+    navigate('/routes/new', {
       state: {
         profile: 'foot',
         returnTo: '/dashboard',

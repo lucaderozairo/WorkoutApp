@@ -1,6 +1,17 @@
 import type { ActivityView, SegmentView } from '@features/training_log';
 import type { UIBlock, UIBlockType, UICondition } from './viewTypes';
 
+const GROUPED_TYPE_LABEL: Record<'superset' | 'circuit' | 'emom' | 'amrap', string> = {
+  superset: 'Superset',
+  circuit: 'Circuit',
+  emom: 'EMOM',
+  amrap: 'AMRAP',
+};
+
+function groupedBlockType(blockType: SegmentView['blockType']): 'superset' | 'circuit' | 'emom' | 'amrap' {
+  return blockType === 'circuit' || blockType === 'emom' || blockType === 'amrap' ? blockType : 'superset';
+}
+
 export function domainBlocksToUIBlocks(segments: ActivityView['segments']): UIBlock[] {
   const result: UIBlock[] = [];
   const groupMap = new Map<string, SegmentView[]>();
@@ -22,12 +33,14 @@ export function domainBlocksToUIBlocks(segments: ActivityView['segments']): UIBl
       seenGroups.add(key);
 
       const groupSegs = groupMap.get(key) ?? [s];
+      const groupedType = groupedBlockType(s.blockType);
       result.push({
         id: key,
-        type: s.blockType === 'circuit' ? 'circuit' : 'superset',
-        label: s.blockType === 'circuit' ? 'Circuit' : 'Superset',
+        type: groupedType,
+        label: GROUPED_TYPE_LABEL[groupedType],
         memberBlockIds: groupSegs.map(gs => gs.id),
         restSeconds: groupSegs[0].restSeconds,
+        rounds: groupSegs[0].rounds,
         exerciseName: groupSegs.map(gs => gs.exerciseName).join(' / '),
         exercises: groupSegs.map((gs, idx) => ({
           blockId: gs.id,
@@ -43,29 +56,44 @@ export function domainBlocksToUIBlocks(segments: ActivityView['segments']): UIBl
               done: set.done ?? false,
               warmup: set.isWarmup ?? false,
               comment: set.comment ?? null,
+              setType: set.setType,
             })),
         })),
       });
     } else {
       const type: UIBlockType =
+        s.isTransition ? 'transition' :
         s.blockType === 'circuit' ? 'circuit' :
           s.blockType === 'superset' ? 'superset' :
-            s.exerciseCategory === 'cardio' ? 'cardio' :
-              s.exerciseCategory === 'mobility' ? 'stretch' :
-                'single';
+            s.blockType === 'emom' ? 'emom' :
+              s.blockType === 'amrap' ? 'amrap' :
+                s.exerciseCategory === 'cardio' ? 'cardio' :
+                  s.exerciseCategory === 'mobility' ? 'stretch' :
+                    'single';
 
-      const label = type === 'circuit' ? 'Circuit' : type === 'superset' ? 'Superset' : undefined;
+      const label =
+        type === 'circuit' || type === 'superset' || type === 'emom' || type === 'amrap'
+          ? GROUPED_TYPE_LABEL[type]
+          : undefined;
 
-      const domainCardioSet = s.sets.find(
+      const domainCardioSets = s.sets.filter(
         set => (set.distanceMeters !== undefined || set.durationSeconds !== undefined) &&
                set.weightKg === undefined && set.reps === undefined
-      ) ?? null;
+      );
+      const cardioSets = domainCardioSets.map(set => ({
+        setNumber: set.setNumber,
+        durationSeconds: set.durationSeconds ?? 0,
+        distanceMeters: set.distanceMeters ?? 0,
+        avgPowerWatts: set.avgPowerWatts ?? 0,
+        resistance: set.resistance ?? 0,
+      }));
 
       result.push({
         id: s.id,
         type,
         ...(label ? { label } : {}),
         restSeconds: s.restSeconds,
+        rounds: s.rounds,
         exerciseName: s.exerciseName,
         exercises: [{
           blockId: s.id,
@@ -81,14 +109,10 @@ export function domainBlocksToUIBlocks(segments: ActivityView['segments']): UIBl
               done: set.done ?? false,
               warmup: set.isWarmup ?? false,
               comment: set.comment ?? null,
+              setType: set.setType,
             })),
-          cardioSet: domainCardioSet ? {
-            setNumber: domainCardioSet.setNumber,
-            durationSeconds: domainCardioSet.durationSeconds ?? 0,
-            distanceMeters: domainCardioSet.distanceMeters ?? 0,
-            avgPowerWatts: domainCardioSet.avgPowerWatts ?? 0,
-            resistance: domainCardioSet.resistance ?? 0,
-          } : null,
+          cardioSet: cardioSets[0] ?? null,
+          cardioSets,
         }],
       });
     }

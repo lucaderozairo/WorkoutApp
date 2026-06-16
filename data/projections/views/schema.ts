@@ -95,9 +95,9 @@ import type {
 // ── planning ──────────────────────────────────────────────────────────-───
 import type {
   PlannedSession,
-  SavedRoute,
   SavedTemplate,
 } from '@features/planning/contract';
+import type { SavedRoute } from '@features/routes/contract';
 
 // ── templates ──────────────────────────────────────────────────────────────
 import type {

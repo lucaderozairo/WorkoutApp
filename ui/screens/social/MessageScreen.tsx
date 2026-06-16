@@ -1,5 +1,5 @@
 import { Phone, Video } from "lucide-react";
-import { Avatar, Surface } from '@ui/atoms';
+import { Avatar, Surface, Text } from '@ui/atoms';
 import { Button } from '@ui/molecules';
 import { Column, Grid, Row } from '@ui/layout';
 import { useMessageScreen } from './useMessageScreen';
@@ -20,13 +20,13 @@ export function MessageScreen() {
                     <Avatar name={call.name} />
                     <Column gap={1}>
                       <p>{call.name}</p>
-                      <p className="caption">{call.date} - {call.time} - {call.durationMin} min</p>
+                      <Text as="p" size="caption">{call.date} - {call.time} - {call.durationMin} min</Text>
                     </Column>
                   </Row>
                   <Row>
                     {call.type === 'video'
-                      ? <Button variant="ghost" className="locked"><Video size={18} /></Button>
-                      : <Button variant="ghost" className="locked"><Phone size={18} /></Button>
+                      ? <Button variant="ghost" disabled aria-label="Video call unavailable"><Video size={18} /></Button>
+                      : <Button variant="ghost" disabled aria-label="Phone call unavailable"><Phone size={18} /></Button>
                     }
                   </Row>
                 </Row>
@@ -46,13 +46,13 @@ export function MessageScreen() {
                   <Column gap={1}>
                     <p>{chat.name}</p>
                     {chat.unread
-                      ? <strong className="caption">{chat.preview}</strong>
-                      : <p className="caption">{chat.preview}</p>
+                      ? <Text as="strong" size="caption">{chat.preview}</Text>
+                      : <Text as="p" size="caption">{chat.preview}</Text>
                     }
                   </Column>
                 </Row>
                 <Column gap={1}>
-                  <time className="caption">{chat.timeAgo}</time>
+                  <Text as="time" size="caption">{chat.timeAgo}</Text>
                 </Column>
               </Row>
             </Surface>

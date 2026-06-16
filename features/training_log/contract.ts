@@ -13,6 +13,7 @@ export type {
 export type {
   TrainingLogCommand,
   StartSession,
+  StartSessionFromTemplate,
   AddBlock,
   LogStrengthSet,
   LogCardioSet,
@@ -53,7 +54,7 @@ export type {
 export type { CombinedSession, TypeFilter } from './queries/calendarUtils';
 
 // Dashboard view-model type consumed by screens and infrastructure.
-export type { TrainingDashboardView } from './projections/dashboard';
+export type { TrainingDashboardView } from './projections/dashboardTypes';
 
 // ─── Typed event manifest ────────────────────────────────────
 import type { SessionFinishedPayload } from './domain/types';

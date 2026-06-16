@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Row, Column } from '@ui/layout';
 import { Surface, Text, Table, TableRow, TableCell } from '@ui/atoms';
-import { Button } from '@ui/molecules';
+import { Button, Modal } from '@ui/molecules';
 
 interface ShareModalProps {
   type: 'session' | 'workout' | 'run';
@@ -18,10 +18,8 @@ export function ShareModal({ data, onClose }: ShareModalProps) {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div onClick={e => e.stopPropagation()}>
-        <Surface as="section">
-          <Column>
+    <Modal open onClose={onClose}>
+      <Column>
           <Row justify="between">
             <Text as="h3">Share Workout</Text>
             <Button variant="ghost" size="sm" onClick={onClose}>✕</Button>
@@ -67,9 +65,7 @@ export function ShareModal({ data, onClose }: ShareModalProps) {
           <Row>
             <Button variant="primary" onClick={() => window.print()}>Copy as Image</Button>
           </Row>
-          </Column>
-        </Surface>
-      </div>
-    </div>
+      </Column>
+    </Modal>
   );
 }

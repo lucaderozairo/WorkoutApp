@@ -233,7 +233,7 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
                   {b.type === 'single' ? (
                     <Row align="center" justify="between">
                       <Row gap={1} align="center" className="min-w-0">
-                        <span className="mono num caption muted bold set-number">{idx + 1}</span>
+                        <Text as="span" size="caption" mono bold color="muted" className="num set-number">{idx + 1}</Text>
                         <Text size="detail">{b.exercises[0].name}</Text>
                       </Row>
                     </Row>

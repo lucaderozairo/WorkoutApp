@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Barbell } from 'phosphor-react';
-import { Text } from '@ui/atoms';
+import { Dot, IconFrame, Text } from '@ui/atoms';
 import { Column, Row } from '@ui/layout';
 import { Section } from '@ui/patterns';
 import type { Appointment } from '@features/scheduling/contract';
@@ -42,9 +42,9 @@ export function UpcomingContent({ appointments }: UpcomingContentProps) {
             const dayLabel = appointmentDayLabel(a.scheduledAt);
             return (
               <Row key={a.id} align="center" gap={2} className="list-item sm">
-                <span className="icon-box">
+                <IconFrame>
                   <Barbell size={14} weight="fill" />
-                </span>
+                </IconFrame>
                 <Column gap={0} className="min-w-0">
                   <Text size="detail">{a.title}</Text>
                   <Text size="caption" color="muted">{dayLabel}</Text>
@@ -82,8 +82,8 @@ export function ThisWeekContent({ weekDays, workoutsThisWeek, streak }: ThisWeek
       <Row align="center" justify="between" gap={1}>
         {weekDays.map((d, i) => (
           <Column key={i} align="center" gap={1}>
-            <span
-              className="dot week-dot"
+            <Dot
+              className="week-dot"
               data-done={d.done || undefined}
               data-today={d.isToday || undefined}
               data-future={d.isFuture || undefined}

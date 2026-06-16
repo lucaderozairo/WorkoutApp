@@ -10,7 +10,7 @@ import {
 } from "@ui/layout";
 import { Surface, Text } from "@ui/atoms";
 import { RouteMap } from "@ui/components/workout/wizard/RouteMap";
-import { ScreenHeader, Button, Input, Slider, Textarea } from "@ui/molecules";
+import { ScreenHeader, Badge, Button, Input, Slider, Textarea } from "@ui/molecules";
 import { EmptyState } from "@ui/patterns";
 import { SearchBar } from "@ui/patterns/common/SearchBar";
 import {
@@ -940,7 +940,7 @@ function StatsPanel({
       <Row align="center" gap={1}>
         <Text size="eyebrow">Surface Mix</Text>
         {routeDataStatus.surfaceMix === 'estimated' && (
-          <span className="badge caption" title="Estimated from activity type — not from map data">est.</span>
+          <Badge title="Estimated from activity type — not from map data">est.</Badge>
         )}
       </Row>
       <SurfaceMixBar

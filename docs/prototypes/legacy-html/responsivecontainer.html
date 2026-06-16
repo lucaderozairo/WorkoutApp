@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Layout Demo</title>
+
+    <style>
+        :root {
+            --gap: 12px;
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 2rem;
+            min-height: 100vh;
+
+            font-family: system-ui, sans-serif;
+            background: #f4f4f4;
+
+            display: grid;
+            place-items: center;
+        }
+
+        /* ==========================================
+   RESIZABLE DEMO CONTAINER
+   ========================================== */
+
+        .demo-container {
+            width: min(1200px, 90vw);
+            min-width: 320px;
+            height: 700px;
+
+            resize: horizontal;
+            overflow: auto;
+
+            padding: 1rem;
+
+            border: 3px dashed #999;
+            border-radius: 16px;
+            background: white;
+
+            container-type: inline-size;
+        }
+
+        /* ==========================================
+   APP LAYOUT
+   ========================================== */
+
+        .layout {
+            height: 100%;
+            display: grid;
+            gap: var(--gap);
+
+            .header {
+                grid-area: header;
+                background: #8ecdf6;
+            }
+
+            .content {
+                grid-area: content;
+                background: #ffe08a;
+            }
+
+            .appbar {
+                grid-area: appbar;
+                background: #ffb6c1;
+            }
+
+            .navbar {
+                grid-area: navbar;
+                background: #98fb98;
+            }
+
+            .footer {
+                grid-area: footer;
+                background: #d8bfd8;
+            }
+
+            * {
+                border-radius: var(--radius);
+                min-width: 50px;
+                min-height: 50px;
+                display: grid;
+                place-items: center;
+
+                font-size: 1.1rem;
+                font-weight: 600;
+            }
+
+            &.app {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr auto;
+                grid-template-areas:
+                    "header"
+                    "content"
+                    "appbar";
+
+                & .footer,
+                .navbar {
+                    display: none;
+                }
+
+                @container (width >=768px) {
+                    grid-template-rows: auto 1fr;
+                    grid-template-columns: 200px 1fr;
+                    grid-template-areas:
+                        "header content"
+                        "appbar content";
+
+                    .navbar {
+                        display: grid;
+                    }
+
+                    .navbar {
+                        display: none;
+                    }
+
+
+                }
+            }
+
+            &.web {
+                grid-template-columns: 70px 1fr;
+                grid-template-rows: auto 1fr auto;
+                grid-template-areas: "navbar header" "content content" "footer footer";
+
+                .footer {
+                    display: grid;
+                }
+
+                .appbar {
+                    display: none;
+                }
+
+                @container (width >=768px) {
+                    grid-template-columns: 200px 1fr;
+                    grid-template-areas: "header header" "navbar content" "footer footer";
+                }
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="demo-container">
+
+        <div class="web layout">
+
+            <header class="header">
+                Header
+            </header>
+
+            <nav class="navbar">
+                Navbar
+            </nav>
+
+            <main class="content">
+                Content
+            </main>
+
+            <div class="appbar">
+                App Bar
+            </div>
+
+            <footer class="footer">
+                Footer
+            </footer>
+
+        </div>
+
+    </div>
+
+    <p style="margin-top:1rem; color:#666; text-align:center;">
+        Drag the right edge of the dashed container.<br>
+    </p>
+
+</body>
+
+</html>

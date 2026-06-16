@@ -1,6 +1,6 @@
 import { ActivitiesTab } from '@ui/components/profile/ActivitiesTab';
 import { HealthOverviewTab } from '@ui/components/profile/HealthOverviewTab';
-import { Avatar, Surface } from '@ui/atoms';
+import { Avatar, Surface, Text } from '@ui/atoms';
 import { Grid, Row, Column, Cluster } from '@ui/layout';
 import { Tabs, Badge } from '@ui/molecules';
 import { StatTile } from '@ui/patterns';
@@ -26,7 +26,7 @@ export function ProfileScreen() {
             <Avatar name={profile?.displayName ?? 'You'} size="xl" />
             <Column gap={1}>
               <span>{profile?.displayName ?? 'You'}</span>
-              <span className="mono muted">{profile?.email ?? ''}</span>
+              <Text as="span" mono color="muted">{profile?.email ?? ''}</Text>
               <Cluster>
                 <Badge tone="accent"><Flame size={12} /> Active</Badge>
               </Cluster>

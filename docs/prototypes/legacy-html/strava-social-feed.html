@@ -1,0 +1,2914 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Feed — Prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* ─── TOKENS ─────────────────────────────────────────────────── */
+    :root {
+      --c-strength: #e8785a;
+      --c-cardio: #ef4a4a;
+      --c-recovery: #7b9ef8;
+      --c-nutrition: #6fbf73;
+      --c-water: #4dc8f0;
+      --c-mind: #b57bdc;
+      --ok: #6fbf73;
+      --warn: #e8a33d;
+      --bad: #e25555;
+
+      --font-display: "Geist", system-ui, -apple-system, sans-serif;
+      --font-ui: "Geist", system-ui, -apple-system, sans-serif;
+      --font-mono: "Geist Mono", ui-monospace, monospace;
+
+      --t-xs: 11px;
+      --t-sm: 13px;
+      --t-md: 15px;
+      --t-lg: 18px;
+      --t-xl: 22px;
+      --t-2xl: 28px;
+      --t-3xl: 40px;
+      --t-4xl: 56px;
+      --t-5xl: 80px;
+
+      --s-1: 4px;
+      --s-2: 8px;
+      --s-3: 12px;
+      --s-4: 16px;
+      --s-5: 24px;
+      --s-6: 32px;
+      --s-7: 48px;
+      --s-8: 64px;
+
+      --r-xs: 4px;
+      --r-sm: 8px;
+      --r-md: 14px;
+      --r-lg: 20px;
+      --r-pill: 999px;
+
+      --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+      --duration-short: 150ms;
+      --duration-medium: 300ms;
+
+      --nav-width: 158px;
+    }
+
+    [data-theme="dark"] {
+      --surface-0: #080c18;
+      --surface-1: #0f1525;
+      --surface-2: #171e30;
+      --surface-3: #1f2840;
+      --ink: #e8eefa;
+      --ink-muted: #8a93b2;
+      --ink-faint: #4a5270;
+      --line: #1f2840;
+      --line-strong: #2a3555;
+      --accent: #6ba3ff;
+      --accent-ink: #050c20;
+      --accent-soft: #0f2050;
+      --shadow-1: 0 1px 2px rgba(0, 0, 0, .35), 0 1px 1px rgba(0, 0, 0, .25);
+      --shadow-2: 0 8px 32px rgba(0, 0, 0, .45), 0 2px 6px rgba(0, 0, 0, .25);
+    }
+
+    [data-theme="light"] {
+      --surface-0: #f4f6fb;
+      --surface-1: #ffffff;
+      --surface-2: #ebf0fa;
+      --surface-3: #dde5f5;
+      --ink: #0e1320;
+      --ink-muted: #4a5270;
+      --ink-faint: #8e96b0;
+      --line: #dde5f5;
+      --line-strong: #c5d0e8;
+      --accent: #4f8ef7;
+      --accent-ink: #ffffff;
+      --accent-soft: #c5d9fc;
+      --shadow-1: 0 1px 2px rgba(14, 19, 32, .06), 0 1px 1px rgba(14, 19, 32, .04);
+      --shadow-2: 0 8px 32px rgba(14, 19, 32, .10), 0 2px 6px rgba(14, 19, 32, .06);
+    }
+
+    /* ─── RESET ──────────────────────────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      font-family: var(--font-ui);
+      font-size: var(--t-sm);
+      font-weight: 500;
+      color: var(--ink);
+      background: var(--surface-0);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    svg {
+      display: block;
+    }
+
+    /* ─── TYPOGRAPHY ─────────────────────────────────────────────── */
+    h1 {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: var(--t-2xl);
+      line-height: 1.15;
+      letter-spacing: -.015em;
+    }
+
+    h2 {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: var(--t-xl);
+      line-height: 1.2;
+      letter-spacing: -.01em;
+    }
+
+    h3 {
+      font-family: var(--font-ui);
+      font-weight: 600;
+      font-size: var(--t-md);
+    }
+
+    h4 {
+      font-family: var(--font-ui);
+      font-weight: 600;
+      font-size: var(--t-sm);
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      font-size: var(--t-xs);
+      font-weight: 500;
+      letter-spacing: .12em;
+      color: var(--ink-muted);
+    }
+
+    .caption {
+      font-size: var(--t-xs);
+      color: var(--ink-muted);
+    }
+
+    .detail {
+      font-size: var(--t-sm);
+    }
+
+    .muted {
+      color: var(--ink-muted);
+    }
+
+    .faint {
+      color: var(--ink-faint);
+    }
+
+    .bold {
+      font-weight: 600;
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+    }
+
+    .truncate {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ─── LAYOUT ─────────────────────────────────────────────────── */
+    .row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: var(--s-3);
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-4);
+    }
+
+    .cluster {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--s-2);
+      align-items: center;
+    }
+
+    .grow {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .space-between {
+      justify-content: space-between;
+    }
+
+    .align-top {
+      align-items: flex-start;
+    }
+
+    /* ─── SURFACE ────────────────────────────────────────────────── */
+    .surface {
+      width: 100%;
+      background: var(--surface-1);
+      border: 1px solid var(--line);
+      border-radius: var(--r-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-3);
+      padding: var(--s-4);
+    }
+
+    .surface.flat {
+      background: var(--surface-2);
+      box-shadow: none;
+    }
+
+    .surface.bare {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .surface.row {
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .surface.tight {
+      padding: var(--s-2);
+      gap: var(--s-2);
+    }
+
+    /* ─── METRIC ─────────────────────────────────────────────────── */
+    .metric {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: var(--t-2xl);
+      line-height: 1;
+      letter-spacing: -.02em;
+      color: var(--ink);
+      display: flex;
+      align-items: baseline;
+      gap: 3px;
+    }
+
+    .metric.sm {
+      font-size: var(--t-xl);
+    }
+
+    .metric .unit {
+      font-family: var(--font-ui);
+      font-size: var(--t-sm);
+      font-weight: 500;
+      color: var(--ink-muted);
+      letter-spacing: 0;
+    }
+
+    /* ─── AVATAR ─────────────────────────────────────────────────── */
+    .avatar {
+      --sz: 40px;
+      width: var(--sz);
+      height: var(--sz);
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--c-strength), var(--c-mind));
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: var(--t-sm);
+      color: #fff;
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    .avatar.sm {
+      --sz: 28px;
+      font-size: var(--t-xs);
+    }
+
+    .avatar.lg {
+      --sz: 56px;
+      font-size: var(--t-lg);
+    }
+
+    .avatar.run {
+      background: linear-gradient(135deg, #ef4a4a, #e8785a);
+    }
+
+    .avatar.cycle {
+      background: linear-gradient(135deg, #7b9ef8, #4dc8f0);
+    }
+
+    .avatar.lift {
+      background: linear-gradient(135deg, #e8785a, #b57bdc);
+    }
+
+    .avatar.swim {
+      background: linear-gradient(135deg, #4dc8f0, #7b9ef8);
+    }
+
+    /* ─── PILL ───────────────────────────────────────────────────── */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      font-size: var(--t-xs);
+      font-weight: 500;
+      color: var(--ink);
+      background: var(--surface-2);
+      border-radius: var(--r-pill);
+      white-space: nowrap;
+    }
+
+    .pill .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .pill.run {
+      background: rgba(239, 74, 74, .15);
+    }
+
+    .pill.run .dot {
+      background: var(--c-cardio);
+    }
+
+    .pill.cycle {
+      background: rgba(123, 158, 248, .15);
+    }
+
+    .pill.cycle .dot {
+      background: var(--c-recovery);
+    }
+
+    .pill.lift {
+      background: rgba(232, 120, 90, .15);
+    }
+
+    .pill.lift .dot {
+      background: var(--c-strength);
+    }
+
+    .pill.swim {
+      background: rgba(77, 200, 240, .15);
+    }
+
+    .pill.swim .dot {
+      background: var(--c-water);
+    }
+
+    .pill.accent {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .pill.ok {
+      background: rgba(111, 191, 115, .18);
+      color: var(--ok);
+    }
+
+    /* ─── CHIP ───────────────────────────────────────────────────── */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-2);
+      padding: var(--s-2) var(--s-3);
+      background: transparent;
+      border: 1px solid var(--line);
+      border-radius: var(--r-pill);
+      cursor: pointer;
+      font-family: var(--font-ui);
+      font-size: var(--t-xs);
+      font-weight: 500;
+      color: var(--ink-muted);
+      transition: all .12s var(--ease);
+    }
+
+    .chip:hover {
+      background: var(--surface-2);
+      border-color: var(--line-strong);
+      color: var(--ink);
+    }
+
+    .chip.active {
+      background: var(--surface-2);
+      border-color: var(--line-strong);
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+
+    /* ─── BUTTON ─────────────────────────────────────────────────── */
+    button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--s-2);
+      padding: var(--s-1) var(--s-3);
+      font-family: var(--font-ui);
+      font-size: var(--t-sm);
+      font-weight: 500;
+      color: var(--ink);
+      background: var(--surface-1);
+      border: 1px solid var(--line-strong);
+      border-radius: var(--s-2);
+      cursor: pointer;
+      transition: all .12s var(--ease);
+      white-space: nowrap;
+    }
+
+    button:hover {
+      background: var(--surface-2);
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    button.primary:hover {
+      opacity: .88;
+    }
+
+    button.ghost {
+      background: transparent;
+      border-color: transparent;
+    }
+
+    button.ghost:hover {
+      background: var(--surface-2);
+    }
+
+    button.icon {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border-radius: var(--r-sm);
+    }
+
+    button.sm {
+      padding: 5px var(--s-3);
+      font-size: var(--t-xs);
+    }
+
+    button i[data-lucide] svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    button.icon i[data-lucide] svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* ─── INPUT ──────────────────────────────────────────────────── */
+    input {
+      font-family: var(--font-ui);
+      font-size: var(--t-sm);
+      color: var(--ink);
+      background: var(--surface-2);
+      border: 1px solid var(--line-strong);
+      border-radius: var(--r-sm);
+      padding: var(--s-2) var(--s-3);
+      outline: none;
+      transition: border-color .12s var(--ease);
+    }
+
+    input:focus {
+      border-color: var(--accent);
+    }
+
+    input::placeholder {
+      color: var(--ink-faint);
+    }
+
+    input:disabled {
+      border-color: transparent;
+      background-color: transparent;
+    }
+
+    /* ─── ICON SIZING HELPERS ────────────────────────────────────── */
+    .icon-sm i[data-lucide] svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .icon-md i[data-lucide] svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    i[data-lucide] {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    i[data-lucide] svg {
+      stroke-width: 1.75;
+    }
+
+    i[data-lucide] svg {
+      width: 10px;
+      height: 10px;
+    }
+
+    /* ─── APP SHELL ──────────────────────────────────────────────── */
+    .app-shell {
+      display: grid;
+      grid-template-columns: var(--nav-width) 1fr;
+      grid-template-areas: "rail main";
+      height: 100%;
+      min-height: 100vh;
+    }
+
+    .app-rail {
+      grid-area: rail;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: var(--s-4) var(--s-3);
+      background: var(--surface-1);
+      border-right: 1px solid var(--line);
+      overflow-y: auto;
+    }
+
+    .rail-brand {
+      display: flex;
+      align-items: center;
+      gap: var(--s-2);
+      padding: var(--s-2);
+      margin-bottom: var(--s-3);
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: var(--t-lg);
+      letter-spacing: -.01em;
+      color: var(--ink);
+    }
+
+    .rail-brand i[data-lucide] svg {
+      width: 22px;
+      height: 22px;
+      stroke: var(--accent);
+    }
+
+    .app-rail a {
+      display: flex;
+      align-items: center;
+      gap: var(--s-2);
+      padding: var(--s-2) var(--s-3);
+      border-radius: var(--r-sm);
+      font-size: var(--t-sm);
+      font-weight: 500;
+      color: var(--ink-muted);
+      text-decoration: none;
+      transition: all .12s var(--ease);
+      min-height: 40px;
+    }
+
+    .app-rail a:hover {
+      background: var(--surface-2);
+      color: var(--ink);
+    }
+
+    .app-rail a.active {
+      background: var(--surface-2);
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .app-rail a i[data-lucide] svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .rail-spacer {
+      flex: 1;
+    }
+
+    .rail-footer {
+      display: flex;
+      align-items: center;
+      gap: var(--s-2);
+      padding: var(--s-3) var(--s-2) var(--s-2);
+      border-top: 1px solid var(--line);
+      margin-top: var(--s-2);
+    }
+
+    /* ─── MAIN / PANELS ──────────────────────────────────────────── */
+    main {
+      grid-area: main;
+      position: relative;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    .panel {
+      position: absolute;
+      inset: 0;
+      overflow-y: auto;
+      opacity: 1;
+      transform: translateX(0);
+      transition: transform var(--duration-medium) var(--ease),
+        opacity var(--duration-medium) var(--ease);
+    }
+
+    .panel.slide-out {
+      transform: translateX(-4%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .panel.slide-in-right {
+      transform: translateX(100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @keyframes panelIn {
+      from {
+        opacity: 0;
+        transform: translateX(6%);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .panel.animating {
+      animation: panelIn var(--duration-medium) var(--ease) forwards;
+    }
+
+    .panel-inner {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: var(--s-5) var(--s-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-4);
+    }
+
+    /* ─── WEEKLY STRIP ───────────────────────────────────────────── */
+    .weekly-strip {
+      display: flex;
+      align-items: center;
+      gap: var(--s-4);
+      padding: var(--s-3) var(--s-4);
+      background: var(--surface-2);
+      border-radius: var(--r-md);
+    }
+
+    .strip-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .strip-val {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: var(--t-xl);
+      line-height: 1;
+      letter-spacing: -.02em;
+    }
+
+    .strip-val .unit {
+      font-size: var(--t-xs);
+      font-weight: 500;
+      color: var(--ink-muted);
+      margin-left: 2px;
+    }
+
+    .strip-divider {
+      width: 1px;
+      height: 30px;
+      background: var(--line-strong);
+      flex-shrink: 0;
+    }
+
+    /* ─── COMPOSER ───────────────────────────────────────────────── */
+    .composer-field {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: var(--r-pill);
+      padding: var(--s-2) var(--s-4);
+      cursor: text;
+      color: var(--ink-faint);
+      font-size: var(--t-sm);
+      transition: border-color .12s var(--ease);
+    }
+
+    .composer-field:hover {
+      border-color: var(--line-strong);
+      color: var(--ink-muted);
+    }
+
+    /* ─── FEED CARD ──────────────────────────────────────────────── */
+    .feed-card {
+      background: var(--surface-1);
+      border: 1px solid var(--line);
+      border-radius: var(--r-md);
+      overflow: hidden;
+      transition: border-color .15s var(--ease), box-shadow .15s var(--ease);
+    }
+
+    .feed-card:hover {
+      border-color: var(--line-strong);
+      box-shadow: var(--shadow-1);
+    }
+
+    .card-body {
+      padding: var(--s-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-3);
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+    }
+
+    .card-head .info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .card-head .author-name {
+      font-size: var(--t-sm);
+      font-weight: 600;
+    }
+
+    .card-head .meta {
+      display: flex;
+      align-items: center;
+      gap: var(--s-2);
+      flex-wrap: wrap;
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: var(--t-md);
+      font-weight: 600;
+      letter-spacing: -.01em;
+      cursor: pointer;
+      transition: color .12s var(--ease);
+    }
+
+    .card-title:hover {
+      color: var(--accent);
+    }
+
+    .card-stats {
+      display: flex;
+      gap: var(--s-5);
+      align-items: flex-end;
+    }
+
+    .cstat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .cstat-val {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: var(--t-xl);
+      line-height: 1;
+      letter-spacing: -.02em;
+    }
+
+    .cstat-val .unit {
+      font-family: var(--font-ui);
+      font-size: 11px;
+      color: var(--ink-muted);
+      margin-left: 2px;
+      font-weight: 500;
+    }
+
+    .cstat-label {
+      font-size: var(--t-xs);
+      text-transform: uppercase;
+      letter-spacing: .10em;
+      color: var(--ink-muted);
+    }
+
+    .card-map {
+      flex-shrink: 0;
+      width: 68px;
+      height: 44px;
+      margin-left: auto;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      gap: var(--s-1);
+    }
+
+    .card-footer .spacer {
+      flex: 1;
+    }
+
+    .react-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px var(--s-2);
+      border-radius: var(--r-sm);
+      background: transparent;
+      border: none;
+      color: var(--ink-muted);
+      font-family: var(--font-ui);
+      font-size: var(--t-xs);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .12s var(--ease);
+    }
+
+    .react-btn i[data-lucide] svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .react-btn:hover {
+      background: var(--surface-2);
+      color: var(--ink);
+    }
+
+    .like-btn:hover {
+      background: rgba(226, 85, 85, .12);
+      color: var(--bad);
+    }
+
+    .like-btn.liked {
+      color: var(--bad);
+    }
+
+    .like-btn.liked i[data-lucide] svg {
+      fill: var(--bad);
+      stroke: var(--bad);
+    }
+
+    /* ─── ACTIVITY DETAIL ────────────────────────────────────────── */
+    .detail-bar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+      padding: var(--s-3) var(--s-5);
+      background: color-mix(in srgb, var(--surface-0) 85%, transparent);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .detail-bar h3 {
+      flex: 1;
+    }
+
+    .detail-hero {
+      padding: var(--s-5) var(--s-5) 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-4);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+      border-radius: var(--r-md);
+      overflow: hidden;
+    }
+
+    .sg-cell {
+      background: var(--surface-1);
+      padding: var(--s-3) var(--s-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-1);
+    }
+
+    .detail-section {
+      padding: var(--s-4) var(--s-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-3);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .detail-section:last-child {
+      border-bottom: none;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: var(--s-2);
+    }
+
+    .section-head i[data-lucide] svg {
+      width: 14px;
+      height: 14px;
+      color: var(--ink-faint);
+    }
+
+    /* ─── SPLITS TABLE ───────────────────────────────────────────── */
+    .splits-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--t-sm);
+    }
+
+    .splits-table th {
+      text-align: left;
+      font-size: var(--t-xs);
+      text-transform: uppercase;
+      letter-spacing: .10em;
+      color: var(--ink-muted);
+      font-weight: 500;
+      padding: var(--s-2) var(--s-3);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .splits-table td {
+      padding: var(--s-2) var(--s-3);
+    }
+
+    .splits-table tr:hover td {
+      background: var(--surface-2);
+    }
+
+    .splits-table .km-col {
+      font-weight: 600;
+      color: var(--ink-faint);
+    }
+
+    .splits-table .pace-col {
+      font-family: var(--font-mono);
+    }
+
+    .splits-table .best-row td {
+      color: var(--ok);
+      font-weight: 600;
+    }
+
+    .splits-table .best-row .km-col {
+      color: var(--ok);
+    }
+
+    /* ─── SOCIAL BAR ─────────────────────────────────────────────── */
+    .social-bar {
+      padding: var(--s-4) var(--s-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-3);
+    }
+
+    /* ─── MEDIA ──────────────────────────────────────────────────── */
+    .card-media {
+      margin: var(--s-1) calc(-1 * var(--s-4)) 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card-media img,
+    .card-media .photo-placeholder {
+      width: 100%;
+      height: 200px;
+      display: block;
+      object-fit: cover;
+    }
+
+    .card-media .photo-placeholder {
+      background: linear-gradient(160deg, #1a2a18 0%, #2c4a28 30%, #3a5e35 50%, #2a4060 75%, #1a2a40 100%);
+    }
+
+    .card-media .media-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: var(--s-2) var(--s-3);
+      background: linear-gradient(to top, rgba(0, 0, 0, .6) 0%, transparent 100%);
+      display: flex;
+      align-items: center;
+      gap: var(--s-2);
+      color: #fff;
+      font-size: var(--t-xs);
+    }
+
+    .card-media .media-caption i[data-lucide] svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    .card-media-count {
+      position: absolute;
+      top: var(--s-2);
+      right: var(--s-2);
+      background: rgba(0, 0, 0, .55);
+      color: #fff;
+      font-size: var(--t-xs);
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: var(--r-pill);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .card-media-count i[data-lucide] svg {
+      width: 11px;
+      height: 11px;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      grid-template-rows: 140px 140px;
+      gap: 3px;
+      border-radius: var(--r-sm);
+      overflow: hidden;
+    }
+
+    .photo-grid .ph {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .photo-grid .ph-main {
+      grid-row: span 2;
+      background: linear-gradient(145deg, #1a2a18 0%, #2c4a28 35%, #3d6038 60%, #2a4060 100%);
+      position: relative;
+    }
+
+    .photo-grid .ph-2 {
+      background: linear-gradient(145deg, #1e1a2a 0%, #2c2850 50%, #3a3870 100%);
+    }
+
+    .photo-grid .ph-3 {
+      background: linear-gradient(145deg, #2a1a10 0%, #4a3020 40%, #6a4828 70%, #3a2810 100%);
+    }
+
+    /* SVG scene layers rendered inside placeholder divs */
+    .ph-main svg,
+    .ph-2 svg,
+    .ph-3 svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ─── MOBILE TAB BAR ─────────────────────────────────────────── */
+    .app-tabbar {
+      display: none;
+    }
+
+    /* ─── CAROUSEL ──────────────────────────────────────────── */
+    .carousel {
+      position: relative;
+      overflow: hidden;
+      margin: var(--s-1) calc(-1 * var(--s-4)) 0;
+    }
+
+    .carousel-track {
+      display: flex;
+      transition: transform .28s var(--ease);
+      will-change: transform;
+      padding: var(--s-2) 0;
+    }
+
+    .carousel-slide {
+      min-width: 100%;
+      height: 200px;
+      position: relative;
+      overflow: hidden;
+      background: var(--surface-2);
+    }
+
+    .carousel-slide svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, .48);
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      z-index: 3;
+    }
+
+    .carousel-btn:hover {
+      background: rgba(0, 0, 0, .7);
+    }
+
+    .carousel-btn.prev {
+      left: var(--s-2);
+    }
+
+    .carousel-btn.next {
+      right: var(--s-2);
+    }
+
+    .carousel-btn i[data-lucide] svg {
+      width: 14px;
+      height: 14px;
+      stroke-width: 2.5;
+    }
+
+    .carousel-dots {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 5px;
+      z-index: 3;
+      align-items: center;
+    }
+
+    .carousel-dot {
+      height: 4px;
+      border-radius: var(--r-pill);
+      background: rgba(255, 255, 255, .45);
+      cursor: pointer;
+      transition: all .2s var(--ease);
+      width: 8px;
+    }
+
+    .carousel-dot.active {
+      background: #fff;
+      width: 22px;
+    }
+
+    .carousel-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: var(--s-2) var(--s-2);
+      background: linear-gradient(to top, rgba(0, 0, 0, .6) 0%, transparent 100%);
+      display: flex;
+      gap: var(--s-2);
+      justify-content: center;
+      flex-direction: row;
+      color: #fff;
+      font-size: var(--t-xs);
+      font-weight: 500;
+      z-index: 2;
+    }
+
+    .carousel-caption i[data-lucide] svg {
+      width: 11px;
+      height: 11px;
+    }
+
+    /* ─── STRENGTH PANEL ELEMENTS ────────────────────────────── */
+    .compact {
+      gap: var(--s-2) !important;
+    }
+
+    button.secondary {
+      background: var(--surface-2);
+      border-color: var(--line-strong);
+    }
+
+    button.neutral {
+      background: var(--ink);
+      color: var(--surface-0);
+      border-color: var(--ink);
+    }
+
+    input.num {
+      text-align: center;
+      width: 52px;
+      flex: 0 0 52px;
+      min-width: 0;
+      font-weight: 600;
+    }
+
+    input.ghost {
+      background: transparent;
+      border-color: transparent;
+      color: var(--ink);
+    }
+
+    input.ghost:hover {
+      border-color: var(--line);
+    }
+
+    input.ghost:focus {
+      border-color: var(--accent);
+      background: var(--surface-2);
+    }
+
+    input.sm {
+      font-size: var(--t-xs);
+      padding: 4px var(--s-2);
+    }
+
+    input.faint {
+      opacity: 0.65;
+    }
+
+    .label {
+      font-size: var(--t-xs);
+      font-weight: 500;
+      color: var(--ink-muted);
+    }
+
+    .set-label {
+      font-size: var(--t-xs);
+      font-weight: 600;
+      min-width: 28px;
+      text-align: center;
+      color: var(--ink-faint);
+    }
+
+    .set-label.working {
+      color: var(--ink-muted);
+    }
+
+    .set-sep {
+      font-size: var(--t-xs);
+      font-weight: 500;
+      color: var(--ink-faint);
+      white-space: nowrap;
+    }
+
+    .set-rows {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-1);
+      margin-top: var(--s-2);
+    }
+
+    .set-row {
+      display: flex;
+      align-items: center;
+      gap: var(--s-2);
+    }
+
+    .block-card {
+      background: var(--surface-1);
+      border: 1px solid var(--line);
+      border-radius: var(--r-md);
+      overflow: hidden;
+    }
+
+    .block-head {
+      padding: var(--s-3) var(--s-4);
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+      border-bottom: 1px solid var(--line);
+      flex-wrap: wrap;
+    }
+
+    .block-head-left {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-1);
+      flex: 1;
+      min-width: 0;
+    }
+
+    .block-type-tag {
+      padding: 2px 8px;
+      font-size: var(--t-xs);
+      font-weight: 600;
+      border-radius: var(--r-xs);
+      letter-spacing: .03em;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .block-type-tag i[data-lucide] svg {
+      width: 10px;
+      height: 10px;
+    }
+
+    .block-type-tag.superset {
+      background: rgba(181, 123, 220, .18);
+      color: var(--c-mind);
+    }
+
+    .block-type-tag.circuit {
+      background: rgba(232, 163, 61, .18);
+      color: var(--warn);
+    }
+
+    .block-exercise {
+      padding: var(--s-3) var(--s-4);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .block-exercise:last-child {
+      border-bottom: none;
+    }
+
+    .exercise-name {
+      font-size: var(--t-sm);
+      font-weight: 600;
+    }
+
+    .exercise-mode-tag {
+      opacity: 0;
+      font-size: var(--t-xs);
+      font-weight: 500;
+      color: var(--ink-faint);
+      background: var(--surface-2);
+      padding: 2px 7px;
+      border-radius: var(--r-pill);
+    }
+
+    .add-set-btn {
+      width: 100%;
+      margin-top: var(--s-2);
+      padding: var(--s-2) var(--s-3);
+      font-size: var(--t-xs);
+      font-weight: 600;
+      color: var(--ink-muted);
+      background: var(--surface-2);
+      border: 1px dashed var(--line-strong);
+      border-radius: var(--r-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--s-2);
+      font-family: var(--font-ui);
+    }
+
+    .add-set-btn:hover {
+      background: var(--surface-3);
+      color: var(--ink);
+    }
+
+    .add-set-btn i[data-lucide] svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    .rpe-row {
+      display: flex;
+      gap: var(--s-1);
+      flex-wrap: wrap;
+    }
+
+    .rpe-pill {
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--r-sm);
+      font-size: var(--t-xs);
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink-muted);
+      font-family: var(--font-ui);
+      transition: all .1s var(--ease);
+    }
+
+    .rpe-pill:hover {
+      background: var(--surface-2);
+      color: var(--ink);
+    }
+
+    .rpe-pill.active {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-color: var(--accent);
+    }
+
+    .tag-pill {
+      padding: var(--s-1) var(--s-3);
+      border: 1px solid var(--line);
+      border-radius: var(--r-pill);
+      font-size: var(--t-xs);
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--ink-muted);
+      background: transparent;
+      font-family: var(--font-ui);
+      transition: all .1s var(--ease);
+    }
+
+    .tag-pill:hover {
+      border-color: var(--line-strong);
+      color: var(--ink);
+    }
+
+    .tag-pill.active {
+      background: var(--surface-2);
+      border-color: var(--line-strong);
+      color: var(--ink);
+    }
+
+    .strength-notes {
+      width: 100%;
+      min-height: 80px;
+      resize: vertical;
+      font-family: var(--font-ui);
+      font-size: var(--t-sm);
+      font-weight: 500;
+      color: var(--ink);
+      background: var(--surface-2);
+      border: 1px solid var(--line-strong);
+      border-radius: var(--r-sm);
+      padding: var(--s-3);
+      outline: none;
+      line-height: 1.5;
+    }
+
+    .strength-notes:focus {
+      border-color: var(--accent);
+    }
+
+    .chart-wrap {
+      flex-shrink: 0;
+    }
+
+    /* ─── MOBILE ─────────────────────────────────────────────── */
+    @media (max-width: 780px) {
+      .app-shell {
+        grid-template-columns: 1fr;
+        grid-template-areas: "main";
+      }
+
+      main {
+        height: auto;
+        min-height: 100vh;
+      }
+
+      .panel {
+        position: static;
+        height: auto;
+        overflow: visible;
+        transform: none !important;
+        opacity: 1 !important;
+      }
+
+      .panel.slide-in-right {
+        display: none;
+      }
+
+      .panel.slide-out {
+        display: none;
+      }
+
+      .app-rail {
+        display: none;
+      }
+
+      .app-tabbar {
+        display: block;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--surface-1);
+        border-top: 1px solid var(--line);
+        z-index: 100;
+      }
+
+      .app-tabbar nav {
+        display: flex;
+        justify-content: space-around;
+        padding: var(--s-2) var(--s-3);
+        padding-bottom: max(var(--s-2), env(safe-area-inset-bottom));
+      }
+
+      .app-tabbar a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        padding: var(--s-1) var(--s-3);
+        color: var(--ink-muted);
+        font-size: 10px;
+        text-decoration: none;
+        transition: color .12s var(--ease);
+      }
+
+      .app-tabbar a.active {
+        color: var(--accent);
+      }
+
+      .app-tabbar a i[data-lucide] svg {
+        width: 22px;
+        height: 22px;
+      }
+
+      .panel-inner {
+        padding: var(--s-4);
+      }
+
+      .detail-hero,
+      .detail-bar,
+      .detail-section,
+      .social-bar {
+        padding-left: var(--s-4);
+        padding-right: var(--s-4);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+
+    <!-- ── RAIL NAV ──────────────────────────────────────────────── -->
+    <aside class="app-rail">
+      <div class="rail-brand">
+        <i data-lucide="activity"></i>
+        Apex
+      </div>
+      <a href="#" onclick="return false">
+        <i data-lucide="layout-dashboard"></i> Dashboard
+      </a>
+      <a href="#" class="active" onclick="return false">
+        <i data-lucide="users"></i> Social
+      </a>
+      <a href="#" onclick="return false">
+        <i data-lucide="dumbbell"></i> Training
+      </a>
+      <a href="#" onclick="return false">
+        <i data-lucide="calendar"></i> Calendar
+      </a>
+      <a href="#" onclick="return false">
+        <i data-lucide="heart-pulse"></i> Health
+      </a>
+      <div class="rail-spacer"></div>
+      <div class="rail-footer">
+        <div class="avatar sm">LK</div>
+        <div class="grow truncate">
+          <div class="detail bold truncate">Luca K.</div>
+        </div>
+        <button class="ghost icon" id="theme-toggle" title="Toggle theme">
+          <i data-lucide="sun"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ── MAIN ──────────────────────────────────────────────────── -->
+    <main>
+
+      <!-- ── PANEL: FEED ───────────────────────────────────────── -->
+      <div id="panel-feed" class="panel">
+        <div class="panel-inner">
+
+          <!-- Header -->
+          <div class="row space-between">
+            <div>
+              <h2>Social Feed</h2>
+              <div class="caption muted">Your training community</div>
+            </div>
+            <button class="ghost icon"><i data-lucide="search"></i></button>
+          </div>
+
+          <!-- Weekly summary strip -->
+          <div class="weekly-strip">
+            <div class="strip-stat">
+              <div class="strip-val">38.2<span class="unit">km</span></div>
+              <div class="eyebrow">This week</div>
+            </div>
+            <div class="strip-divider"></div>
+            <div class="strip-stat">
+              <div class="strip-val">4:58<span class="unit">/km</span></div>
+              <div class="eyebrow">Avg pace</div>
+            </div>
+            <div class="strip-divider"></div>
+            <div class="strip-stat">
+              <div class="strip-val">3h<span class="unit"> 12m</span></div>
+              <div class="eyebrow">Duration</div>
+            </div>
+            <div style="margin-left: auto">
+              <span class="pill ok">
+                <i data-lucide="trending-up" class="icon-sm"></i>
+                +12% vs last week
+              </span>
+            </div>
+          </div>
+
+          <!-- Composer -->
+          <div class="surface row tight">
+            <div class="avatar sm">LK</div>
+            <div class="composer-field grow">Share a workout or activity…</div>
+            <button class="primary sm">
+              <i data-lucide="send"></i>
+              Post
+            </button>
+          </div>
+
+          <!-- Filter chips -->
+          <div class="cluster">
+            <button class="chip active" onclick="filterFeed(this,'all')">All</button>
+            <button class="chip" onclick="filterFeed(this,'run')">
+              <i data-lucide="footprints"></i> Running
+            </button>
+            <button class="chip" onclick="filterFeed(this,'cycle')">
+              <i data-lucide="bike"></i> Cycling
+            </button>
+            <button class="chip" onclick="filterFeed(this,'lift')">
+              <i data-lucide="dumbbell"></i> Strength
+            </button>
+            <button class="chip" onclick="filterFeed(this,'swim')">
+              <i data-lucide="waves"></i> Swim
+            </button>
+          </div>
+
+          <!-- Feed cards -->
+          <div class="column" style="gap: var(--s-3)">
+
+            <!-- ── CARD: Run ─────────────────────────────────── -->
+            <article class="feed-card" data-sport="run">
+              <div class="card-body">
+                <div class="row space-between align-top">
+                  <div class="row align-top">
+                    <div class="avatar run">MT</div>
+                    <div class="info">
+                      <div class="author-name">Marcus Thompson</div>
+                      <span class="detail muted">Run · Sun 17 2026 · Kingston</span>
+                    </div>
+                  </div>
+                  <span class="caption muted">3h ago</span>
+                </div>
+                <div class="card-title" onclick="showDetail()">Morning Tempo</div>
+
+                <div class="card-stats">
+                  <div class="cstat">
+                    <div class="cstat-val" style="color:var(--c-cardio)">8.4<span class="unit">km</span></div>
+                    <div class="cstat-label">Distance</div>
+                  </div>
+                  <div class="cstat">
+                    <div class="cstat-val">42:18</div>
+                    <div class="cstat-label">Time</div>
+                  </div>
+                  <div class="cstat">
+                    <div class="cstat-val">5:02<span class="unit">/km</span></div>
+                    <div class="cstat-label">Avg Pace</div>
+                  </div>
+                  <div class="cstat">
+                    <div class="cstat-val">+64<span class="unit">m</span></div>
+                    <div class="cstat-label">Elevation</div>
+                  </div>
+                  <svg class="card-map" viewBox="0 0 68 44" fill="none">
+                    <path d="M4,36 C12,30 20,24 26,18 C32,12 36,10 42,9 C48,8 54,12 60,18 C64,22 66,28 64,34"
+                      stroke="var(--c-cardio)" stroke-width="1.5" stroke-linecap="round" fill="none" opacity=".3" />
+                    <path d="M4,36 C12,30 20,24 26,18 C32,12 36,10 42,9 C48,8 54,12 60,18 C64,22 66,28 64,34"
+                      stroke="var(--c-cardio)" stroke-width="1.5" stroke-linecap="round" fill="none" />
+                    <circle cx="4" cy="36" r="3" fill="var(--c-cardio)" />
+                    <circle cx="64" cy="34" r="2.5" fill="var(--surface-1)" stroke="var(--c-cardio)"
+                      stroke-width="1.5" />
+                  </svg>
+                </div>
+                <!-- Photo carousel -->
+                <div class="carousel">
+                  <div class="carousel-track">
+                    <!-- Slide 1: Sunrise run -->
+                    <div class="carousel-slide">
+                      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                          <linearGradient id="csky1" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#f97316" stop-opacity=".6" />
+                            <stop offset="45%" stop-color="#c2410c" stop-opacity=".25" />
+                            <stop offset="100%" stop-color="#1e3a5f" stop-opacity="0" />
+                          </linearGradient>
+                          <linearGradient id="cgnd1" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#2d4a25" />
+                            <stop offset="100%" stop-color="#1a2e18" />
+                          </linearGradient>
+                        </defs>
+                        <rect x="0" y="108" width="400" height="92" fill="url(#cgnd1)" />
+                        <ellipse cx="200" cy="106" rx="180" ry="22" fill="#f97316" opacity=".2" />
+                        <rect width="400" height="108" fill="url(#csky1)" />
+                        <path d="M 155,200 Q 170,148 192,128 Q 212,112 244,200" fill="#3d6030" opacity=".7" />
+                        <rect x="30" y="76" width="5" height="32" fill="#1a2e18" />
+                        <ellipse cx="32" cy="70" rx="14" ry="18" fill="#1a3018" />
+                        <rect x="56" y="84" width="4" height="24" fill="#1a2e18" />
+                        <ellipse cx="58" cy="79" rx="10" ry="14" fill="#1a3018" />
+                        <rect x="316" y="78" width="5" height="30" fill="#1a2e18" />
+                        <ellipse cx="318" cy="72" rx="12" ry="16" fill="#1a3018" />
+                        <rect x="344" y="86" width="4" height="22" fill="#1a2e18" />
+                        <ellipse cx="346" cy="81" rx="9" ry="12" fill="#1a3018" />
+                        <circle cx="200" cy="106" r="5" fill="#0f1a0e" opacity=".85" />
+                        <line x1="200" y1="111" x2="200" y2="126" stroke="#0f1a0e" stroke-width="3"
+                          stroke-linecap="round" opacity=".85" />
+                        <line x1="200" y1="116" x2="193" y2="123" stroke="#0f1a0e" stroke-width="2.5"
+                          stroke-linecap="round" opacity=".85" />
+                        <line x1="200" y1="116" x2="207" y2="122" stroke="#0f1a0e" stroke-width="2.5"
+                          stroke-linecap="round" opacity=".85" />
+                        <line x1="200" y1="126" x2="194" y2="136" stroke="#0f1a0e" stroke-width="2.5"
+                          stroke-linecap="round" opacity=".85" />
+                        <line x1="200" y1="126" x2="206" y2="135" stroke="#0f1a0e" stroke-width="2.5"
+                          stroke-linecap="round" opacity=".85" />
+                        <rect width="400" height="200" fill="rgba(0,0,0,.1)" />
+                      </svg>
+                      <div class="carousel-caption">
+                        Thames Path, Richmond
+                      </div>
+                    </div>
+                    <!-- Slide 2: Night bridge -->
+                    <div class="carousel-slide">
+                      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="200" fill="#12102a" />
+                        <rect width="400" height="118" fill="#1a1838" />
+                        <!-- Stars -->
+                        <circle cx="40" cy="22" r="1.5" fill="white" opacity=".6" />
+                        <circle cx="120" cy="14" r="1" fill="white" opacity=".5" />
+                        <circle cx="210" cy="30" r="1.2" fill="white" opacity=".55" />
+                        <circle cx="290" cy="18" r="1" fill="white" opacity=".45" />
+                        <circle cx="350" cy="35" r="1.5" fill="white" opacity=".6" />
+                        <circle cx="75" cy="50" r="1" fill="white" opacity=".4" />
+                        <circle cx="168" cy="45" r="1.2" fill="white" opacity=".5" />
+                        <circle cx="330" cy="58" r="1" fill="white" opacity=".45" />
+                        <!-- Bridge glow / arch -->
+                        <path d="M -20,118 Q 200,52 420,118" stroke="#5a4898" stroke-width="10" fill="none"
+                          opacity=".35" />
+                        <path d="M -20,118 Q 200,52 420,118" stroke="#7a68b8" stroke-width="3" fill="none" />
+                        <!-- Bridge deck -->
+                        <rect x="-20" y="116" width="440" height="5" fill="#3a3060" />
+                        <!-- Cable lines -->
+                        <line x1="200" y1="56" x2="60" y2="117" stroke="#6a5aa8" stroke-width="1" opacity=".5" />
+                        <line x1="200" y1="56" x2="120" y2="117" stroke="#6a5aa8" stroke-width="1" opacity=".5" />
+                        <line x1="200" y1="56" x2="280" y2="117" stroke="#6a5aa8" stroke-width="1" opacity=".5" />
+                        <line x1="200" y1="56" x2="340" y2="117" stroke="#6a5aa8" stroke-width="1" opacity=".5" />
+                        <!-- Bridge lights -->
+                        <circle cx="60" cy="117" r="3" fill="#fbbf24" opacity=".9" />
+                        <circle cx="120" cy="114" r="3" fill="#fbbf24" opacity=".9" />
+                        <circle cx="180" cy="112" r="3" fill="#fbbf24" opacity=".9" />
+                        <circle cx="200" cy="111" r="3" fill="#fbbf24" opacity=".9" />
+                        <circle cx="220" cy="112" r="3" fill="#fbbf24" opacity=".9" />
+                        <circle cx="280" cy="114" r="3" fill="#fbbf24" opacity=".9" />
+                        <circle cx="340" cy="117" r="3" fill="#fbbf24" opacity=".9" />
+                        <!-- River & light reflections -->
+                        <rect x="0" y="118" width="400" height="82" fill="#0e0c22" />
+                        <ellipse cx="60" cy="140" rx="8" ry="20" fill="#fbbf24" opacity=".12" />
+                        <ellipse cx="120" cy="142" rx="6" ry="16" fill="#fbbf24" opacity=".1" />
+                        <ellipse cx="200" cy="144" rx="10" ry="24" fill="#fbbf24" opacity=".12" />
+                        <ellipse cx="280" cy="142" rx="6" ry="16" fill="#fbbf24" opacity=".1" />
+                        <ellipse cx="340" cy="140" rx="8" ry="20" fill="#fbbf24" opacity=".12" />
+                        <!-- Ripples -->
+                        <ellipse cx="200" cy="148" rx="60" ry="4" fill="#2a2848" opacity=".6" />
+                        <ellipse cx="200" cy="162" rx="80" ry="3" fill="#2a2848" opacity=".4" />
+                        <rect width="400" height="200" fill="rgba(0,0,0,.08)" />
+                      </svg>
+                      <div class="carousel-caption">
+                        Twickenham Bridge
+                      </div>
+                    </div>
+                    <!-- Slide 3: Golden hour park finish -->
+                    <div class="carousel-slide">
+                      <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                          <linearGradient id="csky3" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#fb923c" stop-opacity=".5" />
+                            <stop offset="50%" stop-color="#fde68a" stop-opacity=".2" />
+                            <stop offset="100%" stop-color="#78350f" stop-opacity="0" />
+                          </linearGradient>
+                        </defs>
+                        <rect width="400" height="200" fill="#3a2010" />
+                        <rect width="400" height="200" fill="#6a3818" opacity=".45" />
+                        <rect width="400" height="115" fill="url(#csky3)" />
+                        <ellipse cx="200" cy="112" rx="180" ry="20" fill="#fb923c" opacity=".2" />
+                        <!-- Ground -->
+                        <rect x="0" y="112" width="400" height="88" fill="#2a1a0c" />
+                        <!-- Path -->
+                        <path d="M 155,200 Q 175,155 190,132 Q 205,112 230,200" fill="#3a2212" opacity=".9" />
+                        <!-- Trees left -->
+                        <rect x="25" y="58" width="7" height="54" fill="#1e0e06" />
+                        <ellipse cx="28" cy="50" rx="22" ry="28" fill="#1a0e06" />
+                        <ellipse cx="16" cy="62" rx="14" ry="18" fill="#1a0e06" />
+                        <rect x="62" y="72" width="5" height="40" fill="#1e0e06" />
+                        <ellipse cx="64" cy="65" rx="16" ry="20" fill="#1a0e06" />
+                        <!-- Trees right -->
+                        <rect x="310" y="65" width="7" height="47" fill="#1e0e06" />
+                        <ellipse cx="313" cy="57" rx="20" ry="26" fill="#1a0e06" />
+                        <rect x="345" y="74" width="5" height="38" fill="#1e0e06" />
+                        <ellipse cx="347" cy="68" rx="14" ry="18" fill="#1a0e06" />
+                        <!-- Bench -->
+                        <rect x="245" y="98" width="48" height="6" rx="2" fill="#4a2810" />
+                        <rect x="248" y="88" width="42" height="5" rx="2" fill="#4a2810" />
+                        <rect x="248" y="104" width="5" height="12" rx="1" fill="#3a1e0c" />
+                        <rect x="286" y="104" width="5" height="12" rx="1" fill="#3a1e0c" />
+                        <!-- Runner finishing - arms up -->
+                        <circle cx="190" cy="104" r="6" fill="#1a0a04" opacity=".9" />
+                        <line x1="190" y1="110" x2="190" y2="126" stroke="#1a0a04" stroke-width="3.5"
+                          stroke-linecap="round" opacity=".9" />
+                        <line x1="190" y1="114" x2="180" y2="104" stroke="#1a0a04" stroke-width="3"
+                          stroke-linecap="round" opacity=".9" />
+                        <line x1="190" y1="114" x2="200" y2="104" stroke="#1a0a04" stroke-width="3"
+                          stroke-linecap="round" opacity=".9" />
+                        <line x1="190" y1="126" x2="183" y2="138" stroke="#1a0a04" stroke-width="3"
+                          stroke-linecap="round" opacity=".9" />
+                        <line x1="190" y1="126" x2="197" y2="137" stroke="#1a0a04" stroke-width="3"
+                          stroke-linecap="round" opacity=".9" />
+                        <rect width="400" height="200" fill="rgba(0,0,0,.1)" />
+                      </svg>
+                      <div class="carousel-caption">
+                        Richmond Park Gate
+                      </div>
+                    </div>
+                  </div>
+                  <button class="carousel-btn prev" onclick="carouselPrev()"><i data-lucide="chevron-left"></i></button>
+                  <button class="carousel-btn next" onclick="carouselNext()"><i
+                      data-lucide="chevron-right"></i></button>
+                  <div class="carousel-dots">
+                    <div class="carousel-dot active" onclick="carouselGoto(0)"></div>
+                    <div class="carousel-dot" onclick="carouselGoto(1)"></div>
+                    <div class="carousel-dot" onclick="carouselGoto(2)"></div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="row">
+                    <span class="detail muted">My Morning Run was...</span>
+
+                  </div>
+                  <div class="meta ">
+                    <span class="pill">Run</span>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <button class="react-btn like-btn liked" data-count="14" onclick="toggleLike(this)">
+                    <i data-lucide="heart"></i><span>14</span>
+                  </button>
+                  <button class="react-btn comment-btn">
+                    <i data-lucide="message-circle"></i><span>3</span>
+                  </button>
+                  <div class="spacer"></div>
+                  <button class="react-btn" onclick="showDetail()" title="View activity">
+                    <i data-lucide="chevron-right"></i>
+                  </button>
+                  <button class="react-btn"><i data-lucide="more-vertical"></i></button>
+                </div>
+              </div>
+            </article>
+
+            <!-- ── CARD: Cycle ────────────────────────────────── -->
+            <article class="feed-card" data-sport="cycle">
+              <div class="card-body">
+                <div class="card-head">
+                  <div class="avatar cycle">EW</div>
+                  <div class="info">
+                    <div class="author-name">Emma Whitfield</div>
+                    <div class="meta">
+                      <span class="pill cycle"><span class="dot"></span>Cycle · Hampton Roads</span>
+                      <span class="caption muted">6h ago</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-title">Riverside Loop</div>
+                <div class="card-stats">
+                  <div class="cstat">
+                    <div class="cstat-val" style="color:var(--c-recovery)">34.2<span class="unit">km</span></div>
+                    <div class="cstat-label">Distance</div>
+                  </div>
+                  <div class="cstat">
+                    <div class="cstat-val">1:08<span class="unit">h</span></div>
+                    <div class="cstat-label">Time</div>
+                  </div>
+                  <div class="cstat">
+                    <div class="cstat-val">29.8<span class="unit">km/h</span></div>
+                    <div class="cstat-label">Avg Speed</div>
+                  </div>
+                  <svg class="card-map" viewBox="0 0 68 44" fill="none">
+                    <path d="M4,32 Q16,16 28,14 Q40,12 48,20 Q56,28 64,22" stroke="var(--c-recovery)" stroke-width="1.5"
+                      stroke-linecap="round" fill="none" opacity=".3" />
+                    <path d="M4,32 Q16,16 28,14 Q40,12 48,20 Q56,28 64,22" stroke="var(--c-recovery)" stroke-width="1.5"
+                      stroke-linecap="round" fill="none" />
+                    <circle cx="4" cy="32" r="3" fill="var(--c-recovery)" />
+                    <circle cx="64" cy="22" r="2.5" fill="var(--surface-1)" stroke="var(--c-recovery)"
+                      stroke-width="1.5" />
+                  </svg>
+                </div>
+                <div class="card-footer">
+                  <button class="react-btn like-btn" data-count="9" onclick="toggleLike(this)">
+                    <i data-lucide="heart"></i><span>9</span>
+                  </button>
+                  <button class="react-btn comment-btn">
+                    <i data-lucide="message-circle"></i><span>1</span>
+                  </button>
+                  <div class="spacer"></div>
+                  <button class="react-btn"><i data-lucide="more-vertical"></i></button>
+                </div>
+              </div>
+            </article>
+
+            <!-- ── CARD: Lift ─────────────────────────────────── -->
+            <article class="feed-card" data-sport="lift">
+              <div class="card-body">
+                <div class="card-head">
+                  <div class="avatar lift">DK</div>
+                  <div class="info">
+                    <div class="author-name">Dan Kowalski</div>
+                    <div class="meta">
+                      <span class="pill lift"><span class="dot"></span>Lift · Kingston Barbell</span>
+                      <span class="caption muted">8h ago</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-title" onclick="showStrength()">Push Day — Heavy</div>
+                <div class="card-stats">
+                  <div class="cstat">
+                    <div class="cstat-val" style="color:var(--c-strength)">6<span class="unit">exs</span></div>
+                    <div class="cstat-label">Exercises</div>
+                  </div>
+                  <div class="cstat">
+                    <div class="cstat-val">18<span class="unit">sets</span></div>
+                    <div class="cstat-label">Sets</div>
+                  </div>
+                  <div class="cstat">
+                    <div class="cstat-val">5,240<span class="unit">kg</span></div>
+                    <div class="cstat-label">Volume</div>
+                  </div>
+                  <div class="cstat">
+                    <div class="cstat-val">62<span class="unit">min</span></div>
+                    <div class="cstat-label">Duration</div>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <button class="react-btn like-btn" data-count="18" onclick="toggleLike(this)">
+                    <i data-lucide="heart"></i><span>18</span>
+                  </button>
+                  <button class="react-btn comment-btn">
+                    <i data-lucide="message-circle"></i><span>4</span>
+                  </button>
+                  <div class="spacer"></div>
+                  <button class="react-btn"><i data-lucide="more-vertical"></i></button>
+                </div>
+              </div>
+            </article>
+
+            <!-- ── CARD: Swim ─────────────────────────────────── -->
+            <article class="feed-card" data-sport="swim">
+              <div class="card-body">
+                <div class="card-head">
+                  <div class="avatar swim">AR</div>
+                  <div class="info">
+                    <div class="author-name">Alex Rivers</div>
+                    <div class="meta">
+                      <span class="pill swim"><span class="dot"></span>Swim · River Squad</span>
+                      <span class="caption muted">14h ago</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-title">Interval Set</div>
+                <div class="card-stats">
+                  <div class="cstat">
+                    <div class="cstat-val" style="color:var(--c-water)">2,400<span class="unit">m</span></div>
+                    <div class="cstat-label">Distance</div>
+                  </div>
+                  <div class="cstat">
+                    <div class="cstat-val">54:00</div>
+                    <div class="cstat-label">Time</div>
+                  </div>
+                  <div class="cstat">
+                    <div class="cstat-val">1:52<span class="unit">/100m</span></div>
+                    <div class="cstat-label">Avg Pace</div>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <button class="react-btn like-btn" data-count="6" onclick="toggleLike(this)">
+                    <i data-lucide="heart"></i><span>6</span>
+                  </button>
+                  <button class="react-btn comment-btn">
+                    <i data-lucide="message-circle"></i><span>0</span>
+                  </button>
+                  <div class="spacer"></div>
+                  <button class="react-btn"><i data-lucide="more-vertical"></i></button>
+                </div>
+              </div>
+            </article>
+
+          </div><!-- /cards column -->
+        </div><!-- /panel-inner -->
+      </div><!-- /panel-feed -->
+
+
+      <!-- ── PANEL: ACTIVITY DETAIL ──────────────────────────── -->
+      <div id="panel-detail" class="panel slide-in-right">
+
+        <!-- Sticky header bar -->
+        <div class="detail-bar">
+          <button class="ghost icon" onclick="showFeed()"><i data-lucide="arrow-left"></i></button>
+          <h3 class="grow">Morning Tempo</h3>
+          <button class="ghost icon"><i data-lucide="edit-2"></i></button>
+          <button class="ghost icon"><i data-lucide="share-2"></i></button>
+        </div>
+
+        <!-- Hero -->
+        <div class="detail-hero">
+          <div class="row">
+            <i data-lucide="sport-shoe"></i></span>Run</span>
+            <span class="caption muted">Mon 12 May 2025 · 07:14</span>
+          </div>
+          <h1>Morning Tempo</h1>
+          <!-- Social interactions (kudos, comments, ran-with, share) -->
+          <div class="social-bar" style="padding:0">
+            <div class="row space-between">
+              <div class="row" style="gap:var(--s-2)">
+                <button class="react-btn like-btn liked" style="font-size:var(--t-sm);padding:var(--s-2) var(--s-3)"
+                  data-count="14" onclick="toggleLike(this)">
+                  <i data-lucide="heart"></i><span>14 Kudos</span>
+                </button>
+                <button class="react-btn" style="font-size:var(--t-sm);padding:var(--s-2) var(--s-3)">
+                  <i data-lucide="message-circle"></i><span>3 Comments</span>
+                </button>
+              </div>
+              <!-- <button class="ghost icon"><i data-lucide="share-2"></i></button> -->
+            </div>
+            <div class="column" style="gap:var(--s-2)">
+              <div class="eyebrow">Ran With</div>
+              <div class="cluster">
+                <span class="pill accent">
+                  <i data-lucide="user" class="icon-sm"></i>
+                  Marcus T.
+                  <span style="cursor:pointer;margin-left:2px;opacity:.6;font-size:var(--t-xs)"
+                    onclick="this.closest('.pill').remove()">×</span>
+                </span>
+                <span class="pill accent">
+                  <i data-lucide="user" class="icon-sm"></i>
+                  Emma W.
+                  <span style="cursor:pointer;margin-left:2px;opacity:.6;font-size:var(--t-xs)"
+                    onclick="this.closest('.pill').remove()">×</span>
+                </span>
+                <button class="ghost sm"><i data-lucide="plus"></i> Add</button>
+              </div>
+            </div>
+          </div>
+          <!-- Stats 2×2 grid -->
+          <div class="stats-grid">
+            <div class="sg-cell">
+              <div class="eyebrow">Distance</div>
+              <div class="metric sm" style="color:var(--c-cardio)">8.4<span class="unit">km</span></div>
+            </div>
+            <div class="sg-cell">
+              <div class="eyebrow">Duration</div>
+              <div class="metric sm">42<span class="unit">min</span>&thinsp;18<span class="unit">s</span></div>
+            </div>
+            <div class="sg-cell">
+              <div class="eyebrow">Avg Pace</div>
+              <div class="metric sm">5:02<span class="unit">/km</span></div>
+            </div>
+            <div class="sg-cell">
+              <div class="eyebrow">Elevation Gain</div>
+              <div class="metric sm">+64<span class="unit">m</span></div>
+            </div>
+          </div>
+
+        </div>
+        <!-- Photos -->
+        <div class="detail-section">
+          <div class="section-head eyebrow">
+            <i data-lucide="image"></i>
+            Photos · 3
+          </div>
+          <div class="photo-grid">
+            <!-- Main photo: sunrise run scene -->
+            <div class="ph ph-main" style="position:relative">
+              <svg viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="dsky" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#f97316" stop-opacity=".7" />
+                    <stop offset="45%" stop-color="#c2410c" stop-opacity=".3" />
+                    <stop offset="100%" stop-color="#1e3a5f" stop-opacity=".0" />
+                  </linearGradient>
+                </defs>
+                <rect width="200" height="280" fill="#1a2e18" />
+                <rect width="200" height="165" fill="url(#dsky)" />
+                <ellipse cx="100" cy="163" rx="120" ry="28" fill="#f97316" opacity=".22" />
+                <!-- Tree line -->
+                <ellipse cx="20" cy="148" rx="18" ry="22" fill="#0f1e0e" />
+                <ellipse cx="44" cy="155" rx="14" ry="18" fill="#0f1e0e" />
+                <ellipse cx="160" cy="150" rx="16" ry="20" fill="#0f1e0e" />
+                <ellipse cx="182" cy="157" rx="12" ry="15" fill="#0f1e0e" />
+                <!-- Path -->
+                <path d="M 70,280 Q 85,230 95,200 Q 105,175 100,163 Q 95,150 115,280" fill="#243820" opacity=".8" />
+                <!-- Runner -->
+                <circle cx="100" cy="156" r="6" fill="#0a120a" opacity=".9" />
+                <line x1="100" y1="162" x2="100" y2="178" stroke="#0a120a" stroke-width="3.5" stroke-linecap="round"
+                  opacity=".9" />
+                <line x1="100" y1="168" x2="92" y2="175" stroke="#0a120a" stroke-width="3" stroke-linecap="round"
+                  opacity=".9" />
+                <line x1="100" y1="168" x2="108" y2="174" stroke="#0a120a" stroke-width="3" stroke-linecap="round"
+                  opacity=".9" />
+                <line x1="100" y1="178" x2="93" y2="190" stroke="#0a120a" stroke-width="3" stroke-linecap="round"
+                  opacity=".9" />
+                <line x1="100" y1="178" x2="107" y2="189" stroke="#0a120a" stroke-width="3" stroke-linecap="round"
+                  opacity=".9" />
+                <!-- Overlay -->
+                <rect width="200" height="280" fill="rgba(0,0,0,.08)" />
+              </svg>
+            </div>
+            <!-- Photo 2: bridge / urban -->
+            <div class="ph ph-2" style="position:relative">
+              <svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100" height="140" fill="#1e1a3a" />
+                <!-- Night sky -->
+                <rect width="100" height="90" fill="#1a1830" />
+                <circle cx="30" cy="20" r="1.5" fill="white" opacity=".7" />
+                <circle cx="60" cy="12" r="1" fill="white" opacity=".5" />
+                <circle cx="80" cy="28" r="1" fill="white" opacity=".6" />
+                <circle cx="15" cy="35" r="1" fill="white" opacity=".4" />
+                <circle cx="72" cy="40" r="1.2" fill="white" opacity=".5" />
+                <!-- River reflection -->
+                <rect x="0" y="90" width="100" height="50" fill="#12112a" />
+                <!-- Bridge arch -->
+                <path d="M -10,95 Q 50,55 110,95" stroke="#4a3870" stroke-width="3" fill="none" />
+                <path d="M -10,95 Q 50,65 110,95" stroke="#3a2860" stroke-width="8" fill="none" opacity=".5" />
+                <!-- Bridge cables -->
+                <line x1="50" y1="60" x2="20" y2="94" stroke="#5a4880" stroke-width="1" opacity=".6" />
+                <line x1="50" y1="60" x2="35" y2="94" stroke="#5a4880" stroke-width="1" opacity=".6" />
+                <line x1="50" y1="60" x2="65" y2="94" stroke="#5a4880" stroke-width="1" opacity=".6" />
+                <line x1="50" y1="60" x2="80" y2="94" stroke="#5a4880" stroke-width="1" opacity=".6" />
+                <!-- Lights on bridge -->
+                <circle cx="20" cy="94" r="2" fill="#fbbf24" opacity=".8" />
+                <circle cx="35" cy="90" r="2" fill="#fbbf24" opacity=".8" />
+                <circle cx="50" cy="88" r="2" fill="#fbbf24" opacity=".8" />
+                <circle cx="65" cy="90" r="2" fill="#fbbf24" opacity=".8" />
+                <circle cx="80" cy="94" r="2" fill="#fbbf24" opacity=".8" />
+                <!-- Water ripples -->
+                <ellipse cx="50" cy="108" rx="40" ry="3" fill="#2a2850" opacity=".5" />
+                <ellipse cx="50" cy="118" rx="30" ry="2" fill="#2a2850" opacity=".4" />
+                <rect width="100" height="140" fill="rgba(0,0,0,.1)" />
+              </svg>
+            </div>
+            <!-- Photo 3: finish / park bench -->
+            <div class="ph ph-3" style="position:relative">
+              <svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100" height="140" fill="#3a2810" />
+                <!-- Warm morning light -->
+                <rect width="100" height="140" fill="#6a4020" opacity=".4" />
+                <!-- Ground -->
+                <rect x="0" y="95" width="100" height="45" fill="#2a1e10" />
+                <!-- Path -->
+                <path d="M 30,140 Q 48,115 50,95 Q 52,78 70,140" fill="#3a2818" opacity=".9" />
+                <!-- Bench -->
+                <rect x="55" y="82" width="30" height="4" rx="1" fill="#5a3820" />
+                <rect x="57" y="74" width="26" height="3" rx="1" fill="#5a3820" />
+                <rect x="57" y="86" width="3" height="9" rx="1" fill="#4a2e18" />
+                <rect x="80" y="86" width="3" height="9" rx="1" fill="#4a2e18" />
+                <!-- Tree -->
+                <rect x="18" y="55" width="5" height="40" fill="#3a2010" />
+                <ellipse cx="20" cy="50" rx="16" ry="20" fill="#2a1808" />
+                <ellipse cx="12" cy="58" rx="10" ry="12" fill="#2a1808" />
+                <ellipse cx="28" cy="56" rx="12" ry="14" fill="#2a1808" />
+                <!-- Watch / finishing gesture silhouette -->
+                <circle cx="50" cy="72" r="5" fill="#1a1008" opacity=".85" />
+                <rect x="44" y="77" width="12" height="14" rx="2" fill="#1a1008" opacity=".85" />
+                <rect x="42" y="79" width="4" height="3" rx="1" fill="#1a1008" opacity=".85" />
+                <rect x="54" y="79" width="4" height="3" rx="1" fill="#1a1008" opacity=".85" />
+                <rect width="100" height="140" fill="rgba(0,0,0,.1)" />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <!-- Route map -->
+        <div class="detail-section">
+          <div class="section-head eyebrow">
+            <i data-lucide="map-pin"></i>
+            Route
+          </div>
+          <div style="border-radius:var(--r-md);overflow:hidden;background:var(--surface-2);">
+            <svg viewBox="0 0 640 200" width="100%" style="display:block;" xmlns="http://www.w3.org/2000/svg">
+              <rect width="640" height="200" fill="var(--surface-2)" />
+              <!-- Subtle grid -->
+              <line x1="0" y1="50" x2="640" y2="50" stroke="var(--line)" stroke-width="0.5" />
+              <line x1="0" y1="100" x2="640" y2="100" stroke="var(--line)" stroke-width="0.5" />
+              <line x1="0" y1="150" x2="640" y2="150" stroke="var(--line)" stroke-width="0.5" />
+              <line x1="160" y1="0" x2="160" y2="200" stroke="var(--line)" stroke-width="0.5" />
+              <line x1="320" y1="0" x2="320" y2="200" stroke="var(--line)" stroke-width="0.5" />
+              <line x1="480" y1="0" x2="480" y2="200" stroke="var(--line)" stroke-width="0.5" />
+              <!-- Route glow -->
+              <path
+                d="M 50,155 C 80,148 110,132 138,118 C 162,106 178,94 198,78 C 214,65 230,54 256,48 C 278,43 304,46 326,56 C 348,66 362,82 386,86 C 408,90 428,78 450,66 C 470,55 494,48 518,54 C 538,59 556,74 572,90 C 586,104 594,122 590,142"
+                stroke="var(--c-cardio)" stroke-width="8" stroke-linecap="round" fill="none" opacity="0.18" />
+              <!-- Route main line -->
+              <path
+                d="M 50,155 C 80,148 110,132 138,118 C 162,106 178,94 198,78 C 214,65 230,54 256,48 C 278,43 304,46 326,56 C 348,66 362,82 386,86 C 408,90 428,78 450,66 C 470,55 494,48 518,54 C 538,59 556,74 572,90 C 586,104 594,122 590,142"
+                stroke="var(--c-cardio)" stroke-width="2.5" stroke-linecap="round" fill="none" />
+              <!-- Start dot -->
+              <circle cx="50" cy="155" r="7" fill="var(--c-cardio)" />
+              <text x="50" y="158.5" text-anchor="middle" font-size="8" fill="white" font-family="system-ui"
+                font-weight="700">S</text>
+              <!-- Km markers -->
+              <circle cx="196" cy="79" r="4" fill="var(--surface-1)" stroke="var(--c-cardio)" stroke-width="1.5" />
+              <text x="204" y="74" font-size="9" fill="var(--ink-faint)" font-family="system-ui">2km</text>
+              <circle cx="326" cy="56" r="4" fill="var(--surface-1)" stroke="var(--c-cardio)" stroke-width="1.5" />
+              <text x="334" y="51" font-size="9" fill="var(--ink-faint)" font-family="system-ui">4km</text>
+              <circle cx="450" cy="66" r="4" fill="var(--surface-1)" stroke="var(--c-cardio)" stroke-width="1.5" />
+              <text x="458" y="61" font-size="9" fill="var(--ink-faint)" font-family="system-ui">6km</text>
+              <!-- Finish dot -->
+              <circle cx="590" cy="142" r="7" fill="var(--surface-1)" stroke="var(--c-cardio)" stroke-width="2" />
+              <text x="590" y="145.5" text-anchor="middle" font-size="8" fill="var(--c-cardio)" font-family="system-ui"
+                font-weight="700">F</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Performance badges -->
+        <div class="detail-section">
+          <div class="section-head eyebrow">
+            <i data-lucide="heart-pulse"></i>
+            Performance
+          </div>
+          <div class="cluster">
+            <span class="pill"><i data-lucide="heart" class="icon-sm" style="color:var(--bad)"></i>&nbsp;AVG HR 162
+              bpm</span>
+            <span class="pill"><i data-lucide="zap" class="icon-sm" style="color:var(--warn)"></i>&nbsp;MAX HR 178
+              bpm</span>
+            <span class="pill"><i data-lucide="flame" class="icon-sm" style="color:var(--c-strength)"></i>&nbsp;412
+              kcal</span>
+            <span class="pill run"><span class="dot"></span>RPE 7 / 10</span>
+          </div>
+        </div>
+
+        <!-- Pace chart -->
+        <div class="detail-section">
+          <div class="section-head eyebrow">
+            <i data-lucide="trending-up"></i>
+            Pace Over Distance
+          </div>
+          <div
+            style="background:var(--surface-2);border-radius:var(--r-sm);overflow:hidden;padding:var(--s-3) var(--s-3) var(--s-2);">
+            <svg viewBox="0 0 560 88" width="100%" style="display:block;" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="paceGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="var(--c-cardio)" stop-opacity=".28" />
+                  <stop offset="100%" stop-color="var(--c-cardio)" stop-opacity=".02" />
+                </linearGradient>
+              </defs>
+              <!-- Filled area under line -->
+              <polygon points="0,48 70,26 140,38 210,16 280,58 350,6 420,44 490,26 560,48 560,75 0,75"
+                fill="url(#paceGrad)" />
+              <!-- Pace polyline -->
+              <polyline points="0,48 70,26 140,38 210,16 280,58 350,6 420,44 490,26 560,48" stroke="var(--c-cardio)"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+              <!-- Fastest point highlight -->
+              <circle cx="350" cy="6" r="4" fill="var(--c-cardio)" />
+              <text x="350" y="2" text-anchor="middle" font-size="9" fill="var(--ok)" font-family="system-ui"
+                font-weight="600">4:52</text>
+              <!-- X-axis km labels -->
+              <text x="0" y="86" font-size="9" fill="var(--ink-faint)" font-family="system-ui">1km</text>
+              <text x="65" y="86" font-size="9" fill="var(--ink-faint)" font-family="system-ui">2km</text>
+              <text x="135" y="86" font-size="9" fill="var(--ink-faint)" font-family="system-ui">3km</text>
+              <text x="205" y="86" font-size="9" fill="var(--ink-faint)" font-family="system-ui">4km</text>
+              <text x="275" y="86" font-size="9" fill="var(--ink-faint)" font-family="system-ui">5km</text>
+              <text x="345" y="86" font-size="9" fill="var(--ink-faint)" font-family="system-ui">6km</text>
+              <text x="415" y="86" font-size="9" fill="var(--ink-faint)" font-family="system-ui">7km</text>
+              <text x="485" y="86" font-size="9" fill="var(--ink-faint)" font-family="system-ui">8km</text>
+              <!-- Y-axis labels -->
+              <text x="0" y="10" text-anchor="start" font-size="9" fill="var(--ink)" font-family="system-ui">4:50</text>
+              <text x="0" y="52" text-anchor="start" font-size="9" fill="var(--ink)" font-family="system-ui">5:02</text>
+              <text x="0" y="74" text-anchor="start" font-size="9" fill="var(--ink)" font-family="system-ui">5:15</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Splits table -->
+        <div class="detail-section">
+          <div class="section-head eyebrow">
+            <i data-lucide="timer"></i>
+            Km Splits
+          </div>
+          <table class="splits-table">
+            <thead>
+              <tr>
+                <th>KM</th>
+                <th>Pace</th>
+                <th>HR</th>
+                <th>Elev</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="km-col">1</td>
+                <td class="pace-col">5:05</td>
+                <td>148</td>
+                <td>+8 m</td>
+              </tr>
+              <tr>
+                <td class="km-col">2</td>
+                <td class="pace-col">4:58</td>
+                <td>155</td>
+                <td>+12 m</td>
+              </tr>
+              <tr>
+                <td class="km-col">3</td>
+                <td class="pace-col">5:02</td>
+                <td>160</td>
+                <td>+6 m</td>
+              </tr>
+              <tr>
+                <td class="km-col">4</td>
+                <td class="pace-col">4:55</td>
+                <td>163</td>
+                <td>+5 m</td>
+              </tr>
+              <tr>
+                <td class="km-col">5</td>
+                <td class="pace-col">5:08</td>
+                <td>165</td>
+                <td>+14 m</td>
+              </tr>
+              <tr class="best-row">
+                <td class="km-col">6</td>
+                <td class="pace-col">4:52</td>
+                <td>170</td>
+                <td>+2 m</td>
+              </tr>
+              <tr>
+                <td class="km-col">7</td>
+                <td class="pace-col">5:04</td>
+                <td>168</td>
+                <td>+8 m</td>
+              </tr>
+              <tr>
+                <td class="km-col">8</td>
+                <td class="pace-col">4:58</td>
+                <td>165</td>
+                <td>+9 m</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+
+
+      </div><!-- /panel-detail -->
+
+      <!-- ── PANEL: STRENGTH SESSION ──────────────────────────── -->
+      <div id="panel-strength" class="panel slide-in-right">
+
+        <!-- Sticky header -->
+        <div class="detail-bar">
+          <button class="ghost icon" onclick="showFeed()"><i data-lucide="arrow-left"></i></button>
+          <h3 class="grow">Push Day — Heavy</h3>
+          <button class="primary sm">Done</button>
+          <button class="ghost icon"><i data-lucide="more-horizontal"></i></button>
+        </div>
+
+        <!-- Session meta -->
+        <div class="detail-section">
+          <div class="row" style="gap:var(--s-5);flex-wrap:wrap">
+            <div class="column" style="gap:var(--s-1)">
+              <div class="eyebrow">Session Name</div>
+              <input value="Push Day — Heavy" style="font-size:var(--t-md);font-weight:600;width:200px">
+            </div>
+            <div class="row" style="gap:var(--s-4)">
+              <div class="column" style="gap:var(--s-1)">
+                <div class="eyebrow">Start</div>
+                <input value="08:30" class="ghost sm" style="width:60px;text-align:center;font-weight:600">
+              </div>
+              <div class="column" style="gap:var(--s-1)">
+                <div class="eyebrow">End</div>
+                <input value="09:55" class="ghost sm" style="width:60px;text-align:center;font-weight:600">
+              </div>
+              <div class="column" style="gap:var(--s-1)">
+                <div class="eyebrow">Date</div>
+                <input value="12 May 2026" class="ghost sm faint" style="width:100px">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <span class="pill lift"><span class="dot"></span>Lift · Kingston Barbell</span>
+            <span class="pill ok"><i data-lucide="timer" class="icon-sm" style="margin-right:3px"></i>1h 25m</span>
+          </div>
+        </div>
+
+        <!-- Block 1: Bench Press — straight, wt-reps -->
+        <div class="detail-section" style="gap:var(--s-3)">
+          <div class="block-card">
+            <div class="block-head">
+              <div class="block-head-left">
+                <div class="row" style="gap:var(--s-2)">
+                  <span class="exercise-name">Bench Press</span>
+                  <span class="exercise-mode-tag">wt × reps</span>
+                </div>
+              </div>
+              <div class="chart-wrap">
+                <svg viewBox="0 0 180 52" width="180" height="52">
+                  <!-- WU 60kg: h=26 -->
+                  <rect x="10" y="18" width="28" height="26" rx="3" fill="var(--ink-faint)" opacity=".5" />
+                  <!-- S1 80kg: h=35 -->
+                  <rect x="52" y="9" width="28" height="35" rx="3" fill="var(--c-strength)" opacity=".65" />
+                  <!-- S2 85kg: h=37 -->
+                  <rect x="94" y="7" width="28" height="37" rx="3" fill="var(--c-strength)" opacity=".82" />
+                  <!-- S3 87.5kg: h=38 -->
+                  <rect x="136" y="6" width="28" height="38" rx="3" fill="var(--c-strength)" />
+                  <text x="24" y="50" text-anchor="middle" font-size="9" fill="var(--ink-faint)" font-family="system-ui"
+                    font-weight="500">WU</text>
+                  <text x="66" y="50" text-anchor="middle" font-size="9" fill="var(--ink-muted)" font-family="system-ui"
+                    font-weight="500">S1</text>
+                  <text x="108" y="50" text-anchor="middle" font-size="9" fill="var(--ink-muted)"
+                    font-family="system-ui" font-weight="500">S2</text>
+                  <text x="150" y="50" text-anchor="middle" font-size="9" fill="var(--ink)" font-family="system-ui"
+                    font-weight="700">S3</text>
+                </svg>
+              </div>
+            </div>
+            <div class="block-exercise">
+              <div class="set-rows">
+                <div class="set-row">
+                  <span class="set-label">WU</span>
+                  <input type="number" value="60" class="num sm" disabled>
+                  <span class="set-sep">kg ×</span>
+                  <input type="number" value="10" class="num sm" disabled>
+                  <span class="set-sep">reps</span>
+                </div>
+                <div class="set-row">
+                  <span class="set-label working">S1</span>
+                  <input type="number" value="80" class="num sm" disabled>
+                  <span class="set-sep">kg ×</span>
+                  <input type="number" value="8" class="num sm" disabled>
+                  <span class="set-sep">reps</span>
+                </div>
+                <div class="set-row">
+                  <span class="set-label working">S2</span>
+                  <input type="number" value="85" class="num sm" disabled>
+                  <span class="set-sep">kg ×</span>
+                  <input type="number" value="6" class="num sm" disabled>
+                  <span class="set-sep">reps</span>
+                </div>
+                <div class="set-row">
+                  <span class="set-label working">S3</span>
+                  <input type="number" value="87.5" class="num sm">
+                  <span class="set-sep">kg ×</span>
+                  <input type="number" value="5" class="num sm">
+                  <span class="set-sep">reps</span>
+                  <span class="pill ok" style="margin-left:auto;font-size:10px">PR</span>
+                </div>
+              </div>
+              <button class="add-set-btn"><i data-lucide="plus"></i>Add Set</button>
+            </div>
+          </div>
+
+          <!-- Block 2: Overhead Press — straight, wt-reps -->
+          <div class="block-card">
+            <div class="block-head">
+              <div class="block-head-left">
+                <div class="row" style="gap:var(--s-2)">
+                  <span class="exercise-name">Overhead Press</span>
+                  <span class="exercise-mode-tag">wt × reps</span>
+                </div>
+              </div>
+              <div class="chart-wrap">
+                <svg viewBox="0 0 140 52" width="140" height="52">
+                  <!-- S1 50kg: h=35 -->
+                  <rect x="14" y="9" width="32" height="35" rx="3" fill="var(--c-strength)" opacity=".65" />
+                  <!-- S2 52.5kg: h=37 -->
+                  <rect x="58" y="7" width="32" height="37" rx="3" fill="var(--c-strength)" opacity=".82" />
+                  <!-- S3 55kg: h=38 -->
+                  <rect x="102" y="6" width="32" height="38" rx="3" fill="var(--c-strength)" />
+                  <text x="30" y="50" text-anchor="middle" font-size="9" fill="var(--ink-muted)" font-family="system-ui"
+                    font-weight="500">S1</text>
+                  <text x="74" y="50" text-anchor="middle" font-size="9" fill="var(--ink-muted)" font-family="system-ui"
+                    font-weight="500">S2</text>
+                  <text x="118" y="50" text-anchor="middle" font-size="9" fill="var(--ink)" font-family="system-ui"
+                    font-weight="700">S3</text>
+                </svg>
+              </div>
+            </div>
+            <div class="block-exercise">
+              <div class="set-rows">
+                <div class="set-row">
+                  <span class="set-label working">S1</span>
+                  <input type="number" value="50" class="num sm" disabled>
+                  <span class="set-sep">kg ×</span>
+                  <input type="number" value="8" class="num sm" disabled>
+                  <span class="set-sep">reps</span>
+                </div>
+                <div class="set-row">
+                  <span class="set-label working">S2</span>
+                  <input type="number" value="52.5" class="num sm" disabled>
+                  <span class="set-sep">kg ×</span>
+                  <input type="number" value="7" class="num sm" disabled>
+                  <span class="set-sep">reps</span>
+                </div>
+                <div class="set-row">
+                  <span class="set-label working">S3</span>
+                  <input type="number" value="55" class="num sm">
+                  <span class="set-sep">kg ×</span>
+                  <input type="number" value="5" class="num sm">
+                  <span class="set-sep">reps</span>
+                </div>
+              </div>
+              <button class="add-set-btn"><i data-lucide="plus"></i>Add Set</button>
+            </div>
+          </div>
+
+          <!-- Block 3: Superset — Pull-up (reps) + DB Chest Fly (wt-reps) -->
+          <div class="block-card">
+            <div class="block-head">
+              <span class="block-type-tag superset"><i data-lucide="shuffle"></i>Superset</span>
+              <span class="muted" style="font-size:var(--t-xs)">3 rounds · Pull-up + DB Chest Fly</span>
+            </div>
+            <!-- Exercise A: Pull-up (reps) -->
+            <div class="block-exercise">
+              <div class="row" style="gap:var(--s-2);margin-bottom:var(--s-2)">
+                <span class="exercise-name">Pull-up</span>
+                <span class="exercise-mode-tag">reps</span>
+              </div>
+              <div class="set-rows">
+                <div class="set-row">
+                  <span class="set-label working">R1</span>
+                  <span class="set-sep">×</span>
+                  <input type="number" value="10" class="num sm">
+                  <span class="set-sep">reps</span>
+                </div>
+                <div class="set-row">
+                  <span class="set-label working">R2</span>
+                  <span class="set-sep">×</span>
+                  <input type="number" value="8" class="num sm">
+                  <span class="set-sep">reps</span>
+                </div>
+                <div class="set-row">
+                  <span class="set-label working">R3</span>
+                  <span class="set-sep">×</span>
+                  <input type="number" value="7" class="num sm">
+                  <span class="set-sep">reps</span>
+                </div>
+              </div>
+            </div>
+            <!-- Exercise B: DB Chest Fly (wt-reps) -->
+            <div class="block-exercise">
+              <div class="row" style="gap:var(--s-2);margin-bottom:var(--s-2)">
+                <span class="exercise-name">DB Chest Fly</span>
+                <span class="exercise-mode-tag">wt × reps</span>
+              </div>
+              <div class="set-rows">
+                <div class="set-row">
+                  <span class="set-label working">R1</span>
+                  <input type="number" value="16" class="num sm">
+                  <span class="set-sep">kg ×</span>
+                  <input type="number" value="12" class="num sm">
+                  <span class="set-sep">reps</span>
+                </div>
+                <div class="set-row">
+                  <span class="set-label working">R2</span>
+                  <input type="number" value="16" class="num sm">
+                  <span class="set-sep">kg ×</span>
+                  <input type="number" value="10" class="num sm">
+                  <span class="set-sep">reps</span>
+                </div>
+                <div class="set-row">
+                  <span class="set-label working">R3</span>
+                  <input type="number" value="18" class="num sm">
+                  <span class="set-sep">kg ×</span>
+                  <input type="number" value="8" class="num sm">
+                  <span class="set-sep">reps</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Block 4: Circuit — Dips (reps) + Tricep Pushdown (wt-reps) + Plank (time) -->
+          <div class="block-card">
+            <div class="block-head">
+              <span class="block-type-tag circuit"><i data-lucide="repeat"></i>Circuit</span>
+              <span class="muted" style="font-size:var(--t-xs)">3 rounds · Dips + Pushdown + Plank</span>
+            </div>
+            <!-- Dips (reps) -->
+            <div class="block-exercise">
+              <div class="row" style="gap:var(--s-2);margin-bottom:var(--s-2)">
+                <span class="exercise-name">Dips</span>
+                <span class="exercise-mode-tag">reps</span>
+              </div>
+              <div class="set-rows">
+                <div class="set-row"><span class="set-label working">R1</span><span class="set-sep">×</span><input
+                    type="number" value="12" class="num sm"><span class="set-sep">reps</span></div>
+                <div class="set-row"><span class="set-label working">R2</span><span class="set-sep">×</span><input
+                    type="number" value="10" class="num sm"><span class="set-sep">reps</span></div>
+                <div class="set-row"><span class="set-label working">R3</span><span class="set-sep">×</span><input
+                    type="number" value="8" class="num sm"><span class="set-sep">reps</span></div>
+              </div>
+            </div>
+            <!-- Tricep Pushdown (wt-reps) -->
+            <div class="block-exercise">
+              <div class="row" style="gap:var(--s-2);margin-bottom:var(--s-2)">
+                <span class="exercise-name">Tricep Pushdown</span>
+                <span class="exercise-mode-tag">wt × reps</span>
+              </div>
+              <div class="set-rows">
+                <div class="set-row"><span class="set-label working">R1</span><input type="number" value="22.5"
+                    class="num sm"><span class="set-sep">kg ×</span><input type="number" value="12" class="num sm"><span
+                    class="set-sep">reps</span></div>
+                <div class="set-row"><span class="set-label working">R2</span><input type="number" value="22.5"
+                    class="num sm"><span class="set-sep">kg ×</span><input type="number" value="10" class="num sm"><span
+                    class="set-sep">reps</span></div>
+                <div class="set-row"><span class="set-label working">R3</span><input type="number" value="25"
+                    class="num sm"><span class="set-sep">kg ×</span><input type="number" value="8" class="num sm"><span
+                    class="set-sep">reps</span></div>
+              </div>
+            </div>
+            <!-- Plank (time) -->
+            <div class="block-exercise">
+              <div class="row" style="gap:var(--s-2);margin-bottom:var(--s-2)">
+                <span class="exercise-name">Plank</span>
+                <span class="exercise-mode-tag">time</span>
+              </div>
+              <div class="set-rows">
+                <div class="set-row"><span class="set-label working">R1</span><input type="text" value="60"
+                    class="num sm"><span class="set-sep">sec</span></div>
+                <div class="set-row"><span class="set-label working">R2</span><input type="text" value="45"
+                    class="num sm"><span class="set-sep">sec</span></div>
+                <div class="set-row"><span class="set-label working">R3</span><input type="text" value="50"
+                    class="num sm"><span class="set-sep">sec</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Block 5: Rowing Machine — dist-time -->
+          <div class="block-card">
+            <div class="block-head">
+              <div class="row" style="gap:var(--s-2)">
+                <span class="exercise-name">Rowing Machine</span>
+                <span class="exercise-mode-tag">dist + time</span>
+              </div>
+            </div>
+            <div class="block-exercise">
+              <div class="set-rows">
+                <div class="set-row">
+                  <span class="set-label working">R1</span>
+                  <input type="number" value="500" class="num sm" style="width:60px;flex:0 0 60px">
+                  <span class="set-sep">m</span>
+                  <input type="text" value="1:45" class="num sm">
+                  <span class="set-sep">min</span>
+                </div>
+                <div class="set-row">
+                  <span class="set-label working">R2</span>
+                  <input type="number" value="500" class="num sm" style="width:60px;flex:0 0 60px">
+                  <span class="set-sep">m</span>
+                  <input type="text" value="1:48" class="num sm">
+                  <span class="set-sep">min</span>
+                </div>
+                <div class="set-row">
+                  <span class="set-label working">R3</span>
+                  <input type="number" value="500" class="num sm" style="width:60px;flex:0 0 60px">
+                  <span class="set-sep">m</span>
+                  <input type="text" value="1:50" class="num sm">
+                  <span class="set-sep">min</span>
+                </div>
+              </div>
+              <button class="add-set-btn"><i data-lucide="plus"></i>Add Set</button>
+            </div>
+          </div>
+
+          <button class="ghost"
+            style="width:100%;border:1px dashed var(--line-strong);color:var(--ink-muted);padding:var(--s-3);font-weight:600">
+            <i data-lucide="plus"></i> Add Exercise
+          </button>
+        </div>
+
+        <!-- Session RPE -->
+        <div class="detail-section">
+          <div class="section-head eyebrow">
+            <i data-lucide="gauge"></i>
+            Session RPE
+          </div>
+          <div class="rpe-row">
+            <button class="rpe-pill" onclick="setRPE(this)">1</button>
+            <button class="rpe-pill" onclick="setRPE(this)">2</button>
+            <button class="rpe-pill" onclick="setRPE(this)">3</button>
+            <button class="rpe-pill" onclick="setRPE(this)">4</button>
+            <button class="rpe-pill" onclick="setRPE(this)">5</button>
+            <button class="rpe-pill" onclick="setRPE(this)">6</button>
+            <button class="rpe-pill" onclick="setRPE(this)">7</button>
+            <button class="rpe-pill active" onclick="setRPE(this)">8</button>
+            <button class="rpe-pill" onclick="setRPE(this)">9</button>
+            <button class="rpe-pill" onclick="setRPE(this)">10</button>
+          </div>
+          <div class="row" style="gap:var(--s-2)">
+            <span class="caption muted">Easy</span>
+            <div
+              style="flex:1;height:2px;background:linear-gradient(to right,var(--ok),var(--warn),var(--bad));border-radius:var(--r-pill);opacity:.5">
+            </div>
+            <span class="caption muted">Max effort</span>
+          </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="detail-section">
+          <div class="section-head eyebrow">
+            <i data-lucide="tag"></i>
+            Tags
+          </div>
+          <div class="cluster">
+            <button class="tag-pill active">push</button>
+            <button class="tag-pill">pull</button>
+            <button class="tag-pill">legs</button>
+            <button class="tag-pill active">upper</button>
+            <button class="tag-pill">lower</button>
+            <button class="tag-pill">full-body</button>
+            <button class="tag-pill active">heavy</button>
+            <button class="tag-pill">light</button>
+            <button class="tag-pill">deload</button>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="detail-section">
+          <div class="section-head eyebrow">
+            <i data-lucide="file-text"></i>
+            Notes
+          </div>
+          <textarea
+            class="strength-notes">Good session. Bench feeling stronger — hit new rep PR on Set 3. OHP still lagging, keep weight conservative next week.</textarea>
+        </div>
+
+        <!-- Photos placeholder -->
+        <div class="detail-section" style="padding-bottom:var(--s-6)">
+          <div class="section-head eyebrow">
+            <i data-lucide="image"></i>
+            Photos
+          </div>
+          <button class="ghost"
+            style="border:1px dashed var(--line-strong);padding:var(--s-4);width:100%;color:var(--ink-muted);font-weight:600">
+            <i data-lucide="camera"></i> Add Photos
+          </button>
+        </div>
+
+      </div><!-- /panel-strength -->
+
+    </main>
+
+    <!-- ── MOBILE TAB BAR ─────────────────────────────────────────── -->
+    <div class="app-tabbar">
+      <nav>
+        <a href="#" onclick="return false"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+        <a href="#" class="active" onclick="return false"><i data-lucide="users"></i><span>Social</span></a>
+        <a href="#" onclick="return false"><i data-lucide="dumbbell"></i><span>Training</span></a>
+        <a href="#" onclick="return false"><i data-lucide="calendar"></i><span>Calendar</span></a>
+        <a href="#" onclick="return false"><i data-lucide="heart-pulse"></i><span>Health</span></a>
+      </nav>
+    </div>
+
+  </div><!-- /app-shell -->
+
+  <script>
+    lucide.createIcons();
+
+    /* ── Theme toggle ─────────────────────────────────── */
+    document.getElementById('theme-toggle').addEventListener('click', function () {
+      const html = document.documentElement;
+      const isDark = html.getAttribute('data-theme') === 'dark';
+      html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      const icon = this.querySelector('i[data-lucide]');
+      icon.setAttribute('data-lucide', isDark ? 'moon' : 'sun');
+      lucide.createIcons();
+    });
+
+    /* ── Panel helpers ────────────────────────────────── */
+    function panelIn(panel) {
+      panel.classList.remove('slide-in-right');
+      panel.classList.add('animating');
+      panel.scrollTop = 0;
+      panel.addEventListener('animationend', () => panel.classList.remove('animating'), { once: true });
+    }
+
+    function showDetail() {
+      document.getElementById('panel-feed').classList.add('slide-out');
+      document.getElementById('panel-strength').classList.add('slide-in-right');
+      panelIn(document.getElementById('panel-detail'));
+      lucide.createIcons();
+    }
+
+    function showStrength() {
+      document.getElementById('panel-feed').classList.add('slide-out');
+      document.getElementById('panel-detail').classList.add('slide-in-right');
+      panelIn(document.getElementById('panel-strength'));
+      lucide.createIcons();
+    }
+
+    function showFeed() {
+      document.getElementById('panel-feed').classList.remove('slide-out');
+      document.getElementById('panel-detail').classList.add('slide-in-right');
+      document.getElementById('panel-strength').classList.add('slide-in-right');
+      lucide.createIcons();
+    }
+
+    /* ── Like / kudos toggle ──────────────────────────── */
+    function toggleLike(btn) {
+      const liked = btn.classList.toggle('liked');
+      const span = btn.querySelector('span');
+      let count = parseInt(btn.dataset.count);
+      count += liked ? 1 : -1;
+      btn.dataset.count = count;
+      const isKudos = span.textContent.includes('Kudos');
+      span.textContent = isKudos ? count + ' Kudos' : String(count);
+      lucide.createIcons();
+    }
+
+    /* ── Filter chips ─────────────────────────────────── */
+    function filterFeed(chip, sport) {
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      document.querySelectorAll('.feed-card').forEach(card => {
+        card.style.display = (sport === 'all' || card.dataset.sport === sport) ? '' : 'none';
+      });
+    }
+
+    /* ── Carousel ─────────────────────────────────────── */
+    let carouselIdx = 0;
+    const carouselTotal = 3;
+
+    function carouselGoto(idx) {
+      carouselIdx = ((idx % carouselTotal) + carouselTotal) % carouselTotal;
+      document.querySelector('.carousel-track').style.transform = `translateX(-${carouselIdx * 100}%)`;
+      document.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === carouselIdx));
+      lucide.createIcons();
+    }
+    function carouselPrev() { carouselGoto(carouselIdx - 1); }
+    function carouselNext() { carouselGoto(carouselIdx + 1); }
+
+    /* ── RPE selection ────────────────────────────────── */
+    function setRPE(btn) {
+      btn.closest('.rpe-row').querySelectorAll('.rpe-pill').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    /* ── Tag pill toggle ──────────────────────────────── */
+    document.querySelectorAll('.tag-pill').forEach(pill => {
+      pill.addEventListener('click', () => pill.classList.toggle('active'));
+    });
+
+    /* ── Run card header → detail ─────────────────────── */
+    const runHead = document.querySelector('.feed-card[data-sport="run"] .card-head');
+    runHead.style.cursor = 'pointer';
+    runHead.addEventListener('click', showDetail);
+
+    /* ── Lift card header → strength ─────────────────── */
+    const liftHead = document.querySelector('.feed-card[data-sport="lift"] .card-head');
+    liftHead.style.cursor = 'pointer';
+    liftHead.addEventListener('click', showStrength);
+  </script>
+</body>
+
+</html>

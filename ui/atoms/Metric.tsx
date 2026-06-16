@@ -1,19 +1,21 @@
 // .metric CSS sets display:inline-flex, align-items:baseline, gap:s-2
 // so value + unit sit inline without a Row wrapper
+import { Text } from './Text';
 
 interface MetricProps {
   value: string | number;
   unit?: string;
   size?: 'sm' | 'md' | 'lg' | 'xl';
+  mono?: boolean;
   className?: string;
 }
 
-export function Metric({ value, unit, size = 'md', className }: MetricProps) {
-  const classes = ['metric', size !== 'md' ? size : '', className].filter(Boolean).join(' ');
+export function Metric({ value, unit, size = 'md', mono, className }: MetricProps) {
+  const classes = ['metric', size !== 'md' ? size : '', mono ? 'mono' : '', className].filter(Boolean).join(' ');
   return (
     <span className={classes}>
       <span>{value}</span>
-      {unit && <span className="unit muted">{unit}</span>}
+      {unit && <Text as="span" size="caption" color="muted" className="unit">{unit}</Text>}
     </span>
   );
 }

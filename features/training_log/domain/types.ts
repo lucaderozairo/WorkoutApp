@@ -1,5 +1,6 @@
 import type { Id, DomainEvent, ExerciseCategory, SportType } from '@shared/types';
 import type { GpsTrack } from '@data/sources/files/gps';
+import type { WorkoutTemplateExercise } from '@shared/contracts/templates';
 
 // ─── Re-export ────────────────────────────────────────────────
 export type { ExerciseCategory, SportType };
@@ -234,6 +235,7 @@ export interface BlockAddedPayload {
   exerciseName: string;
   exerciseCategory: ExerciseCategory;
   order: number;
+  isTransition?: boolean;
 }
 
 export interface SetLoggedPayload {
@@ -402,12 +404,21 @@ export interface StartSession {
   primarySport?: SportType;
 }
 
+export interface StartSessionFromTemplate {
+  type: 'StartSessionFromTemplate';
+  userId: Id<'User'>;
+  name: string;
+  primarySport: SportType;
+  exercises: WorkoutTemplateExercise[];
+}
+
 export interface AddBlock {
   type: 'AddBlock';
   sessionId: Id<'Activity'>;
   exerciseName: string;
   exerciseCategory: ExerciseCategory;
   blockId?: Id<'Segment'>;
+  isTransition?: boolean;
 }
 
 export interface LogStrengthSet {
@@ -596,6 +607,7 @@ export interface ImportSession {
 
 export type TrainingLogCommand =
   | StartSession
+  | StartSessionFromTemplate
   | AddBlock
   | LogStrengthSet
   | LogCardioSet

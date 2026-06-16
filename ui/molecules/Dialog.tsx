@@ -1,5 +1,6 @@
 import { Button } from '@ui/molecules/Button';
 import { Row } from '@ui/layout/Row';
+import { Text } from '@ui/atoms';
 import { Modal } from './Modal';
 
 interface DialogProps {
@@ -29,7 +30,7 @@ export function Dialog({ open, onClose, title, message, confirm, onConfirm, dest
         </Row>
       }
     >
-      {message && <p className="caption">{message}</p>}
+      {message && <Text as="p" size="caption">{message}</Text>}
     </Modal>
   );
 }

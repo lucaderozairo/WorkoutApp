@@ -20,7 +20,7 @@ export function EventsTab() {
                 <Avatar name={sport?.icon ?? '?'} className={sport?.avatar ?? 'lift'} />
                 <Column>
                   <Text>{ev.name}</Text>
-                  <time className="caption">{ev.date} · {ev.location} · {ev.time}</time>
+                  <Text as="time" size="caption">{ev.date} · {ev.location} · {ev.time}</Text>
                 </Column>
               </Row>
               <Button variant="secondary" size="sm">Join</Button>

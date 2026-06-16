@@ -1,18 +1,18 @@
 import type { ElementType, ReactNode } from 'react';
-import { type Gap, type Justify } from './_classes';
+import { layoutClasses, type Gap, type Align, type Justify } from './_classes';
 
 interface ClusterProps {
   gap?: Gap;
+  align?: Align;
   justify?: Justify;
   as?: ElementType;
   className?: string;
+  'aria-label'?: string;
   children: ReactNode;
   onClick?: () => void;
 }
 
-export function Cluster({ gap, justify, as: Tag = 'div', className, children, onClick }: ClusterProps) {
-  const gapClass = gap !== undefined && gap !== 2 ? `gap-${gap}` : '';
-  const justifyClass = justify ? `justify-${justify}` : '';
-  const classes = ['cluster', gapClass, justifyClass, className].filter(Boolean).join(' ');
-  return <Tag className={classes} onClick={onClick}>{children}</Tag>;
+export function Cluster({ gap, align, justify, as: Tag = 'div', className, 'aria-label': ariaLabel, children, onClick }: ClusterProps) {
+  const classes = layoutClasses({ base: 'cluster', gap, defaultGap: 2, align, justify, wrap: true, className });
+  return <Tag className={classes} aria-label={ariaLabel} onClick={onClick}>{children}</Tag>;
 }

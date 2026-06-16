@@ -1,0 +1,3845 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fitness App — Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ═══════════════════════════════════════════════════════════════════════════
+   TOKENS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    :root,
+    [data-theme="light"] {
+      --surface-0: #FAF8F3;
+      --surface-1: #FFFFFF;
+      --surface-2: #F2EFE8;
+      --surface-3: #EBE7DC;
+      --ink: #141210;
+      --ink-muted: #565248;
+      --ink-faint: #9A9689;
+      --line: #E7E3D8;
+      --line-strong: #D5D0C2;
+      --accent: #EAAE2E;
+      --accent-ink: #1C1408;
+      --accent-soft: #FBE9B8;
+      --shadow-1: 0 1px 2px rgba(20, 18, 16, .05), 0 1px 1px rgba(20, 18, 16, .03);
+      --shadow-2: 0 8px 32px rgba(20, 18, 16, .08), 0 2px 6px rgba(20, 18, 16, .04);
+    }
+
+    [data-theme="dark"] {
+      --surface-0: #0D0C0A;
+      --surface-1: #16140F;
+      --surface-2: #201D16;
+      --surface-3: #2A2720;
+      --ink: #F2EFE6;
+      --ink-muted: #A8A396;
+      --ink-faint: #6C685C;
+      --line: #2A2720;
+      --line-strong: #3A3628;
+      --accent: #F5C94A;
+      --accent-ink: #1C1408;
+      --accent-soft: #3A2A08;
+      --shadow-1: 0 1px 2px rgba(0, 0, 0, .3);
+      --shadow-2: 0 8px 32px rgba(0, 0, 0, .4);
+    }
+
+    :root {
+      /* Activity colors — consistent across themes */
+      --c-strength: #E8785A;
+      --c-cardio: #EF4A4A;
+      --c-recovery: #7B9EF8;
+      --c-nutrition: #6FBF73;
+      --c-water: #4DC8F0;
+      --c-mind: #B57BDC;
+
+      --ok: #6FBF73;
+      --warn: #E8A33D;
+      --bad: #E25555;
+
+      /* Type */
+      --font-display: "Instrument Serif", Georgia, serif;
+      --font-ui: "Geist", system-ui, -apple-system, sans-serif;
+      --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", monospace;
+      --t-xs: 11px;
+      --t-sm: 13px;
+      --t-md: 15px;
+      --t-lg: 18px;
+      --t-xl: 22px;
+      --t-2xl: 28px;
+      --t-3xl: 40px;
+      --t-4xl: 56px;
+      --t-5xl: 80px;
+
+      /* Space (4px base) */
+      --s-1: 4px;
+      --s-2: 8px;
+      --s-3: 12px;
+      --s-4: 16px;
+      --s-5: 24px;
+      --s-6: 32px;
+      --s-7: 48px;
+      --s-8: 64px;
+
+      /* Radii */
+      --r-xs: 4px;
+      --r-sm: 8px;
+      --r-md: 14px;
+      --r-lg: 20px;
+      --r-pill: 999px;
+
+      /* Motion */
+      --ease: cubic-bezier(.2, .8, .2, 1);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   RESET
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-ui);
+      font-size: var(--t-md);
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--ink);
+      background: var(--surface-0);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color .18s var(--ease), color .18s var(--ease);
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+      background: none;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    input,
+    textarea,
+    select {
+      font: inherit;
+      color: inherit;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p {
+      margin: 0;
+    }
+
+    svg {
+      display: block;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    ul,
+    ol {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    ::selection {
+      background: var(--accent);
+      color: var(--accent-ink);
+    }
+
+    *:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   LAYOUT PRIMITIVES  — stack / row / cluster / grid
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--gap, var(--s-4));
+    }
+
+    .row {
+      display: flex;
+      align-items: var(--align, center);
+      justify-content: var(--justify, flex-start);
+      gap: var(--gap, var(--s-3));
+    }
+
+    .cluster {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--gap, var(--s-2));
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(var(--col-min, 220px), 1fr));
+      gap: var(--gap, var(--s-4));
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   SURFACES  — card / panel / divider
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .card {
+      background: var(--surface-1);
+      border: 1px solid var(--line);
+      border-radius: var(--r-md);
+      padding: var(--s-5);
+    }
+
+    .card--flat {
+      background: var(--surface-2);
+    }
+
+    .card--accent {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-color: transparent;
+    }
+
+    .card--inset {
+      background: var(--surface-2);
+      border-style: dashed;
+    }
+
+    .card--tight {
+      padding: var(--s-4);
+    }
+
+    .card--bare {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .panel {
+      padding: var(--s-5) 0;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--line);
+      border: 0;
+      margin: 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   TYPOGRAPHY
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .display {
+      font-family: var(--font-display);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      line-height: 1;
+    }
+
+    .eyebrow {
+      font-size: var(--t-xs);
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+
+    .muted {
+      color: var(--ink-muted);
+    }
+
+    .faint {
+      color: var(--ink-faint);
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+      font-feature-settings: "tnum";
+    }
+
+    .num {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .h1 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: var(--t-2xl);
+      line-height: 1.1;
+      letter-spacing: -0.015em;
+    }
+
+    .h2 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: var(--t-xl);
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+    }
+
+    .h3 {
+      font-family: var(--font-ui);
+      font-weight: 600;
+      font-size: var(--t-md);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   BUTTON
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--s-2);
+      padding: 10px var(--s-4);
+      min-height: 40px;
+      font-size: var(--t-sm);
+      font-weight: 500;
+      color: var(--ink);
+      background: var(--surface-1);
+      border: 1px solid var(--line-strong);
+      border-radius: var(--r-pill);
+      cursor: pointer;
+      transition: background-color .12s var(--ease), border-color .12s var(--ease), transform .12s var(--ease);
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      background: var(--surface-2);
+    }
+
+    .btn:active {
+      transform: scale(.98);
+    }
+
+    .btn--primary {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-color: transparent;
+      font-weight: 600;
+    }
+
+    .btn--primary:hover {
+      background: var(--accent);
+      filter: brightness(.95);
+    }
+
+    .btn--ghost {
+      background: transparent;
+      border-color: transparent;
+    }
+
+    .btn--ghost:hover {
+      background: var(--surface-2);
+    }
+
+    .btn--icon {
+      width: 40px;
+      min-height: 40px;
+      padding: 0;
+    }
+
+    .btn--sm {
+      min-height: 32px;
+      padding: 6px var(--s-3);
+      font-size: var(--t-xs);
+    }
+
+    .btn--lg {
+      min-height: 48px;
+      padding: var(--s-3) var(--s-5);
+      font-size: var(--t-md);
+    }
+
+    .btn--block {
+      width: 100%;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   CHIP (filter / tab segment)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-2);
+      padding: 6px var(--s-3);
+      font-size: var(--t-sm);
+      font-weight: 500;
+      color: var(--ink-muted);
+      background: transparent;
+      border: 1px solid var(--line);
+      border-radius: var(--r-pill);
+      cursor: pointer;
+      transition: all .12s var(--ease);
+    }
+
+    .chip:hover {
+      color: var(--ink);
+      border-color: var(--line-strong);
+    }
+
+    .chip--active {
+      color: var(--ink);
+      background: var(--surface-2);
+      border-color: var(--line-strong);
+    }
+
+    .chip--source {
+      font-family: var(--font-mono);
+      font-size: var(--t-xs);
+      padding: 3px var(--s-2);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .chip__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--dot, var(--ink-faint));
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   PILL (status tag)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      font-size: var(--t-xs);
+      font-weight: 500;
+      letter-spacing: .02em;
+      color: var(--ink);
+      background: var(--surface-2);
+      border-radius: var(--r-pill);
+      white-space: nowrap;
+    }
+
+    .pill::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--pill-color, var(--ink-faint));
+    }
+
+    .pill--strength {
+      --pill-color: var(--c-strength);
+    }
+
+    .pill--cardio {
+      --pill-color: var(--c-cardio);
+    }
+
+    .pill--recovery {
+      --pill-color: var(--c-recovery);
+    }
+
+    .pill--nutrition {
+      --pill-color: var(--c-nutrition);
+    }
+
+    .pill--water {
+      --pill-color: var(--c-water);
+    }
+
+    .pill--mind {
+      --pill-color: var(--c-mind);
+    }
+
+    .pill--ok {
+      --pill-color: var(--ok);
+    }
+
+    .pill--warn {
+      --pill-color: var(--warn);
+    }
+
+    .pill--bad {
+      --pill-color: var(--bad);
+    }
+
+    .pill--accent {
+      background: var(--accent);
+      color: var(--accent-ink);
+    }
+
+    .pill--accent::before {
+      background: var(--accent-ink);
+    }
+
+    .pill--plain::before {
+      display: none;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   INPUT / FIELD
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field__label {
+      font-size: var(--t-xs);
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+
+    .input {
+      padding: 10px var(--s-3);
+      font-size: var(--t-md);
+      color: var(--ink);
+      background: var(--surface-1);
+      border: 1px solid var(--line-strong);
+      border-radius: var(--r-sm);
+      transition: border-color .12s var(--ease);
+      width: 100%;
+    }
+
+    .input:hover {
+      border-color: var(--ink-faint);
+    }
+
+    .input:focus-visible {
+      border-color: var(--accent);
+      outline-color: var(--accent);
+    }
+
+    .input--sm {
+      padding: 6px var(--s-2);
+      font-size: var(--t-sm);
+    }
+
+    .input--num {
+      font-family: var(--font-mono);
+      text-align: center;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   STAT  — big number + label
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat__eyebrow {
+      font-size: var(--t-xs);
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+
+    .stat__num {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: var(--t-3xl);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .stat__unit {
+      font-family: var(--font-ui);
+      font-size: var(--t-md);
+      font-weight: 400;
+      color: var(--ink-muted);
+      letter-spacing: 0;
+    }
+
+    .stat__trend {
+      font-size: var(--t-sm);
+      color: var(--ink-muted);
+      font-family: var(--font-mono);
+    }
+
+    .stat__trend--up {
+      color: var(--ok);
+    }
+
+    .stat__trend--down {
+      color: var(--bad);
+    }
+
+    .stat--hero .stat__num {
+      font-size: var(--t-4xl);
+    }
+
+    .stat--mega .stat__num {
+      font-size: var(--t-5xl);
+    }
+
+    .stat--inline {
+      flex-direction: row;
+      align-items: baseline;
+      gap: var(--s-2);
+    }
+
+    .stat--inline .stat__num {
+      font-size: var(--t-xl);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   AVATAR
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .avatar {
+      --size: 40px;
+      width: var(--size);
+      height: var(--size);
+      border-radius: 50%;
+      background: var(--surface-3);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: calc(var(--size) * 0.4);
+      color: var(--ink);
+      overflow: hidden;
+      flex-shrink: 0;
+      background-image: linear-gradient(135deg, var(--avatar-a, #E8785A), var(--avatar-b, #B57BDC));
+      color: white;
+    }
+
+    .avatar--sm {
+      --size: 28px;
+    }
+
+    .avatar--lg {
+      --size: 56px;
+    }
+
+    .avatar--xl {
+      --size: 80px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   RING (circular progress — SVG-based)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .ring {
+      position: relative;
+      display: inline-block;
+      line-height: 0;
+    }
+
+    .ring__svg {
+      transform: rotate(-90deg);
+    }
+
+    .ring__track {
+      fill: none;
+      stroke: var(--surface-2);
+      stroke-width: var(--ring-width, 12);
+    }
+
+    .ring__fill {
+      fill: none;
+      stroke: var(--ring-color, var(--accent));
+      stroke-width: var(--ring-width, 12);
+      stroke-linecap: round;
+      transition: stroke-dashoffset .6s var(--ease);
+    }
+
+    .ring__inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      gap: 2px;
+      text-align: center;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   BAR (linear progress)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .bar {
+      width: 100%;
+      height: var(--bar-height, 6px);
+      background: var(--surface-2);
+      border-radius: var(--r-pill);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bar__fill {
+      height: 100%;
+      width: var(--fill, 50%);
+      background: var(--bar-color, var(--accent));
+      border-radius: inherit;
+      transition: width .4s var(--ease);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   METER (segmented, e.g. macros)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .meter {
+      display: flex;
+      width: 100%;
+      height: var(--meter-height, 8px);
+      border-radius: var(--r-pill);
+      overflow: hidden;
+      background: var(--surface-2);
+    }
+
+    .meter__seg {
+      height: 100%;
+      background: var(--seg-color, var(--accent));
+      width: var(--seg-width, 33%);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   SPARK (inline sparkline)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .spark {
+      display: block;
+      width: 100%;
+      height: 32px;
+    }
+
+    .spark path {
+      fill: none;
+      stroke: var(--spark-color, var(--ink-muted));
+      stroke-width: 1.5;
+    }
+
+    .spark polygon {
+      fill: var(--spark-color, var(--ink-muted));
+      opacity: .08;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   TAG (inline activity label with dot)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: var(--t-sm);
+      color: var(--ink-muted);
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .tag::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: var(--tag-color, var(--ink-faint));
+      border-radius: 50%;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   DEMO CHROME  (not part of design system)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .demo {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background:
+        radial-gradient(ellipse at top, var(--surface-2), var(--surface-0));
+    }
+
+    .demo__bar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      gap: var(--s-4);
+      padding: var(--s-3) var(--s-5);
+      background: color-mix(in oklab, var(--surface-0) 85%, transparent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+      flex-wrap: wrap;
+    }
+
+    .demo__brand {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: var(--t-lg);
+      margin-right: auto;
+      letter-spacing: -.01em;
+    }
+
+    .demo__brand::after {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin-left: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      vertical-align: middle;
+    }
+
+    .demo__group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px;
+      background: var(--surface-2);
+      border-radius: var(--r-pill);
+      border: 1px solid var(--line);
+    }
+
+    .demo__toggle {
+      padding: 5px var(--s-3);
+      font-size: var(--t-xs);
+      font-weight: 500;
+      color: var(--ink-muted);
+      border-radius: var(--r-pill);
+      cursor: pointer;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .demo__toggle[aria-pressed="true"] {
+      background: var(--surface-1);
+      color: var(--ink);
+      box-shadow: var(--shadow-1);
+    }
+
+    .demo__stage {
+      flex: 1;
+      padding: var(--s-5);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      container-type: inline-size;
+      container-name: stage;
+    }
+
+    /* When viewport=mobile the stage constrains the app width */
+    .demo[data-viewport="mobile"] .demo__stage {
+      padding: var(--s-6) var(--s-4);
+    }
+
+    .demo[data-viewport="mobile"] .app {
+      max-width: 390px;
+      min-height: 780px;
+      max-height: min(calc(100dvh - var(--s-7)), 840px);
+      border-radius: 36px;
+      border: 1px solid var(--line-strong);
+      box-shadow: var(--shadow-2);
+      overflow: hidden;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   APP SHELL
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .app {
+      width: 100%;
+      max-width: 1280px;
+      background: var(--surface-0);
+      border: 1px solid var(--line);
+      border-radius: var(--r-lg);
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      grid-template-rows: 1fr;
+      grid-template-areas: "rail main";
+      overflow: hidden;
+      min-height: 820px;
+      container-type: inline-size;
+      container-name: app;
+    }
+
+    @container app (max-width: 720px) {
+      .app {
+        min-height: auto;
+      }
+    }
+
+    .app__rail {
+      grid-area: rail;
+      background: var(--surface-1);
+      border-right: 1px solid var(--line);
+      padding: var(--s-5) var(--s-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-6);
+    }
+
+    .app__logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 var(--s-3);
+      font-family: var(--font-display);
+      font-size: var(--t-xl);
+      font-style: italic;
+    }
+
+    .app__logo::before {
+      content: "";
+      width: 12px;
+      height: 12px;
+      background: var(--accent);
+      border-radius: 3px;
+      transform: rotate(45deg);
+    }
+
+    .app__nav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .app__nav-item {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+      padding: 10px var(--s-3);
+      border-radius: var(--r-sm);
+      font-size: var(--t-sm);
+      font-weight: 500;
+      color: var(--ink-muted);
+      cursor: pointer;
+      transition: background-color .12s var(--ease), color .12s var(--ease);
+    }
+
+    .app__nav-item:hover {
+      background: var(--surface-2);
+      color: var(--ink);
+    }
+
+    .app__nav-item[aria-current="page"] {
+      background: var(--ink);
+      color: var(--surface-1);
+    }
+
+    [data-theme="dark"] .app__nav-item[aria-current="page"] {
+      background: var(--accent);
+      color: var(--accent-ink);
+    }
+
+    .app__nav-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .app__rail-foot {
+      margin-top: auto;
+      padding: var(--s-3);
+      border-top: 1px solid var(--line);
+    }
+
+    .app__topbar {
+      display: none;
+      grid-area: top;
+      align-items: center;
+      padding: var(--s-3) var(--s-4);
+      background: var(--surface-1);
+      border-bottom: 1px solid var(--line);
+      gap: var(--s-3);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .app__main {
+      grid-area: main;
+      padding: var(--s-6) var(--s-6) var(--s-7);
+      overflow: auto;
+      max-height: calc(100vh - 140px);
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .demo[data-viewport="mobile"] .app__main {
+      max-height: none;
+      padding: var(--s-4) var(--s-4) calc(var(--s-7) + env(safe-area-inset-bottom, 0px));
+    }
+
+    .app__tabbar {
+      display: none;
+      grid-area: tab;
+      background: var(--surface-1);
+      border-top: 1px solid var(--line);
+      padding: var(--s-2) 0 calc(var(--s-2) + env(safe-area-inset-bottom, 0));
+      position: sticky;
+      bottom: 0;
+    }
+
+    .app__tabbar-list {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+    }
+
+    .app__tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 6px 4px;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .04em;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .app__tab[aria-current="page"] {
+      color: var(--ink);
+    }
+
+    .app__tab svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .app__tab[aria-current="page"] svg {
+      color: var(--accent);
+    }
+
+    /* Container-query driven responsiveness */
+    @container app (max-width: 720px) {
+      .app {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr auto;
+        grid-template-areas: "top" "main" "tab";
+      }
+
+      .app__rail {
+        display: none;
+      }
+
+      .app__topbar {
+        display: flex;
+      }
+
+      .app__tabbar {
+        display: block;
+      }
+
+      .app__main {
+        padding: var(--s-4) var(--s-4) var(--s-6);
+      }
+
+      /* Typography steps down a notch */
+      .view__title {
+        font-size: var(--t-xl);
+      }
+
+      .stat--mega .stat__num {
+        font-size: var(--t-3xl);
+      }
+
+      .stat--hero .stat__num {
+        font-size: var(--t-3xl);
+      }
+
+      .post__title {
+        font-size: var(--t-lg);
+        padding: 0 var(--s-4) var(--s-2);
+      }
+
+      .exercise {
+        padding: var(--s-4);
+      }
+
+      .exercise__name {
+        font-size: var(--t-lg);
+      }
+
+      /* Surfaces: tighter padding, fewer borders competing */
+      .card {
+        padding: var(--s-4);
+      }
+
+      .hero-card {
+        padding: var(--s-4);
+        gap: var(--s-4);
+      }
+
+      .post__head,
+      .post__body,
+      .post__foot {
+        padding-left: var(--s-4);
+        padding-right: var(--s-4);
+      }
+
+      .post__hero .stat {
+        padding: var(--s-3) var(--s-2);
+      }
+
+      .post__hero .stat__num {
+        font-size: var(--t-xl);
+      }
+
+      /* Tabbar with 6 tabs: drop labels below ~420px container, keep icons */
+      .app__tab {
+        font-size: 9px;
+      }
+    }
+
+    @container app (max-width: 440px) {
+      .app__tab {
+        font-size: 0;
+        gap: 0;
+        padding: 10px 4px;
+      }
+
+      .app__tab svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   VIEWS  (toggled via [data-active])
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .view {
+      display: none;
+    }
+
+    .view[data-active="true"] {
+      display: block;
+    }
+
+    .view__header {
+      margin-bottom: var(--s-6);
+    }
+
+    .view__title {
+      font-family: var(--font-display);
+      font-size: var(--t-2xl);
+      line-height: 1.05;
+      letter-spacing: -.015em;
+    }
+
+    .view__sub {
+      color: var(--ink-muted);
+      font-size: var(--t-sm);
+      margin-top: var(--s-1);
+    }
+
+    .eyebrow {
+      font-family: var(--font-display);
+      font-size: var(--t-xl);
+      margin: var(--s-6) 0 var(--s-3);
+      letter-spacing: -.01em;
+    }
+
+    @container app (max-width: 720px) {
+      .view__title {
+        font-size: var(--t-xl);
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   VIEW — TOKENS (design system reference)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .swatch {
+      border-radius: var(--r-sm);
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+
+    .swatch__color {
+      height: 64px;
+      background: var(--swatch, var(--ink));
+    }
+
+    .swatch__meta {
+      padding: 10px var(--s-3);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      background: var(--surface-1);
+    }
+
+    .swatch__name {
+      font-size: var(--t-sm);
+      font-weight: 500;
+    }
+
+    .swatch__hex {
+      font-family: var(--font-mono);
+      font-size: var(--t-xs);
+      color: var(--ink-muted);
+    }
+
+    .type-row {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: var(--s-4);
+      align-items: baseline;
+      padding: var(--s-3) 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .type-row__label {
+      font-family: var(--font-mono);
+      font-size: var(--t-xs);
+      color: var(--ink-muted);
+      letter-spacing: .04em;
+    }
+
+    .type-row__sample {
+      color: var(--ink);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   POST (social feed unit)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .post {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .post__head {
+      padding: var(--s-4) var(--s-5);
+      gap: var(--s-3);
+    }
+
+    .post__who {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .post__name {
+      font-weight: 600;
+      font-size: var(--t-md);
+    }
+
+    .post__meta {
+      font-size: var(--t-xs);
+      color: var(--ink-muted);
+      font-family: var(--font-mono);
+    }
+
+    .post__action {
+      margin-left: auto;
+      color: var(--ink-faint);
+    }
+
+    .post__title {
+      font-family: var(--font-display);
+      font-size: var(--t-xl);
+      padding: 0 var(--s-5) var(--s-2);
+      line-height: 1.15;
+      letter-spacing: -.01em;
+    }
+
+    .post__hero {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: var(--surface-2);
+    }
+
+    .post__hero .stat {
+      padding: var(--s-4) var(--s-4);
+      border-right: 1px solid var(--line);
+      gap: 2px;
+    }
+
+    .post__hero .stat:last-child {
+      border-right: 0;
+    }
+
+    .post__hero .stat__num {
+      font-size: var(--t-2xl);
+    }
+
+    .post__body {
+      padding: var(--s-4) var(--s-5);
+      color: var(--ink);
+      font-size: var(--t-md);
+    }
+
+    .post__map {
+      height: 180px;
+      border-top: 1px solid var(--line);
+      background: linear-gradient(135deg, var(--surface-2), var(--surface-3));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .post__foot {
+      padding: var(--s-3) var(--s-4);
+      border-top: 1px solid var(--line);
+      gap: var(--s-5);
+    }
+
+    .post__foot .btn {
+      border: 0;
+      background: transparent;
+      color: var(--ink-muted);
+      padding: 4px 8px;
+    }
+
+    .post__foot .btn:hover {
+      background: var(--surface-2);
+      color: var(--ink);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   WORKOUT LOGGER
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .exercise {
+      padding: var(--s-4) var(--s-5);
+    }
+
+    .exercise__head {
+      margin-bottom: var(--s-3);
+    }
+
+    .exercise__name {
+      font-family: var(--font-display);
+      font-size: var(--t-xl);
+      letter-spacing: -.01em;
+    }
+
+    .exercise__meta {
+      font-size: var(--t-xs);
+      color: var(--ink-muted);
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .set-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .set-table thead th {
+      font-size: var(--t-xs);
+      font-weight: 500;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      text-align: left;
+      padding: var(--s-2) var(--s-2);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .set-table th:nth-child(2),
+    .set-table th:nth-child(3),
+    .set-table th:nth-child(4) {
+      text-align: center;
+    }
+
+    .set-table th:last-child {
+      text-align: right;
+    }
+
+    .set-table tbody td {
+      padding: var(--s-2);
+      font-family: var(--font-mono);
+      font-size: var(--t-sm);
+      border-bottom: 1px solid var(--line);
+      vertical-align: middle;
+    }
+
+    .set-table tbody td:nth-child(2),
+    .set-table tbody td:nth-child(3),
+    .set-table tbody td:nth-child(4) {
+      text-align: center;
+    }
+
+    .set-table tbody td:last-child {
+      text-align: right;
+    }
+
+    .set-table tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .set-cell {
+      display: inline-flex;
+      width: 28px;
+      height: 28px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--surface-2);
+      font-weight: 500;
+    }
+
+    .set-cell--done {
+      background: var(--accent);
+      color: var(--accent-ink);
+    }
+
+    .set-cell--pr {
+      background: var(--c-strength);
+      color: white;
+    }
+
+    .set-input {
+      width: 60px;
+      text-align: center;
+      padding: 4px;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: var(--r-xs);
+      font-family: var(--font-mono);
+      font-size: var(--t-sm);
+      color: var(--ink);
+    }
+
+    .rest-timer {
+      position: sticky;
+      bottom: var(--s-4);
+      margin: var(--s-4) auto 0;
+      width: fit-content;
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+      padding: 10px var(--s-4);
+      background: var(--ink);
+      color: var(--surface-1);
+      border-radius: var(--r-pill);
+      box-shadow: var(--shadow-2);
+      font-family: var(--font-mono);
+      font-size: var(--t-sm);
+    }
+
+    [data-theme="dark"] .rest-timer {
+      background: var(--accent);
+      color: var(--accent-ink);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   CHART (progress view)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .chart {
+      width: 100%;
+      height: 280px;
+      display: block;
+    }
+
+    .chart__area {
+      fill: url(#chartGrad);
+      opacity: .18;
+    }
+
+    .chart__line {
+      fill: none;
+      stroke: var(--ink);
+      stroke-width: 2;
+    }
+
+    [data-theme="dark"] .chart__line {
+      stroke: var(--accent);
+    }
+
+    .chart__dot {
+      fill: var(--accent);
+      stroke: var(--surface-1);
+      stroke-width: 2;
+    }
+
+    .chart__grid line {
+      stroke: var(--line);
+      stroke-dasharray: 2 3;
+    }
+
+    .chart__axis {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      fill: var(--ink-faint);
+    }
+
+    @container app (max-width: 720px) {
+      .chart {
+        height: 220px;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   NUTRITION-SPECIFIC
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .meal-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--s-3);
+      align-items: center;
+      padding: var(--s-3) 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .meal-row:last-child {
+      border-bottom: 0;
+    }
+
+    .meal-row__name {
+      font-weight: 500;
+    }
+
+    .meal-row__sub {
+      font-size: var(--t-xs);
+      color: var(--ink-muted);
+      font-family: var(--font-mono);
+    }
+
+    .meal-row__kcal {
+      font-family: var(--font-display);
+      font-size: var(--t-lg);
+    }
+
+    .glass-tracker {
+      display: flex;
+      gap: 6px;
+    }
+
+    .glass {
+      flex: 1;
+      aspect-ratio: 1/1.4;
+      border: 1.5px solid var(--line-strong);
+      border-radius: 2px 2px 6px 6px;
+      background: linear-gradient(to top, transparent 0%, transparent var(--glass-empty, 100%), var(--c-water) var(--glass-empty, 100%), var(--c-water) 100%);
+      opacity: .9;
+    }
+
+    .glass--full {
+      background: var(--c-water);
+      border-color: var(--c-water);
+    }
+
+    .supplement-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: var(--s-3);
+      align-items: center;
+      padding: var(--s-3) 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .supplement-row:last-child {
+      border-bottom: 0;
+    }
+
+    .checkbox {
+      width: 20px;
+      height: 20px;
+      border: 1.5px solid var(--line-strong);
+      border-radius: var(--r-xs);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all .12s var(--ease);
+    }
+
+    .checkbox[aria-checked="true"] {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--surface-1);
+    }
+
+    [data-theme="dark"] .checkbox[aria-checked="true"] {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--accent-ink);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   INJURY
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .body-diagram {
+      width: 100%;
+      max-width: 260px;
+      height: auto;
+      margin: 0 auto;
+      display: block;
+    }
+
+    @container app (max-width: 720px) {
+      .body-diagram {
+        max-width: 220px;
+      }
+    }
+
+    .body-diagram path,
+    .body-diagram circle,
+    .body-diagram ellipse {
+      fill: var(--surface-2);
+      stroke: var(--line-strong);
+      stroke-width: 1;
+      transition: fill .15s var(--ease);
+    }
+
+    .body-diagram [data-hot="mild"] {
+      fill: color-mix(in oklab, var(--warn) 30%, var(--surface-2));
+    }
+
+    .body-diagram [data-hot="active"] {
+      fill: color-mix(in oklab, var(--bad) 45%, var(--surface-2));
+    }
+
+    .pain-scale {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 3px;
+    }
+
+    .pain-dot {
+      aspect-ratio: 1;
+      border-radius: var(--r-xs);
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+    }
+
+    .pain-dot[data-active="true"] {
+      background: var(--bad);
+      border-color: var(--bad);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   SPECIFIC DASHBOARD ELEMENTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .hero-card {
+      padding: var(--s-6);
+      background: var(--surface-1);
+      border-radius: var(--r-lg);
+      border: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--s-6);
+      align-items: center;
+    }
+
+    .hero-card .ring {
+      width: 220px;
+      max-width: 100%;
+    }
+
+    .hero-card .ring__svg {
+      width: 100%;
+      height: auto;
+    }
+
+    @container app (max-width: 720px) {
+      .hero-card {
+        grid-template-columns: 1fr;
+        padding: var(--s-5);
+        justify-items: start;
+      }
+
+      .hero-card .ring {
+        width: 180px;
+        align-self: center;
+        justify-self: center;
+      }
+    }
+
+    .sleep-bars {
+      display: flex;
+      gap: 2px;
+      height: 56px;
+      width: 100%;
+      align-items: flex-end;
+    }
+
+    .sleep-bars__seg {
+      flex: var(--w, 1);
+      height: var(--h, 100%);
+      background: var(--seg, var(--ink-faint));
+      border-radius: 2px;
+      min-height: 8px;
+    }
+
+    .trend-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .trend-item {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: var(--s-4);
+      align-items: center;
+      padding: var(--s-3) 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .trend-item:last-child {
+      border-bottom: 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   CALENDAR (month grid)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .cal {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+
+    .cal__dow {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      text-align: center;
+      padding-bottom: 4px;
+    }
+
+    .cal__day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-feature-settings: "tnum";
+      font-size: var(--t-xs);
+      color: var(--ink);
+      border-radius: var(--r-sm);
+      background: transparent;
+      position: relative;
+      cursor: pointer;
+      transition: background-color .12s var(--ease);
+    }
+
+    .cal__day:hover {
+      background: var(--surface-2);
+    }
+
+    .cal__day--muted {
+      color: var(--ink-faint);
+    }
+
+    .cal__day--today {
+      background: var(--ink);
+      color: var(--surface-1);
+      font-weight: 600;
+    }
+
+    [data-theme="dark"] .cal__day--today {
+      background: var(--accent);
+      color: var(--accent-ink);
+    }
+
+    .cal__day[data-mark]::after {
+      content: "";
+      position: absolute;
+      bottom: 4px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--mark-color, var(--ink-faint));
+    }
+
+    .cal__day--today[data-mark]::after {
+      background: currentColor;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   DEFICIT chart (bars above/below zero + trend line)
+   Pure SVG — reuses tokens. Bars colored via --c-up / --c-down on each path.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .deficit {
+      width: 100%;
+      height: 140px;
+      display: block;
+      overflow: visible;
+    }
+
+    .deficit__axis {
+      stroke: var(--line-strong);
+      stroke-dasharray: 3 3;
+    }
+
+    .deficit__label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      fill: var(--ink-faint);
+    }
+
+    .deficit__bar--up {
+      fill: var(--ok);
+    }
+
+    .deficit__bar--down {
+      fill: var(--warn);
+    }
+
+    .deficit__line {
+      fill: none;
+      stroke: var(--ink);
+      stroke-width: 1.5;
+    }
+
+    [data-theme="dark"] .deficit__line {
+      stroke: var(--ink);
+      opacity: .7;
+    }
+
+    .deficit__dot {
+      fill: var(--ink);
+    }
+
+    [data-theme="dark"] .deficit__dot {
+      fill: var(--ink);
+      opacity: .8;
+    }
+
+    .deficit__area-up {
+      fill: var(--ok);
+      opacity: .1;
+    }
+
+    .deficit__area-down {
+      fill: var(--warn);
+      opacity: .1;
+    }
+
+    /* Utility for compact padding on specific cards */
+    .p-sm {
+      padding: var(--s-4);
+    }
+
+    .p-0 {
+      padding: 0;
+    }
+
+    .hidden-mobile {
+      display: initial;
+    }
+
+    @container app (max-width: 720px) {
+      .hidden-mobile {
+        display: none;
+      }
+    }
+
+    .only-mobile {
+      display: none;
+    }
+
+    @container app (max-width: 720px) {
+      .only-mobile {
+        display: initial;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+   TOKENS VIEW EXTRAS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+    .token-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: var(--s-3);
+    }
+
+    .demo-footer {
+      padding: var(--s-5);
+      text-align: center;
+      font-size: var(--t-xs);
+      color: var(--ink-faint);
+      font-family: var(--font-mono);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="demo" data-viewport="web" id="demo">
+
+    <!-- ═══════════════════════════════════════════════════════════════
+       DEMO CONTROLS
+       ═══════════════════════════════════════════════════════════════ -->
+    <header class="demo__bar">
+      <div class="demo__brand">spark&mdash;fitness app design system</div>
+
+      <div class="demo__group" role="radiogroup" aria-label="View">
+        <button class="demo__toggle" aria-pressed="false" data-view-btn="tokens">Tokens</button>
+        <button class="demo__toggle" aria-pressed="true" data-view-btn="dashboard">Home</button>
+        <button class="demo__toggle" aria-pressed="false" data-view-btn="workout">Workout</button>
+        <button class="demo__toggle" aria-pressed="false" data-view-btn="progress">Progress</button>
+        <button class="demo__toggle" aria-pressed="false" data-view-btn="social">Social</button>
+        <button class="demo__toggle" aria-pressed="false" data-view-btn="nutrition">Nutrition</button>
+        <button class="demo__toggle" aria-pressed="false" data-view-btn="injury">Injuries</button>
+      </div>
+
+      <div class="demo__group" role="radiogroup" aria-label="Theme">
+        <button class="demo__toggle" aria-pressed="true" data-theme-btn="light">Light</button>
+        <button class="demo__toggle" aria-pressed="false" data-theme-btn="dark">Dark</button>
+      </div>
+
+      <div class="demo__group" role="radiogroup" aria-label="Viewport">
+        <button class="demo__toggle" aria-pressed="true" data-viewport-btn="web">Web</button>
+        <button class="demo__toggle" aria-pressed="false" data-viewport-btn="mobile">Mobile</button>
+      </div>
+    </header>
+
+    <div class="demo__stage">
+
+      <!-- ═══════════════════════════════════════════════════════════════
+         APP SHELL
+         ═══════════════════════════════════════════════════════════════ -->
+      <div class="app">
+
+        <!-- Desktop rail -->
+        <aside class="app__rail">
+          <div class="app__logo">spark</div>
+          <nav class="app__nav">
+            <a class="app__nav-item" data-nav="tokens">
+              <svg class="app__nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <rect x="3" y="3" width="7" height="7" />
+                <rect x="14" y="3" width="7" height="7" />
+                <rect x="3" y="14" width="7" height="7" />
+                <rect x="14" y="14" width="7" height="7" />
+              </svg>
+              Design System
+            </a>
+            <a class="app__nav-item" aria-current="page" data-nav="dashboard">
+              <svg class="app__nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M3 12h3l3-9 6 18 3-9h3" />
+              </svg>
+              Home
+            </a>
+            <a class="app__nav-item" data-nav="workout">
+              <svg class="app__nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M6 6v12M18 6v12M3 9v6M21 9v6M6 12h12" />
+              </svg>
+              Workout
+            </a>
+            <a class="app__nav-item" data-nav="progress">
+              <svg class="app__nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M3 20h18M5 16l4-6 4 3 6-9" />
+              </svg>
+              Progress
+            </a>
+            <a class="app__nav-item" data-nav="social">
+              <svg class="app__nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M7 8a4 4 0 118 0 4 4 0 01-8 0zM3 21a6 6 0 0118 0" />
+              </svg>
+              Social
+            </a>
+            <a class="app__nav-item" data-nav="nutrition">
+              <svg class="app__nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M12 3c-4 0-7 3-7 7 0 5 7 11 7 11s7-6 7-11c0-4-3-7-7-7z" />
+                <circle cx="12" cy="10" r="2" />
+              </svg>
+              Nutrition
+            </a>
+            <a class="app__nav-item" data-nav="injury">
+              <svg class="app__nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M12 2v20M2 12h20" />
+                <circle cx="12" cy="12" r="9" />
+              </svg>
+              Injuries
+            </a>
+          </nav>
+          <div class="app__rail-foot">
+            <div class="row" style="--gap: 10px;">
+              <div class="avatar avatar--sm" style="--avatar-a:#7B9EF8; --avatar-b:#B57BDC;">L</div>
+              <div class="stack" style="--gap: 0; line-height: 1.1;">
+                <span class="h3">Luca</span>
+                <span class="mono" style="font-size: var(--t-xs); color: var(--ink-muted);">Premium</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Mobile top bar -->
+        <header class="app__topbar">
+          <button class="btn btn--icon btn--ghost" aria-label="Menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <div class="app__logo" style="font-size: var(--t-lg);">spark</div>
+          <button class="btn btn--icon btn--ghost" aria-label="Notifications" style="margin-left: auto;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M6 8a6 6 0 1112 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 004 0" />
+            </svg>
+          </button>
+        </header>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+           MAIN CONTENT — all views
+           ═══════════════════════════════════════════════════════════════ -->
+        <main class="app__main">
+
+          <!-- ────────────────────────────────────────────────────────────
+             VIEW: TOKENS (design system reference)
+             ──────────────────────────────────────────────────────────── -->
+          <section class="view" data-view="tokens">
+
+            <header class="view__header stack" style="--gap: var(--s-2);">
+              <span class="eyebrow">v1.0 · Editorial Athletic</span>
+              <h1 class="view__title">A quiet system for loud data.</h1>
+              <p class="view__sub" style="max-width: 620px;">Every screen is built from a small set of reusable
+                primitives. Numbers carry the weight. Accent is rare and bold. Light and dark are peers.</p>
+            </header>
+
+            <h2 class="eyebrow">Surface tokens</h2>
+            <p class="muted" style="font-size: var(--t-sm); margin-bottom: var(--s-4);">Semantic tokens swap values
+              between themes. Toggle dark mode above to see them shift.</p>
+            <div class="token-grid">
+              <div class="swatch">
+                <div class="swatch__color" style="--swatch: var(--surface-0);"></div>
+                <div class="swatch__meta"><span class="swatch__name">surface-0</span><span
+                    class="swatch__hex">page</span></div>
+              </div>
+              <div class="swatch">
+                <div class="swatch__color" style="--swatch: var(--surface-1);"></div>
+                <div class="swatch__meta"><span class="swatch__name">surface-1</span><span
+                    class="swatch__hex">card</span></div>
+              </div>
+              <div class="swatch">
+                <div class="swatch__color" style="--swatch: var(--surface-2);"></div>
+                <div class="swatch__meta"><span class="swatch__name">surface-2</span><span
+                    class="swatch__hex">inset</span></div>
+              </div>
+              <div class="swatch">
+                <div class="swatch__color" style="--swatch: var(--ink);"></div>
+                <div class="swatch__meta"><span class="swatch__name">ink</span><span class="swatch__hex">text</span>
+                </div>
+              </div>
+              <div class="swatch">
+                <div class="swatch__color" style="--swatch: var(--ink-muted);"></div>
+                <div class="swatch__meta"><span class="swatch__name">ink-muted</span><span class="swatch__hex">text
+                    2°</span></div>
+              </div>
+              <div class="swatch">
+                <div class="swatch__color" style="--swatch: var(--accent);"></div>
+                <div class="swatch__meta"><span class="swatch__name">accent</span><span class="swatch__hex">hero
+                    moment</span></div>
+              </div>
+            </div>
+
+            <h2 class="eyebrow">Activity colors</h2>
+            <p class="muted" style="font-size: var(--t-sm); margin-bottom: var(--s-4);">Identical in both themes. Used
+              on chips, dots, and chart strokes — never as large fills.</p>
+            <div class="token-grid">
+              <div class="swatch">
+                <div class="swatch__color" style="--swatch: var(--c-strength);"></div>
+                <div class="swatch__meta"><span class="swatch__name">strength</span><span
+                    class="swatch__hex">#E8785A</span></div>
+              </div>
+              <div class="swatch">
+                <div class="swatch__color" style="--swatch: var(--c-cardio);"></div>
+                <div class="swatch__meta"><span class="swatch__name">cardio</span><span
+                    class="swatch__hex">#EF4A4A</span></div>
+              </div>
+              <div class="swatch">
+                <div class="swatch__color" style="--swatch: var(--c-recovery);"></div>
+                <div class="swatch__meta"><span class="swatch__name">recovery</span><span
+                    class="swatch__hex">#7B9EF8</span></div>
+              </div>
+              <div class="swatch">
+                <div class="swatch__color" style="--swatch: var(--c-nutrition);"></div>
+                <div class="swatch__meta"><span class="swatch__name">nutrition</span><span
+                    class="swatch__hex">#6FBF73</span></div>
+              </div>
+              <div class="swatch">
+                <div class="swatch__color" style="--swatch: var(--c-water);"></div>
+                <div class="swatch__meta"><span class="swatch__name">water</span><span
+                    class="swatch__hex">#4DC8F0</span></div>
+              </div>
+              <div class="swatch">
+                <div class="swatch__color" style="--swatch: var(--c-mind);"></div>
+                <div class="swatch__meta"><span class="swatch__name">mind</span><span class="swatch__hex">#B57BDC</span>
+                </div>
+              </div>
+            </div>
+
+            <h2 class="eyebrow">Type scale</h2>
+            <div class="card">
+              <div class="type-row"><span class="type-row__label">t-5xl · display</span><span
+                  class="type-row__sample display" style="font-size: var(--t-5xl);">82<span class="faint"
+                    style="font-family: var(--font-ui); font-size: var(--t-lg);">bpm</span></span></div>
+              <div class="type-row"><span class="type-row__label">t-4xl · display</span><span
+                  class="type-row__sample display" style="font-size: var(--t-4xl);">2,847<span class="faint"
+                    style="font-family: var(--font-ui); font-size: var(--t-md);"> kcal</span></span></div>
+              <div class="type-row"><span class="type-row__label">t-3xl · display</span><span
+                  class="type-row__sample display" style="font-size: var(--t-3xl);">5:32 / km</span></div>
+              <div class="type-row"><span class="type-row__label">t-2xl · display</span><span
+                  class="type-row__sample display" style="font-size: var(--t-2xl);">Push Day A</span></div>
+              <div class="type-row"><span class="type-row__label">t-xl · display</span><span
+                  class="type-row__sample display" style="font-size: var(--t-xl);">Yesterday's recovery</span></div>
+              <div class="type-row"><span class="type-row__label">t-lg · ui</span><span class="type-row__sample"
+                  style="font-size: var(--t-lg);">Your weekly volume is up 12%.</span></div>
+              <div class="type-row"><span class="type-row__label">t-md · ui</span><span class="type-row__sample">Body
+                  text. Imported 4 minutes ago from Garmin Connect.</span></div>
+              <div class="type-row"><span class="type-row__label">t-sm · ui</span><span
+                  class="type-row__sample muted">Secondary metadata. Last updated 12:14.</span></div>
+              <div class="type-row"><span class="type-row__label">t-xs · eyebrow</span><span
+                  class="type-row__sample eyebrow">Resting heart rate</span></div>
+              <div class="type-row"><span class="type-row__label">mono · tnum</span><span
+                  class="type-row__sample mono num">4 × 8 @ 82.5kg</span></div>
+            </div>
+
+            <h2 class="eyebrow">Components</h2>
+            <div class="grid" style="--col-min: 280px;">
+
+              <div class="card stack">
+                <span class="eyebrow">Buttons</span>
+                <div class="cluster">
+                  <button class="btn btn--primary">Save workout</button>
+                  <button class="btn">Discard</button>
+                  <button class="btn btn--ghost">Cancel</button>
+                </div>
+                <div class="cluster">
+                  <button class="btn btn--sm">Small</button>
+                  <button class="btn btn--primary btn--sm">Small primary</button>
+                  <button class="btn btn--icon" aria-label="Add"><svg width="16" height="16" viewBox="0 0 24 24"
+                      fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M12 5v14M5 12h14" />
+                    </svg></button>
+                </div>
+              </div>
+
+              <div class="card stack">
+                <span class="eyebrow">Pills (activity)</span>
+                <div class="cluster">
+                  <span class="pill pill--strength">Strength</span>
+                  <span class="pill pill--cardio">Cardio</span>
+                  <span class="pill pill--recovery">Recovery</span>
+                </div>
+                <div class="cluster">
+                  <span class="pill pill--nutrition">Nutrition</span>
+                  <span class="pill pill--water">Hydration</span>
+                  <span class="pill pill--mind">Mobility</span>
+                </div>
+                <div class="cluster">
+                  <span class="pill pill--ok">On track</span>
+                  <span class="pill pill--warn">Low battery</span>
+                  <span class="pill pill--bad">Missed</span>
+                  <span class="pill pill--accent pill--plain">NEW PR</span>
+                </div>
+              </div>
+
+              <div class="card stack">
+                <span class="eyebrow">Chips &amp; sources</span>
+                <div class="cluster">
+                  <span class="chip chip--active">7d</span>
+                  <span class="chip">30d</span>
+                  <span class="chip">90d</span>
+                  <span class="chip">1y</span>
+                  <span class="chip">All</span>
+                </div>
+                <div class="cluster">
+                  <span class="chip chip--source"><span class="chip__dot"
+                      style="--dot: var(--c-recovery);"></span>Garmin</span>
+                  <span class="chip chip--source"><span class="chip__dot"
+                      style="--dot: var(--c-nutrition);"></span>MyFitnessPal</span>
+                  <span class="chip chip--source"><span class="chip__dot"
+                      style="--dot: var(--ink);"></span>Manual</span>
+                </div>
+              </div>
+
+              <div class="card stack">
+                <span class="eyebrow">Inputs</span>
+                <label class="field">
+                  <span class="field__label">Exercise name</span>
+                  <input class="input" value="Incline Dumbbell Press">
+                </label>
+                <div class="row" style="--gap: var(--s-3);">
+                  <label class="field" style="flex: 1;">
+                    <span class="field__label">Reps</span>
+                    <input class="input input--num" value="8">
+                  </label>
+                  <label class="field" style="flex: 1;">
+                    <span class="field__label">Weight (kg)</span>
+                    <input class="input input--num" value="32.5">
+                  </label>
+                </div>
+              </div>
+
+              <div class="card stack">
+                <span class="eyebrow">Stats</span>
+                <div class="stat stat--hero">
+                  <span class="stat__eyebrow">Resting HR</span>
+                  <span class="stat__num">58<span class="stat__unit">bpm</span></span>
+                  <span class="stat__trend stat__trend--down">↓ 3 vs last week</span>
+                </div>
+                <div class="row" style="--gap: var(--s-5);">
+                  <div class="stat">
+                    <span class="stat__eyebrow">Steps</span>
+                    <span class="stat__num">8,412</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat__eyebrow">Active</span>
+                    <span class="stat__num">47<span class="stat__unit">min</span></span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card stack">
+                <span class="eyebrow">Ring &amp; bars</span>
+                <div class="row" style="--align: center; --gap: var(--s-5);">
+                  <!-- Ring at 72% -->
+                  <div class="ring" style="--ring-color: var(--accent);">
+                    <svg class="ring__svg" width="88" height="88" viewBox="0 0 88 88">
+                      <circle class="ring__track" cx="44" cy="44" r="36" />
+                      <circle class="ring__fill" cx="44" cy="44" r="36" stroke-dasharray="226.19"
+                        stroke-dashoffset="63.3" />
+                    </svg>
+                    <div class="ring__inner">
+                      <span class="display" style="font-size: var(--t-xl);">72%</span>
+                    </div>
+                  </div>
+                  <div class="stack" style="flex: 1; --gap: var(--s-3);">
+                    <div class="stack" style="--gap: 4px;">
+                      <div class="row" style="--justify: space-between;"><span class="mono"
+                          style="font-size: var(--t-xs);">STEPS</span><span class="mono"
+                          style="font-size: var(--t-xs); color: var(--ink-muted);">8,412 / 10,000</span></div>
+                      <div class="bar">
+                        <div class="bar__fill" style="--fill: 84%;"></div>
+                      </div>
+                    </div>
+                    <div class="stack" style="--gap: 4px;">
+                      <div class="row" style="--justify: space-between;"><span class="mono"
+                          style="font-size: var(--t-xs);">PROTEIN</span><span class="mono"
+                          style="font-size: var(--t-xs); color: var(--ink-muted);">142 / 180g</span></div>
+                      <div class="bar">
+                        <div class="bar__fill" style="--fill: 78%; --bar-color: var(--c-nutrition);"></div>
+                      </div>
+                    </div>
+                    <div class="stack" style="--gap: 4px;">
+                      <div class="row" style="--justify: space-between;"><span class="mono"
+                          style="font-size: var(--t-xs);">WATER</span><span class="mono"
+                          style="font-size: var(--t-xs); color: var(--ink-muted);">1.6 / 3.0L</span></div>
+                      <div class="bar">
+                        <div class="bar__fill" style="--fill: 53%; --bar-color: var(--c-water);"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="stack" style="--gap: 6px;">
+                  <span class="mono" style="font-size: var(--t-xs); color: var(--ink-muted);">TODAY'S MACROS · 1,847 /
+                    2,100 kcal</span>
+                  <div class="meter" style="--meter-height: 10px;">
+                    <div class="meter__seg" style="--seg-color: var(--c-nutrition); --seg-width: 32%;"></div>
+                    <div class="meter__seg" style="--seg-color: var(--warn); --seg-width: 44%;"></div>
+                    <div class="meter__seg" style="--seg-color: var(--c-strength); --seg-width: 24%;"></div>
+                  </div>
+                  <div class="row" style="--justify: space-between; font-size: var(--t-xs); color: var(--ink-muted);"
+                    class="mono">
+                    <span>P 142g</span><span>C 196g</span><span>F 49g</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card stack">
+                <span class="eyebrow">Avatars</span>
+                <div class="cluster" style="--gap: var(--s-3);">
+                  <div class="avatar avatar--sm" style="--avatar-a:#E8785A; --avatar-b:#EF4A4A;">L</div>
+                  <div class="avatar" style="--avatar-a:#7B9EF8; --avatar-b:#B57BDC;">AK</div>
+                  <div class="avatar avatar--lg" style="--avatar-a:#6FBF73; --avatar-b:#4DC8F0;">MR</div>
+                  <div class="avatar avatar--xl" style="--avatar-a:#E8A33D; --avatar-b:#E8785A;">JL</div>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- ────────────────────────────────────────────────────────────
+             VIEW: DASHBOARD
+             ──────────────────────────────────────────────────────────── -->
+          <section class="view" data-view="dashboard" data-active="true">
+
+            <header class="view__header">
+              <span class="eyebrow">Friday · April 24</span>
+              <h1 class="view__title">Good evening, Luca.</h1>
+              <p class="view__sub">Two workouts this week. Recovery is <span style="color: var(--ok);">green</span>.
+                Let's keep it rolling.</p>
+            </header>
+
+            <!-- Hero: today ring + primary stats -->
+            <div class="hero-card">
+              <div class="stack" style="--gap: var(--s-5);">
+                <div class="cluster" style="--gap: var(--s-2);">
+                  <span class="pill pill--ok">Recovery 84</span>
+                  <span class="pill pill--recovery">Slept 7h 42m</span>
+                  <span class="chip chip--source"><span class="chip__dot"
+                      style="--dot: var(--c-recovery);"></span>Garmin · 2m ago</span>
+                </div>
+                <div class="stat stat--mega">
+                  <span class="stat__eyebrow">Today's movement</span>
+                  <span class="stat__num">8,412<span class="stat__unit">steps</span></span>
+                </div>
+                <div class="row" style="--gap: var(--s-6);">
+                  <div class="stat"><span class="stat__eyebrow">Active</span><span class="stat__num">47<span
+                        class="stat__unit">min</span></span></div>
+                  <div class="stat"><span class="stat__eyebrow">Distance</span><span class="stat__num">6.2<span
+                        class="stat__unit">km</span></span></div>
+                  <div class="stat"><span class="stat__eyebrow">Calories</span><span class="stat__num">384<span
+                        class="stat__unit">kcal</span></span></div>
+                </div>
+              </div>
+
+              <!-- Triple ring -->
+              <div class="ring" style="--ring-width: 9;">
+                <svg class="ring__svg" width="220" height="220" viewBox="0 0 220 220">
+                  <!-- Outer: move -->
+                  <circle class="ring__track" cx="110" cy="110" r="96" />
+                  <circle class="ring__fill" cx="110" cy="110" r="96" style="stroke: var(--accent);"
+                    stroke-dasharray="603.19" stroke-dashoffset="96.5" />
+                  <!-- Middle: exercise -->
+                  <circle class="ring__track" cx="110" cy="110" r="76" />
+                  <circle class="ring__fill" cx="110" cy="110" r="76" stroke="#E8785A" stroke-dasharray="477.52"
+                    stroke-dashoffset="124.2" />
+                  <!-- Inner: stand -->
+                  <circle class="ring__track" cx="110" cy="110" r="56" />
+                  <circle class="ring__fill" cx="110" cy="110" r="56" stroke="#7B9EF8" stroke-dasharray="351.86"
+                    stroke-dashoffset="52.8" />
+                </svg>
+                <div class="ring__inner">
+                  <span class="eyebrow">Goals</span>
+                  <span class="display" style="font-size: var(--t-3xl);">84%</span>
+                  <span class="mono" style="font-size: var(--t-xs); color: var(--ink-muted);">5 / 7 DAYS</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════
+               SLEEP BALANCE — full-width editorial chart
+               ═══════════════════════════════════════════════════════════ -->
+            <div class="card stack" style="margin-top: var(--s-5); --gap: var(--s-4);">
+              <div class="row"
+                style="--justify: space-between; --align: flex-start; flex-wrap: wrap; --gap: var(--s-3);">
+                <div class="stack" style="--gap: 4px;">
+                  <span class="eyebrow">Sleep balance · Last 7 nights</span>
+                  <h2 class="display" style="font-size: var(--t-xl);">Running a <span style="color: var(--warn);">−6h
+                      48m</span> deficit</h2>
+                  <span class="muted" style="font-size: var(--t-sm);">Hours above or below your 7h 30m target, shaped by
+                    day of week.</span>
+                </div>
+                <div class="cluster">
+                  <span class="chip chip--active">7d</span>
+                  <span class="chip">14d</span>
+                  <span class="chip">30d</span>
+                  <span class="chip chip--source"><span class="chip__dot"
+                      style="--dot: var(--c-recovery);"></span>Garmin</span>
+                </div>
+              </div>
+
+              <svg class="deficit" viewBox="0 0 600 140" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Subtle background area: green above zero, amber below zero -->
+                <rect x="0" y="0" width="600" height="55" class="deficit__area-up" />
+                <rect x="0" y="55" width="600" height="85" class="deficit__area-down" />
+
+                <!-- Axis labels (left) -->
+                <text x="4" y="27" class="deficit__label">+2h</text>
+                <text x="4" y="59" class="deficit__label">0</text>
+                <text x="4" y="121" class="deficit__label">−4h</text>
+
+                <!-- Zero reference line -->
+                <line x1="30" y1="55" x2="580" y2="55" class="deficit__axis" />
+
+                <!-- Bars: one per night. Rounded corners top/bottom depending on sign.
+                   Below-zero bars (amber): (x, 55, w, h).  Above-zero: (x, 55-h, w, h) -->
+                <rect x="59.57" y="55" width="18" height="10.5" rx="2" class="deficit__bar--down" />
+                <rect x="136.71" y="55" width="18" height="3" rx="1.5" class="deficit__bar--down" />
+                <rect x="213.86" y="55" width="18" height="24" rx="2" class="deficit__bar--down" />
+                <rect x="291" y="55" width="18" height="37.5" rx="2" class="deficit__bar--down" />
+                <rect x="368.14" y="55" width="18" height="57" rx="2" class="deficit__bar--down" />
+                <rect x="445.29" y="28" width="18" height="27" rx="2" class="deficit__bar--up" />
+                <rect x="522.43" y="52" width="18" height="3" rx="1.5" class="deficit__bar--up" />
+
+                <!-- Trend line across top of each bar -->
+                <path class="deficit__line"
+                  d="M 68.57,65.5 L 145.71,58 L 222.86,79 L 300,92.5 L 377.14,112 L 454.29,28 L 531.43,52" />
+                <circle cx="68.57" cy="65.5" r="2.5" class="deficit__dot" />
+                <circle cx="145.71" cy="58" r="2.5" class="deficit__dot" />
+                <circle cx="222.86" cy="79" r="2.5" class="deficit__dot" />
+                <circle cx="300" cy="92.5" r="2.5" class="deficit__dot" />
+                <circle cx="377.14" cy="112" r="2.5" class="deficit__dot" />
+                <circle cx="454.29" cy="28" r="2.5" class="deficit__dot" />
+                <circle cx="531.43" cy="52" r="2.5" class="deficit__dot" />
+
+                <!-- Day labels -->
+                <text x="68.57" y="135" text-anchor="middle" class="deficit__label">F</text>
+                <text x="145.71" y="135" text-anchor="middle" class="deficit__label">S</text>
+                <text x="222.86" y="135" text-anchor="middle" class="deficit__label">S</text>
+                <text x="300" y="135" text-anchor="middle" class="deficit__label">M</text>
+                <text x="377.14" y="135" text-anchor="middle" class="deficit__label">T</text>
+                <text x="454.29" y="135" text-anchor="middle" class="deficit__label">W</text>
+                <text x="531.43" y="135" text-anchor="middle" class="deficit__label">T</text>
+              </svg>
+
+              <hr class="divider">
+              <div class="row" style="--justify: space-between; flex-wrap: wrap; --gap: var(--s-4);">
+                <div class="stat stat--inline"><span class="stat__eyebrow">Avg / night</span><span
+                    class="stat__num">6<span class="stat__unit">h</span> 32<span class="stat__unit">m</span></span>
+                </div>
+                <div class="stat stat--inline"><span class="stat__eyebrow">Target</span><span class="stat__num">7<span
+                      class="stat__unit">h</span> 30<span class="stat__unit">m</span></span></div>
+                <div class="stat stat--inline"><span class="stat__eyebrow">Best</span><span class="stat__num">9<span
+                      class="stat__unit">h</span> 18<span class="stat__unit">m</span></span></div>
+                <div class="stat stat--inline"><span class="stat__eyebrow">Worst</span><span class="stat__num">3<span
+                      class="stat__unit">h</span> 12<span class="stat__unit">m</span></span></div>
+              </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════
+               CARD GRID
+               ═══════════════════════════════════════════════════════════ -->
+            <div class="grid" style="--col-min: 280px; margin-top: var(--s-5);">
+
+              <!-- WEATHER -->
+              <div class="card stack">
+                <div class="row" style="--justify: space-between;">
+                  <span class="eyebrow">Weather · London</span>
+                  <span class="mono muted" style="font-size: var(--t-xs);">17:42</span>
+                </div>
+                <div class="row" style="--justify: space-between; --align: center;">
+                  <div class="stack" style="--gap: 0;">
+                    <span class="display" style="font-size: var(--t-4xl); line-height: 1;">11<span class="faint"
+                        style="font-family: var(--font-ui); font-size: var(--t-lg); vertical-align: top;">°C</span></span>
+                    <span class="mono" style="font-size: var(--t-xs); color: var(--ink-muted);">Feels like 9°</span>
+                  </div>
+                  <!-- Sun-with-cloud glyph -->
+                  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6"
+                    style="color: var(--ink);">
+                    <circle cx="26" cy="24" r="9" fill="var(--accent-soft)" stroke="var(--accent)" />
+                    <path
+                      d="M26 8v4M26 36v4M10 24h4M38 24h4M14.5 12.5l2.8 2.8M34.7 32.7l2.8 2.8M14.5 35.5l2.8-2.8M34.7 15.3l2.8-2.8" />
+                    <path d="M22 44c-4 0-7 3-7 6.5s3 6.5 7 6.5h22c4 0 7-2.5 7-6s-3-6-7-6c-.5-4-4-7-8-7s-7.5 3-8 6z"
+                      fill="var(--surface-2)" stroke="var(--line-strong)" />
+                  </svg>
+                </div>
+                <p class="muted" style="font-size: var(--t-sm); line-height: 1.5;">Partly cloudy · light breeze. Rain
+                  clears after 19:00 — <span style="color: var(--ok);">good window</span> for an outdoor run.</p>
+                <hr class="divider">
+                <div class="row" style="--justify: space-between;">
+                  <div class="stack" style="align-items: center; --gap: 4px;">
+                    <span class="mono" style="font-size: 10px; color: var(--ink-faint);">18:00</span>
+                    <span>☁︎</span>
+                    <span class="mono" style="font-size: var(--t-xs);">10°</span>
+                  </div>
+                  <div class="stack" style="align-items: center; --gap: 4px;">
+                    <span class="mono" style="font-size: 10px; color: var(--ink-faint);">19:00</span>
+                    <span>☁︎</span>
+                    <span class="mono" style="font-size: var(--t-xs);">9°</span>
+                  </div>
+                  <div class="stack" style="align-items: center; --gap: 4px;">
+                    <span class="mono" style="font-size: 10px; color: var(--ink-faint);">20:00</span>
+                    <span>◐</span>
+                    <span class="mono" style="font-size: var(--t-xs);">8°</span>
+                  </div>
+                  <div class="stack" style="align-items: center; --gap: 4px;">
+                    <span class="mono" style="font-size: 10px; color: var(--ink-faint);">21:00</span>
+                    <span>●</span>
+                    <span class="mono" style="font-size: var(--t-xs);">7°</span>
+                  </div>
+                  <div class="stack" style="align-items: center; --gap: 4px;">
+                    <span class="mono" style="font-size: 10px; color: var(--ink-faint);">22:00</span>
+                    <span>●</span>
+                    <span class="mono" style="font-size: var(--t-xs);">7°</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- HEART RATE -->
+              <div class="card stack">
+                <div class="row" style="--justify: space-between;">
+                  <span class="eyebrow">Heart rate</span>
+                  <span class="chip chip--source"><span class="chip__dot" style="--dot: var(--c-cardio);"></span>Garmin
+                    · Live</span>
+                </div>
+                <div class="row" style="--justify: space-between; --align: flex-end;">
+                  <div class="stack" style="--gap: 0;">
+                    <span class="display" style="font-size: var(--t-4xl); line-height: 1;">72<span class="faint"
+                        style="font-family: var(--font-ui); font-size: var(--t-md);">bpm</span></span>
+                    <span class="mono" style="font-size: var(--t-xs); color: var(--ink-muted);">Resting · calm</span>
+                  </div>
+                  <!-- Heart pulse glyph -->
+                  <svg width="40" height="40" viewBox="0 0 40 40" fill="var(--c-cardio)" style="opacity: .9;">
+                    <path d="M20 34s-12-7.5-12-16a6.5 6.5 0 0 1 12-3.7A6.5 6.5 0 0 1 32 18c0 8.5-12 16-12 16z" />
+                  </svg>
+                </div>
+                <!-- 24h sparkline -->
+                <svg class="spark" viewBox="0 0 300 50" preserveAspectRatio="none"
+                  style="--spark-color: var(--c-cardio); height: 40px;">
+                  <polygon
+                    points="0,50 0,36 15,34 30,38 45,30 60,24 75,18 90,12 105,16 120,22 135,20 150,28 165,32 180,24 195,16 210,20 225,28 240,34 255,40 270,36 285,38 300,36 300,50" />
+                  <path
+                    d="M0,36 L15,34 L30,38 L45,30 L60,24 L75,18 L90,12 L105,16 L120,22 L135,20 L150,28 L165,32 L180,24 L195,16 L210,20 L225,28 L240,34 L255,40 L270,36 L285,38 L300,36" />
+                </svg>
+                <hr class="divider">
+                <div class="row" style="--justify: space-between;">
+                  <div class="stat stat--inline"><span class="stat__eyebrow">Resting</span><span
+                      class="stat__num">58<span class="stat__unit">bpm</span></span></div>
+                  <div class="stat stat--inline"><span class="stat__eyebrow">Max today</span><span
+                      class="stat__num">164<span class="stat__unit">bpm</span></span></div>
+                  <div class="stat stat--inline"><span class="stat__eyebrow">Avg 24h</span><span
+                      class="stat__num">74<span class="stat__unit">bpm</span></span></div>
+                </div>
+              </div>
+
+              <!-- HRV -->
+              <div class="card stack">
+                <div class="row" style="--justify: space-between;">
+                  <span class="eyebrow">Heart rate variability</span>
+                  <span class="pill pill--ok">+4 vs avg</span>
+                </div>
+                <div class="row" style="--align: baseline; --gap: var(--s-3);">
+                  <span class="display" style="font-size: var(--t-4xl); line-height: 1;">62<span class="faint"
+                      style="font-family: var(--font-ui); font-size: var(--t-md);">ms</span></span>
+                  <span class="mono" style="font-size: var(--t-xs); color: var(--ink-muted);">Baseline 58ms</span>
+                </div>
+                <!-- 7-day HRV trend with baseline band -->
+                <svg viewBox="0 0 300 80" preserveAspectRatio="none" style="width: 100%; height: 80px;">
+                  <!-- Baseline band: y=38 to y=50 (56ms to 60ms region) -->
+                  <rect x="0" y="36" width="300" height="14" fill="var(--c-recovery)" opacity=".1" />
+                  <line x1="0" y1="43" x2="300" y2="43" stroke="var(--c-recovery)" stroke-dasharray="3 3"
+                    opacity=".4" />
+                  <!-- Area fill under the curve -->
+                  <path d="M 0,56 L 50,48 L 100,52 L 150,38 L 200,30 L 250,26 L 300,22 L 300,80 L 0,80 Z"
+                    fill="var(--c-recovery)" opacity=".12" />
+                  <!-- Line -->
+                  <path d="M 0,56 L 50,48 L 100,52 L 150,38 L 200,30 L 250,26 L 300,22" fill="none"
+                    stroke="var(--c-recovery)" stroke-width="1.8" />
+                  <!-- Endpoint dot -->
+                  <circle cx="300" cy="22" r="3.5" fill="var(--c-recovery)" />
+                  <circle cx="300" cy="22" r="1.5" fill="var(--surface-1)" />
+                </svg>
+                <div class="row"
+                  style="--justify: space-between; font-family: var(--font-mono); font-size: 10px; color: var(--ink-faint); letter-spacing: .06em;">
+                  <span>F</span><span>S</span><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span>
+                </div>
+                <span class="muted" style="font-size: var(--t-xs);">Trending up 7 days running — parasympathetic
+                  recovery is strong.</span>
+              </div>
+
+              <!-- CALENDAR -->
+              <div class="card stack">
+                <div class="row" style="--justify: space-between;">
+                  <span class="eyebrow">April 2026</span>
+                  <div class="cluster" style="--gap: 4px;">
+                    <button class="btn btn--ghost btn--icon btn--sm" aria-label="Previous">‹</button>
+                    <button class="btn btn--ghost btn--icon btn--sm" aria-label="Next">›</button>
+                  </div>
+                </div>
+                <div class="cal">
+                  <span class="cal__dow">M</span><span class="cal__dow">T</span><span class="cal__dow">W</span><span
+                    class="cal__dow">T</span><span class="cal__dow">F</span><span class="cal__dow">S</span><span
+                    class="cal__dow">S</span>
+                  <!-- Week 1: Mar 30 - Apr 5 -->
+                  <span class="cal__day cal__day--muted">30</span>
+                  <span class="cal__day cal__day--muted">31</span>
+                  <span class="cal__day" data-mark="" style="--mark-color: var(--c-strength);">1</span>
+                  <span class="cal__day">2</span>
+                  <span class="cal__day" data-mark="" style="--mark-color: var(--c-cardio);">3</span>
+                  <span class="cal__day">4</span>
+                  <span class="cal__day" data-mark="" style="--mark-color: var(--c-recovery);">5</span>
+                  <!-- Week 2 -->
+                  <span class="cal__day" data-mark="" style="--mark-color: var(--c-strength);">6</span>
+                  <span class="cal__day">7</span>
+                  <span class="cal__day" data-mark="" style="--mark-color: var(--c-cardio);">8</span>
+                  <span class="cal__day" data-mark="" style="--mark-color: var(--c-strength);">9</span>
+                  <span class="cal__day">10</span>
+                  <span class="cal__day" data-mark="" style="--mark-color: var(--c-mind);">11</span>
+                  <span class="cal__day">12</span>
+                  <!-- Week 3 -->
+                  <span class="cal__day" data-mark="" style="--mark-color: var(--c-strength);">13</span>
+                  <span class="cal__day" data-mark="" style="--mark-color: var(--c-cardio);">14</span>
+                  <span class="cal__day">15</span>
+                  <span class="cal__day" data-mark="" style="--mark-color: var(--c-strength);">16</span>
+                  <span class="cal__day" data-mark="" style="--mark-color: var(--c-cardio);">17</span>
+                  <span class="cal__day">18</span>
+                  <span class="cal__day" data-mark="" style="--mark-color: var(--c-recovery);">19</span>
+                  <!-- Week 4 -->
+                  <span class="cal__day" data-mark="" style="--mark-color: var(--c-strength);">20</span>
+                  <span class="cal__day" data-mark="" style="--mark-color: var(--c-strength);">21</span>
+                  <span class="cal__day">22</span>
+                  <span class="cal__day" data-mark="" style="--mark-color: var(--c-cardio);">23</span>
+                  <span class="cal__day cal__day--today" data-mark="">24</span>
+                  <span class="cal__day">25</span>
+                  <span class="cal__day">26</span>
+                  <!-- Week 5 -->
+                  <span class="cal__day">27</span>
+                  <span class="cal__day">28</span>
+                  <span class="cal__day">29</span>
+                  <span class="cal__day">30</span>
+                  <span class="cal__day cal__day--muted">1</span>
+                  <span class="cal__day cal__day--muted">2</span>
+                  <span class="cal__day cal__day--muted">3</span>
+                </div>
+                <hr class="divider">
+                <div class="row" style="--justify: space-between;">
+                  <span class="mono muted" style="font-size: var(--t-xs);">12 sessions · 28h 42m</span>
+                  <div class="cluster" style="--gap: var(--s-3);">
+                    <div class="row" style="--gap: 4px;"><span
+                        style="width: 6px; height: 6px; border-radius: 50%; background: var(--c-strength);"></span><span
+                        class="mono" style="font-size: 10px; color: var(--ink-faint);">STR</span></div>
+                    <div class="row" style="--gap: 4px;"><span
+                        style="width: 6px; height: 6px; border-radius: 50%; background: var(--c-cardio);"></span><span
+                        class="mono" style="font-size: 10px; color: var(--ink-faint);">CAR</span></div>
+                    <div class="row" style="--gap: 4px;"><span
+                        style="width: 6px; height: 6px; border-radius: 50%; background: var(--c-recovery);"></span><span
+                        class="mono" style="font-size: 10px; color: var(--ink-faint);">REC</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- NEXT WORKOUT (accent) -->
+              <div class="card card--accent stack" style="--gap: var(--s-5);">
+                <span class="eyebrow" style="color: var(--accent-ink); opacity: .7;">Up next · Tomorrow 07:00</span>
+                <h2 class="display" style="font-size: var(--t-2xl);">Pull Day B</h2>
+                <div class="row" style="--gap: var(--s-5); flex-wrap: wrap;">
+                  <div class="stat"><span class="stat__eyebrow"
+                      style="color: var(--accent-ink); opacity: .7;">Exercises</span><span class="stat__num"
+                      style="font-size: var(--t-xl);">6</span></div>
+                  <div class="stat"><span class="stat__eyebrow"
+                      style="color: var(--accent-ink); opacity: .7;">Est.</span><span class="stat__num"
+                      style="font-size: var(--t-xl);">62<span class="stat__unit"
+                        style="color: var(--accent-ink); opacity:.6;">min</span></span></div>
+                  <div class="stat"><span class="stat__eyebrow"
+                      style="color: var(--accent-ink); opacity: .7;">Volume</span><span class="stat__num"
+                      style="font-size: var(--t-xl);">14,200<span class="stat__unit"
+                        style="color: var(--accent-ink); opacity:.6;">kg</span></span></div>
+                </div>
+                <button class="btn"
+                  style="background: var(--accent-ink); color: var(--accent); border-color: transparent;">Start workout
+                  →</button>
+              </div>
+
+              <!-- NUTRITION -->
+              <div class="card stack">
+                <div class="row" style="--justify: space-between;">
+                  <span class="eyebrow">Nutrition today</span>
+                  <span class="mono" style="font-size: var(--t-xs); color: var(--ink-muted);">1,847 / 2,100 kcal</span>
+                </div>
+                <div class="meter" style="--meter-height: 12px;">
+                  <div class="meter__seg" style="--seg-color: var(--c-nutrition); --seg-width: 32%;"></div>
+                  <div class="meter__seg" style="--seg-color: var(--warn); --seg-width: 44%;"></div>
+                  <div class="meter__seg" style="--seg-color: var(--c-strength); --seg-width: 24%;"></div>
+                </div>
+                <div class="row" style="--justify: space-between;">
+                  <div class="stat stat--inline"><span class="stat__eyebrow">P</span><span class="stat__num">142<span
+                        class="stat__unit">g</span></span></div>
+                  <div class="stat stat--inline"><span class="stat__eyebrow">C</span><span class="stat__num">196<span
+                        class="stat__unit">g</span></span></div>
+                  <div class="stat stat--inline"><span class="stat__eyebrow">F</span><span class="stat__num">49<span
+                        class="stat__unit">g</span></span></div>
+                </div>
+                <hr class="divider">
+                <div class="row" style="--justify: space-between; flex-wrap: wrap; --gap: var(--s-2);">
+                  <div class="row" style="--gap: var(--s-2);">
+                    <span class="eyebrow" style="color: var(--c-water);">Water</span>
+                    <span class="mono" style="font-size: var(--t-sm);">1.6 / 3.0L</span>
+                  </div>
+                  <div class="glass-tracker" style="flex: 1; min-width: 140px; max-width: 180px;">
+                    <div class="glass glass--full"></div>
+                    <div class="glass glass--full"></div>
+                    <div class="glass glass--full"></div>
+                    <div class="glass glass--full"></div>
+                    <div class="glass glass--full"></div>
+                    <div class="glass"
+                      style="background: linear-gradient(to top, var(--c-water) 0%, var(--c-water) 40%, transparent 40%);">
+                    </div>
+                    <div class="glass"></div>
+                    <div class="glass"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CONNECTED SOURCES -->
+              <div class="card card--inset stack">
+                <span class="eyebrow">Connected sources</span>
+                <div class="trend-list">
+                  <div class="trend-item">
+                    <div class="row" style="--gap: var(--s-3);">
+                      <span class="chip__dot"
+                        style="--dot: var(--c-recovery); width: 10px; height: 10px; border-radius: 50%;"></span>
+                      <div class="stack" style="--gap: 0;">
+                        <span style="font-weight: 500; font-size: var(--t-sm);">Garmin Connect</span>
+                        <span class="mono" style="font-size: var(--t-xs); color: var(--ink-muted);">Synced 2 min
+                          ago</span>
+                      </div>
+                    </div>
+                    <span class="pill pill--ok">Live</span>
+                    <span class="faint mono" style="font-size: var(--t-xs);">→</span>
+                  </div>
+                  <div class="trend-item">
+                    <div class="row" style="--gap: var(--s-3);">
+                      <span class="chip__dot"
+                        style="--dot: var(--c-nutrition); width: 10px; height: 10px; border-radius: 50%;"></span>
+                      <div class="stack" style="--gap: 0;">
+                        <span style="font-weight: 500; font-size: var(--t-sm);">MyFitnessPal</span>
+                        <span class="mono" style="font-size: var(--t-xs); color: var(--ink-muted);">Synced 17 min
+                          ago</span>
+                      </div>
+                    </div>
+                    <span class="pill pill--ok">Live</span>
+                    <span class="faint mono" style="font-size: var(--t-xs);">→</span>
+                  </div>
+                  <div class="trend-item">
+                    <div class="row" style="--gap: var(--s-3);">
+                      <span class="chip__dot"
+                        style="--dot: var(--ink-faint); width: 10px; height: 10px; border-radius: 50%;"></span>
+                      <div class="stack" style="--gap: 0;">
+                        <span style="font-weight: 500; font-size: var(--t-sm);">Strava</span>
+                        <span class="mono" style="font-size: var(--t-xs); color: var(--ink-muted);">Not connected</span>
+                      </div>
+                    </div>
+                    <span class="pill pill--plain"
+                      style="background: transparent; border: 1px solid var(--line);">Connect</span>
+                    <span class="faint mono" style="font-size: var(--t-xs);">→</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </section>
+
+          <!-- ────────────────────────────────────────────────────────────
+             VIEW: WORKOUT LOGGER
+             ──────────────────────────────────────────────────────────── -->
+          <section class="view" data-view="workout">
+
+            <header class="view__header">
+              <div class="cluster" style="margin-bottom: var(--s-3);">
+                <span class="pill pill--strength">Strength</span>
+                <span class="pill pill--plain mono" style="background: var(--surface-2);">Week 3 · Day 2</span>
+                <span class="chip chip--source"><span class="chip__dot" style="--dot: var(--ink);"></span>Manual</span>
+              </div>
+              <h1 class="view__title">Push Day A</h1>
+              <p class="view__sub">Started 18:42 · 23 minutes elapsed · 3 of 6 exercises complete</p>
+            </header>
+
+            <div class="stack" style="--gap: var(--s-4);">
+
+              <!-- Completed exercise -->
+              <div class="card p-0">
+                <div class="exercise">
+                  <div class="exercise__head row" style="--justify: space-between;">
+                    <div class="stack" style="--gap: 2px;">
+                      <span class="exercise__name">Barbell Bench Press</span>
+                      <span class="exercise__meta">Chest · 3 working sets</span>
+                    </div>
+                    <span class="pill pill--accent pill--plain">PR</span>
+                  </div>
+                  <table class="set-table">
+                    <thead>
+                      <tr>
+                        <th>Set</th>
+                        <th>Previous</th>
+                        <th>Weight</th>
+                        <th>Reps</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><span class="set-cell set-cell--done">1</span></td>
+                        <td class="muted">80kg × 8</td>
+                        <td>82.5</td>
+                        <td>8</td>
+                        <td>✓</td>
+                      </tr>
+                      <tr>
+                        <td><span class="set-cell set-cell--done">2</span></td>
+                        <td class="muted">80kg × 8</td>
+                        <td>82.5</td>
+                        <td>8</td>
+                        <td>✓</td>
+                      </tr>
+                      <tr>
+                        <td><span class="set-cell set-cell--pr">3</span></td>
+                        <td class="muted">80kg × 6</td>
+                        <td>85.0</td>
+                        <td>7</td>
+                        <td>★</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Active exercise -->
+              <div class="card p-0" style="border-color: var(--accent); border-width: 1.5px;">
+                <div class="exercise">
+                  <div class="exercise__head row" style="--justify: space-between;">
+                    <div class="stack" style="--gap: 2px;">
+                      <span class="exercise__name">Incline Dumbbell Press</span>
+                      <span class="exercise__meta">Chest · 3 working sets · In progress</span>
+                    </div>
+                    <button class="btn btn--sm btn--ghost">Notes</button>
+                  </div>
+                  <table class="set-table">
+                    <thead>
+                      <tr>
+                        <th>Set</th>
+                        <th>Previous</th>
+                        <th>Weight</th>
+                        <th>Reps</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><span class="set-cell set-cell--done">1</span></td>
+                        <td class="muted">30kg × 10</td>
+                        <td>32.5</td>
+                        <td>10</td>
+                        <td>✓</td>
+                      </tr>
+                      <tr>
+                        <td><span class="set-cell set-cell--done">2</span></td>
+                        <td class="muted">30kg × 10</td>
+                        <td>32.5</td>
+                        <td>9</td>
+                        <td>✓</td>
+                      </tr>
+                      <tr>
+                        <td><span class="set-cell">3</span></td>
+                        <td class="muted">30kg × 8</td>
+                        <td><input class="set-input" value="32.5"></td>
+                        <td><input class="set-input" value="8"></td>
+                        <td><button class="btn btn--primary btn--sm">Log</button></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Upcoming collapsed -->
+              <div class="card p-0">
+                <div class="exercise" style="opacity: .6;">
+                  <div class="exercise__head row" style="--justify: space-between;">
+                    <div class="stack" style="--gap: 2px;">
+                      <span class="exercise__name">Cable Flye</span>
+                      <span class="exercise__meta">Chest · 3 sets · Queued</span>
+                    </div>
+                    <button class="btn btn--sm btn--ghost">Expand ↓</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card p-0">
+                <div class="exercise" style="opacity: .6;">
+                  <div class="exercise__head row" style="--justify: space-between;">
+                    <div class="stack" style="--gap: 2px;">
+                      <span class="exercise__name">Seated Overhead Press</span>
+                      <span class="exercise__meta">Shoulders · 4 sets · Queued</span>
+                    </div>
+                    <button class="btn btn--sm btn--ghost">Expand ↓</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card p-0">
+                <div class="exercise" style="opacity: .6;">
+                  <div class="exercise__head row" style="--justify: space-between;">
+                    <div class="stack" style="--gap: 2px;">
+                      <span class="exercise__name">Lateral Raise</span>
+                      <span class="exercise__meta">Shoulders · 3 sets · Queued</span>
+                    </div>
+                    <button class="btn btn--sm btn--ghost">Expand ↓</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card p-0">
+                <div class="exercise" style="opacity: .6;">
+                  <div class="exercise__head row" style="--justify: space-between;">
+                    <div class="stack" style="--gap: 2px;">
+                      <span class="exercise__name">Tricep Pushdown</span>
+                      <span class="exercise__meta">Triceps · 3 sets · Queued</span>
+                    </div>
+                    <button class="btn btn--sm btn--ghost">Expand ↓</button>
+                  </div>
+                </div>
+              </div>
+
+              <button class="btn btn--block" style="border-style: dashed;">+ Add exercise</button>
+
+              <div class="row" style="--gap: var(--s-3);">
+                <button class="btn btn--ghost" style="flex: 1;">Discard</button>
+                <button class="btn btn--primary btn--lg" style="flex: 2;">Finish workout</button>
+              </div>
+            </div>
+
+            <!-- Floating rest timer -->
+            <div class="rest-timer">
+              <span>Rest</span>
+              <span class="num" style="font-size: var(--t-md); font-weight: 500;">1:47</span>
+              <span style="opacity: .6;">· Set 3 of Incline DB Press</span>
+            </div>
+
+          </section>
+
+          <!-- ────────────────────────────────────────────────────────────
+             VIEW: PROGRESS / ANALYTICS
+             ──────────────────────────────────────────────────────────── -->
+          <section class="view" data-view="progress">
+
+            <header class="view__header">
+              <span class="eyebrow">Analytics · 30 days</span>
+              <h1 class="view__title">Bench press is up <span style="color: var(--ok);">12.5%</span>.</h1>
+              <p class="view__sub">Since March 24. Volume trending up, sleep steady, recovery green.</p>
+            </header>
+
+            <div class="cluster" style="margin-bottom: var(--s-5);">
+              <span class="chip">Overview</span>
+              <span class="chip chip--active">Strength</span>
+              <span class="chip">Cardio</span>
+              <span class="chip">Body</span>
+              <span class="chip">Sleep</span>
+              <span class="chip">Nutrition</span>
+            </div>
+
+            <div class="card stack" style="--gap: var(--s-5);">
+
+              <div class="row" style="--justify: space-between; --align: baseline;">
+                <div class="stack" style="--gap: 2px;">
+                  <span class="eyebrow">Bench Press · Top set</span>
+                  <span class="display" style="font-size: var(--t-4xl); line-height: 1;">85<span class="faint"
+                      style="font-family: var(--font-ui); font-size: var(--t-lg);"> kg</span></span>
+                </div>
+                <div class="cluster">
+                  <span class="chip">7d</span>
+                  <span class="chip chip--active">30d</span>
+                  <span class="chip">90d</span>
+                  <span class="chip">1y</span>
+                  <span class="chip">All</span>
+                </div>
+              </div>
+
+              <!-- Line chart -->
+              <svg class="chart" viewBox="0 0 600 280" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="chartGrad" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0%" stop-color="var(--accent)" />
+                    <stop offset="100%" stop-color="var(--accent)" stop-opacity="0" />
+                  </linearGradient>
+                </defs>
+                <g class="chart__grid">
+                  <line x1="0" y1="56" x2="600" y2="56" />
+                  <line x1="0" y1="112" x2="600" y2="112" />
+                  <line x1="0" y1="168" x2="600" y2="168" />
+                  <line x1="0" y1="224" x2="600" y2="224" />
+                </g>
+                <polygon class="chart__area"
+                  points="0,220 0,200 50,195 100,188 150,180 200,172 250,168 300,152 350,148 400,132 450,128 500,108 550,96 600,82 600,280 0,280" />
+                <path class="chart__line"
+                  d="M0,200 L50,195 L100,188 L150,180 L200,172 L250,168 L300,152 L350,148 L400,132 L450,128 L500,108 L550,96 L600,82" />
+                <circle class="chart__dot" cx="600" cy="82" r="5" />
+                <g class="chart__axis">
+                  <text x="0" y="275">Mar 24</text>
+                  <text x="300" y="275" text-anchor="middle">Apr 8</text>
+                  <text x="600" y="275" text-anchor="end">Apr 24</text>
+                  <text x="595" y="60" text-anchor="end">90</text>
+                  <text x="595" y="116" text-anchor="end">80</text>
+                  <text x="595" y="172" text-anchor="end">70</text>
+                  <text x="595" y="228" text-anchor="end">60</text>
+                </g>
+              </svg>
+
+              <hr class="divider">
+
+              <div class="grid" style="--col-min: 140px; --gap: var(--s-5);">
+                <div class="stat"><span class="stat__eyebrow">Current</span><span class="stat__num">85<span
+                      class="stat__unit">kg</span></span></div>
+                <div class="stat"><span class="stat__eyebrow">30d Δ</span><span class="stat__num"
+                    style="color: var(--ok);">+9.5<span class="stat__unit">kg</span></span></div>
+                <div class="stat"><span class="stat__eyebrow">Avg</span><span class="stat__num">78.2<span
+                      class="stat__unit">kg</span></span></div>
+                <div class="stat"><span class="stat__eyebrow">Sessions</span><span class="stat__num">12</span></div>
+              </div>
+            </div>
+
+            <h2 class="eyebrow">Recent PRs</h2>
+            <div class="grid" style="--col-min: 240px;">
+              <div class="card stack">
+                <div class="row" style="--justify: space-between;">
+                  <span class="tag" style="--tag-color: var(--c-strength);">Strength</span>
+                  <span class="mono muted" style="font-size: var(--t-xs);">APR 22</span>
+                </div>
+                <div class="stat">
+                  <span class="stat__eyebrow">Bench Press</span>
+                  <span class="stat__num">85<span class="stat__unit">kg × 7</span></span>
+                  <span class="stat__trend stat__trend--up">↑ 2.5kg from 82.5 × 6</span>
+                </div>
+              </div>
+              <div class="card stack">
+                <div class="row" style="--justify: space-between;">
+                  <span class="tag" style="--tag-color: var(--c-cardio);">Cardio</span>
+                  <span class="mono muted" style="font-size: var(--t-xs);">APR 20</span>
+                </div>
+                <div class="stat">
+                  <span class="stat__eyebrow">5K time</span>
+                  <span class="stat__num">22:14</span>
+                  <span class="stat__trend stat__trend--up">↑ 38s faster</span>
+                </div>
+              </div>
+              <div class="card stack">
+                <div class="row" style="--justify: space-between;">
+                  <span class="tag" style="--tag-color: var(--c-strength);">Strength</span>
+                  <span class="mono muted" style="font-size: var(--t-xs);">APR 18</span>
+                </div>
+                <div class="stat">
+                  <span class="stat__eyebrow">Deadlift</span>
+                  <span class="stat__num">140<span class="stat__unit">kg × 5</span></span>
+                  <span class="stat__trend stat__trend--up">↑ 5kg from 135 × 5</span>
+                </div>
+              </div>
+            </div>
+
+            <h2 class="eyebrow">Weekly summary</h2>
+            <div class="card">
+              <div class="trend-list">
+                <div class="trend-item">
+                  <div class="stack" style="--gap: 0;">
+                    <span style="font-weight: 500;">Training volume</span>
+                    <span class="muted" style="font-size: var(--t-sm);">Total weight × reps across all sets</span>
+                  </div>
+                  <div class="stat stat--inline"><span class="stat__num">42.1k<span class="stat__unit">kg</span></span>
+                  </div>
+                  <svg class="spark" width="80" height="32" viewBox="0 0 80 32">
+                    <path d="M0,24 L10,20 L20,22 L30,16 L40,18 L50,12 L60,8 L70,10 L80,4"
+                      style="--spark-color: var(--ok);" />
+                  </svg>
+                </div>
+                <div class="trend-item">
+                  <div class="stack" style="--gap: 0;">
+                    <span style="font-weight: 500;">Avg sleep</span>
+                    <span class="muted" style="font-size: var(--t-sm);">From Garmin · last 7 nights</span>
+                  </div>
+                  <div class="stat stat--inline"><span class="stat__num">7:24</span></div>
+                  <svg class="spark" width="80" height="32" viewBox="0 0 80 32">
+                    <path d="M0,14 L10,16 L20,12 L30,14 L40,10 L50,12 L60,14 L70,12 L80,10"
+                      style="--spark-color: var(--c-recovery);" />
+                  </svg>
+                </div>
+                <div class="trend-item">
+                  <div class="stack" style="--gap: 0;">
+                    <span style="font-weight: 500;">Avg resting HR</span>
+                    <span class="muted" style="font-size: var(--t-sm);">Lower is better · from Garmin</span>
+                  </div>
+                  <div class="stat stat--inline"><span class="stat__num">58<span class="stat__unit">bpm</span></span>
+                  </div>
+                  <svg class="spark" width="80" height="32" viewBox="0 0 80 32">
+                    <path d="M0,8 L10,10 L20,12 L30,14 L40,16 L50,18 L60,20 L70,22 L80,24"
+                      style="--spark-color: var(--ok);" />
+                  </svg>
+                </div>
+                <div class="trend-item">
+                  <div class="stack" style="--gap: 0;">
+                    <span style="font-weight: 500;">Avg protein</span>
+                    <span class="muted" style="font-size: var(--t-sm);">Target 180g daily</span>
+                  </div>
+                  <div class="stat stat--inline"><span class="stat__num">168<span class="stat__unit">g</span></span>
+                  </div>
+                  <svg class="spark" width="80" height="32" viewBox="0 0 80 32">
+                    <path d="M0,18 L10,12 L20,16 L30,8 L40,14 L50,10 L60,6 L70,12 L80,10"
+                      style="--spark-color: var(--c-nutrition);" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+          </section>
+
+          <!-- ────────────────────────────────────────────────────────────
+             VIEW: SOCIAL FEED
+             ──────────────────────────────────────────────────────────── -->
+          <section class="view" data-view="social">
+
+            <header class="view__header row" style="--justify: space-between;">
+              <div class="stack" style="--gap: var(--s-1);">
+                <span class="eyebrow">Your feed</span>
+                <h1 class="view__title">What your club's been up to.</h1>
+              </div>
+              <button class="btn btn--primary hidden-mobile">Share workout</button>
+            </header>
+
+            <div class="cluster" style="margin-bottom: var(--s-5);">
+              <span class="chip chip--active">Following</span>
+              <span class="chip">Club</span>
+              <span class="chip">Discover</span>
+            </div>
+
+            <!-- Composer -->
+            <div class="card p-sm" style="margin-bottom: var(--s-4);">
+              <div class="row" style="--gap: var(--s-3);">
+                <div class="avatar" style="--avatar-a:#7B9EF8; --avatar-b:#B57BDC;">L</div>
+                <input class="input" placeholder="Share your last workout or a PR…" style="flex: 1;">
+                <button class="btn btn--primary btn--sm only-mobile" aria-label="Post">+</button>
+                <button class="btn btn--primary hidden-mobile">Share</button>
+              </div>
+            </div>
+
+            <div class="stack" style="--gap: var(--s-4);">
+
+              <!-- Post 1: Workout share -->
+              <article class="card post">
+                <header class="post__head row">
+                  <div class="avatar" style="--avatar-a:#E8785A; --avatar-b:#E8A33D;">AK</div>
+                  <div class="post__who">
+                    <span class="post__name">Amara Kenji</span>
+                    <span class="post__meta">Morning run · 2h ago</span>
+                  </div>
+                  <button class="post__action btn btn--icon btn--ghost" aria-label="More">⋯</button>
+                </header>
+                <h2 class="post__title">Easy 10K before the sun got mean.</h2>
+                <div class="post__hero">
+                  <div class="stat"><span class="stat__eyebrow">Distance</span><span class="stat__num">10.2<span
+                        class="stat__unit">km</span></span></div>
+                  <div class="stat"><span class="stat__eyebrow">Pace</span><span class="stat__num">4:49<span
+                        class="stat__unit">/km</span></span></div>
+                  <div class="stat"><span class="stat__eyebrow">Time</span><span class="stat__num">49:12</span></div>
+                </div>
+                <div class="post__map">
+                  <svg viewBox="0 0 600 180" preserveAspectRatio="none" style="width: 100%; height: 100%;">
+                    <path d="M20,140 Q80,100 140,120 T260,80 Q320,60 380,90 T500,50 Q540,30 580,60" fill="none"
+                      stroke="#EF4A4A" stroke-width="2.5" stroke-linecap="round" />
+                    <circle cx="20" cy="140" r="5" fill="var(--surface-1)" stroke="#EF4A4A" stroke-width="2" />
+                    <circle cx="580" cy="60" r="5" fill="#EF4A4A" />
+                  </svg>
+                </div>
+                <footer class="post__foot row">
+                  <button class="btn btn--sm">👏 42</button>
+                  <button class="btn btn--sm">💬 8</button>
+                  <button class="btn btn--sm" style="margin-left: auto;">↗</button>
+                </footer>
+              </article>
+
+              <!-- Post 2: PR celebration -->
+              <article class="card post">
+                <header class="post__head row">
+                  <div class="avatar" style="--avatar-a:#6FBF73; --avatar-b:#4DC8F0;">MR</div>
+                  <div class="post__who">
+                    <span class="post__name">Mo Reyes</span>
+                    <span class="post__meta">New PR · 5h ago</span>
+                  </div>
+                  <button class="post__action btn btn--icon btn--ghost" aria-label="More">⋯</button>
+                </header>
+                <div
+                  style="padding: var(--s-5); background: var(--accent); color: var(--accent-ink); text-align: center;">
+                  <span class="eyebrow" style="color: var(--accent-ink); opacity: .7;">Personal Record</span>
+                  <div class="stat" style="margin-top: var(--s-3);">
+                    <span class="display" style="font-size: var(--t-5xl); line-height: 1;">140<span
+                        style="font-family: var(--font-ui); font-size: var(--t-xl);">kg × 5</span></span>
+                    <span style="display: block; margin-top: var(--s-2); font-size: var(--t-md);">Conventional
+                      Deadlift</span>
+                  </div>
+                </div>
+                <p class="post__body">Three months of patience. Bar finally felt light. On to 145.</p>
+                <footer class="post__foot row">
+                  <button class="btn btn--sm">👏 127</button>
+                  <button class="btn btn--sm">💬 24</button>
+                  <button class="btn btn--sm" style="margin-left: auto;">↗</button>
+                </footer>
+              </article>
+
+              <!-- Post 3: Progress photo / milestone -->
+              <article class="card post">
+                <header class="post__head row">
+                  <div class="avatar" style="--avatar-a:#B57BDC; --avatar-b:#E8785A;">JL</div>
+                  <div class="post__who">
+                    <span class="post__name">Jamie Lin</span>
+                    <span class="post__meta">Milestone · yesterday</span>
+                  </div>
+                  <button class="post__action btn btn--icon btn--ghost" aria-label="More">⋯</button>
+                </header>
+                <div
+                  style="padding: var(--s-6) var(--s-5); background: linear-gradient(135deg, var(--surface-2), var(--surface-3)); text-align: center;">
+                  <span class="eyebrow">Protein streak</span>
+                  <div style="margin-top: var(--s-3);">
+                    <span class="display" style="font-size: var(--t-5xl); line-height: 1;">21</span>
+                    <span
+                      style="display: block; font-size: var(--t-md); margin-top: var(--s-2); color: var(--ink-muted);">consecutive
+                      days hitting 160g+</span>
+                  </div>
+                  <div class="cluster" style="justify-content: center; margin-top: var(--s-4); --gap: 3px;">
+                    <div style="width: 10px; height: 10px; background: var(--c-nutrition); border-radius: 2px;"></div>
+                    <div style="width: 10px; height: 10px; background: var(--c-nutrition); border-radius: 2px;"></div>
+                    <div style="width: 10px; height: 10px; background: var(--c-nutrition); border-radius: 2px;"></div>
+                    <div style="width: 10px; height: 10px; background: var(--c-nutrition); border-radius: 2px;"></div>
+                    <div style="width: 10px; height: 10px; background: var(--c-nutrition); border-radius: 2px;"></div>
+                    <div style="width: 10px; height: 10px; background: var(--c-nutrition); border-radius: 2px;"></div>
+                    <div style="width: 10px; height: 10px; background: var(--c-nutrition); border-radius: 2px;"></div>
+                    <div style="width: 10px; height: 10px; background: var(--c-nutrition); border-radius: 2px;"></div>
+                    <div style="width: 10px; height: 10px; background: var(--c-nutrition); border-radius: 2px;"></div>
+                    <div style="width: 10px; height: 10px; background: var(--c-nutrition); border-radius: 2px;"></div>
+                    <div style="width: 10px; height: 10px; background: var(--c-nutrition); border-radius: 2px;"></div>
+                    <div style="width: 10px; height: 10px; background: var(--c-nutrition); border-radius: 2px;"></div>
+                    <div style="width: 10px; height: 10px; background: var(--c-nutrition); border-radius: 2px;"></div>
+                    <div style="width: 10px; height: 10px; background: var(--c-nutrition); border-radius: 2px;"></div>
+                    <div style="width: 10px; height: 10px; background: var(--c-nutrition); border-radius: 2px;"></div>
+                    <div style="width: 10px; height: 10px; background: var(--c-nutrition); border-radius: 2px;"></div>
+                    <div style="width: 10px; height: 10px; background: var(--c-nutrition); border-radius: 2px;"></div>
+                    <div style="width: 10px; height: 10px; background: var(--c-nutrition); border-radius: 2px;"></div>
+                    <div style="width: 10px; height: 10px; background: var(--c-nutrition); border-radius: 2px;"></div>
+                    <div style="width: 10px; height: 10px; background: var(--c-nutrition); border-radius: 2px;"></div>
+                    <div style="width: 10px; height: 10px; background: var(--c-nutrition); border-radius: 2px;"></div>
+                  </div>
+                </div>
+                <p class="post__body">The compound effect of boring consistency is genuinely wild.</p>
+                <footer class="post__foot row">
+                  <button class="btn btn--sm">👏 89</button>
+                  <button class="btn btn--sm">💬 16</button>
+                  <button class="btn btn--sm" style="margin-left: auto;">↗</button>
+                </footer>
+              </article>
+
+              <!-- Post 4: Short text -->
+              <article class="card post">
+                <header class="post__head row">
+                  <div class="avatar" style="--avatar-a:#E25555; --avatar-b:#E8A33D;">TS</div>
+                  <div class="post__who">
+                    <span class="post__name">Theo Singh</span>
+                    <span class="post__meta">Note · 2 days ago</span>
+                  </div>
+                  <button class="post__action btn btn--icon btn--ghost" aria-label="More">⋯</button>
+                </header>
+                <p class="post__body"
+                  style="font-family: var(--font-display); font-size: var(--t-xl); line-height: 1.3; padding-top: 0; padding-bottom: var(--s-4);">
+                  "Rest is not the opposite of training. It <em>is</em> training." — reminder to self after a greedy
+                  week.</p>
+                <footer class="post__foot row">
+                  <button class="btn btn--sm">👏 56</button>
+                  <button class="btn btn--sm">💬 11</button>
+                  <button class="btn btn--sm" style="margin-left: auto;">↗</button>
+                </footer>
+              </article>
+
+            </div>
+
+          </section>
+
+          <!-- ────────────────────────────────────────────────────────────
+             VIEW: NUTRITION
+             ──────────────────────────────────────────────────────────── -->
+          <section class="view" data-view="nutrition">
+
+            <header class="view__header">
+              <span class="eyebrow">Friday · April 24</span>
+              <h1 class="view__title">1,847 kcal · 253 to go.</h1>
+              <p class="view__sub">Protein on track · carbs a little under · hydration fair.</p>
+            </header>
+
+            <!-- Macro hero -->
+            <div class="card" style="margin-bottom: var(--s-4);">
+              <div class="row" style="--gap: var(--s-6); --align: center;">
+                <div class="ring" style="--ring-color: var(--c-nutrition); --ring-width: 10;">
+                  <svg class="ring__svg" width="160" height="160" viewBox="0 0 160 160">
+                    <circle class="ring__track" cx="80" cy="80" r="68" />
+                    <circle class="ring__fill" cx="80" cy="80" r="68" stroke-dasharray="427.26"
+                      stroke-dashoffset="51.3" />
+                  </svg>
+                  <div class="ring__inner">
+                    <span class="eyebrow">Calories</span>
+                    <span class="display" style="font-size: var(--t-2xl);">1,847</span>
+                    <span class="mono" style="font-size: var(--t-xs); color: var(--ink-muted);">/ 2,100</span>
+                  </div>
+                </div>
+
+                <div class="stack" style="flex: 1; --gap: var(--s-3);">
+                  <div class="stack" style="--gap: 4px;">
+                    <div class="row" style="--justify: space-between;">
+                      <div class="row" style="--gap: var(--s-2);"><span class="tag"
+                          style="--tag-color: var(--c-nutrition);">Protein</span></div>
+                      <span class="mono" style="font-size: var(--t-sm);">142<span class="faint">g / 180g</span></span>
+                    </div>
+                    <div class="bar">
+                      <div class="bar__fill" style="--fill: 79%; --bar-color: var(--c-nutrition);"></div>
+                    </div>
+                  </div>
+                  <div class="stack" style="--gap: 4px;">
+                    <div class="row" style="--justify: space-between;">
+                      <div class="row" style="--gap: var(--s-2);"><span class="tag"
+                          style="--tag-color: var(--warn);">Carbs</span></div>
+                      <span class="mono" style="font-size: var(--t-sm);">196<span class="faint">g / 240g</span></span>
+                    </div>
+                    <div class="bar">
+                      <div class="bar__fill" style="--fill: 82%; --bar-color: var(--warn);"></div>
+                    </div>
+                  </div>
+                  <div class="stack" style="--gap: 4px;">
+                    <div class="row" style="--justify: space-between;">
+                      <div class="row" style="--gap: var(--s-2);"><span class="tag"
+                          style="--tag-color: var(--c-strength);">Fat</span></div>
+                      <span class="mono" style="font-size: var(--t-sm);">49<span class="faint">g / 70g</span></span>
+                    </div>
+                    <div class="bar">
+                      <div class="bar__fill" style="--fill: 70%; --bar-color: var(--c-strength);"></div>
+                    </div>
+                  </div>
+                  <div class="stack" style="--gap: 4px; margin-top: var(--s-2);">
+                    <div class="row" style="--justify: space-between;">
+                      <div class="row" style="--gap: var(--s-2);"><span class="tag"
+                          style="--tag-color: var(--c-water);">Water</span></div>
+                      <span class="mono" style="font-size: var(--t-sm);">1.6<span class="faint">L / 3.0L</span></span>
+                    </div>
+                    <div class="glass-tracker">
+                      <div class="glass glass--full"></div>
+                      <div class="glass glass--full"></div>
+                      <div class="glass glass--full"></div>
+                      <div class="glass glass--full"></div>
+                      <div class="glass glass--full"></div>
+                      <div class="glass"
+                        style="background: linear-gradient(to top, var(--c-water) 0%, var(--c-water) 40%, transparent 40%);">
+                      </div>
+                      <div class="glass"></div>
+                      <div class="glass"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row" style="--justify: space-between; margin-bottom: var(--s-3);">
+              <span class="chip chip--source"><span class="chip__dot"
+                  style="--dot: var(--c-nutrition);"></span>MyFitnessPal · synced 17m ago</span>
+              <button class="btn btn--sm">+ Quick add</button>
+            </div>
+
+            <!-- Meals -->
+            <div class="stack" style="--gap: var(--s-4);">
+
+              <div class="card p-0">
+                <div class="row"
+                  style="--justify: space-between; padding: var(--s-4) var(--s-5); border-bottom: 1px solid var(--line);">
+                  <div class="row" style="--gap: var(--s-3); --align: baseline;">
+                    <span class="display" style="font-size: var(--t-xl);">Breakfast</span>
+                    <span class="mono muted" style="font-size: var(--t-xs);">08:14</span>
+                  </div>
+                  <div class="row" style="--gap: var(--s-3);">
+                    <span class="display" style="font-size: var(--t-lg);">462<span class="faint"
+                        style="font-family: var(--font-ui); font-size: var(--t-xs);"> kcal</span></span>
+                    <button class="btn btn--sm btn--icon" aria-label="Add">+</button>
+                  </div>
+                </div>
+                <div style="padding: 0 var(--s-5);">
+                  <div class="meal-row">
+                    <div class="stack" style="--gap: 2px;">
+                      <span class="meal-row__name">Greek yogurt, plain 2%</span>
+                      <span class="meal-row__sub">200g · P 20 · C 8 · F 4</span>
+                    </div>
+                    <span class="meal-row__kcal">142</span>
+                  </div>
+                  <div class="meal-row">
+                    <div class="stack" style="--gap: 2px;">
+                      <span class="meal-row__name">Blueberries, fresh</span>
+                      <span class="meal-row__sub">80g · P 1 · C 12 · F 0</span>
+                    </div>
+                    <span class="meal-row__kcal">46</span>
+                  </div>
+                  <div class="meal-row">
+                    <div class="stack" style="--gap: 2px;">
+                      <span class="meal-row__name">Granola, homemade</span>
+                      <span class="meal-row__sub">45g · P 5 · C 24 · F 9</span>
+                    </div>
+                    <span class="meal-row__kcal">198</span>
+                  </div>
+                  <div class="meal-row">
+                    <div class="stack" style="--gap: 2px;">
+                      <span class="meal-row__name">Black coffee</span>
+                      <span class="meal-row__sub">240ml · P 0 · C 0 · F 0</span>
+                    </div>
+                    <span class="meal-row__kcal">2</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card p-0">
+                <div class="row"
+                  style="--justify: space-between; padding: var(--s-4) var(--s-5); border-bottom: 1px solid var(--line);">
+                  <div class="row" style="--gap: var(--s-3); --align: baseline;">
+                    <span class="display" style="font-size: var(--t-xl);">Lunch</span>
+                    <span class="mono muted" style="font-size: var(--t-xs);">13:02</span>
+                  </div>
+                  <div class="row" style="--gap: var(--s-3);">
+                    <span class="display" style="font-size: var(--t-lg);">698<span class="faint"
+                        style="font-family: var(--font-ui); font-size: var(--t-xs);"> kcal</span></span>
+                    <button class="btn btn--sm btn--icon" aria-label="Add">+</button>
+                  </div>
+                </div>
+                <div style="padding: 0 var(--s-5);">
+                  <div class="meal-row">
+                    <div class="stack" style="--gap: 2px;">
+                      <span class="meal-row__name">Chicken thigh, roasted</span>
+                      <span class="meal-row__sub">180g · P 42 · C 0 · F 14</span>
+                    </div>
+                    <span class="meal-row__kcal">318</span>
+                  </div>
+                  <div class="meal-row">
+                    <div class="stack" style="--gap: 2px;">
+                      <span class="meal-row__name">Basmati rice, cooked</span>
+                      <span class="meal-row__sub">180g · P 5 · C 52 · F 1</span>
+                    </div>
+                    <span class="meal-row__kcal">238</span>
+                  </div>
+                  <div class="meal-row">
+                    <div class="stack" style="--gap: 2px;">
+                      <span class="meal-row__name">Roasted vegetables</span>
+                      <span class="meal-row__sub">200g · P 4 · C 18 · F 8</span>
+                    </div>
+                    <span class="meal-row__kcal">142</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card p-0">
+                <div class="row"
+                  style="--justify: space-between; padding: var(--s-4) var(--s-5); border-bottom: 1px solid var(--line);">
+                  <div class="row" style="--gap: var(--s-3); --align: baseline;">
+                    <span class="display" style="font-size: var(--t-xl);">Dinner</span>
+                    <span class="mono muted" style="font-size: var(--t-xs);">Not logged</span>
+                  </div>
+                  <button class="btn btn--sm">+ Log meal</button>
+                </div>
+                <div
+                  style="padding: var(--s-5); color: var(--ink-faint); font-size: var(--t-sm); text-align: center; font-style: italic;"
+                  class="mono">no entries yet</div>
+              </div>
+
+              <div class="card p-0">
+                <div class="row"
+                  style="--justify: space-between; padding: var(--s-4) var(--s-5); border-bottom: 1px solid var(--line);">
+                  <div class="row" style="--gap: var(--s-3); --align: baseline;">
+                    <span class="display" style="font-size: var(--t-xl);">Snacks</span>
+                    <span class="mono muted" style="font-size: var(--t-xs);">2 entries</span>
+                  </div>
+                  <div class="row" style="--gap: var(--s-3);">
+                    <span class="display" style="font-size: var(--t-lg);">687<span class="faint"
+                        style="font-family: var(--font-ui); font-size: var(--t-xs);"> kcal</span></span>
+                    <button class="btn btn--sm btn--icon" aria-label="Add">+</button>
+                  </div>
+                </div>
+                <div style="padding: 0 var(--s-5);">
+                  <div class="meal-row">
+                    <div class="stack" style="--gap: 2px;">
+                      <span class="meal-row__name">Whey protein shake</span>
+                      <span class="meal-row__sub">1 scoop · P 24 · C 3 · F 2</span>
+                    </div>
+                    <span class="meal-row__kcal">128</span>
+                  </div>
+                  <div class="meal-row">
+                    <div class="stack" style="--gap: 2px;">
+                      <span class="meal-row__name">Banana with peanut butter</span>
+                      <span class="meal-row__sub">1 medium + 32g · P 9 · C 38 · F 16</span>
+                    </div>
+                    <span class="meal-row__kcal">328</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Supplements -->
+              <div class="card stack">
+                <div class="row" style="--justify: space-between;">
+                  <span class="eyebrow">Supplements today</span>
+                  <span class="mono muted" style="font-size: var(--t-xs);">3 of 5</span>
+                </div>
+                <div>
+                  <div class="supplement-row">
+                    <span class="checkbox" aria-checked="true">✓</span>
+                    <div class="stack" style="--gap: 2px;">
+                      <span class="meal-row__name">Creatine monohydrate</span>
+                      <span class="meal-row__sub">5g · taken 08:20</span>
+                    </div>
+                    <span class="mono muted" style="font-size: var(--t-xs);">DAILY</span>
+                  </div>
+                  <div class="supplement-row">
+                    <span class="checkbox" aria-checked="true">✓</span>
+                    <div class="stack" style="--gap: 2px;">
+                      <span class="meal-row__name">Omega-3</span>
+                      <span class="meal-row__sub">2 × 1000mg · taken 08:20</span>
+                    </div>
+                    <span class="mono muted" style="font-size: var(--t-xs);">DAILY</span>
+                  </div>
+                  <div class="supplement-row">
+                    <span class="checkbox" aria-checked="true">✓</span>
+                    <div class="stack" style="--gap: 2px;">
+                      <span class="meal-row__name">Vitamin D3</span>
+                      <span class="meal-row__sub">4000 IU · taken 08:20</span>
+                    </div>
+                    <span class="mono muted" style="font-size: var(--t-xs);">DAILY</span>
+                  </div>
+                  <div class="supplement-row">
+                    <span class="checkbox" aria-checked="false"></span>
+                    <div class="stack" style="--gap: 2px;">
+                      <span class="meal-row__name">Magnesium glycinate</span>
+                      <span class="meal-row__sub">400mg · before bed</span>
+                    </div>
+                    <span class="mono muted" style="font-size: var(--t-xs);">DAILY</span>
+                  </div>
+                  <div class="supplement-row">
+                    <span class="checkbox" aria-checked="false"></span>
+                    <div class="stack" style="--gap: 2px;">
+                      <span class="meal-row__name">Whey protein</span>
+                      <span class="meal-row__sub">25g · post-workout</span>
+                    </div>
+                    <span class="mono muted" style="font-size: var(--t-xs);">TRAINING</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </section>
+
+          <!-- ────────────────────────────────────────────────────────────
+             VIEW: INJURY LOG
+             ──────────────────────────────────────────────────────────── -->
+          <section class="view" data-view="injury">
+
+            <header class="view__header">
+              <span class="eyebrow">Injury log · 1 active</span>
+              <h1 class="view__title">Track what hurts. Plan around it.</h1>
+              <p class="view__sub">Log pain, flag sensitive exercises, and see how long recovery actually takes.</p>
+            </header>
+
+            <div class="grid" style="--col-min: 300px; --gap: var(--s-5);">
+
+              <!-- Body diagram -->
+              <div class="card stack">
+                <div class="row" style="--justify: space-between;">
+                  <span class="eyebrow">Body map</span>
+                  <div class="cluster">
+                    <span class="chip chip--active">Front</span>
+                    <span class="chip">Back</span>
+                  </div>
+                </div>
+                <svg class="body-diagram" viewBox="0 0 200 360" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Head -->
+                  <ellipse cx="100" cy="28" rx="18" ry="22" />
+                  <!-- Neck -->
+                  <rect x="92" y="48" width="16" height="12" rx="4" />
+                  <!-- Shoulders / chest -->
+                  <path d="M60,68 Q70,60 100,60 Q130,60 140,68 L148,120 Q130,132 100,132 Q70,132 52,120 Z"
+                    data-hot="mild" />
+                  <!-- Abs -->
+                  <path d="M75,130 Q85,135 100,135 Q115,135 125,130 L122,180 Q112,188 100,188 Q88,188 78,180 Z" />
+                  <!-- Hips -->
+                  <path d="M72,188 Q85,195 100,195 Q115,195 128,188 L130,215 Q115,222 100,222 Q85,222 70,215 Z" />
+                  <!-- Left arm (biceps) -->
+                  <path d="M52,76 Q42,78 38,88 L36,140 Q40,148 48,150 L54,120 Z" />
+                  <!-- Left forearm -->
+                  <path d="M42,152 Q40,158 40,170 L48,220 Q54,226 58,218 L52,164 Z" />
+                  <!-- Right arm -->
+                  <path d="M148,76 Q158,78 162,88 L164,140 Q160,148 152,150 L146,120 Z" />
+                  <!-- Right forearm -->
+                  <path d="M158,152 Q160,158 160,170 L152,220 Q146,226 142,218 L148,164 Z" />
+                  <!-- Left quad -->
+                  <path d="M75,222 Q85,228 96,228 L92,310 Q84,316 78,310 L72,240 Z" data-hot="active" />
+                  <!-- Right quad -->
+                  <path d="M125,222 Q115,228 104,228 L108,310 Q116,316 122,310 L128,240 Z" />
+                  <!-- Left shin -->
+                  <path d="M78,314 L80,340 Q86,346 90,340 L92,314 Z" />
+                  <!-- Right shin -->
+                  <path d="M122,314 L120,340 Q114,346 110,340 L108,314 Z" />
+                  <!-- Markers -->
+                  <circle cx="83" cy="264" r="10" fill="var(--bad)" stroke="var(--surface-1)" stroke-width="2"
+                    opacity="0.9" />
+                  <circle cx="100" cy="96" r="8" fill="var(--warn)" stroke="var(--surface-1)" stroke-width="2"
+                    opacity="0.8" />
+                </svg>
+                <div class="row" style="--justify: center; --gap: var(--s-4); font-size: var(--t-xs);">
+                  <div class="row" style="--gap: 6px;"><span
+                      style="width: 10px; height: 10px; background: var(--bad); border-radius: 50%;"></span><span
+                      class="muted">Active</span></div>
+                  <div class="row" style="--gap: 6px;"><span
+                      style="width: 10px; height: 10px; background: var(--warn); border-radius: 50%;"></span><span
+                      class="muted">Healing</span></div>
+                  <div class="row" style="--gap: 6px;"><span
+                      style="width: 10px; height: 10px; background: var(--surface-3); border-radius: 50%; border: 1px solid var(--line-strong);"></span><span
+                      class="muted">Resolved</span></div>
+                </div>
+              </div>
+
+              <!-- Active injury detail -->
+              <div class="stack" style="--gap: var(--s-4);">
+
+                <div class="card stack">
+                  <div class="row" style="--justify: space-between;">
+                    <span class="pill pill--bad">Active · Day 12</span>
+                    <span class="mono muted" style="font-size: var(--t-xs);">SINCE APR 12</span>
+                  </div>
+                  <h2 class="display" style="font-size: var(--t-2xl);">Left VMO · strain</h2>
+                  <p class="muted" style="font-size: var(--t-sm);">Tweaked during heavy squats on week 3. Warm-up felt
+                    rushed. Noticed dull ache in bottom position only.</p>
+
+                  <div class="stack" style="--gap: 6px;">
+                    <span class="eyebrow">Current pain level</span>
+                    <div class="pain-scale">
+                      <div class="pain-dot" data-active="true"></div>
+                      <div class="pain-dot" data-active="true"></div>
+                      <div class="pain-dot" data-active="true"></div>
+                      <div class="pain-dot"></div>
+                      <div class="pain-dot"></div>
+                      <div class="pain-dot"></div>
+                      <div class="pain-dot"></div>
+                      <div class="pain-dot"></div>
+                      <div class="pain-dot"></div>
+                      <div class="pain-dot"></div>
+                    </div>
+                    <span class="mono" style="font-size: var(--t-xs); color: var(--ink-muted);">3 / 10 · trending down
+                      from 6 on Apr 13</span>
+                  </div>
+
+                  <hr class="divider">
+
+                  <div class="stack" style="--gap: var(--s-2);">
+                    <span class="eyebrow">Avoid</span>
+                    <div class="cluster">
+                      <span class="pill pill--warn">Back squat</span>
+                      <span class="pill pill--warn">Lunges</span>
+                      <span class="pill pill--warn">Leg extension</span>
+                    </div>
+                  </div>
+
+                  <div class="stack" style="--gap: var(--s-2);">
+                    <span class="eyebrow">Prescribed</span>
+                    <div class="cluster">
+                      <span class="pill pill--mind">Foam rolling · 10m</span>
+                      <span class="pill pill--mind">Quad stretches · 2×</span>
+                      <span class="pill pill--recovery">Ice · post-session</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card card--inset stack">
+                  <span class="eyebrow">Recovery trajectory</span>
+                  <svg class="spark" width="100%" height="44" viewBox="0 0 240 44" preserveAspectRatio="none">
+                    <path
+                      d="M0,4 L20,6 L40,8 L60,12 L80,18 L100,22 L120,24 L140,28 L160,30 L180,34 L200,36 L220,38 L240,40"
+                      style="--spark-color: var(--warn); stroke-width: 2;" />
+                  </svg>
+                  <div class="row" style="--justify: space-between; font-size: var(--t-xs); color: var(--ink-muted);"
+                    class="mono">
+                    <span>APR 12 · Pain 6</span>
+                    <span>Today · Pain 3</span>
+                    <span>Est. clear · Apr 30</span>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+            <h2 class="eyebrow">History</h2>
+            <div class="card p-0">
+              <div class="trend-list" style="padding: 0 var(--s-5);">
+                <div class="trend-item">
+                  <div class="stack" style="--gap: 2px;">
+                    <div class="row" style="--gap: var(--s-2);">
+                      <span style="font-weight: 500;">Right shoulder · impingement</span>
+                      <span class="pill pill--ok">Resolved</span>
+                    </div>
+                    <span class="mono muted" style="font-size: var(--t-xs);">Feb 3 → Mar 18 · 43 days</span>
+                  </div>
+                  <span class="mono" style="font-size: var(--t-sm);">Peak 5/10</span>
+                  <span class="faint mono" style="font-size: var(--t-xs);">→</span>
+                </div>
+                <div class="trend-item">
+                  <div class="stack" style="--gap: 2px;">
+                    <div class="row" style="--gap: var(--s-2);">
+                      <span style="font-weight: 500;">Lower back · tweak</span>
+                      <span class="pill pill--ok">Resolved</span>
+                    </div>
+                    <span class="mono muted" style="font-size: var(--t-xs);">Jan 8 → Jan 14 · 6 days</span>
+                  </div>
+                  <span class="mono" style="font-size: var(--t-sm);">Peak 4/10</span>
+                  <span class="faint mono" style="font-size: var(--t-xs);">→</span>
+                </div>
+                <div class="trend-item">
+                  <div class="stack" style="--gap: 2px;">
+                    <div class="row" style="--gap: var(--s-2);">
+                      <span style="font-weight: 500;">Right knee · patellar tendinopathy</span>
+                      <span class="pill pill--ok">Resolved</span>
+                    </div>
+                    <span class="mono muted" style="font-size: var(--t-xs);">Oct 2024 → Dec 2024 · 68 days</span>
+                  </div>
+                  <span class="mono" style="font-size: var(--t-sm);">Peak 7/10</span>
+                  <span class="faint mono" style="font-size: var(--t-xs);">→</span>
+                </div>
+              </div>
+            </div>
+
+          </section>
+
+        </main>
+
+        <!-- Mobile tabbar -->
+        <nav class="app__tabbar">
+          <div class="app__tabbar-list">
+            <a class="app__tab" aria-current="page" data-nav="dashboard">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M3 12h3l3-9 6 18 3-9h3" />
+              </svg>
+              Home
+            </a>
+            <a class="app__tab" data-nav="workout">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M6 6v12M18 6v12M3 9v6M21 9v6M6 12h12" />
+              </svg>
+              Train
+            </a>
+            <a class="app__tab" data-nav="nutrition">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M12 3c-4 0-7 3-7 7 0 5 7 11 7 11s7-6 7-11c0-4-3-7-7-7z" />
+                <circle cx="12" cy="10" r="2" />
+              </svg>
+              Fuel
+            </a>
+            <a class="app__tab" data-nav="progress">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M3 20h18M5 16l4-6 4 3 6-9" />
+              </svg>
+              Stats
+            </a>
+            <a class="app__tab" data-nav="social">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M7 8a4 4 0 118 0 4 4 0 01-8 0zM3 21a6 6 0 0118 0" />
+              </svg>
+              Club
+            </a>
+            <a class="app__tab" data-nav="injury">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 8v8M8 12h8" />
+              </svg>
+              Body
+            </a>
+          </div>
+        </nav>
+
+      </div>
+    </div>
+
+    <footer class="demo-footer">Built with 25 reusable classes · no inline styles outside CSS custom property
+      passthrough · container-query responsive</footer>
+
+  </div>
+
+  <script>
+    // Theme toggle
+    document.querySelectorAll('[data-theme-btn]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const theme = btn.dataset.themeBtn;
+        document.documentElement.dataset.theme = theme;
+        document.querySelectorAll('[data-theme-btn]').forEach(b => {
+          b.setAttribute('aria-pressed', b.dataset.themeBtn === theme);
+        });
+      });
+    });
+
+    // Viewport toggle
+    const demo = document.getElementById('demo');
+    document.querySelectorAll('[data-viewport-btn]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const vp = btn.dataset.viewportBtn;
+        demo.dataset.viewport = vp;
+        document.querySelectorAll('[data-viewport-btn]').forEach(b => {
+          b.setAttribute('aria-pressed', b.dataset.viewportBtn === vp);
+        });
+      });
+    });
+
+    // View toggle (top bar controls + rail nav + tabbar)
+    function switchView(name) {
+      document.querySelectorAll('.view').forEach(v => {
+        v.dataset.active = v.dataset.view === name ? 'true' : 'false';
+      });
+      document.querySelectorAll('[data-view-btn]').forEach(b => {
+        b.setAttribute('aria-pressed', b.dataset.viewBtn === name);
+      });
+      document.querySelectorAll('.app__nav-item').forEach(a => {
+        if (a.dataset.nav === name) a.setAttribute('aria-current', 'page');
+        else a.removeAttribute('aria-current');
+      });
+      document.querySelectorAll('.app__tab').forEach(a => {
+        if (a.dataset.nav === name) a.setAttribute('aria-current', 'page');
+        else a.removeAttribute('aria-current');
+      });
+      // Scroll the main area to top
+      document.querySelector('.app__main').scrollTop = 0;
+    }
+
+    document.querySelectorAll('[data-view-btn]').forEach(btn => {
+      btn.addEventListener('click', () => switchView(btn.dataset.viewBtn));
+    });
+    document.querySelectorAll('.app__nav-item, .app__tab').forEach(a => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchView(a.dataset.nav);
+      });
+    });
+  </script>
+
+</body>
+
+</html>

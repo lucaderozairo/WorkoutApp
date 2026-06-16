@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Widgets — Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
+<style>
+/* ── Tokens ── */
+:root {
+  --c-strength: #e8785a;
+  --c-cardio:   #ef4a4a;
+  --c-recovery: #7b9ef8;
+  --c-nutrition:#6fbf73;
+  --c-water:    #4dc8f0;
+  --c-mind:     #b57bdc;
+  --ok:   #6fbf73;
+  --warn: #e8a33d;
+  --bad:  #e25555;
+  --color-sleep-awake: #8479d9;
+  --color-sleep-light: #8479d9;
+  --color-sleep-deep:  #5f538b;
+  --color-sleep-rem:   #a35acd;
+  --font-display: "Geist", Georgia, serif;
+  --font-ui:      "Geist", system-ui, sans-serif;
+  --font-mono:    "Geist Mono", ui-monospace, monospace;
+  --t-xs: 11px; --t-sm: 13px; --t-md: 15px; --t-lg: 18px;
+  --t-xl: 22px; --t-2xl: 28px; --t-3xl: 40px; --t-4xl: 56px;
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px;
+  --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px;
+  --r-xs: 4px; --r-sm: 8px; --r-md: 14px; --r-lg: 20px; --r-pill: 999px;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --duration-short: 150ms; --duration-medium: 300ms;
+}
+[data-theme="dark"] {
+  --surface-0: #080c18;
+  --surface-1: #0f1525;
+  --surface-2: #171e30;
+  --surface-3: #1f2840;
+  --ink:       #e8eefa;
+  --ink-muted: #8a93b2;
+  --ink-faint: #4a5270;
+  --line:        #1f2840;
+  --line-strong: #2a3555;
+  --accent:      #6ba3ff;
+  --accent-ink:  #050c20;
+  --accent-soft: #0f2050;
+  --shadow-1: 0 1px 2px rgba(0,2,18,.6);
+  --shadow-2: 0 8px 32px rgba(0,2,18,.85);
+  --box-shadow-sm: var(--shadow-1);
+  --box-shadow-md: 0 4px 12px rgba(0,0,0,.5);
+  --box-shadow-lg: var(--shadow-2);
+}
+
+/* ── Reset ── */
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html,body,#root {
+  font-family: var(--font-ui);
+  background: var(--surface-0);
+  color: var(--ink);
+  font-size: var(--t-md);
+  font-weight: 500;
+  line-height: 1.5;
+  min-height: 100dvh;
+  width: 100%;
+}
+*:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+::selection { background: var(--accent); color: var(--accent-ink); }
+
+/* ── Layout ── */
+.row { display: flex; flex-direction: row; gap: var(--s-1); }
+.stack,.column { display: flex; flex-direction: column; gap: var(--s-4); }
+.cluster { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); }
+.row.compact,.stack.compact,.column.compact { gap: var(--s-1); }
+.row.space-between,.stack.space-between,.column.space-between { justify-content: space-between; }
+.row.align-center,.stack.align-center,.column.align-center { align-items: center; }
+.row.align-top { align-items: flex-start; }
+.grow { flex: 1; min-width: 0; }
+.widget-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: minmax(160px, auto);
+  gap: var(--s-3);
+}
+.widget-1x1 { grid-column: span 1; grid-row: span 1; }
+.widget-2x1 { grid-column: span 2; grid-row: span 1; }
+.widget-2x2 { grid-column: span 2; grid-row: span 2; }
+@media (max-width: 640px) {
+  .widget-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ── Typography ── */
+h1 { font-family: var(--font-display); font-weight: 600; font-size: var(--t-2xl); line-height: 1.1; letter-spacing: -0.015em; }
+h2 { font-family: var(--font-display); font-weight: 600; font-size: var(--t-xl); line-height: 1.15; letter-spacing: -0.01em; }
+h3 { font-family: var(--font-ui); font-weight: 600; font-size: var(--t-md); line-height: 1.3; }
+.eyebrow { font-size: var(--t-xs); font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); }
+.muted  { color: var(--ink-muted); }
+.faint  { color: var(--ink-faint); }
+.mono   { font-family: var(--font-mono); }
+.caption { font-size: var(--t-xs); color: var(--ink-muted); }
+
+/* ── Surface ── */
+.surface {
+  width: 100%;
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  box-shadow: var(--box-shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: var(--s-4);
+}
+.surface.compact { padding: var(--s-3); }
+.surface.flat    { background: var(--surface-2); border-color: transparent; }
+.surface.bare    { padding: 0; overflow: hidden; }
+
+/* ── Buttons ── */
+button {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: var(--s-2); padding: var(--s-1) var(--s-3);
+  font-family: var(--font-ui); font-size: var(--t-sm); font-weight: 500;
+  color: var(--ink); background: var(--surface-1);
+  border: 1px solid var(--line-strong); border-radius: var(--r-pill);
+  cursor: pointer; white-space: nowrap;
+  transition: background .12s var(--ease), border-color .12s var(--ease), transform .12s var(--ease);
+}
+button:hover  { background: var(--surface-2); }
+button:active { transform: scale(.98); }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: transparent; font-weight: 600; }
+button.primary:hover { filter: brightness(.95); }
+button.ghost { background: transparent; border-color: transparent; }
+button.ghost:hover { background: var(--surface-2); }
+button.sm { padding: 3px var(--s-2); font-size: var(--t-xs); }
+
+/* ── Components: Pill ── */
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 10px; font-size: var(--t-xs); font-weight: 500;
+  letter-spacing: .02em; color: var(--ink);
+  background: var(--surface-2); border-radius: var(--r-pill); white-space: nowrap;
+}
+.pill::before {
+  content: ""; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--pill-color, var(--ink-faint)); flex-shrink: 0;
+}
+.pill.plain::before { display: none; }
+.pill.lift   { --pill-color: var(--c-strength); }
+.pill.run    { --pill-color: var(--c-cardio); }
+.pill.cycle  { --pill-color: var(--c-nutrition); }
+.pill.ok     { --pill-color: var(--ok); }
+.pill.warn   { --pill-color: var(--warn); }
+.pill.bad    { --pill-color: var(--bad); }
+
+/* ── Components: Bar ── */
+.bar {
+  width: 100%; height: var(--bar-height, 6px);
+  background: var(--surface-2); border-radius: var(--r-pill); overflow: hidden;
+}
+.bar-fill {
+  height: 100%; width: var(--fill, 50%);
+  background: var(--bar-color, var(--accent)); border-radius: inherit;
+  transition: width .4s var(--ease);
+}
+
+/* ════════════════════════════════════════════════════════
+   PROTOTYPE-SPECIFIC
+   ════════════════════════════════════════════════════════ */
+
+/* Category accent vars */
+:root {
+  --cat-sleep:     var(--color-sleep-light);
+  --cat-readiness: var(--accent);
+  --cat-training:  var(--c-strength);
+  --cat-nutrition: var(--c-nutrition);
+  --cat-goals:     var(--warn);
+  --cat-habits:    var(--c-water);
+  --cat-insights:  var(--c-mind);
+}
+
+/* Dashboard chrome */
+.dash-root {
+  min-height: 100dvh;
+  background: var(--surface-0);
+  padding: 0 var(--s-5) var(--s-8);
+}
+.dash-header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--surface-0);
+  border-bottom: 1px solid var(--line);
+  padding: var(--s-4) 0;
+  margin-bottom: var(--s-5);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.section-label {
+  font-size: var(--t-xs); font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink-muted);
+  margin-bottom: var(--s-3);
+  margin-top: var(--s-5);
+}
+.section-label:first-child { margin-top: 0; }
+
+/* Widget wrap */
+.widget-wrap {
+  position: relative;
+  animation: widget-in .35s var(--ease) both;
+}
+@keyframes widget-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Category accent top border */
+.widget-wrap .surface {
+  border-top: 2px solid var(--cat-accent, var(--line));
+  height: 100%;
+  box-sizing: border-box;
+}
+.widget-wrap[data-cat="sleep"]     { --cat-accent: var(--cat-sleep); }
+.widget-wrap[data-cat="readiness"] { --cat-accent: var(--cat-readiness); }
+.widget-wrap[data-cat="training"]  { --cat-accent: var(--cat-training); }
+.widget-wrap[data-cat="nutrition"] { --cat-accent: var(--cat-nutrition); }
+.widget-wrap[data-cat="goals"]     { --cat-accent: var(--cat-goals); }
+.widget-wrap[data-cat="habits"]    { --cat-accent: var(--cat-habits); }
+.widget-wrap[data-cat="insights"]  { --cat-accent: var(--cat-insights); }
+
+/* iOS wiggle in edit mode */
+@keyframes wiggle {
+  0%,100% { transform: rotate(-1.2deg) scale(1.01); }
+  50%      { transform: rotate( 1.2deg) scale(1.01); }
+}
+.widget-grid.edit-mode .widget-wrap {
+  animation: wiggle .35s ease-in-out infinite;
+  cursor: grab;
+}
+
+/* Edit overlay controls */
+.widget-ctrl {
+  position: absolute; z-index: 20;
+  opacity: 0; pointer-events: none;
+  transition: opacity .15s;
+}
+.ctrl-remove { top: -10px; left: -10px; }
+.ctrl-resize { top: -10px; right: -10px; }
+.edit-mode .widget-ctrl { opacity: 1; pointer-events: all; }
+.remove-btn {
+  width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--surface-0);
+  background: var(--bad); color: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; line-height: 1;
+  padding: 0;
+}
+.resize-btn {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--surface-3); color: var(--ink);
+  border: 2px solid var(--line-strong); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; padding: 0;
+}
+
+/* Widget header — click to maximize */
+.widget-header {
+  cursor: pointer; user-select: none;
+  display: flex; align-items: center; justify-content: space-between;
+  padding-bottom: var(--s-2);
+}
+.widget-header:hover .widget-title { color: var(--accent); }
+.widget-title {
+  font-size: var(--t-xs); font-weight: 600;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ink-muted);
+  transition: color .15s;
+}
+
+/* Widget body fills remaining space */
+.widget-body {
+  flex: 1; min-height: 0;
+  display: flex; flex-direction: column;
+}
+
+/* SortableJS states */
+.sortable-ghost  { opacity: 0.2; }
+.sortable-chosen { box-shadow: var(--shadow-2); z-index: 50; }
+
+/* Recharts tooltips */
+.recharts-default-tooltip {
+  background: var(--surface-2) !important;
+  border-color: var(--line-strong) !important;
+  color: var(--ink) !important;
+  font-family: var(--font-mono) !important;
+  font-size: var(--t-xs) !important;
+  border-radius: var(--r-sm) !important;
+}
+
+/* Big value display */
+.big-value {
+  font-family: var(--font-mono);
+  font-size: var(--t-3xl);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.big-value.sm { font-size: var(--t-2xl); }
+.value-unit {
+  font-family: var(--font-ui);
+  font-size: var(--t-sm);
+  color: var(--ink-muted);
+  margin-left: 2px;
+}
+
+/* Score ring for sleep quality / body battery */
+.score-ring-wrap {
+  display: flex; align-items: center; justify-content: center;
+  flex: 1;
+}
+
+/* Habit row */
+.habit-row {
+  display: flex; align-items: center; gap: var(--s-3);
+  padding: var(--s-2) 0;
+  border-bottom: 1px solid var(--line);
+}
+.habit-row:last-child { border-bottom: none; }
+.habit-check {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid var(--line-strong);
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+}
+.habit-check.done { background: var(--c-water); border-color: var(--c-water); }
+
+/* Activity item */
+.activity-item {
+  display: flex; align-items: center; gap: var(--s-3);
+  padding: var(--s-2) 0;
+  border-bottom: 1px solid var(--line);
+}
+.activity-item:last-child { border-bottom: none; }
+
+/* Insight card */
+.insight-card {
+  display: flex; gap: var(--s-3);
+  padding: var(--s-3);
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+}
+.insight-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  flex-shrink: 0; margin-top: 6px;
+}
+
+/* Sub-score row for readiness */
+.sub-scores {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: var(--s-2);
+}
+.sub-score {
+  display: flex; flex-direction: column; gap: 3px;
+}
+.sub-score-label { font-size: var(--t-xs); color: var(--ink-muted); }
+.sub-score-bar { height: 4px; background: var(--surface-3); border-radius: var(--r-pill); overflow: hidden; }
+.sub-score-fill { height: 100%; border-radius: inherit; background: var(--accent); }
+
+/* Goal progress item */
+.goal-item { display: flex; flex-direction: column; gap: var(--s-1); }
+.goal-row { display: flex; align-items: center; justify-content: space-between; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/recharts@2.15.3/umd/Recharts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
+
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+const {
+  LineChart, Line, BarChart, Bar,
+  RadialBarChart, RadialBar,
+  PieChart, Pie, Cell,
+  XAxis, YAxis, Tooltip, ResponsiveContainer, Legend
+} = Recharts;
+
+/* ════════════════ MOCK DATA ════════════════ */
+const MOCK = {
+  readiness: { score: 76, sleep: 8, energy: 7, soreness: 3, mood: 8 },
+  sleepHistory: [
+    { date:'Mon', durationMin:430, deepMin:88, lightMin:200, remMin:102, awakeMin:40, hrv:58, score:74 },
+    { date:'Tue', durationMin:395, deepMin:72, lightMin:190, remMin:90,  awakeMin:43, hrv:54, score:67 },
+    { date:'Wed', durationMin:460, deepMin:105,lightMin:210, remMin:110, awakeMin:35, hrv:65, score:82 },
+    { date:'Thu', durationMin:380, deepMin:65, lightMin:180, remMin:85,  awakeMin:50, hrv:49, score:61 },
+    { date:'Fri', durationMin:450, deepMin:98, lightMin:205, remMin:108, awakeMin:39, hrv:63, score:79 },
+    { date:'Sat', durationMin:510, deepMin:120,lightMin:235, remMin:120, awakeMin:35, hrv:71, score:88 },
+    { date:'Sun', durationMin:425, deepMin:90, lightMin:195, remMin:100, awakeMin:40, hrv:62, score:75 },
+  ],
+  healthMetrics: [
+    { date:'Mon', hrv:58, restingHr:56, bodyBattery:65 },
+    { date:'Tue', hrv:54, restingHr:58, bodyBattery:58 },
+    { date:'Wed', hrv:65, restingHr:53, bodyBattery:74 },
+    { date:'Thu', hrv:49, restingHr:61, bodyBattery:52 },
+    { date:'Fri', hrv:63, restingHr:54, bodyBattery:70 },
+    { date:'Sat', hrv:71, restingHr:51, bodyBattery:82 },
+    { date:'Sun', hrv:62, restingHr:54, bodyBattery:71 },
+  ],
+  statsSummary: { totalSessions:47, totalVolumeKg:18430, kmRan:84.5, kmCycled:210, liftSessions:32, cardioSessions:15 },
+  activityFeed: [
+    { type:'lift',  date:'Today',    title:'Upper A',       metric:'75 min · 18 sets 🏆' },
+    { type:'run',   date:'May 8',    title:'Morning Run',   metric:'5.2 km · 26:14' },
+    { type:'lift',  date:'May 7',    title:'Lower B',       metric:'60 min · 14 sets' },
+    { type:'cycle', date:'May 5',    title:'Endurance Ride',metric:'42 km · 1:38' },
+    { type:'lift',  date:'May 4',    title:'Upper B',       metric:'68 min · 16 sets' },
+  ],
+  activeGoals: [
+    { name:'Squat 140 kg',      target:140, current:120, unit:'kg' },
+    { name:'Run 100 km/month',  target:100, current:84,  unit:'km' },
+    { name:'10% BF',            target:10,  current:13,  unit:'%', inverted:true },
+    { name:'30-day streak',     target:30,  current:22,  unit:'days' },
+  ],
+  habitsToday: [
+    { name:'Morning mobility', streak:12, done:true },
+    { name:'Cold shower',      streak:5,  done:true },
+    { name:'Protein goal',     streak:3,  done:false },
+    { name:'8h sleep',         streak:8,  done:true },
+    { name:'No alcohol',       streak:21, done:true },
+  ],
+  nutrition: {
+    kcal: 1940, target: 2400,
+    protein: 148, carbs: 210, fat: 62,
+  },
+  insights: [
+    { severity:'ok',   message:'New squat estimated 1RM — 122.5 kg 🏆' },
+    { severity:'warn', message:'Training load 18% above your 4-week average' },
+    { severity:'info', message:'No cardio logged in 9 days' },
+  ],
+  planAdherence: { adherenceRate:0.83, currentStreak:6, completed:5, scheduled:6 },
+  monthlyProgression: [
+    { month:'Dec', kmRun:28, kmCycle:30 },
+    { month:'Jan', kmRun:35, kmCycle:52 },
+    { month:'Feb', kmRun:42, kmCycle:68 },
+    { month:'Mar', kmRun:38, kmCycle:85 },
+    { month:'Apr', kmRun:55, kmCycle:120 },
+    { month:'May', kmRun:84, kmCycle:210 },
+  ],
+  weeklyVolume: [
+    { day:'Mon', volume:4200 },
+    { day:'Tue', volume:0 },
+    { day:'Wed', volume:5800 },
+    { day:'Thu', volume:3100 },
+    { day:'Fri', volume:6200 },
+    { day:'Sat', volume:1800 },
+    { day:'Sun', volume:0 },
+  ],
+};
+
+/* ════════════════ WIDGET COMPONENTS ════════════════ */
+
+function ReadinessScoreWidget({ size }) {
+  const { score, sleep, energy, soreness, mood } = MOCK.readiness;
+  const data = [{ value: score }];
+  const color = score >= 75 ? '#6fbf73' : score >= 50 ? '#e8a33d' : '#e25555';
+
+  if (size === '1x1') return (
+    <div className="widget-body" style={{alignItems:'center',justifyContent:'center',gap:4}}>
+      <div className="big-value" style={{color}}>{score}</div>
+      <div className="eyebrow">Readiness</div>
+    </div>
+  );
+
+  return (
+    <div className="widget-body" style={{gap:'var(--s-3)'}}>
+      <div style={{display:'flex',alignItems:'center',gap:'var(--s-4)'}}>
+        <div style={{width:size==='2x2'?120:80,height:size==='2x2'?120:80,flexShrink:0}}>
+          <ResponsiveContainer width="100%" height="100%">
+            <RadialBarChart innerRadius="60%" outerRadius="90%" data={data} startAngle={90} endAngle={-270}>
+              <RadialBar dataKey="value" fill={color} background={{fill:'#1f2840'}} cornerRadius={4} />
+            </RadialBarChart>
+          </ResponsiveContainer>
+        </div>
+        <div>
+          <div className="big-value sm" style={{color}}>{score}</div>
+          <div className="caption">out of 100</div>
+        </div>
+      </div>
+      {size === '2x2' && (
+        <div className="sub-scores">
+          {[['Sleep', sleep],['Energy', energy],['Mood', mood],['Soreness', 10-soreness]].map(([label,val])=>(
+            <div key={label} className="sub-score">
+              <div className="sub-score-label">{label}</div>
+              <div className="sub-score-bar">
+                <div className="sub-score-fill" style={{width:`${val*10}%`}} />
+              </div>
+              <div className="mono caption">{val}/10</div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SleepBreakdownWidget({ size }) {
+  const data = MOCK.sleepHistory;
+  const h = size === '2x2' ? '100%' : 110;
+  return (
+    <div className="widget-body">
+      <ResponsiveContainer width="100%" height={h}>
+        <BarChart data={data} barSize={14} margin={{top:0,right:0,left:-28,bottom:0}}>
+          <XAxis dataKey="date" tick={{fill:'#8a93b2',fontSize:10}} axisLine={false} tickLine={false} />
+          {size==='2x2' && <YAxis tick={{fill:'#8a93b2',fontSize:10}} axisLine={false} tickLine={false} />}
+          <Tooltip contentStyle={{background:'#171e30',border:'1px solid #2a3555',borderRadius:8,fontSize:11}} />
+          <Bar dataKey="deepMin"  stackId="s" fill="#5f538b" name="Deep" />
+          <Bar dataKey="lightMin" stackId="s" fill="#8479d9" name="Light" />
+          <Bar dataKey="remMin"   stackId="s" fill="#a35acd" name="REM" radius={[3,3,0,0]} />
+        </BarChart>
+      </ResponsiveContainer>
+      {size==='2x2' && (
+        <div className="row" style={{gap:'var(--s-3)',flexWrap:'wrap'}}>
+          {[['Deep','#5f538b'],['Light','#8479d9'],['REM','#a35acd']].map(([l,c])=>(
+            <div key={l} style={{display:'flex',alignItems:'center',gap:4}}>
+              <div style={{width:8,height:8,borderRadius:2,background:c}} />
+              <span className="caption">{l}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function HRVTrendWidget({ size }) {
+  return (
+    <div className="widget-body">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={MOCK.healthMetrics} margin={{top:4,right:4,left:-28,bottom:0}}>
+          <XAxis dataKey="date" tick={{fill:'#8a93b2',fontSize:10}} axisLine={false} tickLine={false} />
+          {size==='2x2' && <YAxis tick={{fill:'#8a93b2',fontSize:10}} axisLine={false} tickLine={false} />}
+          <Tooltip contentStyle={{background:'#171e30',border:'1px solid #2a3555',borderRadius:8,fontSize:11}} formatter={(v)=>[`${v} ms`,'HRV']} />
+          <Line dataKey="hrv" stroke="#8479d9" strokeWidth={2} dot={{r:3,fill:'#8479d9'}} activeDot={{r:5}} />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+function SleepQualityWidget({ size }) {
+  const today = MOCK.sleepHistory[6];
+  const score = today.score;
+  const mins = today.durationMin;
+  const h = Math.floor(mins/60), m = mins%60;
+  const color = score>=75?'#6fbf73':score>=50?'#e8a33d':'#e25555';
+  const r=32, circ=2*Math.PI*r, offset=circ*(1-score/100);
+  return (
+    <div className="widget-body score-ring-wrap" style={{flexDirection:'column',gap:'var(--s-1)'}}>
+      <svg width={90} height={90} style={{transform:'rotate(-90deg)'}}>
+        <circle cx={45} cy={45} r={r} fill="none" stroke="#1f2840" strokeWidth={8}/>
+        <circle cx={45} cy={45} r={r} fill="none" stroke={color} strokeWidth={8}
+          strokeDasharray={circ} strokeDashoffset={offset} strokeLinecap="round"/>
+      </svg>
+      <div className="big-value sm" style={{color,marginTop:-60}}>{score}</div>
+      <div className="caption" style={{marginTop:36}}>{h}h {m}m</div>
+    </div>
+  );
+}
+
+function RestingHRWidget({ size }) {
+  const current = MOCK.healthMetrics[6].restingHr;
+  return (
+    <div className="widget-body" style={{gap:'var(--s-2)'}}>
+      <div style={{display:'flex',alignItems:'baseline',gap:4}}>
+        <div className="big-value sm" style={{color:'var(--c-cardio)'}}>{current}</div>
+        <span className="value-unit">bpm</span>
+      </div>
+      <div style={{flex:1,minHeight:0}}>
+        <ResponsiveContainer width="100%" height={size==='2x1'?70:50}>
+          <LineChart data={MOCK.healthMetrics} margin={{top:4,right:4,left:-40,bottom:0}}>
+            <XAxis dataKey="date" hide={size==='1x1'} tick={{fill:'#8a93b2',fontSize:10}} axisLine={false} tickLine={false} />
+            <Tooltip contentStyle={{background:'#171e30',border:'1px solid #2a3555',borderRadius:8,fontSize:11}} formatter={(v)=>[`${v} bpm`,'HR']} />
+            <Line dataKey="restingHr" stroke="#ef4a4a" strokeWidth={2} dot={false} activeDot={{r:4}} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
+
+function BodyBatteryWidget({ size }) {
+  const val = MOCK.healthMetrics[6].bodyBattery;
+  const color = val>=70?'#6fbf73':val>=40?'#e8a33d':'#e25555';
+  const r=36, circ=Math.PI*r;
+  const offset=circ*(1-val/100);
+  return (
+    <div className="widget-body" style={{alignItems:'center',justifyContent:'center',gap:'var(--s-1)'}}>
+      <div style={{position:'relative',width:100,height:56}}>
+        <svg width={100} height={60} style={{overflow:'visible'}}>
+          <path d={`M 14 54 A ${r} ${r} 0 0 1 86 54`} fill="none" stroke="#1f2840" strokeWidth={10} strokeLinecap="round"/>
+          <path d={`M 14 54 A ${r} ${r} 0 0 1 86 54`} fill="none" stroke={color} strokeWidth={10} strokeLinecap="round"
+            strokeDasharray={circ} strokeDashoffset={offset}/>
+        </svg>
+        <div style={{position:'absolute',bottom:0,left:0,right:0,textAlign:'center'}}>
+          <span className="big-value sm" style={{color}}>{val}</span>
+          <span className="value-unit">%</span>
+        </div>
+      </div>
+      <div className="eyebrow">Body Battery</div>
+    </div>
+  );
+}
+
+function PlanAdherenceWidget({ size }) {
+  const { adherenceRate, currentStreak } = MOCK.planAdherence;
+  const pct = Math.round(adherenceRate*100);
+  const data = [{ value: pct }];
+  const color = pct>=80?'#6fbf73':pct>=60?'#e8a33d':'#e25555';
+  return (
+    <div className="widget-body" style={{flexDirection: size==='2x1'?'row':'column', alignItems:'center', gap:'var(--s-4)'}}>
+      <div style={{width:size==='2x1'?80:100,height:size==='2x1'?80:100,flexShrink:0}}>
+        <ResponsiveContainer width="100%" height="100%">
+          <RadialBarChart innerRadius="60%" outerRadius="90%" data={data} startAngle={90} endAngle={-270}>
+            <RadialBar dataKey="value" fill={color} background={{fill:'#1f2840'}} cornerRadius={4}/>
+          </RadialBarChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="stack compact">
+        <div>
+          <div className="big-value sm" style={{color}}>{pct}<span className="value-unit">%</span></div>
+          <div className="caption">adherence</div>
+        </div>
+        <div>
+          <div className="mono" style={{fontSize:'var(--t-lg)',color:'var(--warn)'}}>{currentStreak} 🔥</div>
+          <div className="caption">day streak</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function WeeklyVolumeWidget({ size }) {
+  return (
+    <div className="widget-body">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={MOCK.weeklyVolume} margin={{top:4,right:4,left:-20,bottom:0}}>
+          <XAxis dataKey="day" tick={{fill:'#8a93b2',fontSize:10}} axisLine={false} tickLine={false}/>
+          {size==='2x2' && <YAxis tick={{fill:'#8a93b2',fontSize:10}} axisLine={false} tickLine={false}/>}
+          <Tooltip contentStyle={{background:'#171e30',border:'1px solid #2a3555',borderRadius:8,fontSize:11}} formatter={(v)=>[`${v} kg`,'Volume']}/>
+          <Bar dataKey="volume" fill="#e8785a" radius={[3,3,0,0]} />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+function ActivityFeedWidget({ size }) {
+  const items = size==='2x2' ? MOCK.activityFeed : MOCK.activityFeed.slice(0,3);
+  return (
+    <div className="widget-body" style={{overflowY:'auto'}}>
+      {items.map((item,i)=>(
+        <div key={i} className="activity-item">
+          <span className={`pill ${item.type} plain`} style={{fontSize:'var(--t-xs)'}}>{item.type}</span>
+          <div className="grow">
+            <div style={{fontSize:'var(--t-sm)'}}>{item.title}</div>
+            <div className="caption">{item.date}</div>
+          </div>
+          <div className="mono caption">{item.metric}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ActiveGoalsWidget({ size }) {
+  const goals = size==='2x2' ? MOCK.activeGoals : MOCK.activeGoals.slice(0,2);
+  return (
+    <div className="widget-body" style={{gap:'var(--s-3)',overflowY:'auto'}}>
+      {goals.map((g,i)=>{
+        const pct = g.inverted
+          ? Math.min(100, Math.round((g.target/g.current)*100))
+          : Math.min(100, Math.round((g.current/g.target)*100));
+        const barColor = pct>=100?'#6fbf73':pct>=60?'#e8a33d':'var(--accent)';
+        return (
+          <div key={i} className="goal-item">
+            <div className="goal-row">
+              <span style={{fontSize:'var(--t-sm)'}}>{g.name}</span>
+              <span className="mono caption">{g.current} / {g.target} {g.unit}</span>
+            </div>
+            <div className="bar" style={{'--bar-height':'5px'}}>
+              <div className="bar-fill" style={{width:`${pct}%`,'--bar-color':barColor}}/>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function MacrosTodayWidget({ size }) {
+  const { protein, carbs, fat } = MOCK.nutrition;
+  const data = [
+    { name:'Protein', value:protein, color:'#6ba3ff' },
+    { name:'Carbs',   value:carbs,   color:'#e8a33d' },
+    { name:'Fat',     value:fat,     color:'#e8785a' },
+  ];
+  const kcal = MOCK.nutrition.kcal;
+  return (
+    <div className="widget-body" style={{flexDirection:size==='2x1'?'row':'column',alignItems:'center',gap:'var(--s-3)'}}>
+      <div style={{width:size==='2x1'?90:110,height:size==='2x1'?90:110,flexShrink:0,position:'relative'}}>
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie data={data} dataKey="value" innerRadius="62%" outerRadius="90%" paddingAngle={2} startAngle={90} endAngle={-270}>
+              {data.map((d,i)=><Cell key={i} fill={d.color}/>)}
+            </Pie>
+          </PieChart>
+        </ResponsiveContainer>
+        <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
+          <span className="mono" style={{fontSize:'var(--t-sm)',fontWeight:600}}>{kcal}</span>
+          <span className="caption">kcal</span>
+        </div>
+      </div>
+      <div className="stack compact" style={{flex:1}}>
+        {data.map(d=>(
+          <div key={d.name} style={{display:'flex',alignItems:'center',gap:'var(--s-2)'}}>
+            <div style={{width:8,height:8,borderRadius:2,background:d.color,flexShrink:0}}/>
+            <span className="caption grow">{d.name}</span>
+            <span className="mono caption">{d.value}g</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CaloriesWidget({ size }) {
+  const { kcal, target } = MOCK.nutrition;
+  const pct = Math.round((kcal/target)*100);
+  return (
+    <div className="widget-body" style={{justifyContent:'center',gap:'var(--s-2)'}}>
+      <div style={{display:'flex',alignItems:'baseline',gap:4}}>
+        <div className="big-value sm" style={{color:'var(--c-nutrition)'}}>{kcal}</div>
+        <span className="value-unit">/ {target} kcal</span>
+      </div>
+      <div className="bar" style={{'--bar-height':'5px','--bar-color':'var(--c-nutrition)'}}>
+        <div className="bar-fill" style={{width:`${pct}%`}}/>
+      </div>
+      <div className="caption">{pct}% of daily goal</div>
+    </div>
+  );
+}
+
+function HabitsTodayWidget({ size }) {
+  const habits = size==='2x1' ? MOCK.habitsToday : MOCK.habitsToday.slice(0,3);
+  const done = habits.filter(h=>h.done).length;
+  return (
+    <div className="widget-body">
+      <div className="row space-between align-center" style={{marginBottom:'var(--s-1)'}}>
+        <span className="caption muted">{done}/{habits.length} done</span>
+      </div>
+      {habits.map((h,i)=>(
+        <div key={i} className="habit-row">
+          <div className={`habit-check ${h.done?'done':''}`}>{h.done?'✓':''}</div>
+          <span className="grow" style={{fontSize:'var(--t-sm)'}}>{h.name}</span>
+          {h.streak>0 && <span className="mono caption">{h.streak}🔥</span>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function MonthlyDistanceWidget({ size }) {
+  return (
+    <div className="widget-body">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={MOCK.monthlyProgression} margin={{top:4,right:8,left:-20,bottom:0}}>
+          <XAxis dataKey="month" tick={{fill:'#8a93b2',fontSize:10}} axisLine={false} tickLine={false}/>
+          {size==='2x2' && <YAxis tick={{fill:'#8a93b2',fontSize:10}} axisLine={false} tickLine={false}/>}
+          <Tooltip contentStyle={{background:'#171e30',border:'1px solid #2a3555',borderRadius:8,fontSize:11}} formatter={(v)=>[`${v} km`]}/>
+          <Line dataKey="kmRun"   stroke="#ef4a4a" strokeWidth={2} dot={{r:3,fill:'#ef4a4a'}} name="Run"/>
+          <Line dataKey="kmCycle" stroke="#6fbf73" strokeWidth={2} dot={{r:3,fill:'#6fbf73'}} name="Cycle"/>
+        </LineChart>
+      </ResponsiveContainer>
+      <div className="row" style={{gap:'var(--s-4)'}}>
+        {[['Run','#ef4a4a'],['Cycle','#6fbf73']].map(([l,c])=>(
+          <div key={l} style={{display:'flex',alignItems:'center',gap:4}}>
+            <div style={{width:10,height:3,borderRadius:2,background:c}}/>
+            <span className="caption">{l}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function InsightsWidget({ size }) {
+  const items = size==='2x2' ? MOCK.insights : MOCK.insights.slice(0,2);
+  const color = { ok:'#6fbf73', warn:'#e8a33d', info:'#7b9ef8' };
+  return (
+    <div className="widget-body stack compact">
+      {items.map((ins,i)=>(
+        <div key={i} className="insight-card">
+          <div className="insight-dot" style={{background:color[ins.severity]||'#8a93b2'}}/>
+          <span style={{fontSize:'var(--t-sm)'}}>{ins.message}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ════════════════ WIDGET REGISTRY ════════════════ */
+const REGISTRY = [
+  { id:'readiness-score',    label:'Readiness',        cat:'readiness', sizes:['1x1','2x1','2x2'], Component:ReadinessScoreWidget  },
+  { id:'sleep-quality',      label:'Sleep Quality',    cat:'sleep',     sizes:['1x1'],              Component:SleepQualityWidget    },
+  { id:'sleep-overview',     label:'Sleep Breakdown',  cat:'sleep',     sizes:['2x1','2x2'],        Component:SleepBreakdownWidget  },
+  { id:'hrv-trend',          label:'HRV Trend',        cat:'sleep',     sizes:['2x1','2x2'],        Component:HRVTrendWidget        },
+  { id:'resting-hr',         label:'Resting HR',       cat:'readiness', sizes:['1x1','2x1'],        Component:RestingHRWidget       },
+  { id:'body-battery',       label:'Body Battery',     cat:'readiness', sizes:['1x1','2x1'],        Component:BodyBatteryWidget     },
+  { id:'plan-adherence',     label:'Plan Adherence',   cat:'training',  sizes:['1x1','2x1'],        Component:PlanAdherenceWidget   },
+  { id:'weekly-volume',      label:'Weekly Volume',    cat:'training',  sizes:['2x1','2x2'],        Component:WeeklyVolumeWidget    },
+  { id:'activity-feed',      label:'Recent Sessions',  cat:'training',  sizes:['2x1','2x2'],        Component:ActivityFeedWidget    },
+  { id:'active-goals',       label:'Active Goals',     cat:'goals',     sizes:['2x1','2x2'],        Component:ActiveGoalsWidget     },
+  { id:'macros-today',       label:'Macros',           cat:'nutrition', sizes:['1x1','2x1'],        Component:MacrosTodayWidget     },
+  { id:'calories',           label:'Calories',         cat:'nutrition', sizes:['1x1'],              Component:CaloriesWidget        },
+  { id:'habits-today',       label:"Today's Habits",   cat:'habits',    sizes:['1x1','2x1'],        Component:HabitsTodayWidget     },
+  { id:'monthly-distance',   label:'Monthly Distance', cat:'training',  sizes:['2x1','2x2'],        Component:MonthlyDistanceWidget },
+  { id:'insights',           label:'Insights',         cat:'insights',  sizes:['2x1','2x2'],        Component:InsightsWidget        },
+];
+
+const DEFAULT_LAYOUT = [
+  { id:'readiness-score',  size:'2x1' },
+  { id:'sleep-quality',    size:'1x1' },
+  { id:'body-battery',     size:'1x1' },
+  { id:'sleep-overview',   size:'2x2' },
+  { id:'hrv-trend',        size:'2x1' },
+  { id:'resting-hr',       size:'2x1' },
+  { id:'plan-adherence',   size:'2x1' },
+  { id:'weekly-volume',    size:'2x2' },
+  { id:'activity-feed',    size:'2x1' },
+  { id:'macros-today',     size:'2x1' },
+  { id:'calories',         size:'1x1' },
+  { id:'habits-today',     size:'1x1' },
+  { id:'active-goals',     size:'2x2' },
+  { id:'monthly-distance', size:'2x1' },
+  { id:'insights',         size:'2x1' },
+];
+
+/* ════════════════ WIDGET SHELL ════════════════ */
+function WidgetShell({ def, instance, editMode, onRemove, onCycleSize, onMaximize, delay }) {
+  const { Component } = def;
+  return (
+    <div
+      className={`widget-wrap widget-${instance.size}`}
+      data-cat={def.cat}
+      style={{ animationDelay:`${delay}ms` }}
+    >
+      {editMode && (
+        <>
+          <div className="widget-ctrl ctrl-remove">
+            <button className="remove-btn" onClick={e=>{e.stopPropagation();onRemove(def.id);}}>×</button>
+          </div>
+          <div className="widget-ctrl ctrl-resize">
+            <button className="resize-btn" onClick={e=>{e.stopPropagation();onCycleSize(def.id);}}>⤢</button>
+          </div>
+        </>
+      )}
+      <div className="surface compact" style={{height:'100%',display:'flex',flexDirection:'column',gap:'var(--s-2)'}}>
+        <div className="widget-header" onClick={()=>onMaximize(def.id)}>
+          <span className="widget-title">{def.label}</span>
+          <span className="faint" style={{fontSize:'var(--t-xs)'}}>↗</span>
+        </div>
+        <Component size={instance.size} />
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════ DASHBOARD ════════════════ */
+function Dashboard() {
+  const [widgets, setWidgets] = useState(DEFAULT_LAYOUT);
+  const [editMode, setEditMode] = useState(false);
+  const gridRef = useRef(null);
+  const sortableRef = useRef(null);
+
+  useEffect(() => {
+    if (!gridRef.current) return;
+    if (editMode) {
+      sortableRef.current = Sortable.create(gridRef.current, {
+        animation: 200,
+        ghostClass: 'sortable-ghost',
+        chosenClass: 'sortable-chosen',
+        onEnd(evt) {
+          setWidgets(prev => {
+            const next = [...prev];
+            const [moved] = next.splice(evt.oldIndex, 1);
+            next.splice(evt.newIndex, 0, moved);
+            return next;
+          });
+        },
+      });
+    } else {
+      if (sortableRef.current) {
+        sortableRef.current.destroy();
+        sortableRef.current = null;
+      }
+    }
+    return () => {
+      if (sortableRef.current) { sortableRef.current.destroy(); sortableRef.current = null; }
+    };
+  }, [editMode]);
+
+  function cycleSize(id) {
+    setWidgets(prev => prev.map(w => {
+      if (w.id !== id) return w;
+      const def = REGISTRY.find(r => r.id === id);
+      const idx = def.sizes.indexOf(w.size);
+      return { ...w, size: def.sizes[(idx+1) % def.sizes.length] };
+    }));
+  }
+  function maximizeWidget(id) {
+    setWidgets(prev => prev.map(w => {
+      if (w.id !== id) return w;
+      const def = REGISTRY.find(r => r.id === id);
+      return { ...w, size: def.sizes[def.sizes.length-1] };
+    }));
+  }
+  function removeWidget(id) {
+    setWidgets(prev => prev.filter(w => w.id !== id));
+  }
+
+  return (
+    <div className="dash-root">
+      <div className="dash-header">
+        <h2>Overview</h2>
+        <button
+          className={editMode ? 'primary sm' : 'sm'}
+          onClick={() => setEditMode(e => !e)}
+        >
+          {editMode ? 'Done' : 'Edit Widgets'}
+        </button>
+      </div>
+
+      <div ref={gridRef} className={`widget-grid${editMode?' edit-mode':''}`}>
+        {widgets.map((instance, i) => {
+          const def = REGISTRY.find(r => r.id === instance.id);
+          if (!def) return null;
+          return (
+            <WidgetShell
+              key={instance.id}
+              def={def}
+              instance={instance}
+              editMode={editMode}
+              onRemove={removeWidget}
+              onCycleSize={cycleSize}
+              onMaximize={maximizeWidget}
+              delay={i * 40}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════ ROOT ════════════════ */
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Dashboard />);
+</script>
+</body>
+</html>

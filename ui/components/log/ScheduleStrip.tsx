@@ -83,7 +83,9 @@ export function ScheduleStrip({
           const isFuture = !isToday && day > today;
 
           return (
-            <button
+            <Button
+              type="button"
+              variant="ghost"
               key={key}
               className={["day", isFuture ? "locked" : ""].filter(Boolean).join(" ")}
               data-today={isToday ? "" : undefined}
@@ -96,7 +98,7 @@ export function ScheduleStrip({
               {meta && !isToday && (
                 <span className={`dot ${meta.kind === "strength" ? "lift" : "run"}`} />
               )}
-            </button>
+            </Button>
           );
         })}
       </Grid>

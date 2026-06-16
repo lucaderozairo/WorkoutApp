@@ -1,4 +1,5 @@
 import type { Id } from '@shared/types';
+import type { DataSourceKind } from '@shared/contracts';
 import type {
   ReadinessEvent,
   ReadinessLoggedPayload,
@@ -16,6 +17,7 @@ export interface TodayReadinessView {
   soreness: number;
   mood: number;
   hasEntry: boolean;
+  source: DataSourceKind;
 }
 
 export interface HealthMetricsView {
@@ -74,7 +76,7 @@ export function applyReadinessLogged(_state: TodayReadinessView, event: Readines
   const p = event.payload as ReadinessLoggedPayload;
   const { sleep, energy, soreness, mood } = p;
   const score = Math.round(((sleep + energy + (10 - soreness) + mood) / 40) * 100);
-  return { score, sleep, energy, soreness, mood, hasEntry: true };
+  return { score, sleep, energy, soreness, mood, hasEntry: true, source: 'manual' };
 }
 
 export function applyHealthMetricsLogged(state: HealthMetricsView[], event: ReadinessEvent): HealthMetricsView[] {

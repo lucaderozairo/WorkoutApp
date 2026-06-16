@@ -7,7 +7,6 @@
     padding: var(--s-1);
     align-items: center;
     justify-content: center;
-    font-size: var(--t-xs);
     border-radius: var(--r-sm);
     background: transparent;
     position: relative;
@@ -15,8 +14,6 @@
     transition: background-color 0.12s var(--ease);
 
     &:hover { background: var(--surface-2); }
-
-    & .caption { line-height: 0.7; }
 
     & .dot {
       height: var(--s-1);
@@ -28,9 +25,4 @@
     background: var(--accent);
     color: var(--accent-ink);
   }
-}
-
-.calendar-event-day {
-  font-size: var(--t-lg);
-  line-height: 1;
 }

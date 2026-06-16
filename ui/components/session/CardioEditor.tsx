@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Surface, Text } from '@ui/atoms';
 import { Grid, Row, Column } from '@ui/layout';
+import { Input } from '@ui/molecules';
 import type { UICardioSet } from '@features/training_log/projections/viewTypes';
 
 export const CARDIO_FIELDS: Array<{
@@ -37,9 +38,9 @@ export function CardioEditor({ cardioSet, onUpdate }: {
         <Column key={f.key} gap={1}>
           <Text size="eyebrow">{f.label}</Text>
           <Row gap={1} align="center">
-            <input
+            <Input
               type="number"
-              className="mono num"
+              controlClassName="mono num"
               value={vals[f.key]}
               placeholder="—"
               min="0"

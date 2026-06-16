@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 // eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
 import { parseGpsFile } from '@data/sources/files/gps';
 // eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
@@ -6,7 +6,7 @@ import type { GpsTrack } from '@data/sources/files/gps';
 import type { CardioSport } from '@features/cardio';
 import { Row, Column } from '@ui/layout';
 import { Surface, Text, Metric } from '@ui/atoms';
-import { Badge, Button, Slider, Textarea } from '@ui/molecules';
+import { Badge, Button, FileDropSurface, Modal, Slider, Textarea } from '@ui/molecules';
 import { formatDuration } from '@shared/utils';
 
 type ImportContext = 'new-session' | 'enrich-session' | 'standalone';
@@ -41,8 +41,6 @@ export function ImportModal({ context, existingSession, onComplete, onClose }: I
   const [rpe, setRpe] = useState(5);
   const [notes, setNotes] = useState('');
   const [sport, setSport] = useState<CardioSport>('run');
-  const [isDragOver, setIsDragOver] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   async function handleFile(file: File) {
     setError(null);
@@ -63,13 +61,6 @@ export function ImportModal({ context, existingSession, onComplete, onClose }: I
     }
   }
 
-  function handleDrop(e: React.DragEvent) {
-    e.preventDefault();
-    setIsDragOver(false);
-    const file = e.dataTransfer.files[0];
-    if (file) handleFile(file);
-  }
-
   function handleSave() {
     if (!track) return;
     const finalNotes = context === 'enrich-session' ? existingSession?.notes : notes;
@@ -79,10 +70,8 @@ export function ImportModal({ context, existingSession, onComplete, onClose }: I
   }
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div onClick={e => e.stopPropagation()}>
-        <Surface as="section">
-          <Column>
+    <Modal open onClose={onClose} size="lg">
+      <Column>
           {/* Header */}
           <Row justify="between">
             <Text as="h3">Import GPS file</Text>
@@ -93,15 +82,13 @@ export function ImportModal({ context, existingSession, onComplete, onClose }: I
           {step === 1 && (
             <Column>
               {error && <Text size="caption" color="negative">{error}</Text>}
-              <Surface
-                as="section"
-                variant="inset"
-                interactive
-                className={isDragOver ? 'active' : undefined}
-                onDragOver={(e: React.DragEvent) => { e.preventDefault(); setIsDragOver(true); }}
-                onDragLeave={() => setIsDragOver(false)}
-                onDrop={handleDrop}
-                onClick={() => inputRef.current?.click()}
+              <FileDropSurface
+                accept=".gpx,.tcx,.fit"
+                busy={parsing}
+                onFiles={files => {
+                  const file = files[0];
+                  if (file) handleFile(file);
+                }}
               >
                 {parsing
                   ? <Row justify="center"><Text>Parsing…</Text></Row>
@@ -111,7 +98,6 @@ export function ImportModal({ context, existingSession, onComplete, onClose }: I
                       <Button
                         variant="secondary"
                         size="sm"
-                        onClick={(e: React.MouseEvent) => { e.stopPropagation(); inputRef.current?.click(); }}
                       >
                         or browse files
                       </Button>
@@ -123,14 +109,7 @@ export function ImportModal({ context, existingSession, onComplete, onClose }: I
                     </Column>
                   )
                 }
-              </Surface>
-              <input
-                ref={inputRef}
-                type="file"
-                accept=".gpx,.tcx,.fit"
-                hidden
-                onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }}
-              />
+              </FileDropSurface>
             </Column>
           )}
 
@@ -230,9 +209,7 @@ export function ImportModal({ context, existingSession, onComplete, onClose }: I
             </Column>
           )}
 
-          </Column>
-        </Surface>
-      </div>
-    </div>
+      </Column>
+    </Modal>
   );
 }

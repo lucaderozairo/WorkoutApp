@@ -1,4 +1,5 @@
 import { Row } from '../layout/Row';
+import { Text } from '../atoms/Text';
 
 interface SliderProps {
   value: number;
@@ -17,8 +18,8 @@ export function Slider({ value, onChange, min = 0, max = 100, step = 1, label, s
     <div className={['slider-field', className].filter(Boolean).join(' ')}>
       {(label || showValue) && (
         <Row justify="between">
-          {label && <label className="caption">{label}</label>}
-          {showValue && <span className="caption mono">{value}</span>}
+          {label && <Text as="label" size="caption">{label}</Text>}
+          {showValue && <Text as="span" size="caption" mono>{value}</Text>}
         </Row>
       )}
       <input

@@ -2,7 +2,7 @@ import React from 'react'
 import { InjuriesView } from '@ui/components/health/InjuriesView'
 import { SleepView } from '@ui/components/health/SleepView'
 import { HealthChartsList } from '@ui/components/health/HealthChartsList'
-import { Surface } from '@ui/atoms';
+import { Surface, Text } from '@ui/atoms';
 import { ScreenHeader } from '@ui/molecules'
 import { Grid } from '@ui/layout'
 import { useHealthCategory } from './useHealthCategory'
@@ -20,7 +20,7 @@ export function HealthCategoryScreen() {
     return (
       <Grid>
         <ScreenHeader title="Not Found" back={() => navigate('/profile')} />
-        <p className="muted">Category not found.</p>
+        <Text as="p" color="muted">Category not found.</Text>
       </Grid>
     )
   }
@@ -39,7 +39,7 @@ export function HealthCategoryScreen() {
       ) : (
         <HealthChartsList slug={slug} fallback={
           <Surface>
-            <p className="muted">Data for this category will appear here once logged.</p>
+            <Text as="p" color="muted">Data for this category will appear here once logged.</Text>
           </Surface>
         } />
       )}

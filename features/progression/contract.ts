@@ -6,3 +6,11 @@ export type {
   ExerciseProgression,
   ProgressionState,
 } from './domain/types';
+
+// Session tool types consumed by UI and screens.
+export type {
+  PreviousExercisePerformance,
+  PreviousExerciseSet,
+  ProgressiveOverloadHint,
+  PlateCalculation,
+} from '@shared/contracts';

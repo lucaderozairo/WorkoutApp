@@ -1,5 +1,11 @@
 /* Route planner: side panel, rail, controls, route cards */
 
+@property --route-parallax-x {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+
 .route-planner-rail-layer {
   height: 100%;
   pointer-events: none;
@@ -10,8 +16,8 @@
 }
 
 .route-planner-screen,
-.routes-screen,
-.route-detail-screen {
+[data-page="routes"],
+[data-page="route-detail"] {
   --route-planner-location-input-width: var(--panel-width);
   --route-planner-side-content-min: 260px;
   --route-planner-rail-width: 56px;
@@ -312,15 +318,11 @@
   stroke-width: 2;
 }
 
-.routes-screen,
-.route-detail-screen {
+[data-page="routes"],
+[data-page="route-detail"] {
   max-width: 1120px;
   width: 100%;
   margin-inline: auto;
-}
-
-.routes-filter-panel {
-  border: 1px solid var(--line);
 }
 
 .route-card {
@@ -329,8 +331,9 @@
 }
 
 .route-card-icon {
-  display: inline-grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: var(--s-6);
   height: var(--s-6);
   border-radius: var(--r-sm);
@@ -339,69 +342,16 @@
   flex: 0 0 auto;
 }
 
-.route-explore {
-  container-type: inline-size;
-  container-name: route-explore;
-}
-
-.route-explore-row {
-  display: grid;
-  gap: var(--s-3);
-}
-
-.route-explore-row-header {
-  padding-inline: var(--s-1);
-}
-
-.route-explore-heading {
-  margin: 0;
-  color: var(--ink);
-  font-size: var(--t-md);
-  font-weight: 650;
-  line-height: 1.2;
-  text-wrap: balance;
-}
-
-.route-explore-controls {
-  @media (max-width: 780px) {
-    display: none;
-  }
-}
-
-.route-explore-track {
-  --route-card-width: min(74vw, 320px);
-
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: var(--route-card-width);
-  gap: var(--s-3);
-  overflow-x: auto;
-  overscroll-behavior-inline: contain;
-  padding: var(--s-1) var(--s-1) var(--s-3);
-  scroll-behavior: smooth;
-  scroll-padding-inline: var(--s-1);
-  scroll-snap-type: inline mandatory;
-  scrollbar-color: var(--line-strong) transparent;
-  scrollbar-gutter: stable;
-  scrollbar-width: thin;
-}
-
-@container route-explore (min-width: 720px) {
-  .route-explore-track {
-    --route-card-width: minmax(300px, 0.34fr);
-  }
-
+@container (min-width: 720px) {
   .route-explore-card[data-featured] {
     min-height: var(--route-card-featured-min-height);
   }
 }
 
 .route-explore-card {
-  --route-parallax-x: 0%;
-
   appearance: none;
   display: grid;
-  grid-template-rows: minmax(var(--route-card-media-min), 0.92fr) auto;
+  grid-template-rows: minmax(var(--route-card-media-min), 1fr) auto;
   min-width: 0;
   min-height: var(--route-card-min-height);
   padding: 0;
@@ -458,6 +408,12 @@
   transform: translateX(var(--route-parallax-x));
   transition: transform var(--duration-short) linear;
   will-change: transform;
+
+  @media (prefers-reduced-motion: reduce) {
+    transform: none;
+    transition: none;
+    will-change: auto;
+  }
 }
 
 .route-explore-photo {
@@ -492,64 +448,8 @@
   color: var(--ink-muted);
   transform: translateX(var(--route-parallax-x));
   transition: transform var(--duration-short) linear;
-}
 
-.route-explore-body {
-  display: grid;
-  gap: var(--s-2);
-  padding: var(--s-3);
-}
-
-.route-explore-kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--s-2);
-  color: var(--ink-muted);
-  font-size: var(--t-xs);
-}
-
-.route-explore-title {
-  overflow: hidden;
-  color: var(--ink);
-  font-size: var(--t-md);
-  font-weight: 650;
-  line-height: 1.2;
-  text-overflow: ellipsis;
-  text-wrap: balance;
-  white-space: nowrap;
-}
-
-.route-explore-description {
-  display: -webkit-box;
-  overflow: hidden;
-  color: var(--ink-muted);
-  font-size: var(--t-xs);
-  line-height: 1.35;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
-
-.route-explore-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s-2);
-  color: var(--ink-muted);
-  font-size: var(--t-xs);
-
-  & .mono {
-    color: var(--ink);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .route-explore-track {
-    scroll-behavior: auto;
-  }
-
-  .route-explore-photo,
-  .route-explore-map,
-  .route-explore-map-empty {
+  @media (prefers-reduced-motion: reduce) {
     transform: none;
     transition: none;
     will-change: auto;

@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import type { ElementType, HTMLAttributes, ReactNode } from 'react';
 
 type SurfaceVariant = 'default' | 'plain' | 'flat' | 'accent' | 'ghost' | 'inset' | 'pinned';
@@ -34,7 +35,7 @@ const PAD_CLASS: Record<SurfacePad, string> = {
   none: 'pad-none',
 };
 
-export function Surface({
+export const Surface = forwardRef<HTMLElement, SurfaceProps>(function Surface({
   variant = 'default',
   pad = 'md',
   interactive = false,
@@ -44,7 +45,7 @@ export function Surface({
   children,
   onClick,
   ...rest
-}: SurfaceProps) {
+}, ref) {
   const classes = [
     'surface',
     VARIANT_CLASS[variant],
@@ -58,6 +59,7 @@ export function Surface({
 
   return (
     <Component
+      ref={ref}
       className={classes}
       onClick={onClick}
       {...rest}
@@ -65,4 +67,4 @@ export function Surface({
       {children}
     </Component>
   );
-}
+});

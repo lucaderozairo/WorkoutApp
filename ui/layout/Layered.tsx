@@ -1,8 +1,8 @@
 import { forwardRef } from 'react';
-import type { ElementType, ReactNode } from 'react';
+import type { ElementType, HTMLAttributes, ReactNode } from 'react';
 import { type Gap } from './_classes';
 
-type LayerPin =
+export type LayerPin =
   | 'top-left' | 'top-center' | 'top-right'
   | 'bottom-left' | 'bottom-center' | 'bottom-right'
   | 'below-left' | 'below-center' | 'below-right'
@@ -12,9 +12,9 @@ type LayerPin =
   | 'center' | 'full';
 
 export type LayerZ = 'base' | 'content' | 'controls' | 'sticky' | 'fixed';
-type LayerDirection = 'row' | 'column' | 'none';
+export type LayerDirection = 'row' | 'column' | 'none';
 
-interface LayeredProps {
+interface LayeredProps extends Omit<HTMLAttributes<HTMLElement>, 'children'> {
   as?: ElementType;
   fill?: boolean;
   clip?: boolean;
@@ -64,11 +64,11 @@ const Z_CLASS: Record<LayerZ, string> = {
 };
 
 export const Layered = forwardRef<HTMLElement, LayeredProps>(function Layered(
-  { as: Tag = 'div', fill = false, clip = false, className, children }, ref
+  { as: Tag = 'div', fill = false, clip = false, className, children, ...rest }, ref
 ) {
   const classes = ['layered', fill ? 'h-full w-full' : '', clip ? 'clip' : '', className]
     .filter(Boolean).join(' ');
-  return <Tag ref={ref} className={classes}>{children}</Tag>;
+  return <Tag ref={ref} className={classes} {...rest}>{children}</Tag>;
 });
 
 export function Layer({

@@ -21,4 +21,4 @@ export type {
 export type { DailyLoad, AcuteChronicResult, HRZone } from './domain/trainingLoad';
 
 // Query / view-model types consumed by screens.
-export type { StatsSummary, ActivityFeedEntry } from './queries';
+export type { StatsSummary, ActivityFeedEntry } from './queries/types';

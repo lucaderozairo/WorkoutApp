@@ -1,0 +1,2259 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Session Segments — Active vs Finished</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* ─── TOKENS ──────────────────────────────────────────────────── */
+    :root {
+      --c-strength: #e8785a;
+      --c-cardio: #ef4a4a;
+      --c-recovery: #7b9ef8;
+      --c-nutrition: #6fbf73;
+      --c-water: #4dc8f0;
+      --c-mind: #b57bdc;
+      --ok: #6fbf73;
+      --warn: #e8a33d;
+      --bad: #e25555;
+
+      --font-display: "Geist", system-ui, sans-serif;
+      --font-ui: "Geist", system-ui, sans-serif;
+      --font-mono: "Geist Mono", ui-monospace, monospace;
+
+      --t-2xs: 10px;
+      --t-xs: 11px;
+      --t-sm: 13px;
+      --t-md: 15px;
+      --t-lg: 18px;
+      --t-xl: 22px;
+      --t-2xl: 28px;
+      --t-3xl: 48px;
+
+      --s-1: 4px;
+      --s-2: 8px;
+      --s-3: 12px;
+      --s-4: 16px;
+      --s-5: 24px;
+      --s-6: 32px;
+      --s-7: 48px;
+      --s-8: 64px;
+
+      --r-xs: 4px;
+      --r-sm: 8px;
+      --r-md: 14px;
+      --r-lg: 20px;
+      --r-pill: 999px;
+      --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    [data-theme="dark"] {
+      --surface-0: #080c18;
+      --surface-1: #0f1525;
+      --surface-2: #171e30;
+      --surface-3: #1f2840;
+      --ink: #e8eefa;
+      --ink-muted: #8a93b2;
+      --ink-faint: #4a5270;
+      --line: #1f2840;
+      --line-strong: #2a3555;
+      --accent: #6ba3ff;
+      --accent-ink: #050c20;
+      --accent-soft: #0f2050;
+      --shadow-1: 0 1px 3px rgba(0, 0, 0, .4);
+      --shadow-2: 0 6px 24px rgba(0, 0, 0, .5);
+    }
+
+    [data-theme="light"] {
+      --surface-0: #f4f6fb;
+      --surface-1: #ffffff;
+      --surface-2: #ebf0fa;
+      --surface-3: #dde5f5;
+      --ink: #0e1320;
+      --ink-muted: #4a5270;
+      --ink-faint: #8e96b0;
+      --line: #dde5f5;
+      --line-strong: #c5d0e8;
+      --accent: #4f8ef7;
+      --accent-ink: #ffffff;
+      --accent-soft: #c5d9fc;
+      --shadow-1: 0 1px 3px rgba(14, 19, 32, .07);
+      --shadow-2: 0 6px 24px rgba(14, 19, 32, .10);
+    }
+
+    /* ─── RESET ───────────────────────────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      font-family: var(--font-ui);
+      font-size: var(--t-sm);
+      font-weight: 500;
+      color: var(--ink);
+      background: var(--surface-0);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    svg {
+      display: block;
+    }
+
+    /* ─── TYPOGRAPHY ──────────────────────────────────────────────── */
+    h1 {
+      font-size: var(--t-2xl);
+      font-weight: 600;
+      letter-spacing: -.015em;
+    }
+
+    h2 {
+      font-size: var(--t-lg);
+      font-weight: 600;
+      letter-spacing: -.01em;
+    }
+
+    h3 {
+      font-size: var(--t-md);
+      font-weight: 600;
+    }
+
+    .caption {
+      font-size: var(--t-xs);
+      color: var(--ink-muted);
+    }
+
+    .eyebrow {
+      font-size: var(--t-xs);
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+    }
+
+    .muted {
+      color: var(--ink-muted);
+    }
+
+    .faint {
+      color: var(--ink-faint);
+    }
+
+    .bold {
+      font-weight: 600;
+    }
+
+    .ok {
+      color: var(--ok);
+    }
+
+    .warn {
+      color: var(--warn);
+    }
+
+    /* ─── LAYOUT ──────────────────────────────────────────────────── */
+    .row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: var(--s-3);
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-4);
+    }
+
+    .cluster {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--s-2);
+      align-items: center;
+    }
+
+    .grow {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .space-between {
+      justify-content: space-between;
+    }
+
+    .align-top {
+      align-items: flex-start;
+    }
+
+    .compact {
+      gap: var(--s-2);
+    }
+
+    /* ─── SURFACE ─────────────────────────────────────────────────── */
+    .surface {
+      width: 100%;
+      background: var(--surface-1);
+      border: 1px solid var(--line);
+      border-radius: var(--r-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-3);
+      padding: var(--s-4);
+      box-shadow: var(--shadow-1);
+    }
+
+    .surface.flat,
+    .surface.inset {
+      background: var(--surface-2);
+      box-shadow: none;
+    }
+
+    .surface.flat {
+      border-color: transparent;
+    }
+
+    .surface.tight {
+      padding: var(--s-2) var(--s-3);
+      gap: var(--s-2);
+    }
+
+    .surface.row {
+      flex-direction: row;
+      align-items: center;
+    }
+
+    /* Active surface — accent-tinted border + subtle glow */
+    .surface.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent), var(--shadow-1);
+      background: var(--surface-1);
+    }
+
+    /* ─── PILL ────────────────────────────────────────────────────── */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      font-size: var(--t-xs);
+      font-weight: 500;
+      color: var(--ink);
+      background: var(--surface-2);
+      border-radius: var(--r-pill);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .pill .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .pill.run {
+      background: rgba(239, 74, 74, .15);
+      color: #ef7b7b;
+    }
+
+    .pill.run .dot {
+      background: var(--c-cardio);
+    }
+
+    .pill.cycle {
+      background: rgba(123, 158, 248, .15);
+      color: var(--c-recovery);
+    }
+
+    .pill.cycle .dot {
+      background: var(--c-recovery);
+    }
+
+    .pill.swim {
+      background: rgba(77, 200, 240, .15);
+      color: var(--c-water);
+    }
+
+    .pill.swim .dot {
+      background: var(--c-water);
+    }
+
+    .pill.lift {
+      background: rgba(232, 120, 90, .15);
+      color: var(--c-strength);
+    }
+
+    .pill.lift .dot {
+      background: var(--c-strength);
+    }
+
+    .pill.hike {
+      background: rgba(111, 191, 115, .15);
+      color: var(--c-nutrition);
+    }
+
+    .pill.machine {
+      background: rgba(138, 147, 178, .12);
+      color: var(--ink-muted);
+    }
+
+    .pill.hiit {
+      background: rgba(232, 163, 61, .15);
+      color: var(--warn);
+    }
+
+    .pill.yoga {
+      background: rgba(181, 123, 220, .15);
+      color: var(--c-mind);
+    }
+
+    .pill.mindful {
+      background: rgba(181, 123, 220, .10);
+      color: var(--c-mind);
+    }
+
+    .pill.transition {
+      background: var(--surface-3);
+      color: var(--ink-muted);
+      font-weight: 600;
+    }
+
+    .pill.superset {
+      background: rgba(107, 163, 255, .15);
+      color: var(--accent);
+    }
+
+    .pill.circuit {
+      background: rgba(111, 191, 115, .15);
+      color: var(--ok);
+    }
+
+    .pill.emom {
+      background: rgba(232, 163, 61, .15);
+      color: var(--warn);
+    }
+
+    .pill.amrap {
+      background: rgba(239, 74, 74, .15);
+      color: #ef7b7b;
+    }
+
+    .pill.warmup {
+      background: var(--surface-3);
+      color: var(--ink-faint);
+    }
+
+    .pill.pr {
+      background: rgba(232, 163, 61, .22);
+      color: var(--warn);
+      font-weight: 600;
+    }
+
+    .pill.dropset {
+      background: rgba(181, 123, 220, .15);
+      color: var(--c-mind);
+    }
+
+    .pill.ok-pill,
+    .pill.live {
+      background: rgba(111, 191, 115, .18);
+      color: var(--ok);
+    }
+
+    .pill.done {
+      background: var(--surface-2);
+      color: var(--ink-faint);
+    }
+
+    /* ─── BUTTON ──────────────────────────────────────────────────── */
+    button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--s-2);
+      padding: var(--s-1) var(--s-3);
+      font-family: var(--font-ui);
+      font-size: var(--t-sm);
+      font-weight: 500;
+      color: var(--ink);
+      background: var(--surface-1);
+      border: 1px solid var(--line-strong);
+      border-radius: var(--r-sm);
+      cursor: pointer;
+      transition: all .12s var(--ease);
+      white-space: nowrap;
+    }
+
+    button:hover {
+      background: var(--surface-2);
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    button.primary:hover {
+      opacity: .88;
+    }
+
+    button.ghost {
+      background: transparent;
+      border-color: transparent;
+    }
+
+    button.ghost:hover {
+      background: var(--surface-2);
+    }
+
+    button.danger {
+      background: rgba(226, 85, 85, .12);
+      color: var(--bad);
+      border-color: rgba(226, 85, 85, .25);
+    }
+
+    button.danger:hover {
+      background: rgba(226, 85, 85, .2);
+    }
+
+    button.sm {
+      padding: 5px var(--s-3);
+      font-size: var(--t-xs);
+    }
+
+    button.icon {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border-radius: var(--r-sm);
+    }
+
+    button.full {
+      width: 100%;
+      justify-content: center;
+    }
+
+    i[data-lucide] {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    i[data-lucide] svg {
+      display: block;
+      width: 14px;
+      height: 14px;
+      stroke-width: 1.75;
+    }
+
+    button i[data-lucide] svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .icon-sm i[data-lucide] svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    .icon-md i[data-lucide] svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* ─── INPUT ───────────────────────────────────────────────────── */
+    input[type="text"],
+    input[type="number"] {
+      font-family: var(--font-mono);
+      font-size: var(--t-md);
+      font-weight: 600;
+      color: var(--ink);
+      background: var(--surface-2);
+      border: 1px solid var(--line-strong);
+      border-radius: var(--r-sm);
+      padding: var(--s-2) var(--s-3);
+      outline: none;
+      text-align: center;
+      width: 100%;
+      transition: border-color .12s var(--ease);
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus {
+      border-color: var(--accent);
+    }
+
+    input::placeholder {
+      color: var(--ink-faint);
+      font-weight: 400;
+    }
+
+    /* ─── LIVE PULSE ──────────────────────────────────────────────── */
+    .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--ok);
+      flex-shrink: 0;
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(111, 191, 115, .5);
+      }
+
+      50% {
+        opacity: .7;
+        box-shadow: 0 0 0 5px rgba(111, 191, 115, 0);
+      }
+    }
+
+    /* ─── TIMER ───────────────────────────────────────────────────── */
+    .timer    { text-align: center; }
+    .timer.lg { font-size: var(--t-3xl); letter-spacing: .04em; line-height: 1; }
+    .timer.sm { font-size: var(--t-xl); color: var(--accent); }
+
+    .rest-bar {
+      height: 4px;
+      background: var(--surface-3);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .rest-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width .5s linear;
+    }
+
+    /* ─── SET INPUT ROW ───────────────────────────────────────────── */
+    .set-input-row {
+      display: grid;
+      gap: var(--s-2);
+      align-items: end;
+      background: var(--surface-2);
+      border: 1px solid var(--accent);
+      border-radius: var(--r-sm);
+      padding: var(--s-3);
+    }
+
+    .set-input-row.weight-reps {
+      grid-template-columns: 1fr 1fr 80px;
+    }
+
+    .set-input-row.reps-only {
+      grid-template-columns: 1fr 80px;
+    }
+
+    .set-input-row.duration {
+      grid-template-columns: 1fr 80px;
+    }
+
+    /* .input-group layout → .column in HTML */
+    .input-group {
+      gap: 4px;
+    }
+
+    .input-group label {
+      text-align: center;
+      font-size: var(--t-xs);
+      color: var(--ink-faint);
+    }
+
+    .rpe-row {
+      display: flex;
+      gap: var(--s-1);
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .rpe-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: var(--r-xs);
+      background: var(--surface-3);
+      border: 1px solid transparent;
+      font-size: var(--t-2xs);
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--ink-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .1s;
+    }
+
+    .rpe-btn:hover,
+    .rpe-btn.selected {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .rpe-btn.selected-high {
+      background: rgba(239, 74, 74, .15);
+      border-color: #ef4a4a;
+      color: #ef7b7b;
+    }
+
+    .badge {
+      display: inline-flex;
+      padding: 1px 5px;
+      border-radius: var(--r-xs);
+      background: var(--surface-3);
+      font-size: var(--t-2xs);
+      font-weight: 600;
+      color: var(--ink-muted);
+      flex-shrink: 0;
+    }
+
+    .badge.pr   { background: rgba(232, 163, 61, .25); color: var(--warn); }
+    .badge.w    { color: var(--ink-faint); font-style: italic; }
+    .badge.high { background: rgba(239, 74, 74, .15); color: #ef7b7b; }
+    .badge.med  { background: rgba(232, 163, 61, .15); color: var(--warn); }
+
+    /* ─── SET ROWS (flex, stacked meta) ─────────────────────────── */
+    .list {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--line);
+      border-radius: var(--r-sm);
+      overflow: hidden;
+    }
+
+    /* .list-header typography → .eyebrow.faint in HTML */
+    .list-header {
+      display: grid;
+      grid-template-columns: 36px 1fr auto;
+      padding: 5px var(--s-3);
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .list-header .srh-center {
+      text-align: center;
+    }
+
+    .list-header .srh-right {
+      text-align: right;
+    }
+
+    /* .item layout → .column in HTML */
+    .item {
+      border-bottom: 1px solid var(--line);
+      padding: var(--s-2) var(--s-3);
+      gap: 4px;
+    }
+
+    .item:last-child {
+      border-bottom: none;
+    }
+
+    .item.warmup .item-grid {
+      opacity: .5;
+    }
+
+    .item.warmup .val {
+      font-style: italic;
+    }
+
+    .item.pr {
+      background: rgba(232, 163, 61, .05);
+    }
+
+    .item.pr .val,
+    .item.pr .unit {
+      color: var(--warn);
+    }
+
+    .item-grid {
+      display: grid;
+      grid-template-columns: 36px 1fr auto;
+      align-items: center;
+    }
+
+    .num {
+      font-size: var(--t-xs);
+      font-weight: 600;
+      color: var(--ink-faint);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .data {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 4px;
+      font-family: var(--font-mono);
+      font-size: var(--t-md);
+      font-weight: 600;
+    }
+
+    .unit {
+      font-size: var(--t-xs);
+      color: var(--ink-muted);
+    }
+
+    .sep {
+      color: var(--ink-faint);
+    }
+
+    .check {
+      text-align: right;
+    }
+
+    .check.ok {
+      color: var(--ok);
+    }
+
+    .check.warn {
+      color: var(--warn);
+    }
+
+    /* sub-line: aligns under the data column */
+    /* .item-meta layout → .row.compact in HTML */
+    .item-meta {
+      padding-left: 36px;
+    }
+
+    /* .comment extends .caption — only italic is unique here */
+    .comment {
+      font-style: italic;
+    }
+
+    /* ─── BAR CHART ──────────────────────────────────────────────── */
+    .set-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 28px;
+    }
+
+    .set-bars .bar {
+      flex: 1;
+      background: var(--accent);
+      border-radius: 2px 2px 0 0;
+      opacity: .5;
+      min-width: 8px;
+      max-width: 24px;
+    }
+
+    .set-bars .bar.warmup {
+      background: var(--ink-faint);
+      opacity: .35;
+    }
+
+    .set-bars .bar.pr {
+      background: var(--warn);
+      opacity: .7;
+    }
+
+    /* ─── STAT GRID ───────────────────────────────────────────────── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--s-2);
+    }
+
+    .stat-grid.two {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stat-grid.four {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    /* .stat layout → .column in HTML */
+    .stat {
+      gap: 2px;
+      padding: var(--s-2) var(--s-3);
+      background: var(--surface-2);
+      border-radius: var(--r-sm);
+    }
+
+    .stat.live-stat {
+      background: rgba(107, 163, 255, .06);
+      border: 1px solid rgba(107, 163, 255, .15);
+    }
+
+    .stat-val {
+      font-family: var(--font-display);
+      font-size: var(--t-xl);
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: -.02em;
+      display: flex;
+      align-items: baseline;
+      gap: 2px;
+    }
+
+    .stat-val .unit {
+      font-family: var(--font-ui);
+      font-size: var(--t-xs);
+      font-weight: 500;
+      color: var(--ink-muted);
+      letter-spacing: 0;
+    }
+
+    /* .stat-label removed — use .caption */
+    .stat-val.dim {
+      color: var(--ink-faint);
+      font-size: var(--t-lg);
+    }
+
+    /* .sec-stats layout → .cluster in HTML */
+    .sec-stats {
+      gap: var(--s-3) var(--s-4);
+      padding: var(--s-2) var(--s-3);
+      background: var(--surface-2);
+      border-radius: var(--r-sm);
+    }
+
+    /* .sec-stat layout → .column in HTML */
+    .sec-stat {
+      gap: 1px;
+    }
+
+    /* .sec-stat-val → .mono in HTML */
+
+    /* ─── ROUTE MAP ──────────────────────────────────────────────── */
+    .route-map {
+      width: 100%;
+      height: 100px;
+      border-radius: var(--r-sm);
+      background: linear-gradient(135deg, #0d1f35 0%, #122840 40%, #0f2230 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    [data-theme="light"] .route-map {
+      background: linear-gradient(135deg, #c8daf5 0%, #d8e8fc 50%, #bfd3ef 100%);
+    }
+
+    .route-map::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cpolyline points='20,80 55,62 85,45 125,50 165,28 205,42 245,18 285,32 315,55 335,44' stroke='%234f8ef7' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round' opacity='0.8'/%3E%3Ccircle cx='20' cy='80' r='4' fill='%236fbf73'/%3E%3Ccircle cx='335' cy='44' r='4' fill='%23ef4a4a'/%3E%3C/svg%3E");
+      background-size: cover;
+    }
+
+    .route-map-live::after {
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cpolyline points='20,80 55,62 85,45 125,50 165,28 185,38' stroke='%234f8ef7' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round' opacity='0.8'/%3E%3Ccircle cx='20' cy='80' r='4' fill='%236fbf73'/%3E%3Ccircle cx='185' cy='38' r='5' fill='%236fbf73' opacity='0.9'/%3E%3Ccircle cx='185' cy='38' r='10' fill='%236fbf73' opacity='0.2'/%3E%3C/svg%3E");
+      background-size: cover;
+    }
+
+    .route-map-label {
+      position: absolute;
+      bottom: var(--s-1);
+      right: var(--s-2);
+      font-size: var(--t-2xs);
+      color: rgba(255, 255, 255, .45);
+      background: rgba(0, 0, 0, .25);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    /* ─── NOTES ──────────────────────────────────────────────────── */
+    .notes-base {
+      color: var(--ink-muted);
+      background: var(--surface-2);
+      border-radius: var(--r-sm);
+      padding: var(--s-2) var(--s-3);
+      font-style: italic;
+    }
+
+    .notes-field { border-left: 2px solid var(--line-strong); }
+
+    textarea.notes-input {
+      border: 1px dashed var(--line-strong);
+      border-left: 2px solid var(--accent);
+      resize: none;
+      outline: none;
+      width: 100%;
+    }
+
+    textarea.notes-input:focus {
+      border-color: var(--accent);
+    }
+
+    textarea.notes-input::placeholder {
+      color: var(--ink-faint);
+    }
+
+    /* ─── NESTED COMPOSITE ───────────────────────────────────────── */
+    /* .nested-block extends .surface.inset.compact — only unique overrides here */
+    .nested-block {
+      border-radius: var(--r-sm);
+      padding: var(--s-3);
+    }
+
+    .nested-block.current {
+      border-color: var(--accent);
+      background: rgba(107, 163, 255, .04);
+    }
+
+    .box-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface-3);
+      font-weight: 700;
+      color: var(--ink-muted);
+      flex-shrink: 0;
+    }
+
+    .nested-letter { width: 20px; height: 20px; border-radius: 50%; font-size: var(--t-2xs); }
+    .nested-letter.active { background: var(--accent); color: var(--accent-ink); }
+
+    /* .rest-divider text styles use .caption.faint in HTML — only structural rules here */
+    .rest-divider {
+      display: flex;
+      align-items: center;
+      gap: var(--s-2);
+    }
+
+    .rest-divider::before,
+    .rest-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    /* .rounds-badge → .pill.dim.bold in HTML */
+    .pill.dim {
+      background: var(--surface-3);
+      color: var(--ink-muted);
+    }
+
+    /* .transition-card replaced by .surface.row in HTML */
+    .t-label { width: 38px; height: 38px; border-radius: var(--r-sm); }
+    .t-label.live { background: rgba(111, 191, 115, .15); color: var(--ok); border: 1px solid rgba(111, 191, 115, .3); }
+
+    /* ─── DIVIDER ────────────────────────────────────────────────── */
+    hr {
+      border: none;
+      border-top: 1px solid var(--line);
+    }
+
+    /* ─── EX ICON ────────────────────────────────────────────────── */
+    .icon-chip {
+      width: 26px;
+      height: 26px;
+      border-radius: var(--r-xs);
+      background: rgba(232, 120, 90, .15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--c-strength);
+    }
+
+    .icon-chip.cardio {
+      background: rgba(239, 74, 74, .15);
+      color: var(--c-cardio);
+    }
+
+    .icon-chip.machine {
+      background: rgba(138, 147, 178, .12);
+      color: var(--ink-muted);
+    }
+
+    /* ─── PAGE SHELL ─────────────────────────────────────────────── */
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: var(--s-6) var(--s-5) var(--s-8);
+    }
+
+    .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: var(--s-7);
+      gap: var(--s-4);
+      flex-wrap: wrap;
+    }
+
+    /* ─── SECTION ────────────────────────────────────────────────── */
+    /* .section layout → .column in HTML */
+    .section {
+      margin-bottom: var(--s-7);
+    }
+
+    /* .section-title typography → .eyebrow.faint in HTML */
+    .section-title {
+      padding-bottom: var(--s-2);
+      border-bottom: 1px solid var(--line);
+    }
+
+    /* ─── COMPARE GRID ───────────────────────────────────────────── */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-5);
+      align-items: start;
+    }
+
+    /* .col → .column in HTML */
+    /* .label layout + typography → .row.compact.eyebrow in HTML */
+    .label {
+      padding-bottom: var(--s-2);
+      border-bottom: 2px solid;
+    }
+
+    .label.active-label {
+      color: var(--ok);
+      border-color: var(--ok);
+    }
+
+    .label.finished-label {
+      color: var(--ink-faint);
+      border-color: var(--line);
+    }
+
+    @media (max-width: 700px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .wrap {
+        padding: var(--s-4);
+      }
+    }
+
+    /* ─── UTILITIES ──────────────────────────────────────────────── */
+    kbd {
+      font-family: var(--font-mono);
+      font-size: var(--t-2xs);
+      padding: 1px 5px;
+      border-radius: 3px;
+      background: var(--surface-2);
+      border: 1px solid var(--line-strong);
+    }
+
+    .text-right  { text-align: right; }
+    .text-center { text-align: center; }
+    .dim         { opacity: .6; }
+
+    /* ─── COMPONENT MODIFIERS ────────────────────────────────────── */
+    .pulse.sm { width: 5px; height: 5px; }
+
+    .rest-bar-fill.ok   { background: var(--ok); }
+    .rest-bar-fill.warn { background: var(--warn); }
+
+    .icon-chip.mind { background: rgba(181, 123, 220, .12); color: var(--c-mind); }
+
+    .nested-letter.done { background: var(--ok); color: white; }
+
+    .pill.xs { font-size: var(--t-2xs); padding: 2px 7px; }
+
+    .num.micro { font-size: var(--t-2xs); }
+
+    button.selected {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .timer.md { font-size: var(--t-2xl); }
+
+    .set-input-row.two-col { grid-template-columns: 1fr 1fr; }
+    .set-input-row.one-col { grid-template-columns: 1fr; }
+
+    .notes-field.sm { font-size: var(--t-xs); }
+
+    /* bar chart heights */
+    .bar.h-28 { height: 28%; } .bar.h-45 { height: 45%; }
+    .bar.h-60 { height: 60%; } .bar.h-65 { height: 65%; }
+    .bar.h-68 { height: 68%; } .bar.h-72 { height: 72%; }
+    .bar.h-75 { height: 75%; } .bar.h-78 { height: 78%; }
+    .bar.h-88 { height: 88%; }
+
+    /* progress fill widths */
+    .fill-37 { width: 37%; } .fill-44 { width: 44%; }
+    .fill-52 { width: 52%; } .fill-63 { width: 63%; }
+    .fill-80 { width: 80%; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <!-- ── HEADER ────────────────────────────────────────────────────── -->
+    <header class="header">
+      <div class="column compact">
+        <h1>Session Segments</h1>
+        <p class="caption">Active logging vs finished review — side by side. Press <kbd>T</kbd>
+          to toggle theme.</p>
+      </div>
+
+      <button
+        onclick="document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark'">
+        <i data-lucide="sun-moon"></i> Toggle theme
+      </button>
+    </header>
+
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!--  STRENGTH — Weight × Reps                                        -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section class="column section">
+      <div class="section-title eyebrow faint">Strength — Weight × Reps (Bench Press)</div>
+      <div class="grid">
+
+        <!-- ACTIVE -->
+        <div class="column">
+          <div class="label active-label row compact eyebrow"><span class="pulse"></span>Active — logging</div>
+          <div class="surface active">
+            <div class="row space-between">
+              <div class="row compact">
+                <div class="icon-chip"><i data-lucide="dumbbell"></i></div>
+                <div class="column compact">
+                  <span class="bold">Bench Press</span>
+                  <span class="caption">Barbell · Chest</span>
+                </div>
+              </div>
+              <div class="row compact">
+                <span class="pill live"><span class="pulse sm"></span>Live</span>
+                <span class="pill lift"><span class="dot"></span>Strength</span>
+              </div>
+            </div>
+
+            <!-- Completed sets (read-only) -->
+            <div class="list">
+              <div class="list-header eyebrow faint"><span>#</span><span class="srh-center">kg · reps</span><span
+                  class="srh-right">✓</span></div>
+              <div class="column item warmup">
+                <div class="item-grid">
+                  <span class="num"><span class="badge w">W1</span></span>
+                  <span class="data"><span class="val">40</span><span class="unit">kg</span><span
+                      class="sep">×</span><span class="val">15</span></span>
+                  <span class="check ok">✓</span>
+                </div>
+              </div>
+              <div class="column item warmup">
+                <div class="item-grid">
+                  <span class="num"><span class="badge w">W2</span></span>
+                  <span class="data"><span class="val">60</span><span class="unit">kg</span><span
+                      class="sep">×</span><span class="val">8</span></span>
+                  <span class="check ok">✓</span>
+                </div>
+              </div>
+              <div class="column item">
+                <div class="item-grid">
+                  <span class="num">1</span>
+                  <span class="data"><span class="val">80</span><span class="unit">kg</span><span
+                      class="sep">×</span><span class="val">8</span></span>
+                  <span class="check ok">✓</span>
+                </div>
+                <div class="row compact item-meta"><span class="badge">RPE 7</span></div>
+              </div>
+              <div class="column item">
+                <div class="item-grid">
+                  <span class="num">2</span>
+                  <span class="data"><span class="val">80</span><span class="unit">kg</span><span
+                      class="sep">×</span><span class="val">8</span></span>
+                  <span class="check ok">✓</span>
+                </div>
+                <div class="row compact item-meta"><span class="badge med">RPE 8</span></div>
+              </div>
+            </div>
+
+            <!-- Rest timer -->
+            <div class="surface inset compact">
+              <div class="row space-between compact">
+                <span class="caption faint">Rest</span>
+                <span class="mono bold timer sm">00:47</span>
+                <span class="caption faint">of 90s</span>
+              </div>
+              <div class="rest-bar">
+                <div class="rest-bar-fill fill-52"></div>
+              </div>
+            </div>
+
+            <!-- Current set input -->
+            <div class="column compact">
+              <span class="eyebrow">Set 3</span>
+              <div class="set-input-row two-col">
+                <div class="column input-group"><label>kg</label><input type="number" placeholder="80" value="80"></div>
+                <div class="column input-group"><label>reps</label><input type="number" placeholder="—"></div>
+              </div>
+              <div class="rpe-row">
+                <span class="caption faint">RPE <span class="dim">(optional)</span></span>
+                <button class="rpe-btn">1</button>
+                <button class="rpe-btn">2</button>
+                <button class="rpe-btn">3</button>
+                <button class="rpe-btn">4</button>
+                <button class="rpe-btn">5</button>
+                <button class="rpe-btn">6</button>
+                <button class="rpe-btn">7</button>
+                <button class="rpe-btn selected">8</button>
+                <button class="rpe-btn">9</button>
+                <button class="rpe-btn selected-high">10</button>
+              </div>
+              <textarea class="notes-base notes-input" rows="1" placeholder="Note (optional)…"></textarea>
+            </div>
+
+            <div class="row compact">
+              <button class="primary full"><i data-lucide="plus"></i>Log Set 3</button>
+              <button class="ghost icon" title="Swap exercise"><i data-lucide="arrow-left-right"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- FINISHED -->
+        <div class="column">
+          <div class="label finished-label row compact eyebrow"><i data-lucide="check-circle"
+              class="icon-sm"></i>Finished — review</div>
+          <div class="surface">
+            <div class="row space-between">
+              <div class="row compact">
+                <div class="icon-chip"><i data-lucide="dumbbell"></i></div>
+                <div class="column compact">
+                  <span class="bold">Bench Press</span>
+                  <span class="caption">Barbell · Chest</span>
+                </div>
+              </div>
+              <span class="pill lift"><span class="dot"></span>Strength</span>
+            </div>
+
+            <div class="set-bars">
+              <div class="bar warmup h-28"></div>
+              <div class="bar warmup h-45"></div>
+              <div class="bar h-72"></div>
+              <div class="bar h-72"></div>
+              <div class="bar h-65"></div>
+              <div class="bar pr h-78"></div>
+            </div>
+
+            <div class="list">
+              <div class="list-header eyebrow faint"><span>#</span><span class="srh-center">kg · reps</span><span
+                  class="srh-right">✓</span></div>
+              <div class="column item warmup">
+                <div class="item-grid"><span class="num"><span class="badge w">W1</span></span><span class="data"><span
+                      class="val">40</span><span class="unit">kg</span><span class="sep">×</span><span
+                      class="val">15</span></span><span class="check ok">✓</span></div>
+              </div>
+              <div class="column item warmup">
+                <div class="item-grid"><span class="num"><span class="badge w">W2</span></span><span class="data"><span
+                      class="val">60</span><span class="unit">kg</span><span class="sep">×</span><span
+                      class="val">8</span></span><span class="check ok">✓</span></div>
+              </div>
+              <div class="column item">
+                <div class="item-grid"><span class="num">1</span><span class="data"><span class="val">80</span><span
+                      class="unit">kg</span><span class="sep">×</span><span class="val">8</span></span><span
+                    class="check ok">✓</span></div>
+                <div class="row compact item-meta"><span class="badge">RPE 7</span></div>
+              </div>
+              <div class="column item">
+                <div class="item-grid"><span class="num">2</span><span class="data"><span class="val">80</span><span
+                      class="unit">kg</span><span class="sep">×</span><span class="val">8</span></span><span
+                    class="check ok">✓</span></div>
+                <div class="row compact item-meta"><span class="badge med">RPE 8</span></div>
+              </div>
+              <div class="column item">
+                <div class="item-grid"><span class="num">3</span><span class="data"><span class="val">80</span><span
+                      class="unit">kg</span><span class="sep">×</span><span class="val">7</span></span><span
+                    class="check ok">✓</span></div>
+                <div class="row compact item-meta"><span class="caption comment">grip was going</span><span
+                    class="badge med">RPE 8</span></div>
+              </div>
+              <div class="column item pr">
+                <div class="item-grid"><span class="num">4 <span class="badge pr">PR</span></span><span
+                    class="data"><span class="val">82.5</span><span class="unit">kg</span><span
+                      class="sep">×</span><span class="val">8</span></span><span class="check warn">✓</span></div>
+                <div class="row compact item-meta"><span class="caption comment">new 8-rep PR — felt strong</span><span
+                    class="badge high">RPE 9</span></div>
+              </div>
+            </div>
+            <div class="row faint caption"><i data-lucide="bar-chart-2" class="icon-sm"></i>Volume: 1,960 kg · 4 working
+              sets</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!--  STRENGTH — Bodyweight                                           -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section class="column section">
+      <div class="section-title eyebrow faint">Strength — Bodyweight (Pull-ups)</div>
+      <div class="grid">
+
+        <!-- ACTIVE -->
+        <div class="column">
+          <div class="label active-label row compact eyebrow"><span class="pulse"></span>Active — logging</div>
+          <div class="surface active">
+            <div class="row space-between">
+              <div class="row compact">
+                <div class="icon-chip"><i data-lucide="arrow-up"></i></div>
+                <div class="column compact"><span class="bold">Pull-ups</span><span class="caption">Bodyweight ·
+                    Back</span></div>
+              </div>
+              <span class="pill lift"><span class="dot"></span>Strength</span>
+            </div>
+            <div class="list">
+              <div class="list-header eyebrow faint"><span>#</span><span class="srh-center">reps</span><span
+                  class="srh-right">✓</span></div>
+              <div class="column item">
+                <div class="item-grid"><span class="num">1</span><span class="data"><span
+                      class="val">12</span></span><span class="check ok">✓</span></div>
+                <div class="row compact item-meta"><span class="badge">RPE 7</span></div>
+              </div>
+              <div class="column item">
+                <div class="item-grid"><span class="num">2</span><span class="data"><span
+                      class="val">10</span></span><span class="check ok">✓</span></div>
+                <div class="row compact item-meta"><span class="badge med">RPE 8</span></div>
+              </div>
+            </div>
+            <div class="surface inset compact">
+              <div class="row space-between compact"><span class="caption faint">Rest</span><span
+                  class="mono bold timer sm">01:12</span><span class="caption faint">of 90s</span></div>
+              <div class="rest-bar">
+                <div class="rest-bar-fill fill-80"></div>
+              </div>
+            </div>
+            <div class="column compact">
+              <span class="eyebrow">Set 3</span>
+              <div class="set-input-row one-col">
+                <div class="column input-group"><label>reps</label><input type="number" placeholder="—"></div>
+              </div>
+              <div class="rpe-row">
+                <span class="caption faint">RPE <span class="dim">(optional)</span></span>
+                <button class="rpe-btn">1</button>
+                <button class="rpe-btn">2</button>
+                <button class="rpe-btn">3</button>
+                <button class="rpe-btn">4</button>
+                <button class="rpe-btn">5</button>
+                <button class="rpe-btn">6</button>
+                <button class="rpe-btn">7</button>
+                <button class="rpe-btn selected">8</button>
+                <button class="rpe-btn">9</button>
+                <button class="rpe-btn">10</button>
+              </div>
+              <textarea class="notes-base notes-input" rows="1" placeholder="Note (optional)…"></textarea>
+            </div>
+            <button class="primary full"><i data-lucide="plus"></i>Log Set 3</button>
+          </div>
+        </div>
+
+        <!-- FINISHED -->
+        <div class="column">
+          <div class="label finished-label row compact eyebrow"><i data-lucide="check-circle"
+              class="icon-sm"></i>Finished — review</div>
+          <div class="surface">
+            <div class="row space-between">
+              <div class="row compact">
+                <div class="icon-chip"><i data-lucide="arrow-up"></i></div>
+                <div class="column compact"><span class="bold">Pull-ups</span><span class="caption">Bodyweight ·
+                    Back</span></div>
+              </div>
+              <span class="pill lift"><span class="dot"></span>Strength</span>
+            </div>
+            <div class="set-bars">
+              <div class="bar h-88"></div>
+              <div class="bar h-75"></div>
+              <div class="bar h-68"></div>
+              <div class="bar h-60"></div>
+            </div>
+            <div class="list">
+              <div class="list-header eyebrow faint"><span>#</span><span class="srh-center">reps</span><span
+                  class="srh-right">✓</span></div>
+              <div class="column item">
+                <div class="item-grid"><span class="num">1</span><span class="data"><span
+                      class="val">12</span></span><span class="check ok">✓</span></div>
+                <div class="row compact item-meta"><span class="badge">RPE 7</span></div>
+              </div>
+              <div class="column item">
+                <div class="item-grid"><span class="num">2</span><span class="data"><span
+                      class="val">10</span></span><span class="check ok">✓</span></div>
+                <div class="row compact item-meta"><span class="badge med">RPE 8</span></div>
+              </div>
+              <div class="column item">
+                <div class="item-grid"><span class="num">3</span><span class="data"><span
+                      class="val">9</span></span><span class="check ok">✓</span></div>
+                <div class="row compact item-meta"><span class="caption comment">cramping a little</span><span
+                    class="badge med">RPE 8</span></div>
+              </div>
+              <div class="column item">
+                <div class="item-grid"><span class="num">4</span><span class="data"><span
+                      class="val">8</span></span><span class="check ok">✓</span></div>
+                <div class="row compact item-meta"><span class="badge high">RPE 9</span></div>
+              </div>
+            </div>
+            <div class="row faint caption"><i data-lucide="bar-chart-2" class="icon-sm"></i>39 total reps</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!--  STRENGTH — Duration (Plank)                                     -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section class="column section">
+      <div class="section-title eyebrow faint">Strength — Duration-based (Plank)</div>
+      <div class="grid">
+
+        <!-- ACTIVE -->
+        <div class="column">
+          <div class="label active-label row compact eyebrow"><span class="pulse"></span>Active — logging</div>
+          <div class="surface active">
+            <div class="row space-between">
+              <div class="row compact">
+                <div class="icon-chip"><i data-lucide="clock"></i></div>
+                <div class="column compact"><span class="bold">Plank</span><span class="caption">Bodyweight ·
+                    Core</span></div>
+              </div>
+              <span class="pill lift"><span class="dot"></span>Strength</span>
+            </div>
+            <div class="list">
+              <div class="list-header eyebrow faint"><span>#</span><span class="srh-center">duration</span><span
+                  class="srh-right">✓</span></div>
+              <div class="column item">
+                <div class="item-grid"><span class="num">1</span><span class="data"><span
+                      class="val">1:00</span></span><span class="check ok">✓</span></div>
+                <div class="row compact item-meta"><span class="badge">RPE 7</span></div>
+              </div>
+              <div class="column item">
+                <div class="item-grid"><span class="num">2</span><span class="data"><span
+                      class="val">1:00</span></span><span class="check ok">✓</span></div>
+                <div class="row compact item-meta"><span class="badge med">RPE 8</span></div>
+              </div>
+            </div>
+            <!-- Active hold timer -->
+            <div class="surface inset compact text-center">
+              <div class="caption faint">Hold in progress — Set 3</div>
+              <div class="mono bold timer lg">00:38</div>
+              <div class="rest-bar">
+                <div class="rest-bar-fill fill-63 ok"></div>
+              </div>
+              <div class="caption faint">Target: 1:00</div>
+            </div>
+            <button class="danger full"><i data-lucide="square"></i>Stop hold</button>
+          </div>
+        </div>
+
+        <!-- FINISHED -->
+        <div class="column">
+          <div class="label finished-label row compact eyebrow"><i data-lucide="check-circle"
+              class="icon-sm"></i>Finished — review</div>
+          <div class="surface">
+            <div class="row space-between">
+              <div class="row compact">
+                <div class="icon-chip"><i data-lucide="clock"></i></div>
+                <div class="column compact"><span class="bold">Plank</span><span class="caption">Bodyweight ·
+                    Core</span></div>
+              </div>
+              <span class="pill lift"><span class="dot"></span>Strength</span>
+            </div>
+            <div class="list">
+              <div class="list-header eyebrow faint"><span>#</span><span class="srh-center">duration</span><span
+                  class="srh-right">✓</span></div>
+              <div class="column item">
+                <div class="item-grid"><span class="num">1</span><span class="data"><span
+                      class="val">1:00</span></span><span class="check ok">✓</span></div>
+                <div class="row compact item-meta"><span class="badge">RPE 7</span></div>
+              </div>
+              <div class="column item">
+                <div class="item-grid"><span class="num">2</span><span class="data"><span
+                      class="val">1:00</span></span><span class="check ok">✓</span></div>
+                <div class="row compact item-meta"><span class="badge med">RPE 8</span></div>
+              </div>
+              <div class="column item">
+                <div class="item-grid"><span class="num">3</span><span class="data"><span
+                      class="val">0:45</span></span><span class="check ok">✓</span></div>
+                <div class="row compact item-meta"><span class="caption comment">couldn't hold the full
+                    minute</span><span class="badge high">RPE 9</span></div>
+              </div>
+            </div>
+            <div class="row faint caption"><i data-lucide="timer" class="icon-sm"></i>2:45 total hold time</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!--  STRENGTH — Mixed set types (Lunges)                              -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section class="column section">
+      <div class="section-title eyebrow faint">Strength — Mixed set types (Lunges)</div>
+      <div class="grid">
+
+        <!-- ACTIVE -->
+        <div class="column">
+          <div class="label active-label row compact eyebrow"><span class="pulse"></span>Active — logging</div>
+          <div class="surface active">
+            <div class="row space-between">
+              <div class="row compact">
+                <div class="icon-chip"><i data-lucide="dumbbell"></i></div>
+                <div class="column compact"><span class="bold">Lunges</span><span class="caption">Bodyweight / Loaded ·
+                    Legs</span></div>
+              </div>
+              <span class="pill lift"><span class="dot"></span>Strength</span>
+            </div>
+
+            <!-- Completed sets with mixed types -->
+            <div class="list">
+              <div class="column item">
+                <div class="item-grid">
+                  <span class="num">1</span>
+                  <span class="data"><span class="val">20</span><span class="unit">kg</span><span
+                      class="sep">×</span><span class="val">12</span><span class="unit">reps</span></span>
+                  <span class="check ok">✓</span>
+                </div>
+                <div class="row compact item-meta"><span class="badge">RPE 6</span></div>
+              </div>
+              <div class="column item">
+                <div class="item-grid">
+                  <span class="num">2</span>
+                  <span class="data"><span class="val">20</span><span class="unit">reps</span></span>
+                  <span class="check ok">✓</span>
+                </div>
+                <div class="row compact item-meta"><span class="caption comment">dropped weight, focus on
+                    form</span><span class="badge med">RPE 7</span></div>
+              </div>
+              <div class="column item">
+                <div class="item-grid">
+                  <span class="num">3</span>
+                  <span class="data"><span class="val">0:45</span></span>
+                  <span class="check ok">✓</span>
+                </div>
+                <div class="row compact item-meta"><span class="caption comment">walking lunges, continuous</span><span
+                    class="badge med">RPE 8</span></div>
+              </div>
+            </div>
+
+            <!-- Set type selector for current set -->
+            <div class="column compact">
+              <span class="eyebrow">Set 4 — choose measure</span>
+              <div class="cluster">
+                <button class="sm selected">kg × reps</button>
+                <button class="sm ghost">reps</button>
+                <button class="sm ghost">time</button>
+                <button class="sm ghost">distance</button>
+                <button class="sm ghost">dist × time</button>
+              </div>
+              <!-- Input for selected type: kg × reps -->
+              <div class="set-input-row two-col">
+                <div class="column input-group"><label>kg</label><input type="number" placeholder="20" value="20"></div>
+                <div class="column input-group"><label>reps</label><input type="number" placeholder="—"></div>
+              </div>
+              <div class="rpe-row">
+                <span class="caption faint">RPE <span class="dim">(optional)</span></span>
+                <button class="rpe-btn">1</button><button class="rpe-btn">2</button><button class="rpe-btn">3</button>
+                <button class="rpe-btn">4</button><button class="rpe-btn">5</button><button class="rpe-btn">6</button>
+                <button class="rpe-btn">7</button><button class="rpe-btn">8</button><button class="rpe-btn">9</button>
+                <button class="rpe-btn">10</button>
+              </div>
+              <textarea class="notes-base notes-input" rows="1" placeholder="Note (optional)…"></textarea>
+            </div>
+            <button class="primary full"><i data-lucide="plus"></i>Log Set 4</button>
+          </div>
+        </div>
+
+        <!-- FINISHED -->
+        <div class="column">
+          <div class="label finished-label row compact eyebrow"><i data-lucide="check-circle"
+              class="icon-sm"></i>Finished — review</div>
+          <div class="surface">
+            <div class="row space-between">
+              <div class="row compact">
+                <div class="icon-chip"><i data-lucide="dumbbell"></i></div>
+                <div class="column compact"><span class="bold">Lunges</span><span class="caption">Bodyweight / Loaded ·
+                    Legs</span></div>
+              </div>
+              <span class="pill lift"><span class="dot"></span>Strength</span>
+            </div>
+
+            <!-- No fixed header — units speak for themselves -->
+            <div class="list">
+              <div class="column item">
+                <div class="item-grid">
+                  <span class="num">1</span>
+                  <span class="data"><span class="val">20</span><span class="unit">kg</span><span
+                      class="sep">×</span><span class="val">12</span><span class="unit">reps</span></span>
+                  <span class="check ok">✓</span>
+                </div>
+                <div class="row compact item-meta"><span class="badge">RPE 6</span></div>
+              </div>
+              <div class="column item">
+                <div class="item-grid">
+                  <span class="num">2</span>
+                  <span class="data"><span class="val">20</span><span class="unit">reps</span></span>
+                  <span class="check ok">✓</span>
+                </div>
+                <div class="row compact item-meta"><span class="caption comment">dropped weight, focus on
+                    form</span><span class="badge med">RPE 7</span></div>
+              </div>
+              <div class="column item">
+                <div class="item-grid">
+                  <span class="num">3</span>
+                  <span class="data"><span class="val">0:45</span></span>
+                  <span class="check ok">✓</span>
+                </div>
+                <div class="row compact item-meta"><span class="caption comment">walking lunges, continuous</span><span
+                    class="badge med">RPE 8</span></div>
+              </div>
+              <div class="column item">
+                <div class="item-grid">
+                  <span class="num">4</span>
+                  <span class="data"><span class="val">40</span><span class="unit">m</span></span>
+                  <span class="check ok">✓</span>
+                </div>
+                <div class="row compact item-meta"><span class="badge med">RPE 7</span></div>
+              </div>
+              <div class="column item">
+                <div class="item-grid">
+                  <span class="num">5</span>
+                  <span class="data"><span class="val">50</span><span class="unit">m</span><span
+                      class="sep">in</span><span class="val">0:28</span></span>
+                  <span class="check ok">✓</span>
+                </div>
+                <div class="row compact item-meta"><span class="caption comment">sprint lunges, all out</span><span
+                    class="badge high">RPE 9</span></div>
+              </div>
+            </div>
+            <div class="row faint caption"><i data-lucide="layers" class="icon-sm"></i>5 sets · 5 different measure
+              types</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!--  CARDIO — Run                                                     -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section class="column section">
+      <div class="section-title eyebrow faint">Cardio — Run (outdoor, GPS)</div>
+      <div class="grid">
+
+        <!-- ACTIVE -->
+        <div class="column">
+          <div class="label active-label row compact eyebrow"><span class="pulse"></span>Active — recording</div>
+          <div class="surface active">
+            <div class="row space-between">
+              <div class="row compact">
+                <div class="icon-chip cardio"><i data-lucide="activity"></i></div>
+                <span class="bold">Morning Run</span>
+              </div>
+              <span class="pill run"><span class="dot"></span>Run</span>
+            </div>
+            <div class="route-map route-map-live"><span class="route-map-label">GPS live</span></div>
+            <!-- Big live timer -->
+            <div class="mono bold timer lg">00:42:18</div>
+            <!-- Live metrics -->
+            <div class="stat-grid">
+              <div class="column stat live-stat">
+                <div class="stat-val">6.2<span class="unit">km</span></div>
+                <div class="caption">Distance</div>
+              </div>
+              <div class="column stat live-stat">
+                <div class="stat-val">5:02<span class="unit">/km</span></div>
+                <div class="caption">Current pace</div>
+              </div>
+              <div class="column stat live-stat">
+                <div class="stat-val">152<span class="unit">bpm</span></div>
+                <div class="caption">Heart rate</div>
+              </div>
+            </div>
+            <div class="cluster sec-stats">
+              <div class="column sec-stat">
+                <div class="mono">+112 <span class="caption faint">m</span></div>
+                <div class="caption faint">Elevation</div>
+              </div>
+              <div class="column sec-stat">
+                <div class="mono">4:58<span class="caption faint">/km</span></div>
+                <div class="caption faint">Avg pace</div>
+              </div>
+              <div class="column sec-stat">
+                <div class="mono">168<span class="caption faint">spm</span></div>
+                <div class="caption faint">Cadence</div>
+              </div>
+            </div>
+            <button class="danger full"><i data-lucide="square"></i>Stop run</button>
+          </div>
+        </div>
+
+        <!-- FINISHED -->
+        <div class="column">
+          <div class="label finished-label row compact eyebrow"><i data-lucide="check-circle"
+              class="icon-sm"></i>Finished — review</div>
+          <div class="surface">
+            <div class="row space-between">
+              <div class="row compact">
+                <div class="icon-chip cardio"><i data-lucide="activity"></i></div>
+                <span class="bold">Morning Run</span>
+              </div>
+              <span class="pill run"><span class="dot"></span>Run</span>
+            </div>
+            <div class="route-map"><span class="route-map-label">GPS route</span></div>
+            <div class="stat-grid">
+              <div class="column stat">
+                <div class="stat-val">8.4<span class="unit">km</span></div>
+                <div class="caption">Distance</div>
+              </div>
+              <div class="column stat">
+                <div class="stat-val">42:18</div>
+                <div class="caption">Duration</div>
+              </div>
+              <div class="column stat">
+                <div class="stat-val">5:02<span class="unit">/km</span></div>
+                <div class="caption">Avg pace</div>
+              </div>
+            </div>
+            <div class="cluster sec-stats">
+              <div class="column sec-stat">
+                <div class="mono">152 <span class="caption faint">bpm</span></div>
+                <div class="caption faint">Avg HR</div>
+              </div>
+              <div class="column sec-stat">
+                <div class="mono">174 <span class="caption faint">bpm</span></div>
+                <div class="caption faint">Max HR</div>
+              </div>
+              <div class="column sec-stat">
+                <div class="mono">+187 <span class="caption faint">m</span></div>
+                <div class="caption faint">Elevation</div>
+              </div>
+              <div class="column sec-stat">
+                <div class="mono">4:45<span class="caption faint">/km</span></div>
+                <div class="caption faint">Best km</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!--  CARDIO — Machine (Concept2)                                     -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section class="column section">
+      <div class="section-title eyebrow faint">Cardio — Machine (Concept2 Rower)</div>
+      <div class="grid">
+
+        <!-- ACTIVE -->
+        <div class="column">
+          <div class="label active-label row compact eyebrow"><span class="pulse"></span>Active — recording</div>
+          <div class="surface active">
+            <div class="row space-between">
+              <div class="row compact">
+                <div class="icon-chip machine"><i data-lucide="move-horizontal"></i></div>
+                <span class="bold">Concept2 Rower</span>
+              </div>
+              <span class="pill machine">Concept2</span>
+            </div>
+            <div class="mono bold timer lg">00:04:12</div>
+            <div class="stat-grid">
+              <div class="column stat live-stat">
+                <div class="stat-val">890<span class="unit">m</span></div>
+                <div class="caption">Distance</div>
+              </div>
+              <div class="column stat live-stat">
+                <div class="stat-val">2:21<span class="unit">/500m</span></div>
+                <div class="caption">Current split</div>
+              </div>
+              <div class="column stat live-stat">
+                <div class="stat-val">26<span class="unit">spm</span></div>
+                <div class="caption">Stroke rate</div>
+              </div>
+            </div>
+            <div class="cluster sec-stats">
+              <div class="column sec-stat">
+                <div class="mono">198 <span class="caption faint">W</span></div>
+                <div class="caption faint">Avg watts</div>
+              </div>
+              <div class="column sec-stat">
+                <div class="mono">2:21<span class="caption faint">/500m</span></div>
+                <div class="caption faint">Avg split</div>
+              </div>
+            </div>
+            <!-- Target indicator -->
+            <div class="surface inset compact row">
+              <i data-lucide="target" class="icon-sm faint"></i>
+              <span class="caption faint grow">Target: 2000m</span>
+              <div class="rest-bar grow">
+                <div class="rest-bar-fill fill-44 ok"></div>
+              </div>
+              <span class="caption faint">890 / 2000m</span>
+            </div>
+            <button class="danger full"><i data-lucide="square"></i>Stop row</button>
+          </div>
+        </div>
+
+        <!-- FINISHED -->
+        <div class="column">
+          <div class="label finished-label row compact eyebrow"><i data-lucide="check-circle"
+              class="icon-sm"></i>Finished — review</div>
+          <div class="surface">
+            <div class="row space-between">
+              <div class="row compact">
+                <div class="icon-chip machine"><i data-lucide="move-horizontal"></i></div>
+                <span class="bold">2000m Row</span>
+              </div>
+              <span class="pill machine">Concept2</span>
+            </div>
+            <div class="stat-grid">
+              <div class="column stat">
+                <div class="stat-val">2000<span class="unit">m</span></div>
+                <div class="caption">Distance</div>
+              </div>
+              <div class="column stat">
+                <div class="stat-val">7:28</div>
+                <div class="caption">Duration</div>
+              </div>
+              <div class="column stat">
+                <div class="stat-val">1:52<span class="unit">/500m</span></div>
+                <div class="caption">Split</div>
+              </div>
+            </div>
+            <div class="cluster sec-stats">
+              <div class="column sec-stat">
+                <div class="mono">28 <span class="caption faint">spm</span></div>
+                <div class="caption faint">Avg SPM</div>
+              </div>
+              <div class="column sec-stat">
+                <div class="mono">245 <span class="caption faint">W</span></div>
+                <div class="caption faint">Avg watts</div>
+              </div>
+              <div class="column sec-stat">
+                <div class="mono">158 <span class="caption faint">bpm</span></div>
+                <div class="caption faint">Avg HR</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!--  CARDIO — Minimal / Class (Yoga)                                 -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section class="column section">
+      <div class="section-title eyebrow faint">Cardio — Class / Minimal (Yoga)</div>
+      <div class="grid">
+
+        <!-- ACTIVE -->
+        <div class="column">
+          <div class="label active-label row compact eyebrow"><span class="pulse"></span>Active — recording</div>
+          <div class="surface active">
+            <div class="row space-between">
+              <div class="row compact">
+                <div class="icon-chip mind"><i
+                    data-lucide="sun"></i></div>
+                <div class="column compact"><span class="bold">Vinyasa Flow</span><span class="caption">Style: Vinyasa ·
+                    Heated</span></div>
+              </div>
+              <span class="pill yoga">Yoga</span>
+            </div>
+            <div class="mono bold timer lg">00:32:14</div>
+            <div class="stat-grid two">
+              <div class="column stat live-stat">
+                <div class="stat-val dim">105<span class="unit">°F</span></div>
+                <div class="caption">Room temp</div>
+              </div>
+              <div class="column stat live-stat">
+                <div class="stat-val dim">143<span class="unit">bpm</span></div>
+                <div class="caption">HR (est.)</div>
+              </div>
+            </div>
+            <textarea class="notes-base notes-input" rows="2" placeholder="Add notes…"></textarea>
+            <button class="danger full"><i data-lucide="square"></i>End yoga</button>
+          </div>
+        </div>
+
+        <!-- FINISHED -->
+        <div class="column">
+          <div class="label finished-label row compact eyebrow"><i data-lucide="check-circle"
+              class="icon-sm"></i>Finished — review</div>
+          <div class="surface">
+            <div class="row space-between">
+              <div class="row compact">
+                <div class="icon-chip mind"><i
+                    data-lucide="sun"></i></div>
+                <div class="column compact"><span class="bold">Vinyasa Flow</span><span class="caption">Style: Vinyasa ·
+                    Heated</span></div>
+              </div>
+              <span class="pill yoga">Yoga</span>
+            </div>
+            <div class="stat-grid two">
+              <div class="column stat">
+                <div class="stat-val">60:00</div>
+                <div class="caption">Duration</div>
+              </div>
+              <div class="column stat">
+                <div class="stat-val">105<span class="unit">°F</span></div>
+                <div class="caption">Room temp</div>
+              </div>
+            </div>
+            <div class="notes-base notes-field">Focused on hip opening and backbends. Left shoulder still tight.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!--  COMPOSITE — Superset                                            -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section class="column section">
+      <div class="section-title eyebrow faint">Composite — Superset (Bench Press + DB Row)</div>
+      <div class="grid">
+
+        <!-- ACTIVE -->
+        <div class="column">
+          <div class="label active-label row compact eyebrow"><span class="pulse"></span>Active — logging</div>
+          <div class="surface active">
+            <div class="row space-between">
+              <span class="pill superset">Superset</span>
+              <span class="pill dim bold">Round 3 of 4</span>
+            </div>
+
+            <!-- Exercise A — done this round -->
+            <div class="surface inset compact nested-block">
+              <div class="row compact">
+                <div class="box-label nested-letter done">A</div>
+                <span class="bold grow">Bench Press</span>
+                <span class="pill ok-pill xs">75 kg × 9 ✓</span>
+              </div>
+            </div>
+
+            <!-- Exercise B — current -->
+            <div class="surface inset compact nested-block current">
+              <div class="row compact">
+                <div class="box-label nested-letter active">B</div>
+                <div class="column compact grow">
+                  <span class="bold">Dumbbell Row</span>
+                  <span class="caption faint">Previous: 24 kg × 12, 24 kg × 11</span>
+                </div>
+              </div>
+              <div class="set-input-row weight-reps">
+                <div class="column input-group"><label>kg</label><input type="number" value="24"></div>
+                <div class="column input-group"><label>reps</label><input type="number" placeholder="—"></div>
+                <div class="column input-group"><label>RPE</label><input type="number" placeholder="—"></div>
+              </div>
+            </div>
+
+            <button class="primary full"><i data-lucide="plus"></i>Log B · then rest</button>
+
+            <!-- Next up -->
+            <div class="row compact faint caption">
+              <i data-lucide="arrow-right" class="icon-sm"></i>
+              After rest: Set 4A — Bench Press
+            </div>
+          </div>
+        </div>
+
+        <!-- FINISHED -->
+        <div class="column">
+          <div class="label finished-label row compact eyebrow"><i data-lucide="check-circle"
+              class="icon-sm"></i>Finished — review</div>
+          <div class="surface">
+            <div class="row space-between">
+              <span class="pill superset">Superset</span>
+              <span class="pill dim bold">4 rounds</span>
+            </div>
+
+            <div class="surface inset compact nested-block">
+              <div class="row compact">
+                <div class="box-label nested-letter">A</div>
+                <span class="bold">Bench Press</span>
+              </div>
+              <div class="list">
+                <div class="list-header eyebrow faint"><span>#</span><span class="srh-center">kg · reps</span><span
+                    class="srh-right">✓</span></div>
+                <div class="column item">
+                  <div class="item-grid"><span class="num micro">SS1A</span><span class="data"><span
+                        class="val">75</span><span class="unit">kg</span><span class="sep">×</span><span
+                        class="val">10</span></span><span class="check ok">✓</span></div>
+                  <div class="row compact item-meta"><span class="badge">RPE 7</span></div>
+                </div>
+                <div class="column item">
+                  <div class="item-grid"><span class="num micro">SS2A</span><span class="data"><span
+                        class="val">75</span><span class="unit">kg</span><span class="sep">×</span><span
+                        class="val">10</span></span><span class="check ok">✓</span></div>
+                  <div class="row compact item-meta"><span class="badge med">RPE 8</span></div>
+                </div>
+                <div class="column item">
+                  <div class="item-grid"><span class="num micro">SS3A</span><span class="data"><span
+                        class="val">75</span><span class="unit">kg</span><span class="sep">×</span><span
+                        class="val">9</span></span><span class="check ok">✓</span></div>
+                  <div class="row compact item-meta"><span class="badge med">RPE 8</span></div>
+                </div>
+                <div class="column item">
+                  <div class="item-grid"><span class="num micro">SS4A</span><span class="data"><span
+                        class="val">75</span><span class="unit">kg</span><span class="sep">×</span><span
+                        class="val">8</span></span><span class="check ok">✓</span></div>
+                  <div class="row compact item-meta"><span class="badge high">RPE 9</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="surface inset compact nested-block">
+              <div class="row compact">
+                <div class="box-label nested-letter">B</div>
+                <span class="bold">Dumbbell Row</span>
+              </div>
+              <div class="list">
+                <div class="list-header eyebrow faint"><span>#</span><span class="srh-center">kg · reps</span><span
+                    class="srh-right">✓</span></div>
+                <div class="column item">
+                  <div class="item-grid"><span class="num micro">SS1B</span><span class="data"><span
+                        class="val">24</span><span class="unit">kg</span><span class="sep">×</span><span
+                        class="val">12</span></span><span class="check ok">✓</span></div>
+                  <div class="row compact item-meta"><span class="badge">RPE 7</span></div>
+                </div>
+                <div class="column item">
+                  <div class="item-grid"><span class="num micro">SS2B</span><span class="data"><span
+                        class="val">24</span><span class="unit">kg</span><span class="sep">×</span><span
+                        class="val">12</span></span><span class="check ok">✓</span></div>
+                  <div class="row compact item-meta"><span class="badge">RPE 7</span></div>
+                </div>
+                <div class="column item">
+                  <div class="item-grid"><span class="num micro">SS3B</span><span class="data"><span
+                        class="val">24</span><span class="unit">kg</span><span class="sep">×</span><span
+                        class="val">11</span></span><span class="check ok">✓</span></div>
+                  <div class="row compact item-meta"><span class="badge med">RPE 8</span></div>
+                </div>
+                <div class="column item">
+                  <div class="item-grid"><span class="num micro">SS4B</span><span class="data"><span
+                        class="val">24</span><span class="unit">kg</span><span class="sep">×</span><span
+                        class="val">10</span></span><span class="check ok">✓</span></div>
+                  <div class="row compact item-meta"><span class="caption comment">left lat was pumped</span><span
+                      class="badge med">RPE 8</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="row faint caption"><i data-lucide="info" class="icon-sm"></i>No rest A→B · 90s rest after each
+              round</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!--  COMPOSITE — AMRAP                                               -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section class="column section">
+      <div class="section-title eyebrow faint">Composite — AMRAP (12 min)</div>
+      <div class="grid">
+
+        <!-- ACTIVE -->
+        <div class="column">
+          <div class="label active-label row compact eyebrow"><span class="pulse"></span>Active — logging</div>
+          <div class="surface active">
+            <div class="row space-between">
+              <span class="pill amrap">AMRAP</span>
+              <span class="pill dim bold warn">Round 4 · A</span>
+            </div>
+            <!-- Countdown timer -->
+            <div class="surface inset compact text-center">
+              <div class="caption faint">Time remaining</div>
+              <div class="mono bold timer md warn">04:28</div>
+              <div class="rest-bar">
+                <div class="rest-bar-fill fill-37 warn"></div>
+              </div>
+            </div>
+
+            <div class="surface inset compact nested-block current">
+              <div class="row compact">
+                <div class="box-label nested-letter active">A</div>
+                <div class="column compact grow">
+                  <span class="bold">Deadlift</span>
+                  <span class="caption faint">5 reps · 100 kg · Round 4</span>
+                </div>
+              </div>
+            </div>
+            <div class="surface inset compact nested-block">
+              <div class="row compact faint">
+                <div class="box-label nested-letter">B</div>
+                <span>Hang Power Clean</span>
+                <span class="caption faint grow text-right">5 reps · 60 kg</span>
+              </div>
+            </div>
+            <div class="surface inset compact nested-block">
+              <div class="row compact faint">
+                <div class="box-label nested-letter">C</div>
+                <span>Front Squat</span>
+                <span class="caption faint grow text-right">5 reps · 60 kg</span>
+              </div>
+            </div>
+            <button class="primary full"><i data-lucide="check"></i>Done — A complete</button>
+          </div>
+        </div>
+
+        <!-- FINISHED -->
+        <div class="column">
+          <div class="label finished-label row compact eyebrow"><i data-lucide="check-circle"
+              class="icon-sm"></i>Finished — review</div>
+          <div class="surface">
+            <div class="row space-between">
+              <span class="pill amrap">AMRAP</span>
+              <span class="pill amrap bold">5 rds + 2 reps</span>
+            </div>
+            <div class="surface inset compact nested-block">
+              <div class="row compact">
+                <div class="box-label nested-letter">A</div><span class="bold">Deadlift</span><span class="caption faint grow text-right">5 reps · 100 kg</span>
+              </div>
+            </div>
+            <div class="surface inset compact nested-block">
+              <div class="row compact">
+                <div class="box-label nested-letter">B</div><span class="bold">Hang Power Clean</span><span class="caption faint grow text-right">5 reps · 60 kg</span>
+              </div>
+            </div>
+            <div class="surface inset compact nested-block">
+              <div class="row compact">
+                <div class="box-label nested-letter">C</div><span class="bold">Front Squat</span><span class="caption faint grow text-right">5 reps · 60 kg</span>
+              </div>
+            </div>
+            <div class="row space-between">
+              <div class="row faint caption"><i data-lucide="clock" class="icon-sm"></i>Stopped at 12:00</div>
+              <span class="pill amrap xs">5 full rounds + A+B (partial)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!--  TRANSITION                                                      -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section class="column section">
+      <div class="section-title eyebrow faint">Transition (T1 — Swim → Bike)</div>
+      <div class="grid">
+
+        <!-- ACTIVE -->
+        <div class="column">
+          <div class="label active-label row compact eyebrow"><span class="pulse"></span>Active — in transition</div>
+          <div class="surface active text-center">
+            <div class="row space-between">
+              <span class="pill transition">T1</span>
+              <div class="row compact faint caption"><i data-lucide="arrow-right" class="icon-sm"></i>Swim → Bike</div>
+            </div>
+            <div class="mono bold timer lg warn">00:01:42</div>
+            <div class="caption faint">Timer started automatically when swim segment ended</div>
+            <textarea class="notes-base notes-input" rows="2" placeholder="Optional note…"></textarea>
+            <button class="danger full"><i data-lucide="bike"></i>Start bike segment</button>
+          </div>
+        </div>
+
+        <!-- FINISHED -->
+        <div class="column">
+          <div class="label finished-label row compact eyebrow"><i data-lucide="check-circle"
+              class="icon-sm"></i>Finished — review</div>
+          <div class="surface row">
+            <div class="box-label t-label">T1</div>
+            <div class="column compact grow">
+              <div class="row compact">
+                <span class="bold">Swim → Bike</span>
+                <span class="pill transition xs">transition</span>
+              </div>
+              <div class="row compact faint caption">
+                <i data-lucide="clock" class="icon-sm"></i>2:34
+              </div>
+              <div class="notes-base notes-field sm">Forgot to rack rear derailleur — lost ~15s</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 't' || e.key === 'T') {
+        const html = document.documentElement;
+        html.dataset.theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
+      }
+    });
+
+    // Simulate live timers ticking
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    const timers = document.querySelectorAll('.timer.lg');
+    const starts = [42 * 60 + 18, 32 * 60 + 14, 4 * 60 + 12, 1 * 60 + 42];
+    timers.forEach((el, i) => {
+      let secs = starts[i] || 0;
+      setInterval(() => {
+        secs++;
+        const h = Math.floor(secs / 3600), m = Math.floor((secs % 3600) / 60), s = secs % 60;
+        el.textContent = h > 0
+          ? `${pad(h)}:${pad(m)}:${pad(s)}`
+          : `${pad(m)}:${pad(s)}`;
+      }, 1000);
+    });
+
+    // Countdown for AMRAP
+    const countdown = document.querySelector('.timer.sm');
+    if (countdown) {
+      let secs = 4 * 60 + 28;
+      setInterval(() => {
+        if (secs <= 0) return;
+        secs--;
+        const m = Math.floor(secs / 60), s = secs % 60;
+        countdown.textContent = `${pad(m)}:${pad(s)}`;
+      }, 1000);
+    }
+
+    // Rest bar timers
+    const restTimer = document.querySelector('.timer.sm:not(.amrap-countdown)');
+    let restSecs = 47;
+    setInterval(() => {
+      if (restSecs >= 90) return;
+      restSecs++;
+      const fill = (restSecs / 90) * 100;
+      document.querySelectorAll('.rest-bar-fill').forEach((b, i) => {
+        if (i === 0) b.style.width = fill + '%';
+      });
+    }, 1000);
+  </script>
+</body>
+
+</html>

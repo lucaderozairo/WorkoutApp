@@ -54,17 +54,17 @@ export function ExerciseHistoryScreen() {
         <Table className="center">
           <TableHead>
             <TableRow>
-              <TableCell header className="caption">Date</TableCell>
+              <TableCell header><Text size="caption">Date</Text></TableCell>
               {Array.from({ length: maxSets }, (_, i) => (
-                <TableCell key={i} header className="caption">S{i + 1}</TableCell>
+                <TableCell key={i} header><Text size="caption">S{i + 1}</Text></TableCell>
               ))}
-              <TableCell header className="caption">1RM</TableCell>
+              <TableCell header><Text size="caption">1RM</Text></TableCell>
             </TableRow>
           </TableHead>
           <tbody>
             {reversed.map((entry, i) => (
               <TableRow key={i}>
-                <TableCell className="caption nowrap">{formatDateFull(entry.date)}</TableCell>
+                <TableCell><Text size="caption" nowrap>{formatDateFull(entry.date)}</Text></TableCell>
                 {Array.from({ length: maxSets }, (_, s) => {
                   const kg = entry.setWeights?.[s];
                   const reps = entry.setReps?.[s];

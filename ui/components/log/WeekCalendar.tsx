@@ -5,7 +5,8 @@ import type { CombinedSession } from '@features/training_log/queries/calendarUti
 import { buildDateMap, getWeekStart, formatWeekRange, toDateKey } from '@features/training_log/queries/calendarUtils';
 import { StrengthSessionItem, CardioSessionItem } from './SessionListItem';
 import { Row, Column } from '@ui/layout';
-import { Surface } from '@ui/atoms';
+import { Surface, Text } from '@ui/atoms';
+import { Button } from '@ui/molecules';
 
 interface Props {
   sessions: CombinedSession[];
@@ -35,6 +36,7 @@ export function WeekCalendar({ sessions, typeFilter, renderFilter }: Props) {
     setWeekStart(d);
     setSelectedKey(toDateKey(d.getTime()));
   }
+
   function next() {
     const d = new Date(weekStart);
     d.setDate(d.getDate() + 7);
@@ -65,9 +67,9 @@ export function WeekCalendar({ sessions, typeFilter, renderFilter }: Props) {
     <Column>
       <Surface pad="sm">
         <Row justify="between" align="center">
-          <button className="secondary icon sm" onClick={prev}>‹</button>
-          <span className="caption text-center">{formatWeekRange(weekStart)}</span>
-          <button className="secondary icon sm" onClick={next}>›</button>
+          <Button type="button" variant="secondary" size="icon-sm" onClick={prev}>{'<'}</Button>
+          <Text as="span" size="caption" className="text-center">{formatWeekRange(weekStart)}</Text>
+          <Button type="button" variant="secondary" size="icon-sm" onClick={next}>{'>'}</Button>
         </Row>
       </Surface>
 
@@ -80,20 +82,22 @@ export function WeekCalendar({ sessions, typeFilter, renderFilter }: Props) {
             const hasSessions = dateMap.has(key);
             const isSelected = key === selectedKey;
             return (
-              <button
+              <Button
+                type="button"
+                variant={isSelected ? 'primary' : 'ghost'}
                 key={key}
-                className={`column align-center min-w-0 ghost${isSelected ? ' primary' : ''}`}
+                className="column align-center min-w-0"
                 {...(isToday ? { 'data-today': true } : {})}
                 onClick={() => !isFuture && setSelectedKey(k => k === key ? null : key)}
                 disabled={isFuture}
               >
-                <span className="caption">{DAY_LABELS[i]}</span>
+                <Text as="span" size="caption">{DAY_LABELS[i]}</Text>
                 <strong>{date.getDate()}</strong>
                 {hasSessions
                   ? <span className="dot sm active" />
                   : <span className="dot sm invisible" />
                 }
-              </button>
+              </Button>
             );
           })}
         </Row>
@@ -104,21 +108,21 @@ export function WeekCalendar({ sessions, typeFilter, renderFilter }: Props) {
       <Column>
         <Surface variant="flat">
           <Row justify="between" align="center" gap={1}>
-            <span className="caption muted">
+            <Text as="span" size="caption" color="muted">
               {selectedKey
                 ? <>
                     {new Date(selectedKey + 'T12:00:00').toLocaleDateString('en-GB', {
                       weekday: 'short', day: 'numeric', month: 'long',
                     })}
-                    {selectedKey === todayKey ? ' — today' : ''}
+                    {selectedKey === todayKey ? ' - today' : ''}
                   </>
                 : formatWeekRange(weekStart)
               }
-            </span>
+            </Text>
           </Row>
         </Surface>
         {displaySessions.length === 0 ? (
-          <p className="muted caption">No sessions {selectedKey ? 'this day' : 'this week'}.</p>
+          <Text as="p" color="muted" size="caption">No sessions {selectedKey ? 'this day' : 'this week'}.</Text>
         ) : (
           displaySessions.map((entry, i) =>
             entry.kind === 'strength'

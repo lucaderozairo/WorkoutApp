@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-viewport="mobile">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workout Session List — Prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ═══════════════════════════════════════
+       DESIGN TOKENS
+    ═══════════════════════════════════════ */
+    :root {
+      --c-strength:  #e8785a;
+      --c-cardio:    #ef4a4a;
+      --c-recovery:  #7b9ef8;
+      --c-nutrition: #6fbf73;
+      --c-water:     #4dc8f0;
+
+      --ok:   #6fbf73;
+      --warn: #e8a33d;
+      --bad:  #e25555;
+
+      --font-ui:   "Geist", system-ui, sans-serif;
+      --font-mono: "Geist Mono", ui-monospace, monospace;
+
+      --t-xs:  11px;
+      --t-sm:  13px;
+      --t-md:  15px;
+      --t-lg:  18px;
+      --t-xl:  22px;
+      --t-2xl: 28px;
+
+      --s-1: 4px;
+      --s-2: 8px;
+      --s-3: 12px;
+      --s-4: 16px;
+      --s-5: 24px;
+      --s-6: 32px;
+
+      --r-xs:   4px;
+      --r-sm:   8px;
+      --r-md:   14px;
+      --r-lg:   20px;
+      --r-pill: 999px;
+
+      --ease:      cubic-bezier(0.2, 0.8, 0.2, 1);
+      --dur-short: 150ms;
+      --dur-med:   300ms;
+
+      /* ── TWEAKABLES ── */
+      --card-radius:  var(--r-md);
+      --card-pad-x:   var(--s-4);
+      --card-pad-y:   var(--s-4);
+      --list-gap:     var(--s-3);
+      --pill-radius:  var(--r-pill);
+      --expand-dur:   var(--dur-med);
+      --stat-size:    var(--t-xl);
+      --card-border:  1px;
+      --pr-bar-width: 3px;
+    }
+
+    /* ── Light ── */
+    :root,
+    [data-theme="light"] {
+      --bg:          #f4f6fb;
+      --surface:     #ffffff;
+      --surface-2:   #ebf0fa;
+      --surface-3:   #dde5f5;
+      --ink:         #0e1320;
+      --ink-muted:   #4a5270;
+      --ink-faint:   #8e96b0;
+      --line:        #dde5f5;
+      --line-strong: #c5d0e8;
+      --accent:      #4f8ef7;
+      --accent-ink:  #ffffff;
+      --shadow-sm:   0 1px 2px rgba(14,19,32,.06), 0 1px 1px rgba(14,19,32,.04);
+      --shadow-md:   0 8px 32px rgba(14,19,32,.10), 0 2px 6px rgba(14,19,32,.06);
+    }
+
+    /* ── Dark ── */
+    [data-theme="dark"] {
+      --bg:          #080c18;
+      --surface:     #0f1525;
+      --surface-2:   #171e30;
+      --surface-3:   #1f2840;
+      --ink:         #e8eefa;
+      --ink-muted:   #8a93b2;
+      --ink-faint:   #4a5270;
+      --line:        #1f2840;
+      --line-strong: #2a3555;
+      --accent:      #6ba3ff;
+      --accent-ink:  #050c20;
+      --shadow-sm:   0 1px 2px rgba(0,2,18,.60);
+      --shadow-md:   0 8px 32px rgba(0,2,18,.85);
+    }
+
+    /* ═══════════════════════════════════════
+       RESET & BASE
+    ═══════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    button { font: inherit; cursor: pointer; }
+    table  { border-collapse: collapse; }
+
+    html {
+      font-family: var(--font-ui);
+      font-size: var(--t-md);
+      color: var(--ink);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      transition: background var(--dur-med) var(--ease), color var(--dur-med) var(--ease);
+    }
+
+    /* ═══════════════════════════════════════
+       SHELL
+    ═══════════════════════════════════════ */
+    .shell { min-height: 100dvh; }
+
+    [data-viewport="desktop"] .shell {
+      display: flex;
+      align-items: flex-start;
+      max-width: 1120px;
+      margin: 0 auto;
+      min-height: 100dvh;
+    }
+
+    /* ═══════════════════════════════════════
+       APP (left panel)
+    ═══════════════════════════════════════ */
+    .app {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: var(--s-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--list-gap);
+      min-height: 100dvh;
+    }
+
+    [data-viewport="desktop"] .app {
+      width: 400px;
+      min-width: 400px;
+      max-width: 400px;
+      margin: 0;
+      flex-shrink: 0;
+      border-right: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      height: 100dvh;
+      overflow-y: auto;
+    }
+
+    /* ═══════════════════════════════════════
+       TOOLBAR
+    ═══════════════════════════════════════ */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--s-3) 0;
+      gap: var(--s-2);
+    }
+
+    .toolbar-title {
+      font-size: var(--t-lg);
+      font-weight: 600;
+      flex: 1;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--s-2);
+    }
+
+    .icon-btn {
+      display: flex;
+      align-items: center;
+      gap: var(--s-1);
+      padding: var(--s-1) var(--s-3);
+      border-radius: var(--r-pill);
+      border: 1px solid var(--line-strong);
+      background: var(--surface-2);
+      color: var(--ink-muted);
+      font-size: var(--t-sm);
+      transition: background var(--dur-short) var(--ease), color var(--dur-short) var(--ease);
+    }
+    .icon-btn:hover  { background: var(--surface-3); color: var(--ink); }
+    .icon-btn.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+
+    /* ═══════════════════════════════════════
+       SESSION LIST
+    ═══════════════════════════════════════ */
+    .session-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--list-gap);
+    }
+
+    /* ═══════════════════════════════════════
+       CARD
+    ═══════════════════════════════════════ */
+    .card {
+      background: var(--surface);
+      border-radius: var(--card-radius);
+      border: var(--card-border) solid var(--line);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow var(--dur-short) var(--ease),
+                  border-color var(--dur-short) var(--ease);
+    }
+    .card:hover { box-shadow: var(--shadow-md); }
+    .card.is-pr { border-left: var(--pr-bar-width) solid var(--c-strength); }
+
+    .card-body {
+      padding: var(--card-pad-y) var(--card-pad-x);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-3);
+    }
+
+    /* ── Collapsed header ── */
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--s-3);
+    }
+
+    .card-info {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-1);
+      flex: 1;
+      min-width: 0;
+    }
+
+    .card-byline {
+      display: flex;
+      align-items: center;
+      gap: var(--s-2);
+    }
+
+    .card-date, .card-duration {
+      font-family: var(--font-mono);
+      font-size: var(--t-xs);
+      color: var(--ink-faint);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .byline-sep {
+      font-size: var(--t-xs);
+      color: var(--ink-faint);
+      opacity: 0.4;
+    }
+
+    .card-name {
+      font-size: var(--t-md);
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.3;
+    }
+
+    .card-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--s-1);
+      margin-top: var(--s-1);
+    }
+
+    .chevron {
+      color: var(--ink-faint);
+      font-size: var(--t-lg);
+      flex-shrink: 0;
+      margin-top: 2px;
+      transition: transform var(--expand-dur) var(--ease);
+      user-select: none;
+    }
+    .card.is-expanded .chevron { transform: rotate(90deg); }
+
+    /* ── Expand drawer ── */
+    .card-drawer {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows var(--expand-dur) var(--ease);
+    }
+    .card.is-expanded .card-drawer { grid-template-rows: 1fr; }
+
+    .card-drawer-inner {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-3);
+    }
+
+    .divider { height: 1px; background: var(--line); }
+
+    /* ── Exercise rows in expanded card ── */
+    .exercise-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-2);
+    }
+
+    .ex-row {
+      display: grid;
+      grid-template-columns: 1fr 80px auto;
+      align-items: center;
+      gap: var(--s-2);
+    }
+
+    .ex-name {
+      font-size: var(--t-sm);
+      color: var(--ink-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ex-range {
+      font-family: var(--font-mono);
+      font-size: var(--t-xs);
+      color: var(--ink-faint);
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    /* ── Sparklines ── */
+    .sparkline { display: block; overflow: visible; }
+
+    .spark-line {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .spark-line--bw { stroke: var(--ink-faint); }
+
+    .spark-dot     { fill: var(--accent); }
+    .spark-dot--bw { fill: var(--ink-faint); }
+
+    /* ── Action row ── */
+    .action-row { display: flex; gap: var(--s-2); }
+
+    /* ═══════════════════════════════════════
+       PILLS
+    ═══════════════════════════════════════ */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-1);
+      padding: 2px var(--s-2);
+      border-radius: var(--pill-radius);
+      font-size: var(--t-xs);
+      font-weight: 500;
+      line-height: 1.6;
+      white-space: nowrap;
+    }
+    .pill-lift  { background: color-mix(in srgb, var(--c-strength) 14%, transparent); color: var(--c-strength); }
+    .pill-pr    { background: color-mix(in srgb, var(--warn) 14%, transparent);       color: var(--warn); }
+    .pill-plain { background: var(--surface-2); color: var(--ink-muted); }
+
+    /* ═══════════════════════════════════════
+       BUTTONS
+    ═══════════════════════════════════════ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-1);
+      padding: var(--s-2) var(--s-3);
+      border-radius: var(--r-sm);
+      font-size: var(--t-sm);
+      font-weight: 500;
+      border: none;
+      transition: background var(--dur-short) var(--ease), opacity var(--dur-short) var(--ease);
+    }
+    .btn:active { opacity: 0.7; }
+
+    .btn-primary { background: var(--accent); color: var(--accent-ink); }
+    .btn-primary:hover { opacity: 0.88; }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--ink-muted);
+      border: 1px solid var(--line-strong);
+    }
+    .btn-ghost:hover { background: var(--surface-2); color: var(--ink); }
+
+    /* ═══════════════════════════════════════
+       SESSION OVERLAY
+       mobile: fixed full-screen
+       desktop: right panel in shell flex row
+    ═══════════════════════════════════════ */
+    [data-viewport="mobile"] .session-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: var(--bg);
+      overflow-y: auto;
+      display: none;
+      flex-direction: column;
+      transition: background var(--dur-med) var(--ease);
+    }
+    [data-viewport="mobile"] .session-overlay.is-open { display: flex; }
+
+    [data-viewport="desktop"] .session-overlay {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      min-height: 100dvh;
+      overflow-y: auto;
+      background: var(--bg);
+    }
+    [data-viewport="desktop"] .session-overlay.is-open { display: flex; }
+
+    /* Empty right-panel placeholder (desktop, no session open) */
+    .panel-empty { display: none; }
+
+    [data-viewport="desktop"] .panel-empty {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100dvh;
+      color: var(--ink-faint);
+      font-size: var(--t-sm);
+      font-family: var(--font-mono);
+    }
+    [data-viewport="desktop"] .shell:has(.session-overlay.is-open) .panel-empty {
+      display: none;
+    }
+
+    .session-page {
+      max-width: 560px;
+      margin: 0 auto;
+      width: 100%;
+      padding: var(--s-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-4);
+    }
+
+    [data-viewport="desktop"] .session-page { max-width: none; padding: var(--s-5); }
+    [data-viewport="desktop"] .btn-back     { display: none; }
+
+    .session-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .session-header {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--s-3);
+    }
+
+    .session-icon  { font-size: var(--t-2xl); line-height: 1; flex-shrink: 0; margin-top: 3px; }
+
+    .session-meta {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-2);
+    }
+
+    .session-title    { font-size: var(--t-xl); font-weight: 700; color: var(--ink); }
+    .session-subtitle { font-family: var(--font-mono); font-size: var(--t-sm); color: var(--ink-faint); }
+
+    /* ── Exercise block ── */
+    .exercise-block {
+      background: var(--surface);
+      border-radius: var(--card-radius);
+      border: var(--card-border) solid var(--line);
+      box-shadow: var(--shadow-sm);
+      padding: var(--card-pad-y) var(--card-pad-x);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-3);
+    }
+
+    .exercise-name-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s-2);
+    }
+
+    .exercise-name { font-size: var(--t-md); font-weight: 600; color: var(--ink); }
+
+    /* ── Charts ── */
+    .chart-container { overflow: visible; }
+
+    .chart-svg      { display: block; width: 100%; overflow: visible; }
+    .chart-grid     { stroke: var(--line); stroke-width: 1; fill: none; }
+    .chart-line     { stroke: var(--accent); stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .chart-dot      { fill: var(--accent); }
+    .chart-dot-warmup { fill: var(--ink-faint); }
+    .chart-label    { font-family: var(--font-mono); font-size: 9px; fill: var(--ink-faint); }
+
+    /* ── Sets table ── */
+    .sets-table { width: 100%; font-family: var(--font-mono); font-size: var(--t-sm); }
+
+    .sets-table th {
+      text-align: left;
+      font-size: var(--t-xs);
+      font-weight: 500;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: var(--s-1) var(--s-2) var(--s-1) 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .sets-table td {
+      padding: var(--s-2) var(--s-2) var(--s-2) 0;
+      color: var(--ink);
+      border-bottom: 1px solid var(--line);
+      vertical-align: middle;
+    }
+    .sets-table tr:last-child td { border-bottom: none; }
+    .sets-table .warmup-row td  { opacity: 0.5; }
+
+    .td-num    { color: var(--ink-faint); }
+    .td-weight { font-weight: 600; }
+    .td-reps   { color: var(--ink-muted); }
+    .td-type   { color: var(--ink-faint); font-size: var(--t-xs); }
+    .td-rpe    { color: var(--ink-muted); }
+    .td-fail   { color: var(--bad); }
+  </style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ═══════════════════════════════════════════
+       LEFT PANEL / MOBILE — session list
+  ═══════════════════════════════════════════ -->
+  <div class="app">
+    <div class="toolbar">
+      <span class="toolbar-title">Progress</span>
+      <div class="toolbar-actions">
+        <button class="icon-btn" id="viewportBtn" onclick="toggleViewport()">🖥 Desktop</button>
+        <button class="icon-btn" id="themeBtn"    onclick="toggleTheme()">🌙 Dark</button>
+      </div>
+    </div>
+
+    <div class="session-list">
+
+      <!-- ── Card 1: Push Day (PR) ── -->
+      <div id="card-1" class="card is-pr" onclick="toggleCard('card-1')">
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-info">
+              <div class="card-byline">
+                <span class="card-date">6 May 2026</span>
+                <span class="byline-sep">·</span>
+                <span class="card-duration">64 min</span>
+              </div>
+              <span class="card-name">Push Day</span>
+              <div class="card-pills">
+                <span class="pill pill-lift">4 exercises</span>
+                <span class="pill pill-pr">🏆 PR</span>
+              </div>
+            </div>
+            <span class="chevron">›</span>
+          </div>
+
+          <div class="card-drawer">
+            <div class="card-drawer-inner">
+              <div class="divider"></div>
+
+              <div class="exercise-list">
+                <div class="ex-row">
+                  <span class="ex-name">Bench Press</span>
+                  <!-- Working sets kg: 80, 90, 97.5  →  y: 20, 11, 4 -->
+                  <svg class="sparkline" viewBox="0 0 80 24" width="80" height="24">
+                    <path class="spark-line" d="M 4,20 C 10.3,18.43 27.4,13.8 40,11 C 52.6,8.2 69.7,5.23 76,4"/>
+                    <circle class="spark-dot" cx="4"  cy="20" r="2"/>
+                    <circle class="spark-dot" cx="40" cy="11" r="2"/>
+                    <circle class="spark-dot" cx="76" cy="4"  r="2"/>
+                  </svg>
+                  <span class="ex-range">80 → 97.5 kg</span>
+                </div>
+                <div class="ex-row">
+                  <span class="ex-name">Overhead Press</span>
+                  <!-- Working sets kg: 55, 60, 62.5  →  y: 20, 9, 4 -->
+                  <svg class="sparkline" viewBox="0 0 80 24" width="80" height="24">
+                    <path class="spark-line" d="M 4,20 C 10.3,18.08 27.4,11.8 40,9 C 52.6,6.2 69.7,4.88 76,4"/>
+                    <circle class="spark-dot" cx="4"  cy="20" r="2"/>
+                    <circle class="spark-dot" cx="40" cy="9"  r="2"/>
+                    <circle class="spark-dot" cx="76" cy="4"  r="2"/>
+                  </svg>
+                  <span class="ex-range">55 → 62.5 kg</span>
+                </div>
+                <div class="ex-row">
+                  <span class="ex-name">Tricep Dips</span>
+                  <!-- BW reps: 12, 10, 8  →  y: 4, 12, 20 (more reps = higher) -->
+                  <svg class="sparkline" viewBox="0 0 80 24" width="80" height="24">
+                    <path class="spark-line spark-line--bw" d="M 4,4 C 10.3,5.4 27.4,9.2 40,12 C 52.6,14.8 69.7,18.6 76,20"/>
+                    <circle class="spark-dot spark-dot--bw" cx="4"  cy="4"  r="2"/>
+                    <circle class="spark-dot spark-dot--bw" cx="40" cy="12" r="2"/>
+                    <circle class="spark-dot spark-dot--bw" cx="76" cy="20" r="2"/>
+                  </svg>
+                  <span class="ex-range">BW · 12 → 8</span>
+                </div>
+                <div class="ex-row">
+                  <span class="ex-name">Cable Fly</span>
+                  <!-- Working sets kg: 20, 22.5, 22.5  →  y: 20, 4, 4 -->
+                  <svg class="sparkline" viewBox="0 0 80 24" width="80" height="24">
+                    <path class="spark-line" d="M 4,20 C 10.3,17.2 27.4,6.8 40,4 C 52.6,1.2 69.7,4 76,4"/>
+                    <circle class="spark-dot" cx="4"  cy="20" r="2"/>
+                    <circle class="spark-dot" cx="40" cy="4"  r="2"/>
+                    <circle class="spark-dot" cx="76" cy="4"  r="2"/>
+                  </svg>
+                  <span class="ex-range">20 → 22.5 kg</span>
+                </div>
+              </div>
+
+              <div class="action-row">
+                <button class="btn btn-primary" onclick="openSession('session-1', event)">📋 Full session</button>
+                <button class="btn btn-ghost"   onclick="event.stopPropagation()">📤 Share</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Card 2: Pull Day ── -->
+      <div id="card-2" class="card" onclick="toggleCard('card-2')">
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-info">
+              <div class="card-byline">
+                <span class="card-date">4 May 2026</span>
+                <span class="byline-sep">·</span>
+                <span class="card-duration">52 min</span>
+              </div>
+              <span class="card-name">Pull Day</span>
+              <div class="card-pills">
+                <span class="pill pill-lift">3 exercises</span>
+              </div>
+            </div>
+            <span class="chevron">›</span>
+          </div>
+
+          <div class="card-drawer">
+            <div class="card-drawer-inner">
+              <div class="divider"></div>
+
+              <div class="exercise-list">
+                <div class="ex-row">
+                  <span class="ex-name">Deadlift</span>
+                  <!-- Working sets kg: 120, 140  →  y: 20, 4 -->
+                  <svg class="sparkline" viewBox="0 0 80 24" width="80" height="24">
+                    <path class="spark-line" d="M 4,20 L 76,4"/>
+                    <circle class="spark-dot" cx="4"  cy="20" r="2"/>
+                    <circle class="spark-dot" cx="76" cy="4"  r="2"/>
+                  </svg>
+                  <span class="ex-range">120 → 140 kg</span>
+                </div>
+                <div class="ex-row">
+                  <span class="ex-name">Pull-ups</span>
+                  <!-- BW reps: 10, 9, 7, 5  →  y: 4, 7, 14, 20 -->
+                  <svg class="sparkline" viewBox="0 0 80 24" width="80" height="24">
+                    <path class="spark-line spark-line--bw" d="M 4,4 C 8.2,4.53 19.6,5.25 28,7 C 36.4,8.75 43.6,11.73 52,14 C 60.4,16.28 71.8,18.95 76,20"/>
+                    <circle class="spark-dot spark-dot--bw" cx="4"  cy="4"  r="2"/>
+                    <circle class="spark-dot spark-dot--bw" cx="28" cy="7"  r="2"/>
+                    <circle class="spark-dot spark-dot--bw" cx="52" cy="14" r="2"/>
+                    <circle class="spark-dot spark-dot--bw" cx="76" cy="20" r="2"/>
+                  </svg>
+                  <span class="ex-range">BW · 10 → 5</span>
+                </div>
+                <div class="ex-row">
+                  <span class="ex-name">Barbell Row</span>
+                  <!-- Working sets kg: 60, 70, 75  →  y: 20, 9, 4 -->
+                  <svg class="sparkline" viewBox="0 0 80 24" width="80" height="24">
+                    <path class="spark-line" d="M 4,20 C 10.3,18.08 27.4,11.8 40,9 C 52.6,6.2 69.7,4.88 76,4"/>
+                    <circle class="spark-dot" cx="4"  cy="20" r="2"/>
+                    <circle class="spark-dot" cx="40" cy="9"  r="2"/>
+                    <circle class="spark-dot" cx="76" cy="4"  r="2"/>
+                  </svg>
+                  <span class="ex-range">60 → 75 kg</span>
+                </div>
+              </div>
+
+              <div class="action-row">
+                <button class="btn btn-primary" onclick="openSession('session-2', event)">📋 Full session</button>
+                <button class="btn btn-ghost"   onclick="event.stopPropagation()">📤 Share</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Card 3: Leg Day ── -->
+      <div id="card-3" class="card" onclick="toggleCard('card-3')">
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-info">
+              <div class="card-byline">
+                <span class="card-date">2 May 2026</span>
+                <span class="byline-sep">·</span>
+                <span class="card-duration">45 min</span>
+              </div>
+              <span class="card-name">Leg Day</span>
+              <div class="card-pills">
+                <span class="pill pill-lift">3 exercises</span>
+              </div>
+            </div>
+            <span class="chevron">›</span>
+          </div>
+
+          <div class="card-drawer">
+            <div class="card-drawer-inner">
+              <div class="divider"></div>
+
+              <div class="exercise-list">
+                <div class="ex-row">
+                  <span class="ex-name">Back Squat</span>
+                  <!-- Working sets kg: 100, 110  →  y: 20, 4 -->
+                  <svg class="sparkline" viewBox="0 0 80 24" width="80" height="24">
+                    <path class="spark-line" d="M 4,20 L 76,4"/>
+                    <circle class="spark-dot" cx="4"  cy="20" r="2"/>
+                    <circle class="spark-dot" cx="76" cy="4"  r="2"/>
+                  </svg>
+                  <span class="ex-range">100 → 110 kg</span>
+                </div>
+                <div class="ex-row">
+                  <span class="ex-name">Romanian DL</span>
+                  <!-- Working sets kg: 70, 80, 80  →  y: 20, 4, 4 -->
+                  <svg class="sparkline" viewBox="0 0 80 24" width="80" height="24">
+                    <path class="spark-line" d="M 4,20 C 10.3,17.2 27.4,6.8 40,4 C 52.6,1.2 69.7,4 76,4"/>
+                    <circle class="spark-dot" cx="4"  cy="20" r="2"/>
+                    <circle class="spark-dot" cx="40" cy="4"  r="2"/>
+                    <circle class="spark-dot" cx="76" cy="4"  r="2"/>
+                  </svg>
+                  <span class="ex-range">70 → 80 kg</span>
+                </div>
+                <div class="ex-row">
+                  <span class="ex-name">Leg Press</span>
+                  <!-- Working sets kg: 120, 140, 150  →  y: 20, 9, 4 -->
+                  <svg class="sparkline" viewBox="0 0 80 24" width="80" height="24">
+                    <path class="spark-line" d="M 4,20 C 10.3,18.08 27.4,11.8 40,9 C 52.6,6.2 69.7,4.88 76,4"/>
+                    <circle class="spark-dot" cx="4"  cy="20" r="2"/>
+                    <circle class="spark-dot" cx="40" cy="9"  r="2"/>
+                    <circle class="spark-dot" cx="76" cy="4"  r="2"/>
+                  </svg>
+                  <span class="ex-range">120 → 150 kg</span>
+                </div>
+              </div>
+
+              <div class="action-row">
+                <button class="btn btn-primary" onclick="openSession('session-3', event)">📋 Full session</button>
+                <button class="btn btn-ghost"   onclick="event.stopPropagation()">📤 Share</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Desktop empty state -->
+  <div class="panel-empty">Select a session  → </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       SESSION 1: Push Day
+  ═══════════════════════════════════════════ -->
+  <div id="session-1" class="session-overlay">
+    <div class="session-page">
+      <div class="session-nav">
+        <button class="btn btn-ghost btn-back" onclick="closeSession('session-1')">← Back</button>
+        <button class="btn btn-ghost">📤 Share</button>
+      </div>
+      <div class="session-header">
+        <span class="session-icon">🏋️</span>
+        <div class="session-meta">
+          <span class="session-title">Push Day</span>
+          <span class="session-subtitle">6 May 2026 · 64 min</span>
+          <div class="card-pills">
+            <span class="pill pill-lift">4 exercises · 14 sets</span>
+            <span class="pill pill-pr">🏆 PR</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="exercise-block">
+        <div class="exercise-name-row">
+          <span class="exercise-name">Bench Press</span>
+          <span class="pill pill-plain">3 working sets</span>
+        </div>
+        <div class="chart-container" id="chart-s1-bench"></div>
+        <table class="sets-table">
+          <thead><tr><th>#</th><th>kg</th><th>reps</th><th>type</th><th>RPE</th><th></th></tr></thead>
+          <tbody>
+            <tr class="warmup-row"><td class="td-num">1</td><td class="td-weight">60</td><td class="td-reps">8</td><td class="td-type">warmup</td><td class="td-rpe">—</td><td></td></tr>
+            <tr><td class="td-num">2</td><td class="td-weight">80</td><td class="td-reps">6</td><td class="td-type">normal</td><td class="td-rpe">7</td><td></td></tr>
+            <tr><td class="td-num">3</td><td class="td-weight">90</td><td class="td-reps">5</td><td class="td-type">normal</td><td class="td-rpe">8</td><td></td></tr>
+            <tr><td class="td-num">4</td><td class="td-weight">97.5</td><td class="td-reps">3</td><td class="td-type">normal</td><td class="td-rpe">9</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="exercise-block">
+        <div class="exercise-name-row">
+          <span class="exercise-name">Overhead Press</span>
+          <span class="pill pill-plain">3 working sets</span>
+        </div>
+        <div class="chart-container" id="chart-s1-ohp"></div>
+        <table class="sets-table">
+          <thead><tr><th>#</th><th>kg</th><th>reps</th><th>type</th><th>RPE</th><th></th></tr></thead>
+          <tbody>
+            <tr class="warmup-row"><td class="td-num">1</td><td class="td-weight">40</td><td class="td-reps">8</td><td class="td-type">warmup</td><td class="td-rpe">—</td><td></td></tr>
+            <tr><td class="td-num">2</td><td class="td-weight">55</td><td class="td-reps">6</td><td class="td-type">normal</td><td class="td-rpe">7</td><td></td></tr>
+            <tr><td class="td-num">3</td><td class="td-weight">60</td><td class="td-reps">5</td><td class="td-type">normal</td><td class="td-rpe">8</td><td></td></tr>
+            <tr><td class="td-num">4</td><td class="td-weight">62.5</td><td class="td-reps">4</td><td class="td-type">normal</td><td class="td-rpe">9</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="exercise-block">
+        <div class="exercise-name-row">
+          <span class="exercise-name">Tricep Dips</span>
+          <span class="pill pill-plain">3 sets · BW</span>
+        </div>
+        <div class="chart-container" id="chart-s1-dips"></div>
+        <table class="sets-table">
+          <thead><tr><th>#</th><th>kg</th><th>reps</th><th>type</th><th>RPE</th><th></th></tr></thead>
+          <tbody>
+            <tr><td class="td-num">1</td><td class="td-weight">—</td><td class="td-reps">12</td><td class="td-type">normal</td><td class="td-rpe">7</td><td></td></tr>
+            <tr><td class="td-num">2</td><td class="td-weight">—</td><td class="td-reps">10</td><td class="td-type">normal</td><td class="td-rpe">8</td><td></td></tr>
+            <tr><td class="td-num">3</td><td class="td-weight">—</td><td class="td-reps">8</td><td class="td-type">normal</td><td class="td-rpe">9</td><td class="td-fail">✕</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="exercise-block">
+        <div class="exercise-name-row">
+          <span class="exercise-name">Cable Fly</span>
+          <span class="pill pill-plain">3 working sets</span>
+        </div>
+        <div class="chart-container" id="chart-s1-fly"></div>
+        <table class="sets-table">
+          <thead><tr><th>#</th><th>kg</th><th>reps</th><th>type</th><th>RPE</th><th></th></tr></thead>
+          <tbody>
+            <tr><td class="td-num">1</td><td class="td-weight">20</td><td class="td-reps">12</td><td class="td-type">normal</td><td class="td-rpe">7</td><td></td></tr>
+            <tr><td class="td-num">2</td><td class="td-weight">22.5</td><td class="td-reps">10</td><td class="td-type">normal</td><td class="td-rpe">8</td><td></td></tr>
+            <tr><td class="td-num">3</td><td class="td-weight">22.5</td><td class="td-reps">9</td><td class="td-type">normal</td><td class="td-rpe">9</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       SESSION 2: Pull Day
+  ═══════════════════════════════════════════ -->
+  <div id="session-2" class="session-overlay">
+    <div class="session-page">
+      <div class="session-nav">
+        <button class="btn btn-ghost btn-back" onclick="closeSession('session-2')">← Back</button>
+        <button class="btn btn-ghost">📤 Share</button>
+      </div>
+      <div class="session-header">
+        <span class="session-icon">🏋️</span>
+        <div class="session-meta">
+          <span class="session-title">Pull Day</span>
+          <span class="session-subtitle">4 May 2026 · 52 min</span>
+          <div class="card-pills">
+            <span class="pill pill-lift">3 exercises · 10 sets</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="exercise-block">
+        <div class="exercise-name-row">
+          <span class="exercise-name">Deadlift</span>
+          <span class="pill pill-plain">2 working sets</span>
+        </div>
+        <div class="chart-container" id="chart-s2-deadlift"></div>
+        <table class="sets-table">
+          <thead><tr><th>#</th><th>kg</th><th>reps</th><th>type</th><th>RPE</th><th></th></tr></thead>
+          <tbody>
+            <tr class="warmup-row"><td class="td-num">1</td><td class="td-weight">80</td><td class="td-reps">5</td><td class="td-type">warmup</td><td class="td-rpe">—</td><td></td></tr>
+            <tr><td class="td-num">2</td><td class="td-weight">120</td><td class="td-reps">5</td><td class="td-type">normal</td><td class="td-rpe">7</td><td></td></tr>
+            <tr><td class="td-num">3</td><td class="td-weight">140</td><td class="td-reps">3</td><td class="td-type">normal</td><td class="td-rpe">9</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="exercise-block">
+        <div class="exercise-name-row">
+          <span class="exercise-name">Pull-ups</span>
+          <span class="pill pill-plain">4 sets · BW</span>
+        </div>
+        <div class="chart-container" id="chart-s2-pullups"></div>
+        <table class="sets-table">
+          <thead><tr><th>#</th><th>kg</th><th>reps</th><th>type</th><th>RPE</th><th></th></tr></thead>
+          <tbody>
+            <tr><td class="td-num">1</td><td class="td-weight">—</td><td class="td-reps">10</td><td class="td-type">normal</td><td class="td-rpe">7</td><td></td></tr>
+            <tr><td class="td-num">2</td><td class="td-weight">—</td><td class="td-reps">9</td><td class="td-type">normal</td><td class="td-rpe">8</td><td></td></tr>
+            <tr><td class="td-num">3</td><td class="td-weight">—</td><td class="td-reps">7</td><td class="td-type">normal</td><td class="td-rpe">9</td><td></td></tr>
+            <tr><td class="td-num">4</td><td class="td-weight">—</td><td class="td-reps">5</td><td class="td-type">normal</td><td class="td-rpe">10</td><td class="td-fail">✕</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="exercise-block">
+        <div class="exercise-name-row">
+          <span class="exercise-name">Barbell Row</span>
+          <span class="pill pill-plain">3 working sets</span>
+        </div>
+        <div class="chart-container" id="chart-s2-row"></div>
+        <table class="sets-table">
+          <thead><tr><th>#</th><th>kg</th><th>reps</th><th>type</th><th>RPE</th><th></th></tr></thead>
+          <tbody>
+            <tr><td class="td-num">1</td><td class="td-weight">60</td><td class="td-reps">8</td><td class="td-type">normal</td><td class="td-rpe">7</td><td></td></tr>
+            <tr><td class="td-num">2</td><td class="td-weight">70</td><td class="td-reps">6</td><td class="td-type">normal</td><td class="td-rpe">8</td><td></td></tr>
+            <tr><td class="td-num">3</td><td class="td-weight">75</td><td class="td-reps">5</td><td class="td-type">normal</td><td class="td-rpe">9</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       SESSION 3: Leg Day
+  ═══════════════════════════════════════════ -->
+  <div id="session-3" class="session-overlay">
+    <div class="session-page">
+      <div class="session-nav">
+        <button class="btn btn-ghost btn-back" onclick="closeSession('session-3')">← Back</button>
+        <button class="btn btn-ghost">📤 Share</button>
+      </div>
+      <div class="session-header">
+        <span class="session-icon">🏋️</span>
+        <div class="session-meta">
+          <span class="session-title">Leg Day</span>
+          <span class="session-subtitle">2 May 2026 · 45 min</span>
+          <div class="card-pills">
+            <span class="pill pill-lift">3 exercises · 9 sets</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="exercise-block">
+        <div class="exercise-name-row">
+          <span class="exercise-name">Back Squat</span>
+          <span class="pill pill-plain">2 working sets</span>
+        </div>
+        <div class="chart-container" id="chart-s3-squat"></div>
+        <table class="sets-table">
+          <thead><tr><th>#</th><th>kg</th><th>reps</th><th>type</th><th>RPE</th><th></th></tr></thead>
+          <tbody>
+            <tr class="warmup-row"><td class="td-num">1</td><td class="td-weight">60</td><td class="td-reps">8</td><td class="td-type">warmup</td><td class="td-rpe">—</td><td></td></tr>
+            <tr><td class="td-num">2</td><td class="td-weight">100</td><td class="td-reps">5</td><td class="td-type">normal</td><td class="td-rpe">8</td><td></td></tr>
+            <tr><td class="td-num">3</td><td class="td-weight">110</td><td class="td-reps">4</td><td class="td-type">normal</td><td class="td-rpe">9</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="exercise-block">
+        <div class="exercise-name-row">
+          <span class="exercise-name">Romanian Deadlift</span>
+          <span class="pill pill-plain">3 working sets</span>
+        </div>
+        <div class="chart-container" id="chart-s3-rdl"></div>
+        <table class="sets-table">
+          <thead><tr><th>#</th><th>kg</th><th>reps</th><th>type</th><th>RPE</th><th></th></tr></thead>
+          <tbody>
+            <tr><td class="td-num">1</td><td class="td-weight">70</td><td class="td-reps">8</td><td class="td-type">normal</td><td class="td-rpe">7</td><td></td></tr>
+            <tr><td class="td-num">2</td><td class="td-weight">80</td><td class="td-reps">7</td><td class="td-type">normal</td><td class="td-rpe">8</td><td></td></tr>
+            <tr><td class="td-num">3</td><td class="td-weight">80</td><td class="td-reps">6</td><td class="td-type">normal</td><td class="td-rpe">9</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="exercise-block">
+        <div class="exercise-name-row">
+          <span class="exercise-name">Leg Press</span>
+          <span class="pill pill-plain">3 working sets</span>
+        </div>
+        <div class="chart-container" id="chart-s3-legpress"></div>
+        <table class="sets-table">
+          <thead><tr><th>#</th><th>kg</th><th>reps</th><th>type</th><th>RPE</th><th></th></tr></thead>
+          <tbody>
+            <tr><td class="td-num">1</td><td class="td-weight">120</td><td class="td-reps">10</td><td class="td-type">normal</td><td class="td-rpe">7</td><td></td></tr>
+            <tr><td class="td-num">2</td><td class="td-weight">140</td><td class="td-reps">8</td><td class="td-type">normal</td><td class="td-rpe">8</td><td></td></tr>
+            <tr><td class="td-num">3</td><td class="td-weight">150</td><td class="td-reps">6</td><td class="td-type">normal</td><td class="td-rpe">9</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /shell -->
+
+
+<script>
+  /* ═══════════════════════════════════════
+     INTERACTIONS
+  ═══════════════════════════════════════ */
+  function toggleCard(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.toggle('is-expanded');
+  }
+
+  function openSession(overlayId, event) {
+    event.stopPropagation();
+    document.querySelectorAll('.session-overlay.is-open').forEach(function(el) {
+      el.classList.remove('is-open');
+    });
+    var overlay = document.getElementById(overlayId);
+    if (!overlay) return;
+    overlay.classList.add('is-open');
+    overlay.scrollTop = 0;
+  }
+
+  function closeSession(overlayId) {
+    var el = document.getElementById(overlayId);
+    if (el) el.classList.remove('is-open');
+  }
+
+  function toggleTheme() {
+    var html   = document.documentElement;
+    var isDark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    document.getElementById('themeBtn').textContent = isDark ? '🌙 Dark' : '☀️ Light';
+  }
+
+  function toggleViewport() {
+    var html      = document.documentElement;
+    var isDesktop = html.getAttribute('data-viewport') === 'desktop';
+    html.setAttribute('data-viewport', isDesktop ? 'mobile' : 'desktop');
+    var btn = document.getElementById('viewportBtn');
+    btn.textContent = isDesktop ? '🖥 Desktop' : '📱 Mobile';
+    btn.classList.toggle('active', !isDesktop);
+  }
+
+  /* ═══════════════════════════════════════
+     CHART BUILDER
+     All SVG elements created via createElement —
+     no innerHTML used for any dynamic content.
+  ═══════════════════════════════════════ */
+  var CHART_DATA = {
+    /* Session 1 — Push Day */
+    'chart-s1-bench':   { label:'kg',   sets:[{v:60,w:true},{v:80,w:false},{v:90,w:false},{v:97.5,w:false}] },
+    'chart-s1-ohp':     { label:'kg',   sets:[{v:40,w:true},{v:55,w:false},{v:60,w:false},{v:62.5,w:false}] },
+    'chart-s1-dips':    { label:'reps', sets:[{v:12,w:false},{v:10,w:false},{v:8,w:false}] },
+    'chart-s1-fly':     { label:'kg',   sets:[{v:20,w:false},{v:22.5,w:false},{v:22.5,w:false}] },
+    /* Session 2 — Pull Day */
+    'chart-s2-deadlift':{ label:'kg',   sets:[{v:80,w:true},{v:120,w:false},{v:140,w:false}] },
+    'chart-s2-pullups': { label:'reps', sets:[{v:10,w:false},{v:9,w:false},{v:7,w:false},{v:5,w:false}] },
+    'chart-s2-row':     { label:'kg',   sets:[{v:60,w:false},{v:70,w:false},{v:75,w:false}] },
+    /* Session 3 — Leg Day */
+    'chart-s3-squat':   { label:'kg',   sets:[{v:60,w:true},{v:100,w:false},{v:110,w:false}] },
+    'chart-s3-rdl':     { label:'kg',   sets:[{v:70,w:false},{v:80,w:false},{v:80,w:false}] },
+    'chart-s3-legpress':{ label:'kg',   sets:[{v:120,w:false},{v:140,w:false},{v:150,w:false}] },
+  };
+
+  function makeChart(data) {
+    var NS = 'http://www.w3.org/2000/svg';
+    /* Generous margins so labels never crowd the plot */
+    var W=280, H=116, pL=48, pR=16, pT=32, pB=32;
+    var pw = W - pL - pR;   /* 216 */
+    var ph = H - pT - pB;   /* 52  */
+    var sets = data.sets;
+    var n    = sets.length;
+    var vals = sets.map(function(s){ return s.v; });
+    var lo   = Math.min.apply(null, vals);
+    var hi   = Math.max.apply(null, vals);
+    var rng  = hi - lo;
+
+    function xOf(i) { return n > 1 ? pL + (i/(n-1))*pw : pL + pw/2; }
+    function yOf(v) { return rng === 0 ? pT+ph/2 : pT + ph - ((v-lo)/rng)*ph; }
+
+    function el(tag, attrs) {
+      var e = document.createElementNS(NS, tag);
+      Object.keys(attrs).forEach(function(k){ e.setAttribute(k, attrs[k]); });
+      return e;
+    }
+
+    function txt(cx, cy, str, anchor) {
+      var t = el('text', { x:cx, y:cy, class:'chart-label', 'text-anchor': anchor||'middle' });
+      t.textContent = str;
+      return t;
+    }
+
+    /* Catmull-Rom → cubic Bezier (tension 0.35) for a smooth curve */
+    function smoothCurve(pts) {
+      if (pts.length < 2) return '';
+      if (pts.length === 2) {
+        return 'M '+pts[0][0]+','+pts[0][1]+' L '+pts[1][0]+','+pts[1][1];
+      }
+      var t = 0.35;
+      var d = 'M '+pts[0][0]+','+pts[0][1];
+      for (var i = 0; i < pts.length - 1; i++) {
+        var p0 = pts[Math.max(0, i-1)];
+        var p1 = pts[i];
+        var p2 = pts[i+1];
+        var p3 = pts[Math.min(pts.length-1, i+2)];
+        var cp1x = (p1[0] + t*(p2[0]-p0[0])/2).toFixed(2);
+        var cp1y = (p1[1] + t*(p2[1]-p0[1])/2).toFixed(2);
+        var cp2x = (p2[0] - t*(p3[0]-p1[0])/2).toFixed(2);
+        var cp2y = (p2[1] - t*(p3[1]-p1[1])/2).toFixed(2);
+        d += ' C '+cp1x+','+cp1y+' '+cp2x+','+cp2y+' '+p2[0]+','+p2[1];
+      }
+      return d;
+    }
+
+    var svg = el('svg', { viewBox:'0 0 '+W+' '+H, class:'chart-svg' });
+
+    /* Horizontal grid lines */
+    svg.appendChild(el('line', { x1:pL, y1:yOf(lo), x2:W-pR, y2:yOf(lo), class:'chart-grid' }));
+    if (rng > 0) svg.appendChild(el('line', { x1:pL, y1:yOf(hi), x2:W-pR, y2:yOf(hi), class:'chart-grid' }));
+
+    /* Y-axis value labels — centred on their grid line, clear of dots */
+    svg.appendChild(txt(pL-8, yOf(lo)+3, lo, 'end'));
+    if (rng > 0) svg.appendChild(txt(pL-8, yOf(hi)+3, hi, 'end'));
+
+    /* Unit label — sits above the plot in the top padding */
+    svg.appendChild(txt(pL-8, pT-10, data.label, 'end'));
+
+    /* X-axis set numbers — sit below the plot in the bottom padding */
+    for (var i=0; i<n; i++) svg.appendChild(txt(xOf(i), H-10, i+1, 'middle'));
+
+    /* Smooth line through working sets */
+    var wPts = [];
+    for (var i=0; i<n; i++) {
+      if (!sets[i].w) wPts.push([+xOf(i).toFixed(1), +yOf(sets[i].v).toFixed(1)]);
+    }
+    if (wPts.length >= 2) {
+      svg.appendChild(el('path', { d: smoothCurve(wPts), class:'chart-line', fill:'none' }));
+    }
+
+    /* Dots (drawn last so they sit on top of the line) */
+    for (var i=0; i<n; i++) {
+      svg.appendChild(el('circle', {
+        cx: xOf(i).toFixed(1),
+        cy: yOf(sets[i].v).toFixed(1),
+        r:  sets[i].w ? 3 : 4,
+        class: sets[i].w ? 'chart-dot-warmup' : 'chart-dot',
+      }));
+    }
+
+    return svg;
+  }
+
+  /* Render all charts on load */
+  Object.keys(CHART_DATA).forEach(function(id) {
+    var c = document.getElementById(id);
+    if (c && c.childElementCount === 0) c.appendChild(makeChart(CHART_DATA[id]));
+  });
+</script>
+</body>
+</html>

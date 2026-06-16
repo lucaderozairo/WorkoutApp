@@ -1,16 +1,7 @@
 import type { UserAchievement } from '../domain/types';
 import { viewStore } from '@data/projections/views';
-import { ACHIEVEMENT_DEFINITIONS, AchievementDef } from '../domain/types';
-
-export interface AchievementView {
-  id: string;
-  name: string;
-  description: string;
-  rarity: AchievementDef['rarity'];
-  unlocked: boolean;
-  unlockedAt: number | null;
-  progress: number;
-}
+import { ACHIEVEMENT_DEFINITIONS } from '../domain/types';
+import type { AchievementView } from './types';
 
 export function getAchievements(): AchievementView[] {
   const userAchievements = viewStore.get('user_achievements') ?? [];

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Row } from '@ui/layout/Row';
 import { Column } from '@ui/layout/Column';
+import { Text } from '@ui/atoms';
 
 interface TimelineItemProps {
   time?: string;
@@ -22,10 +23,10 @@ export function TimelineItem({ time, dot, title, description, trailing, children
         <Row justify="between" align="center">
           <Column gap={0}>
             {title && <span>{title}</span>}
-            {description && <span className="caption muted">{description}</span>}
+            {description && <Text as="span" size="caption" color="muted">{description}</Text>}
           </Column>
           <Row align="center">
-            {time && <span className="caption muted mono">{time}</span>}
+            {time && <Text as="span" size="caption" color="muted" mono>{time}</Text>}
             {trailing}
           </Row>
         </Row>

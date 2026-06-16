@@ -6,7 +6,7 @@ import { timeAgo } from '@shared/utils/timeAgo';
 import { USER_ID, USER_NAME, SPORT_MAP } from '@features/social/domain/constants';
 import { Row, Column, Cluster } from '@ui/layout';
 import { Surface, Avatar, Text } from '@ui/atoms';
-import { Badge, Button } from '@ui/molecules';
+import { Badge, Button, ExpandableToggle, Input } from '@ui/molecules';
 
 export function PostCard({ post }: { post: Post & { sport?: string; group?: string; sessionName?: string } }) {
   const id = useId();
@@ -31,8 +31,7 @@ export function PostCard({ post }: { post: Post & { sport?: string; group?: stri
 
   return (
     <Surface>
-      {/* CSS-only expand toggle — must stay as input for :has() selector */}
-      <input type="checkbox" id={id} className="exp-toggle" />
+      <ExpandableToggle id={id} />
       <Row as="header" justify="between">
         <Row>
           <Avatar name={post.authorInitials} className={avatarClass} />
@@ -45,7 +44,7 @@ export function PostCard({ post }: { post: Post & { sport?: string; group?: stri
             </Cluster>
           </Column>
         </Row>
-        <time className="caption">{timeAgo(post.createdAt)}</time>
+        <Text as="time" size="caption">{timeAgo(post.createdAt)}</Text>
       </Row>
 
       <Column>
@@ -63,7 +62,7 @@ export function PostCard({ post }: { post: Post & { sport?: string; group?: stri
             </Column>
           )}
           <Column>
-            <input placeholder="Write a comment..." value={commentText}
+            <Input placeholder="Write a comment..." value={commentText}
               onChange={e => setCommentText(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleComment()} />
             <Button onClick={handleComment}>Post</Button>

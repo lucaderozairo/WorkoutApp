@@ -7,10 +7,12 @@ import { Badge } from '@ui/molecules';
 interface WelcomeWidgetProps {
   workoutsThisWeek: number;
   streak: number;
-  scoreClass: 'good' | 'warning' | 'poor';
+  scoreClass: 'good' | 'warning' | 'poor' | 'none';
+  hasReadinessEntry: boolean;
+  score: number;
 }
 
-export function WelcomeWidget({ workoutsThisWeek, streak, scoreClass }: WelcomeWidgetProps) {
+export function WelcomeWidget({ workoutsThisWeek, streak, scoreClass, hasReadinessEntry, score }: WelcomeWidgetProps) {
   const displayName = useQuery<string>('display_name') ?? 'there';
   const now = new Date();
   const hour = now.getHours();
@@ -25,19 +27,27 @@ export function WelcomeWidget({ workoutsThisWeek, streak, scoreClass }: WelcomeW
 
   return (
     <Surface pad="sm" variant="ghost">
-      <Column>
-        <Text size="caption">{day} · {date}</Text>
-        <Row align="center" gap={1}>
-          <Text as="h2">{greeting}, {displayName}.</Text>
-        </Row>
-        <Row align="center" gap={1}>
+      <Column gap={1}>
+        <span className="eyebrow">{day} · {date}</span>
+        <h1>{greeting}, {displayName}.</h1>
+        <Row align="center" gap={2}>
           <Text size="detail">{workoutLine}</Text>
           {streak >= 2 && (
-            <span className="badge caption" title={`${streak} day training streak`}>
+            <Badge title={`${streak} day training streak`}>
               <Flame size={12} /> {streak}
-            </span>
+            </Badge>
           )}
         </Row>
+        {hasReadinessEntry ? (
+          <Badge className={`tinted ${scoreClass}`}>
+            <Text as="span" mono>{score}</Text>
+            <span>Readiness</span>
+          </Badge>
+        ) : (
+          <Text size="caption" color="muted">
+            Log readiness to see your score
+          </Text>
+        )}
       </Column>
     </Surface>
   );

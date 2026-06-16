@@ -29,6 +29,9 @@ jobs:
       - name: Lint CSS (token discipline)
         run: npm run lint:css
 
+      - name: Lint UI (atomic design system)
+        run: npm run lint:ui
+
       - name: Build
         run: npx vite build
 

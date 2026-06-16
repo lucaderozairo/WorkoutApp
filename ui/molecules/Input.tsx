@@ -11,12 +11,25 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   trailing?: ReactNode;
   loading?: boolean;
   variant?: 'default' | 'ghost';
+  controlClassName?: string;
 }
 
-export function Input({ label, hint, error, leading, trailing, loading, id, className, variant = 'default', ...rest }: InputProps) {
+export function Input({
+  label,
+  hint,
+  error,
+  leading,
+  trailing,
+  loading,
+  id,
+  className,
+  controlClassName,
+  variant = 'default',
+  ...rest
+}: InputProps) {
   const trailingSlot = loading ? <Spinner size="sm" /> : trailing;
   const hasSlots = leading || trailingSlot;
-  const inputClassName = ['input', variant === 'ghost' ? 'ghost' : '', error ? 'error' : '']
+  const inputClassName = ['input', variant === 'ghost' ? 'ghost' : '', error ? 'error' : '', controlClassName]
     .filter(Boolean)
     .join(' ');
 

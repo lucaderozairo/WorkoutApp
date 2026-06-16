@@ -1,0 +1,1678 @@
+[
+  {
+    "name": "Accordion",
+    "url": "https://mobbin.com/glossary/accordion",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Expandable Menu", "Dropdown Panels"],
+    "description": "Accordion is a vertical stack of collapsible containers that reveal or hide sections of content. Users can click on the accordion headers to expand or collapse content panels. Some accordions allow only one section open at a time, others support multiple. Panels usually have animations for smooth transitions.",
+    "when_to_use": [
+      "Organizing large amounts of content (FAQs, menus, settings)",
+      "Progressive disclosure to reduce cognitive load",
+      "Limited screen space on mobile or small screens"
+    ],
+    "when_not_to_use": [
+      "Minimal content — use inline content instead",
+      "Frequently accessed content — use Tabs or Lists",
+      "Critical information that should remain visible at all times"
+    ],
+    "anatomy": ["Container", "Title", "Expand/Collapse icon", "Content"],
+    "variants": [
+      "Stacked items vs. single standalone item",
+      "Plus icon (+/-) vs. chevron icon (up/down or right/down)",
+      "List accordions vs. card accordions"
+    ],
+    "use_cases": ["FAQ page", "Filtering & sorting", "Product features or specifications"],
+    "conflicting_elements": {
+      "Select": "Select displays a list of options; accordion displays content.",
+      "Disclosure button": "Disclosure buttons are standalone, show partial info, typically have no container."
+    }
+  },
+  {
+    "name": "Action Sheet",
+    "url": "https://mobbin.com/glossary/action-sheet",
+    "platforms": ["iOS"],
+    "synonyms": ["iOS action sheet", "Native action sheet"],
+    "description": "Action Sheet is a specific style of menu that presents a set of actions or options. Originally native to iOS, now a common design pattern. Destructive actions typically have red text. Action sheets are NOT connected to screen edges (unlike bottom sheets).",
+    "when_to_use": [
+      "Quick actions — simple, immediate tasks like sharing or deleting",
+      "Fewer options — best with 3–5 choices"
+    ],
+    "when_not_to_use": [
+      "Complex actions requiring multi-step interactions",
+      "More than 5 options"
+    ],
+    "anatomy": ["Action sheet label", "Action sheet options", "Action sheet container", "Cancel button"],
+    "variants": [
+      "Varying number of action options (1 to many)",
+      "Title labels for additional context",
+      "Different cancel button copies ('Done', 'Close', 'Nevermind')",
+      "Action sheets without cancel buttons",
+      "Custom, non-iOS branded action sheets"
+    ],
+    "use_cases": ["Menu options", "Confirmation or alert dialogs", "Contextual actions"],
+    "conflicting_elements": {
+      "Bottom sheet": "Bottom sheet provides additional content and is anchored to 3 sides (left, right, bottom); action sheet is not anchored to edges."
+    }
+  },
+  {
+    "name": "Avatar",
+    "url": "https://mobbin.com/glossary/avatar",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Profile picture"],
+    "description": "An avatar is a representation of a unique entity — like a person, a business, or an object. It is a form of account personalization and visual cue. Can come as initials, emojis, photo-realistic images, icons, logos, or illustrations. Supports badging (paired with Badge or Status Dot).",
+    "when_to_use": [],
+    "when_not_to_use": [],
+    "anatomy": ["Image avatar (user uploaded photo)", "Initialized avatar (empty state)"],
+    "variants": [
+      "Default avatar: user icon on colored background (grey most common), or initials on colored background",
+      "Shape: circular (most common), squarish, funky shapes",
+      "Paired avatars (for duos/inboxes)",
+      "Stacked avatars (for larger groups)"
+    ],
+    "use_cases": ["Profile management", "Social media — visual representation of users/groups"],
+    "conflicting_elements": {}
+  },
+  {
+    "name": "Badge",
+    "url": "https://mobbin.com/glossary/badge",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Label", "Tag", "Pill", "Indicator"],
+    "description": "Badges convey dynamic information, such as counts or status. Can include labels or numbers. Supplementary information attached to a parent element (e.g. card, list item). Usually static and non-interactable.",
+    "when_to_use": [
+      "Status or notifications — unread messages, alerts, updates",
+      "Highlighting importance — 'New', 'Featured', 'Sale'",
+      "Compact indicators — small areas with quick information"
+    ],
+    "when_not_to_use": [
+      "Too much information — use labels or tooltips instead",
+      "Overuse — reduces impact",
+      "Critical actions requiring immediate attention — use modals or alerts"
+    ],
+    "anatomy": ["Container", "Label"],
+    "variants": [
+      "Container shapes: pill (most common), rounded, funky",
+      "Positioning: list format, corner of parent element, embedded inside parent",
+      "Icon-only badges (e.g. verification badge, lock icon)"
+    ],
+    "use_cases": ["In-app message or notification", "Promotions & getting attention", "Activity indicators"],
+    "conflicting_elements": {
+      "Chips": "Chips are interactable; badges are not.",
+      "Status dot": "Status dots are binary with no text/number.",
+      "Buttons": "Buttons trigger actions; badges convey information.",
+      "Icons": "Icons are decorative or interactable; badges convey info."
+    }
+  },
+  {
+    "name": "Banner",
+    "url": "https://mobbin.com/glossary/banner",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Callout", "Alerts", "Promotional Message"],
+    "description": "Banner displays a prominent message and related actions. Draws attention, provides contextual messages like notifications, alerts, or promotions. Usually one at a time. Remains persistent until dismissed or resolved. CTA button is optional.",
+    "when_to_use": [
+      "Temporary announcements — promotions, updates, warnings",
+      "Contextual feedback — form errors, cookie consent",
+      "Non-intrusive information that should be visible but not disruptive"
+    ],
+    "when_not_to_use": [
+      "Permanent content — use headers or sections",
+      "Critical alerts requiring immediate attention — use modals/dialogs",
+      "Multiple banners stacked"
+    ],
+    "anatomy": ["Icon (optional)", "Title (optional)", "Container", "Action button (optional)", "Close button (optional)", "Message"],
+    "variants": [
+      "With or without CTA buttons",
+      "Full width (with or without CTA)",
+      "With alert icons (error/warning styling)",
+      "Floating, sticky banners for persistent messages",
+      "Floating banner on map interfaces",
+      "Stock ticker banners in news/finance apps"
+    ],
+    "use_cases": ["Promotions", "Feature highlights", "Error messages & warning", "Acknowledgement", "Coach marks & instructions"],
+    "conflicting_elements": {
+      "Cards": "Cards display individual content; banners highlight important info.",
+      "Toasts": "Toasts are temporary auto-dismiss; banners persist for important information."
+    }
+  },
+  {
+    "name": "Bottom Sheet",
+    "url": "https://mobbin.com/glossary/bottom-sheet",
+    "platforms": ["iOS", "Android"],
+    "synonyms": ["Slide up Panel", "Modal sheet"],
+    "description": "Bottom sheets display supplementary content anchored to the bottom of the screen. Users can expand, collapse, or dismiss. A drag handle may allow resizing. Extends full screen width. Two key variations: Modal (blocks interactions) and Non-modal (allows background interaction).",
+    "when_to_use": [
+      "Supplementary content without leaving main screen",
+      "Temporarily important information that can be dismissed",
+      "Contextual actions tied to current screen"
+    ],
+    "when_not_to_use": [
+      "Primary tasks requiring full attention",
+      "Complex tasks needing more screen space",
+      "Frequent toggling between sheet and background"
+    ],
+    "anatomy": ["Handle/Grabber (optional)", "Close button"],
+    "variants": [
+      "Standard styling (rounded top corners, attached sides/bottom)",
+      "Floating container styling (detached, all rounded corners)",
+      "Rectangular styling (sharper corners)",
+      "With or without drag handles",
+      "Close buttons (modal style)",
+      "Tall bottom sheets",
+      "Non-modal / persistent bottom sheets (common with map views)"
+    ],
+    "use_cases": ["Share functionality", "Filter & sorting", "Action option menus", "User actions and settings", "Music and audio player"],
+    "conflicting_elements": {
+      "Action sheet": "Action sheet is not anchored to edges; bottom sheet is anchored to 3 sides.",
+      "Dialog": "Dialog requires user interaction before continuing; bottom sheet can be non-modal."
+    }
+  },
+  {
+    "name": "Button",
+    "url": "https://mobbin.com/glossary/button",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Call to Action", "Action Button", "CTA Button"],
+    "description": "Buttons help users take action. Labels express what action will occur. Consider permutations of states (default, disabled), styles (primary, secondary, tertiary, quaternary, icon, destructive, disabled), and sizes.",
+    "when_to_use": [
+      "Triggering actions — submitting forms, starting processes, navigating",
+      "Clear, single actions — 'Submit', 'Save', 'Next'",
+      "Encouraging user interaction"
+    ],
+    "when_not_to_use": [
+      "Displaying static information — use text or labels",
+      "Multiple complex options — use dropdowns or menus",
+      "Overuse — use icons or links where appropriate"
+    ],
+    "anatomy": ["Container", "Label", "Icon"],
+    "variants": [
+      "Container types: filled (primary), outlined (secondary/tertiary), elevated",
+      "Icons: leading icon, trailing icon",
+      "Shapes: pill, rounded, sharp corners",
+      "Icon buttons: standard or contained",
+      "Text buttons: standard, underlined, with icon",
+      "Types: Primary, Secondary, Tertiary, Quaternary, Icon, Destructive, Disabled"
+    ],
+    "use_cases": ["Form submission", "Call to action", "Confirmation and alerts"],
+    "conflicting_elements": {
+      "Badges": "Badges convey info; buttons trigger actions.",
+      "Chips": "Chips are shortcuts to input values; buttons trigger actions.",
+      "FAB": "FAB floats and is for primary actions only; buttons are for a range of actions.",
+      "Switches": "Switches are binary toggles; buttons perform a range of actions."
+    }
+  },
+  {
+    "name": "Card",
+    "url": "https://mobbin.com/glossary/card",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Container"],
+    "description": "A card groups related content and actions into a visually distinct unit. Can be static or link to destination when clicked. Displayed alone or in groups (grid, list, carousel). Flexible size with fill or shadow for contrast. Can be borderless or outlined.",
+    "when_to_use": [
+      "Group related content and actions compactly",
+      "Interactive elements users need to tap/click/swipe",
+      "Collections or grids of similar content"
+    ],
+    "when_not_to_use": [
+      "Simple or minimal content — use list or plain text",
+      "Highly complex content — use detailed pages or panels",
+      "Repetitive layouts introducing unnecessary repetition"
+    ],
+    "anatomy": ["Container"],
+    "variants": [
+      "Container styles: elevated (drop shadow), outlined, filled color, filled image",
+      "Thumbnail sizes: large, medium, small, no thumbnail",
+      "With or without CTA buttons"
+    ],
+    "use_cases": ["Multimedia content display", "Product listings and e-commerce", "News and social media feeds", "Navigation", "Share cards"],
+    "conflicting_elements": {
+      "Tiles": "Tiles are for selection; cards are for displaying content.",
+      "Banner": "Banners highlight important info; cards display content in collections.",
+      "Toast": "Toasts are temporary alerts; cards contain detailed content.",
+      "Dialog": "Dialogs require user interaction; cards organize navigable content.",
+      "Tooltip": "Tooltips float above content for extra info; cards exist alongside content.",
+      "Photo": "Photos are static without headlines; cards have headlines."
+    }
+  },
+  {
+    "name": "Carousel",
+    "url": "https://mobbin.com/glossary/carousel",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Image slider", "Content slider"],
+    "description": "Carousel is a horizontally scrollable layout that displays a series of items or elements. May come with controls (arrows/buttons). Can scroll automatically or manually. Allows multiple pieces of content in the same space.",
+    "when_to_use": [
+      "Showcasing multiple items — image gallery, product images, featured items",
+      "Limited space where many items need to fit",
+      "Visual storytelling — step-by-step guides or featured highlights"
+    ],
+    "when_not_to_use": [
+      "Critical content that might be missed since items are hidden until scrolled"
+    ],
+    "anatomy": ["Navigation arrow", "Container", "Page control (optional)"],
+    "variants": [
+      "Size: full screen, large card, medium card, small card",
+      "With page controls (dots)",
+      "With swipe actions"
+    ],
+    "use_cases": ["Image galleries", "Onboarding flows", "Product catalogs", "Navigation controls"],
+    "conflicting_elements": {
+      "Tables": "Tables scroll to show more data, not unique items.",
+      "Tabs": "Tabs navigate between sections; carousels cycle through content items."
+    }
+  },
+  {
+    "name": "Checkbox",
+    "url": "https://mobbin.com/glossary/checkbox",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Tickbox", "Multi-select Box"],
+    "description": "A checkbox is an input control that allows a user to select one or more options. Container may be square, circular, or rounded. States: selected (checked), deselected (empty), or mixed (dash).",
+    "when_to_use": [
+      "Multiple selections allowed",
+      "State persistence — choices need to stay visible",
+      "Optional inputs that can be enabled/disabled independently"
+    ],
+    "when_not_to_use": [
+      "Single selection — use Radio Buttons",
+      "Binary actions (Yes/No) — use Switches",
+      "Complex choices — use Dropdown Menus or Wizards"
+    ],
+    "anatomy": ["Container", "Icon fill"],
+    "variants": [
+      "Rectangular or rounded square containers",
+      "Circular containers (often confused with radio buttons)"
+    ],
+    "use_cases": ["Agreement & consent forms", "Filters & sorting", "To-do lists and task managers", "Settings & preferences"],
+    "conflicting_elements": {
+      "Radio buttons": "Radio buttons are always circular and mutually exclusive (1 option at a time).",
+      "Acknowledgement marks": "Acknowledgement marks are static icons; checkboxes are dynamic.",
+      "Checkmarks in tiles": "Tile checkmarks work like radio buttons (1 at a time); checkboxes allow multiple."
+    }
+  },
+  {
+    "name": "Chip",
+    "url": "https://mobbin.com/glossary/chip",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Tag", "Pill", "Input chips", "Action chips"],
+    "description": "Chips are compact elements that represent an input, attribute, or action. Help users enter information, make selections, filter content, or trigger actions. Visually resemble a pill. Text is short. Should be interacted with. Commonly found in sets/groups.",
+    "when_to_use": [
+      "Tagging or categorization — tags, labels, categories",
+      "Multiple selections — interests, skills",
+      "Compact design — small, dismissible information or actions"
+    ],
+    "when_not_to_use": [
+      "Complex actions requiring detailed input",
+      "Too many chips cluttering the interface",
+      "Primary actions or content needing more prominence"
+    ],
+    "anatomy": ["Leading Icon (optional)", "Label", "Container", "Trailing Icon (optional)"],
+    "variants": [
+      "Filled or outline styled containers",
+      "Trailing icons: caret (filter dropdown), remove icon, number label",
+      "Leading icons: hashtag, icon, avatar"
+    ],
+    "use_cases": ["Filter & sorting", "Selecting options", "User input chips", "Suggestion chips", "Information categorization (tags/hashtags)"],
+    "conflicting_elements": {
+      "Badge": "Badges display info/status and are non-interactable; chips are interactable.",
+      "Tab": "Non-active tabs without containers are not chips.",
+      "Button": "Buttons trigger actions; chips are shortcuts to input values.",
+      "Map Pin": "Map pins indicate locations; chips represent content."
+    }
+  },
+  {
+    "name": "Color Picker",
+    "url": "https://mobbin.com/glossary/color-picker",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Color Palette"],
+    "description": "A color picker allows users to select colors from a spectrum or palette. Ranges from simple to complex. Four main variants: Color palette, color slider, color wheel, and color area.",
+    "when_to_use": [
+      "Customization — personalizing content (themes, backgrounds, product colors)",
+      "Creative tools — precise color selection in design apps",
+      "Interactive experiences exploring colors"
+    ],
+    "when_not_to_use": [
+      "Limited choices — use a dropdown or radio buttons",
+      "Precise matching — provide hex code input option instead"
+    ],
+    "anatomy": {
+      "color_palette": ["Swatches", "Selection indicator (ring or check)"],
+      "color_slider": ["Slider track", "Thumb", "Hex input (optional)"],
+      "color_wheel": ["Wheel", "Selection handle"],
+      "color_area": ["2D area", "Selection handle", "Hex input (optional)"]
+    },
+    "variants": [
+      "Color palettes: circular swatches with ring or check indicator, list/tile form",
+      "Color sliders: compact, granular control, often with hex input",
+      "Color wheels: full spectrum, more space, for precise color combinations",
+      "Color areas: select two properties simultaneously"
+    ],
+    "use_cases": ["Customization & personalization", "Design & image editing", "Filter & search"],
+    "conflicting_elements": {
+      "Sliders": "Not all sliders are color pickers — context matters (e.g. scale sliders)."
+    }
+  },
+  {
+    "name": "Combobox",
+    "url": "https://mobbin.com/glossary/combobox",
+    "platforms": ["Web"],
+    "synonyms": ["Searchable dropdown", "Dropdown with input"],
+    "description": "Combobox lets users quickly select from predefined options with an autocomplete input to filter options. A searchable dropdown with a predefined list. Editable versions allow creating new entries. Often uses Chips, Tree, and Accordion UI elements.",
+    "when_to_use": [
+      "Searchable lists — filter through many options quickly",
+      "User input with suggestions — select from list or type own input",
+      "Saving space when both typing and selection are relevant"
+    ],
+    "when_not_to_use": [
+      "Small, fixed options — use Radio Buttons or Dropdown Menus",
+      "Complex data entry requiring multiple fields"
+    ],
+    "anatomy": ["Select", "Popover", "Option Menu"],
+    "variants": [
+      "Text input search (dynamic filtering, allows non-listed inputs)",
+      "List box search (predefined options only)",
+      "Chips in combobox for multi-select",
+      "Accordions or trees for hierarchical data",
+      "Uneven input and list box width"
+    ],
+    "use_cases": ["Form input", "Filtering & sorting", "Autocomplete behavior"],
+    "conflicting_elements": {
+      "Select": "Combobox combines search+select; Select is single action (choose from list).",
+      "Search bar": "Search bar finds content in a dataset; combobox selects from predefined options."
+    }
+  },
+  {
+    "name": "Command Palette",
+    "url": "https://mobbin.com/glossary/command-palette",
+    "platforms": ["Web"],
+    "synonyms": ["Omni Bar", "Command Bar"],
+    "description": "Command Palette provides quick access to many commands/functionalities within the app. Allows actions without navigating menus. Users can type to search for commands or navigate to specific files/sections. Usually triggered by CMD+K or CMD+P. Originated from coding editors (VSCode, Sublime Text).",
+    "when_to_use": [
+      "Quick access to many commands — code editors, design tools",
+      "Power-user workflows with keyboard shortcuts",
+      "Searchable commands for large feature sets"
+    ],
+    "when_not_to_use": [
+      "Few actions or simple navigation",
+      "Infrequent usage of advanced functionality"
+    ],
+    "anatomy": ["Search input", "Command list", "Keyboard shortcuts (optional)"],
+    "variants": [
+      "With or without keyboard shortcuts",
+      "With tabs for complex data requirements",
+      "With chips for multi-select filtering"
+    ],
+    "use_cases": ["Navigation and search", "Shortcuts and quick actions"],
+    "conflicting_elements": {
+      "Search bar": "Command palette is a quick shortcut window for the entire app; search bar finds content."
+    }
+  },
+  {
+    "name": "Context Menu",
+    "url": "https://mobbin.com/glossary/context-menu",
+    "platforms": ["Web"],
+    "synonyms": ["Right click menu", "Secondary menu"],
+    "description": "Context Menu displays an action menu related to the element that the user right-clicks on. A non-modal overlay on web interfaces. Triggered by right-click; dismissed by Esc key or clicking outside.",
+    "when_to_use": [
+      "Secondary actions — less frequent actions tied to specific elements",
+      "Right-click or long-press interactions",
+      "Saving space by showing actions only when needed"
+    ],
+    "when_not_to_use": [
+      "Primary actions — use Buttons or Toolbar",
+      "Unintuitive triggers where users may not know how to access it"
+    ],
+    "anatomy": ["Icon", "Label", "Keyboard Shortcuts (optional)", "Submenu Icon (optional)", "Divider (optional)"],
+    "variants": [
+      "With or without icons",
+      "With or without dividers for organization",
+      "Destructive items highlighted in red",
+      "Context menus with sub menus"
+    ],
+    "use_cases": ["Right-click functionality"],
+    "conflicting_elements": {
+      "Dropdown menu": "Context menu appears near right-clicked element; dropdown appears below a trigger button."
+    }
+  },
+  {
+    "name": "Date Picker",
+    "url": "https://mobbin.com/glossary/date-picker",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Date Selector", "Calendar Picker"],
+    "description": "A date picker lets users select a single date or a date range. Often paired with a time picker. Many variants: Calendars, Date & time picker wheels, Lists of days, Day toggles, Tiles.",
+    "when_to_use": [
+      "Flexible date selection across wide range",
+      "Precise date input required",
+      "Minimizing input/formatting errors"
+    ],
+    "when_not_to_use": [
+      "Fixed or limited date options — use dropdowns or radio buttons",
+      "Manual entry preferred (e.g. birthdates)",
+      "Small screens where picker would clutter"
+    ],
+    "anatomy": ["Label", "Text field", "Calendar", "Month/Year Button", "Navigation Button", "Weekday Label", "Unselected Date", "Selected Date"],
+    "variants": [
+      "Calendar date picker (for date range selection — travel, booking)",
+      "Date picker wheel (specific dates or time — native iOS/Android)",
+      "Tiles (quick delivery slot selection)",
+      "Day toggle (quick day-of-week selection)",
+      "List of days"
+    ],
+    "use_cases": ["Event creation", "Booking or scheduling", "Reminders & alarms"],
+    "conflicting_elements": {
+      "Tabs": "Rows of calendar dates used to organize content (not for form input) are not date pickers."
+    }
+  },
+  {
+    "name": "Dialog",
+    "url": "https://mobbin.com/glossary/dialog",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Alert dialog", "Confirmation dialog", "Dialog box"],
+    "description": "A dialog displays content that requires user interaction, in a layer above the page or screen. Focuses attention on a single-step task, question, or message. Usually has a dismiss X icon.",
+    "when_to_use": [
+      "Critical decisions or confirmations — deleting data, logging out",
+      "Requires user attention before proceeding",
+      "Focused, short, self-contained tasks"
+    ],
+    "when_not_to_use": [
+      "Minor feedback — use toasts or banners",
+      "Non-blocking optional information — use inline content or tooltips",
+      "Complex multi-step workflows — use dedicated pages or wizards"
+    ],
+    "anatomy": ["Container", "Close Button (optional)"],
+    "variants": [
+      "Native iOS dialog",
+      "Native Android dialog",
+      "Custom dialog with vertically stacked buttons",
+      "Custom dialog with horizontally stacked buttons",
+      "Optional dialogs with X icon",
+      "Center aligned (most common), bottom aligned, top aligned",
+      "Dialogs with text fields or other UI elements",
+      "Single button dialogs for messages",
+      "Destructive dialogs highlighted in red"
+    ],
+    "use_cases": ["Alerts & notifications", "Confirmation", "User input"],
+    "conflicting_elements": {
+      "Toast": "Toasts auto-dismiss without user interaction; dialogs require buttons to dismiss.",
+      "Tooltip": "Tooltips are for instructions/guidance; dialogs are for complex interactions.",
+      "Dropdown Menu": "Dropdowns provide options only; dialogs contain content and require interaction."
+    }
+  },
+  {
+    "name": "Divider",
+    "url": "https://mobbin.com/glossary/divider",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Content Separator", "Line Break"],
+    "description": "A divider is a thin line that groups content in lists and containers. Improves content organization by separating content visually. Enhances negative space. Proper spacing is important.",
+    "when_to_use": [
+      "Visual separation between different sections",
+      "Organizing related items like menu items or form fields",
+      "Highlighting visual hierarchy"
+    ],
+    "when_not_to_use": [
+      "Overuse in cluttered interfaces — creates noise",
+      "Areas with minimal content — makes interface feel fragmented"
+    ],
+    "anatomy": ["Divider Line"],
+    "variants": [
+      "Padding styles: center-aligned (left+right padding), left padding only, full bleed (no padding)",
+      "With text or icon in the middle",
+      "Dotted or dashed lines"
+    ],
+    "use_cases": ["List views", "Form inputs", "Cards & panels"],
+    "conflicting_elements": {}
+  },
+  {
+    "name": "Drawer",
+    "url": "https://mobbin.com/glossary/drawer",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Navigation Drawer", "Hamburger Menu", "Slide out Panel", "Side Panel"],
+    "description": "Drawer is a panel that enters from the edge of the screen to display supplementary content. Typically indicated by a hamburger menu icon. Can enter from any side. Can be modal (auto-dismissed when interacting with background) or non-modal (allows both interactions).",
+    "when_to_use": [
+      "Secondary actions not used regularly (settings, navigation links)",
+      "Limited screen space — keeping interface clean"
+    ],
+    "when_not_to_use": [
+      "Primary actions needed often — use buttons or tabs",
+      "Discoverability critical — users might miss hidden features",
+      "Frequent toggling between sections — use tabs or bottom bar"
+    ],
+    "anatomy": ["Container", "Close Button (optional)"],
+    "variants": [
+      "Slides from right",
+      "Slides from left",
+      "Slides from top",
+      "Slides from bottom",
+      "Floating drawers (sides detached)",
+      "Drawers pushing content area ('pushy drawers')"
+    ],
+    "use_cases": ["Filtering & sorting", "Notifications", "Help & support", "Chat"],
+    "conflicting_elements": {
+      "Dialog": "Dialog is a pop-up requiring interaction before continuing; drawer is for navigation/options.",
+      "Sidebar": "Sidebar is always visible and on the same level as content; drawer slides over content."
+    }
+  },
+  {
+    "name": "Dropdown Menu",
+    "url": "https://mobbin.com/glossary/dropdown-menu",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Menu", "Menu overlay", "Context menu"],
+    "description": "A dropdown menu presents a list of actions, options, or links in a temporary surface. Displayed after triggered by a button. It is an overlay — topmost element when open. Anchored to the trigger.",
+    "when_to_use": [
+      "Multiple options with limited space",
+      "Secondary or infrequent actions"
+    ],
+    "when_not_to_use": [
+      "Requires high discoverability — opt for Tabs",
+      "Frequently accessed actions — consider a Button"
+    ],
+    "anatomy": ["Button", "Label", "Icon (optional)", "Header (optional)", "Menu"],
+    "variants": [
+      "Native iOS dropdown with trailing icons, frosted glass, light/dark",
+      "Native iOS with accordion",
+      "Native iOS text-only",
+      "Native Android Material 3",
+      "Custom UI with caret tips",
+      "Custom UI without caret tips",
+      "Single option dropdown menus",
+      "Compact & horizontal",
+      "Paw-shaped",
+      "Full-width dropdown from top"
+    ],
+    "use_cases": ["Contextual actions", "Form input", "Filtering & sorting"],
+    "conflicting_elements": {
+      "Full-screen Overlay": "Full-screen overlay shows additional info/options; dropdown is a compact list.",
+      "Dialog": "Dialog is for user input or info; dropdown provides selection choices.",
+      "Tooltip": "Tooltip provides info about an element; dropdown allows selection from options.",
+      "Action sheet": "Action sheet is anchored to bottom with cancel buttons; dropdown can appear anywhere."
+    }
+  },
+  {
+    "name": "Empty State",
+    "url": "https://mobbin.com/glossary/empty-state",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Placeholder UI", "Empty screen"],
+    "description": "An empty state occurs when there is no data to display to users. Used to prompt action or provide input when no existing data/content exists. Without it, users hit dead ends. Types: First-time use, No results found, Post completion, Feature education.",
+    "when_to_use": [],
+    "when_not_to_use": [],
+    "anatomy": ["Illustration/Icon", "Message/Copy", "CTA Button (optional)"],
+    "variants": [
+      "First-time use empty state (e.g. Google Gemini)",
+      "No results found (e.g. Airbnb)",
+      "Post completion / 'Inbox Zero' (e.g. GitHub)",
+      "Feature education (e.g. Linear)"
+    ],
+    "use_cases": ["Onboarding first-time users", "No search results", "Post-task completion", "New feature discovery"],
+    "dos": [
+      "Provide clear context for empty state",
+      "Suggest next steps with a CTA",
+      "Include visual cues (illustrations or icons)"
+    ],
+    "donts": [
+      "Avoid lazy placeholder text ('no data', 'empty here')",
+      "Don't miss opportunity to educate — never leave a dead end"
+    ],
+    "conflicting_elements": {}
+  },
+  {
+    "name": "Error Message",
+    "url": "https://mobbin.com/glossary/error-message",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Error Screens", "Alert Messages", "Failure States"],
+    "description": "An error message appears when an app fails to complete an expected action. Informs users about problems encountered during app use. Without them, users are left confused.",
+    "when_to_use": [],
+    "when_not_to_use": [],
+    "anatomy": ["Error copy", "Visual indicator (color, icon)", "CTA/Resolution (optional)"],
+    "variants": [
+      "Banner error (e.g. Netflix — yellow banner, non-inline)",
+      "Tooltip error (e.g. Duolingo — contextual, non-interruptive)",
+      "Modal error (e.g. Fresha, VEED — maximum attention)",
+      "Inline validation error (e.g. Remote — red outline + text)",
+      "Global/Catch-all error page (e.g. Rive)",
+      "Important errors: Modals, Banners, Overlays",
+      "Minor errors: Toasts or inline hints"
+    ],
+    "use_cases": ["Form validation", "Authentication errors", "System failures", "Network errors"],
+    "dos": [
+      "Be clear, specific, and suggest a solution",
+      "Highlight errors visibly with red borders, icons",
+      "Keep copy respectful & polite"
+    ],
+    "donts": [
+      "Avoid technical jargon or vague messages",
+      "Don't interrupt workflow for minor issues — use inline messages",
+      "Don't blame the user"
+    ],
+    "conflicting_elements": {}
+  },
+  {
+    "name": "File Uploader",
+    "url": "https://mobbin.com/glossary/file-uploader",
+    "platforms": ["Web"],
+    "synonyms": ["Drop zone"],
+    "description": "A file uploader lets users upload one or more files by dragging and dropping, or activating a button.",
+    "when_to_use": [
+      "File upload flows for images or documents",
+      "Visual feedback needed — clear interactive target for dropping",
+      "Multiple items to upload at once"
+    ],
+    "when_not_to_use": [
+      "Limited space or mobile — drag-and-drop is challenging",
+      "Casual or infrequent actions — a standard button may suffice"
+    ],
+    "anatomy": ["Label", "Upload Button", "Drop Zone (optional)", "File List"],
+    "variants": [
+      "Standard design with dotted container, helper text, label, and button",
+      "Standard design without button (click anywhere in zone)",
+      "Avatar drop zones / image uploader (compact)",
+      "Button only uploader (simplest approach)"
+    ],
+    "use_cases": ["Uploading media (images, PDFs, videos)", "Uploading avatars/profile pictures"],
+    "conflicting_elements": {}
+  },
+  {
+    "name": "Floating Action Button",
+    "url": "https://mobbin.com/glossary/floating-action-button",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["FAB"],
+    "description": "The Floating Action Button represents the primary action on a screen. Provides quick access to the most important function, persistently floating above all other components (maximum z-index).",
+    "when_to_use": [
+      "Important CTAs — primary, often constructive actions",
+      "Constructive actions — Create, Share, Favorite"
+    ],
+    "when_not_to_use": [
+      "Non-important CTAs — use a regular button",
+      "Destructive actions — Trash, Error, Alerts"
+    ],
+    "anatomy": ["Container", "Icon", "Label (optional)"],
+    "variants": [
+      "Bottom-right aligned: icon-only, text, icon+text",
+      "Bottom-center aligned: icon-only, text, icon+text",
+      "Utility FAB (top-center for new content updates in social feeds)",
+      "Two-action FAB / Split FAB (for equal primary actions)"
+    ],
+    "use_cases": ["Create or add new content", "Call-to-action"],
+    "conflicting_elements": {
+      "Button": "FAB floats above content for primary actions; buttons exist in their own sections for a range of actions."
+    }
+  },
+  {
+    "name": "Full-screen Overlay",
+    "url": "https://mobbin.com/glossary/full-screen-overlay",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Full-screen modal", "Full-screen popup", "Overlay screen"],
+    "description": "Full-Screen Overlay is an overlay that fills the entire screen to display supplementary content. Can only be dismissed by completing the action or pressing X. Close button should be obvious. Used when full user attention is needed.",
+    "when_to_use": [
+      "Focused, immersive tasks — paywalls, free trials, onboarding",
+      "Limiting distractions from background content"
+    ],
+    "when_not_to_use": [
+      "Quick or minor tasks",
+      "Tasks that interrupt primary flow unnecessarily",
+      "When users need to switch between overlay and main content"
+    ],
+    "anatomy": ["Close Button"],
+    "variants": [
+      "Close button top-right",
+      "Close button top-left",
+      "Elevated close button (more visible)",
+      "Other types of close buttons"
+    ],
+    "use_cases": ["Permissions", "Paywalls or free trials", "Onboarding", "Form input"],
+    "conflicting_elements": {
+      "Bottom sheet (tall)": "Tall bottom sheets never cover entire screen; full-screen overlay covers everything."
+    }
+  },
+  {
+    "name": "Gallery",
+    "url": "https://mobbin.com/glossary/gallery",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Grid List"],
+    "description": "A gallery displays a collection of items (e.g. images, cards) in an organised grid. Most common layout for visual-focused apps. Three layout types: Uniform, Masonry & Quilted.",
+    "when_to_use": [
+      "Multiple visual elements — photo albums, portfolios",
+      "User browsing experience — product images",
+      "Visual-focused layouts — travel, real estate"
+    ],
+    "when_not_to_use": [
+      "Limited content (1-2 items) — use standalone images",
+      "Non-visual content — use Tables or Lists"
+    ],
+    "anatomy": ["Grid of items/thumbnails"],
+    "variants": [
+      "Uniform layout (fixed width and height)",
+      "Masonry/waterfall layout (fixed width, varying height — popularized by Pinterest)",
+      "Quilted layout (varying sizes — popularized by Google Photos)",
+      "Small, medium, or large thumbnail sizes",
+      "Text outside image container",
+      "Text inside image container"
+    ],
+    "use_cases": ["Media libraries", "Product catalogs", "Travel apps"],
+    "conflicting_elements": {}
+  },
+  {
+    "name": "Hyperlink",
+    "url": "https://mobbin.com/glossary/hyperlink",
+    "platforms": ["Web"],
+    "synonyms": ["Web links", "URL links"],
+    "description": "A hyperlink allows users to navigate from one location to another. Primary way web pages are linked. Default design: blue underlined text. Important for SEO ('backlinks'). Invented by Tim Berners-Lee.",
+    "when_to_use": [
+      "Navigating to external content or additional resources",
+      "Supplementary information — 'Learn more'"
+    ],
+    "when_not_to_use": [
+      "Critical actions like 'Submit' or 'Save' — use a Button",
+      "When visual emphasis is needed — use a styled button"
+    ],
+    "anatomy": ["Label", "External Link Icon (optional)", "Underline (optional)"],
+    "variants": [
+      "Standalone hyperlink (with whitespace, prominent)",
+      "Inline hyperlink (within body text — most common)",
+      "Non-underlined hyperlink (e.g. footer links)",
+      "Hyperlink with icons"
+    ],
+    "use_cases": ["Terms and privacy pages", "Article links / citations / SEO backlinking", "Navigation"],
+    "conflicting_elements": {
+      "Button": "Text button triggers an action within the page; hyperlink navigates to a different page/site."
+    }
+  },
+  {
+    "name": "Launch Screen",
+    "url": "https://mobbin.com/glossary/launch-screen",
+    "platforms": ["iOS", "Android"],
+    "synonyms": ["Splash screen"],
+    "description": "A launch screen is the first screen users see when they launch their app. Appears instantly and is quickly replaced with the app's first screen. Decreases sense of long load time. Often shows app logo on a solid colored background. May include graphics or animation.",
+    "when_to_use": [],
+    "when_not_to_use": [],
+    "anatomy": ["App logo/name", "Brand background color", "Tagline (optional)", "Visual branding elements (optional)"],
+    "variants": [
+      "Minimalistic — logo only on white/plain background (e.g. Revolut, Airbnb, Headspace)",
+      "Gradient background (e.g. Fresha, Ten Percent Happier, Tinder)",
+      "Mascot design (e.g. Duolingo, Ahead, Wolt)",
+      "Animated design (e.g. Netflix 'Tudum', Burger King, (Not Boring) Weather)",
+      "Background image design (e.g. Artsy, IKEA, Instacart)",
+      "Illustration design (e.g. Venmo, Etsy, Kahoot)"
+    ],
+    "use_cases": ["First impression / brand exposure", "Perceived load time reduction", "Required by iOS for all apps"],
+    "dos": [
+      "Keep it simple and brand focused",
+      "Optimize loading times (aim for < 2 seconds)",
+      "Consider animations to delight users"
+    ],
+    "donts": [
+      "Don't overload with information",
+      "Don't overlook testing across devices and screen sizes"
+    ],
+    "conflicting_elements": {}
+  },
+  {
+    "name": "Loading Indicator",
+    "url": "https://mobbin.com/glossary/loading-indicator",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Loading spinner", "Loading screen"],
+    "description": "A loading indicator is an animated spinning or dot icon that lets users know content is being loaded. Reduces user anxiety. Shows that the system is active. Can be determinate (shows exact progress) or indeterminate (shows ongoing process). May include text label or branded customization.",
+    "when_to_use": [
+      "Long tasks requiring user assurance",
+      "User needs feedback that something is happening",
+      "Indeterminate waits when duration is unknown"
+    ],
+    "when_not_to_use": [
+      "Instant actions completing in less than a second",
+      "Frequent, short tasks",
+      "Risk of distraction or annoyance"
+    ],
+    "anatomy": {
+      "types": ["Circle/Spinner", "Bar", "iOS Spinner", "Dots"]
+    },
+    "variants": [
+      "Circle/spinner without labels",
+      "Circle/spinner with label text",
+      "Branded spinners with logos",
+      "Funky/custom spinners",
+      "Dot spinner",
+      "iOS default spinner"
+    ],
+    "use_cases": ["Data / content loading", "Form submission", "Page transitions"],
+    "conflicting_elements": {
+      "Progress indicator": "Progress indicators show measurable progress and can be cancelled/paused.",
+      "Skeleton screen": "Skeleton shows a preview of content layout; loading indicator just shows loading state."
+    }
+  },
+  {
+    "name": "Map Pin",
+    "url": "https://mobbin.com/glossary/map-pin",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Location Marker", "Geotag"],
+    "description": "Map pin represents a specific point or location on a map. Used to indicate a point of interest or destination. Most commonly represented by a dot icon. May use custom illustrations, logos, or brand.",
+    "when_to_use": [
+      "Marking specific locations — stores, landmarks, events",
+      "Interactive elements that provide actions or information on tap",
+      "Point of interest discovery in travel or delivery apps"
+    ],
+    "when_not_to_use": [
+      "Dense clusters — consider clustering pins instead",
+      "Static/decorative maps with no interaction needed"
+    ],
+    "anatomy": ["Pin icon/shape", "Label (optional)"],
+    "variants": [
+      "Dot map pins (most common)",
+      "Custom shape icon pins (e.g. 'P' for parking, Waze illustrations)",
+      "Logo as map pin (e.g. Taco Bell, Zara, Dunkin)",
+      "Text as map pin (e.g. price labels on hotel booking apps)",
+      "Map pins with labels"
+    ],
+    "use_cases": ["Location-based services (food delivery, ride-hailing, hotel booking)", "Geotagging (Instagram, Snapchat, Facebook)"],
+    "conflicting_elements": {
+      "Map icon": "Map icons (e.g. car, train) represent moving objects; map pins mark specific fixed locations."
+    }
+  },
+  {
+    "name": "Navigation Menu",
+    "url": "https://mobbin.com/glossary/navigation-menu",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Mega menu", "Sidebar navigation menu"],
+    "description": "Navigation Menu displays the primary navigation links in a drawer-styled overlay. A fly-out multi-column menu from the top navigation bar. Mega menus are upsized versions for complex websites. Vertical sidebar navigation is space-efficient for mobile.",
+    "when_to_use": [],
+    "when_not_to_use": [],
+    "anatomy": ["Navigation links", "Icons (optional)", "CTA button (optional)", "Images/illustrations (optional)"],
+    "variants": [
+      "Standard link-based navigation menu (hoverable text links from top nav bar)",
+      "Navigation menus with icons",
+      "Navigation menu with CTA button ('Contact Sales', 'Get the App')",
+      "Mega menu with images or illustrations (e-commerce, content-rich sites)",
+      "Vertical sidebar menu variant (triggered by hamburger menu click)"
+    ],
+    "use_cases": ["Primary navigation across pages/sections of a website"],
+    "comparison": {
+      "Navigation menu": "Best for simple, top-level navigation",
+      "Mega menu": "Best for complex, content-rich websites with extensive hierarchy",
+      "Vertical sidebar menu": "Best for small screens / mobile"
+    },
+    "conflicting_elements": {}
+  },
+  {
+    "name": "Page Control",
+    "url": "https://mobbin.com/glossary/page-control",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Dot Indicators", "Page Indicator"],
+    "description": "A page control displays a row of indicator dots, each representing a page in a flat list. A filled dot denotes the current page. Best for lightweight, linear navigation with 3–7 items.",
+    "when_to_use": [
+      "Swipe-based navigation — onboarding screens, image carousels",
+      "Limited number of pages (usually 3–7)",
+      "Simple, visual progress indication in step-by-step flows"
+    ],
+    "when_not_to_use": [
+      "Long, non-linear content — use Tabs or Lists",
+      "Large datasets — use Pagination"
+    ],
+    "anatomy": ["Unfilled dot (more pages available)", "Solid dot (current page)"],
+    "variants": [
+      "Standard consistent dot sizes",
+      "Large solid dot (current page larger than inactive dots)",
+      "Discrete animated bar page control (e.g. Instagram/Snapchat Stories)",
+      "Discrete static bar page control",
+      "Continuous bar page control (no exact count indicated)",
+      "Hybrid bar + dots page control",
+      "Unique page control icons (e.g. Clay app: triangle, circle, square)"
+    ],
+    "use_cases": ["Onboarding", "Image galleries or carousels", "Product catalogs / e-commerce"],
+    "conflicting_elements": {
+      "Tabs": "Tabs switch between views; page controls divide app into sections.",
+      "Progress indicators": "Progress indicators represent ongoing tasks; page controls organize content."
+    }
+  },
+  {
+    "name": "Pagination",
+    "url": "https://mobbin.com/glossary/pagination",
+    "platforms": ["Web"],
+    "synonyms": ["Page Selector", "Page Navigation"],
+    "description": "Pagination allows users to navigate between pages of content. Effective for large datasets. Should have clear page controls (next/previous, page numbers, current page highlight). Recommended 10–50 items per page. Ensure fast load times.",
+    "when_to_use": [
+      "Large datasets broken into manageable pages",
+      "Predictable navigation where users need page control",
+      "Fast access to specific sections (e.g. reports)"
+    ],
+    "when_not_to_use": [
+      "Limited content that fits on one page",
+      "Continuous browsing preference — use infinite scrolling",
+      "High interaction cost — use lazy loading and infinite scrolling"
+    ],
+    "anatomy": ["Previous/Next buttons", "Page numbers", "Current page indicator"],
+    "variants": [
+      "Single page number pagination (concise but no quick skip)",
+      "Multiple pages with last page shown (better UX for skipping)",
+      "No page numbers (next/previous only — minimalistic)",
+      "Preview article links (developer docs style)",
+      "Up and down arrows instead of left/right"
+    ],
+    "use_cases": ["E-commerce product listings", "Search results", "Blog posts or articles", "Calendar navigation"],
+    "conflicting_elements": {
+      "Page control": "Page control = small dots for carousels; pagination = numbered buttons for large datasets."
+    }
+  },
+  {
+    "name": "Popover",
+    "url": "https://mobbin.com/glossary/popover",
+    "platforms": ["Web"],
+    "synonyms": ["Dropdown panel"],
+    "description": "Popover displays information and functions temporarily in a contextual overlay that floats around its trigger (e.g. a button). Saves screen space by placing non-essential contextual information in a temporary container. Attached to a specific UI element, opened on trigger, closed with Esc key.",
+    "when_to_use": [
+      "Additional, non-essential content (e.g. user profile previews)",
+      "Temporary, dismissible content (e.g. filters, actions)",
+      "Context-specific actions tied to specific UI elements"
+    ],
+    "when_not_to_use": [
+      "Critical information or actions — use Modal or Dialog",
+      "Frequently accessed content"
+    ],
+    "anatomy": ["Container", "Caret tip (optional)", "Close button (optional)"],
+    "variants": [
+      "With caret tip (shows what element it's attached to)",
+      "Without caret tip",
+      "With close button"
+    ],
+    "use_cases": ["Supplementary menus or information", "Help or FAQ sections", "Informational messages or tips"],
+    "conflicting_elements": {
+      "Dialogs": "Dialogs block interaction and require user input; popovers are non-modal.",
+      "Dropdown Menus": "Dropdown menus contain only lists of options; popovers can contain richer content.",
+      "Tooltips": "Tooltips are triggered by hover; popovers are triggered by click."
+    }
+  },
+  {
+    "name": "Progress Indicator",
+    "url": "https://mobbin.com/glossary/progress-indicator",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Progress Tracker", "Progress Bar", "Wizard UI"],
+    "description": "Progress indicators inform users about the status of ongoing processes by providing visual feedback. Two types: Progress Bar (linear or circular) and Progress Tracker (step-by-step wizard). Determinate (specific % known) vs. Indeterminate (unknown duration).",
+    "when_to_use": [
+      "Long tasks showing time-to-completion",
+      "Multi-step processes to guide users",
+      "User reassurance that a task is still running"
+    ],
+    "when_not_to_use": [
+      "Short tasks completing quickly",
+      "Single-step, simple actions",
+      "Instant feedback"
+    ],
+    "anatomy": {
+      "progress_bar": ["Track", "Fill", "Label (optional)"],
+      "progress_tracker": ["Steps", "Status indicators", "Labels"]
+    },
+    "variants": [
+      "Linear progress bars",
+      "Linear progress bars with text within container",
+      "Circular progress bars",
+      "Discrete progress tracker with status indicators",
+      "Discrete progress tracker with separated steps",
+      "Discrete progress tracker with even steps",
+      "Discrete progress tracker with uneven steps",
+      "Continuous progress trackers without labels",
+      "Continuous progress trackers with labels",
+      "Vertical progress trackers"
+    ],
+    "use_cases": {
+      "progress_bar": ["File uploads & downloads", "Installation or update processes"],
+      "progress_tracker": ["Onboarding flows", "E-commerce checkout", "Multi-stage processes", "Password strength"]
+    },
+    "conflicting_elements": {
+      "Loading indicators": "Progress indicators show measurable progress and can be cancelled; loading indicators just show activity.",
+      "Page control": "Page control organizes content; progress indicator represents an ongoing process."
+    }
+  },
+  {
+    "name": "Radio Button",
+    "url": "https://mobbin.com/glossary/radio-button",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Single-select buttons", "Exclusive selection controls"],
+    "description": "Radio Buttons let users select a single option from a list of predefined options. Always circular. Options are mutually exclusive — only one can be selected at a time. Named after physical car radio buttons.",
+    "when_to_use": [
+      "Multiple exclusive options — mutually exclusive choices",
+      "Clear choices with enough space for all labels",
+      "Immediate selection clarity — all options visible at once"
+    ],
+    "when_not_to_use": [
+      "Binary choices — use a switch or checkbox",
+      "Too many options (use dropdown menu)",
+      "Complex selections dependent on other choices"
+    ],
+    "anatomy": ["Container", "Icon Fill"],
+    "variants": [
+      "Standard radio button with filled dot center",
+      "Radio buttons with completely filled dots (rarer)",
+      "Radio buttons with checkmark icon"
+    ],
+    "use_cases": ["Form inputs", "Filters & sorting", "Settings & preferences"],
+    "conflicting_elements": {
+      "Checkboxes": "Checkboxes allow multiple selections; radio buttons are always single-select and circular."
+    }
+  },
+  {
+    "name": "Search Bar",
+    "url": "https://mobbin.com/glossary/search-bar",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Search field", "Search box"],
+    "description": "Search bar allows users to enter a keyword or phrase and get relevant information. Three levels: Global search (entire app), Page search (one page), Component search (specific component like a table). Complexity ranges from simple auto-suggestions to advanced options.",
+    "when_to_use": [
+      "Large data sets needing quick filtering",
+      "Frequent user searches as a primary action"
+    ],
+    "when_not_to_use": [
+      "Not much content — 5-10 items easily browsable",
+      "Well-organized navigation providing easy access"
+    ],
+    "anatomy": ["Leading Icon", "Placeholder", "Trailing Icon", "Container"],
+    "variants": [
+      "Magnifying glass icon on left (most common)",
+      "Magnifying glass icon on right",
+      "No icon, placeholder text only",
+      "Auxiliary buttons: clear, audio search, image search, filter",
+      "Travel app search bars (To/From fields with location autocomplete)",
+      "Search bars with no containers"
+    ],
+    "use_cases": ["Home screens / navigation menus", "Lists & collections / content search", "Contacts & messaging"],
+    "conflicting_elements": {
+      "Text field": "Search bar is a special type of text field with magnifying glass icon and 'search' placeholder."
+    }
+  },
+  {
+    "name": "Segmented Control",
+    "url": "https://mobbin.com/glossary/segmented-control",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Segmented buttons", "Segmented switch"],
+    "description": "Segmented Control is a toggle that allows users to navigate between views or select options. Primary use: organize content. Options = 'segments' on a 'track'. Can have two or more segments. When used to select options, called Segmented Buttons; when used for navigation, called Segmented Switch.",
+    "when_to_use": [
+      "Few options — small number of mutually exclusive choices",
+      "Immediate switching — changes happen instantly",
+      "Equal importance — all options equally visible"
+    ],
+    "when_not_to_use": [
+      "Too many options",
+      "Non-binary options",
+      "Hierarchical choices where some are more important"
+    ],
+    "anatomy": ["Segment", "Leading Icon (optional)", "Track", "Label"],
+    "variants": [
+      "Rectangular corner radius",
+      "Circular corner radius",
+      "Pill-shaped segments",
+      "Stacked text labels (more context but taller)",
+      "Icons only (compact, no text)"
+    ],
+    "use_cases": ["Navigation between sections/views", "Settings & preferences", "Filter & sorting"],
+    "conflicting_elements": {
+      "Switch": "Switch toggles binary on/off; segmented control selects from 2+ options by tapping a segment.",
+      "Tab": "Tabs are separated items (no shared track); segmented controls have all options connected by a track."
+    }
+  },
+  {
+    "name": "Select",
+    "url": "https://mobbin.com/glossary/select",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Options menu", "Choice list"],
+    "description": "Select allows users to choose from multiple options from a dropdown menu list. Effective for straightforward choices with limited options. Shows selected value or placeholder even when closed. Commonly used in form submission.",
+    "when_to_use": [
+      "Limited options — defined list like country or language",
+      "Simple, single-choice decision"
+    ],
+    "when_not_to_use": [
+      "Too many options (10+) — use a Combobox",
+      "Multiple selections required — use Checkboxes"
+    ],
+    "anatomy": ["Trigger/input field", "Dropdown list", "Options", "Selected value"],
+    "variants": [
+      "Closed state (default/placeholder value visible)",
+      "Open state (dropdown menu visible)",
+      "Minimal container with single underline",
+      "Alternative trailing icons instead of caret"
+    ],
+    "use_cases": ["Form submission — selecting from predefined lists"],
+    "conflicting_elements": {
+      "Accordions": "Accordion displays content; Select displays a list of value options.",
+      "Menus": "Select requires a value to be changed; menus may just list actions."
+    }
+  },
+  {
+    "name": "Sidebar",
+    "url": "https://mobbin.com/glossary/sidebar",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Drawer", "Menu"],
+    "description": "A sidebar makes it easy for users to navigate an app's features or sections. May include extra content or actions. Common interaction: tap hamburger menu icon to slide in sidebar. Reduces cognitive load by hiding non-core features. Always visible vs. drawer (hidden until triggered).",
+    "when_to_use": [
+      "Complex navigation needs — many sections and features",
+      "Infrequently visited screens — Settings, Profile, Help"
+    ],
+    "when_not_to_use": [
+      "Simple navigation needs",
+      "Frequently visited screens — use Tab Bar instead"
+    ],
+    "anatomy": ["Navigation links", "User profile (optional)", "Icons (optional)"],
+    "variants": [
+      "Drawer style — slides from left",
+      "Drawer style — slides from right",
+      "User profiles at top of sidebar",
+      "Navigation rail (always visible, no hamburger trigger)"
+    ],
+    "use_cases": ["Navigation for complex apps", "User profile management"],
+    "conflicting_elements": {
+      "Drawer": "Drawer slides over content; sidebar is always visible at the same level as content."
+    }
+  },
+  {
+    "name": "Skeleton",
+    "url": "https://mobbin.com/glossary/skeleton",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Shimmer"],
+    "description": "Skeleton screen displays a placeholder preview of content while the actual content is loading. Usually light grey boxes mimicking the page layout. Known to increase perceived performance vs. blank screens or loading spinners. Often uses shimmering/wave animation. Popularized by Twitter in 2012.",
+    "when_to_use": [
+      "Placeholder for loading content to show structure",
+      "Improves perceived performance during data fetching",
+      "Content-rich pages with many elements"
+    ],
+    "when_not_to_use": [
+      "Instant content display (nearly instant load)",
+      "Simple layouts where it adds complexity without value",
+      "Frequently changing/real-time content"
+    ],
+    "anatomy": ["Grey placeholder boxes matching content layout"],
+    "variants": [
+      "Profile image & label skeleton",
+      "Medium thumbnail skeleton",
+      "Large thumbnail skeleton"
+    ],
+    "use_cases": ["Image galleries", "Content feed & search results", "Profile screens"],
+    "conflicting_elements": {
+      "Avatar placeholder": "Avatar placeholder is a permanent default state; skeleton is a temporary loading state.",
+      "Loading indicator": "Loading indicator is a spinner; skeleton shows a preview of the content structure."
+    }
+  },
+  {
+    "name": "Slider",
+    "url": "https://mobbin.com/glossary/slider",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Range selector", "Track bar", "Range slider"],
+    "description": "Sliders allow users to make selections from a range of values. Values don't have to be numerical. Can be circular, linear, horizontal, vertical. Discrete sliders (predefined steps) vs. Continuous sliders (any value in range).",
+    "when_to_use": [
+      "Adjustable values — volume, brightness",
+      "Quick comparisons between values"
+    ],
+    "when_not_to_use": [
+      "Precise inputs — sliders can be inaccurate",
+      "Too many distinct options"
+    ],
+    "anatomy": ["Track", "Thumb/Handle", "Value indicator (optional)"],
+    "variants": [
+      "Continuous sliders (most common)",
+      "Discrete sliders with tick marks",
+      "Sliders with value indicator (real-time feedback)",
+      "Range sliders (double thumb — min & max)",
+      "Non-circular handle with wider track (media cropping)",
+      "Non-linear slider track (circular or curved)",
+      "Vertical orientation"
+    ],
+    "use_cases": ["Volume & brightness control", "Settings & preferences", "Range control in filter & sorting", "Media control (audio/video scrubber)", "Action control (slide to complete button)"],
+    "conflicting_elements": {}
+  },
+  {
+    "name": "Stacked List",
+    "url": "https://mobbin.com/glossary/stacked-list",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Single-column list", "Scroll list", "Vertical list"],
+    "description": "Stacked List displays a group of related content in a vertical list — usually includes text and images. Preferred over tables on mobile (no dual-axis scrolling). Provides clean, scrollable, easy-to-navigate view.",
+    "when_to_use": [
+      "Ordered information in clear logical flow (task lists, search results)",
+      "Concise information per item (message previews, short descriptions)",
+      "Scannable, single column layout for mobile"
+    ],
+    "when_not_to_use": [
+      "Complex data needing multiple columns — use a table",
+      "Content-heavy items — use accordions instead"
+    ],
+    "anatomy": ["List items", "Thumbnails (optional)", "Icons (optional)", "Dividers (optional)"],
+    "variants": [
+      "Standard stacked lists (simple, divider-separated, compact)",
+      "Card-based stacked lists (distinct containers, media-rich, less compact)",
+      "With or without thumbnails",
+      "With or without icons",
+      "With dividers or whitespace separation"
+    ],
+    "use_cases": ["Navigation menus", "Search results", "Settings & preferences"],
+    "conflicting_elements": {
+      "Tables": "Tables have unlimited columns with headers for comparison; stacked lists are single-column and simpler."
+    }
+  },
+  {
+    "name": "Status Dot",
+    "url": "https://mobbin.com/glossary/status-dot",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Signal badge", "Status indicator", "Dot indicator"],
+    "description": "Status Dot is a small, circular indicator that conveys notifications or status information. Can come in different colors. Temporary — disappears when interacted with. Static and non-interactive. Indicates a binary state (active/inactive).",
+    "when_to_use": [
+      "Real-time status — online/offline in chat apps",
+      "Simple, binary states — active/inactive",
+      "Compact space where subtle visual cue is needed"
+    ],
+    "when_not_to_use": [
+      "Detailed information — use badges or text labels",
+      "Multiple complex statuses — use icons with text or tooltips",
+      "Critical alerts — use alerts or modals"
+    ],
+    "anatomy": ["Circular dot", "Color indicator"],
+    "variants": [
+      "Positioning: in list format",
+      "Positioning: on corner of parent element",
+      "With or without status labels (e.g. 'Out of Stock', 'Recently Active')"
+    ],
+    "use_cases": ["Notifications — unread messages", "Activity indicator — ongoing background processes"],
+    "conflicting_elements": {
+      "Badges": "Badges convey numerical quantity; status dots convey discrete binary state."
+    }
+  },
+  {
+    "name": "Stepper",
+    "url": "https://mobbin.com/glossary/stepper",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Quantity Selector", "Value Adjuster"],
+    "description": "A stepper is a two-segment control to increase or decrease an incremental value. Used for numbers (items, date, time). Common in e-commerce, food delivery, shopping apps.",
+    "when_to_use": [
+      "Adjusting small increments (quantity of items)",
+      "Preventing invalid inputs (specific intervals only)",
+      "Simple user actions with minimal cognitive load"
+    ],
+    "when_not_to_use": [
+      "Large ranges or non-step values — use Text field or Slider",
+      "Fast input required — scrolling through hundreds",
+      "Limited screen space"
+    ],
+    "anatomy": ["Decrement button", "Value label", "Increment button"],
+    "variants": [
+      "Segmented buttons (connected)",
+      "Discrete buttons (separated, cleaner look)",
+      "Stepper without decrement button (when value is 1 or minimum)",
+      "Stepper without quantity labels",
+      "Vertical steppers"
+    ],
+    "use_cases": ["Quantity selection (e-commerce/food delivery)", "Date & time selection (booking apps)", "Settings & preferences (volume, font size)"],
+    "conflicting_elements": {}
+  },
+  {
+    "name": "Switch",
+    "url": "https://mobbin.com/glossary/switch",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Toggle button", "Toggle switch"],
+    "description": "A switch allows users to toggle the state of a single item on or off. Active ('on') usually has accent color background; inactive ('off') has greyed background. Best for binary options.",
+    "when_to_use": [
+      "Immediate actions — changes happen instantly",
+      "Binary options — on/off states",
+      "Clarity needed — clear what the toggle controls"
+    ],
+    "when_not_to_use": [
+      "Complex or multi-step actions requiring confirmation",
+      "Multiple choices — use radio buttons or dropdowns",
+      "Unclear or hidden effects"
+    ],
+    "anatomy": ["Handle", "Track"],
+    "variants": [
+      "Standard switches (native iOS style — track + thumb)",
+      "Switches with icons (checkmark for clarity)",
+      "Switches with track labels (e.g. 'connect'/'unconnected')",
+      "Rectangular switch thumbs (different border radius)"
+    ],
+    "use_cases": ["Settings & preferences", "Filter & sorting"],
+    "conflicting_elements": {
+      "Segmented control": "Segmented control text is in the thumb; switch thumb only contains icon. Segmented control is for content organization; switch is for binary on/off in settings."
+    }
+  },
+  {
+    "name": "Tab Bar",
+    "url": "https://mobbin.com/glossary/tab-bar",
+    "platforms": ["iOS", "Android"],
+    "synonyms": ["Bottom navigation bar", "Bottom app bar"],
+    "description": "Tab Bar is the bottom navigation providing access to top-level destinations. Recommended 2–5 items (max 5). Often serves as primary navigation in mobile apps. Netflix and Instagram have A/B tested different tab bar items over time.",
+    "when_to_use": [
+      "Navigation between top-level sections (Home, Search, Profile)",
+      "Consistent availability — navigate from anywhere",
+      "Mobile-first design with limited horizontal space"
+    ],
+    "when_not_to_use": [
+      "More than 6 sections — use Drawer with Hamburger Menu",
+      "Deep navigation paths — consider Breadcrumbs",
+      "Infrequent or secondary actions — use FAB or Drawer"
+    ],
+    "anatomy": ["Tab items", "Icons", "Labels (optional)", "Active state indicator"],
+    "variants": [
+      "2 to 6 tab items",
+      "Icons + labels (most common)",
+      "Icons only",
+      "Labels only",
+      "Floating tab bars (modern trend)",
+      "Key action button at center (standard)",
+      "Protruded key action button (even more prominent)",
+      "Curved tab bars (unconventional)"
+    ],
+    "use_cases": ["Main navigation between core app sections"],
+    "conflicting_elements": {}
+  },
+  {
+    "name": "Table",
+    "url": "https://mobbin.com/glossary/table",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Data grid", "Spreadsheet"],
+    "description": "Tables are containers for displaying information. Allow users to quickly scan, sort, compare, and act on large amounts of data. Items in rows/columns are related. Can include sortable columns, filters, pagination. Can be static or dynamic.",
+    "when_to_use": [
+      "Organizing structured data with clear categories",
+      "Enabling easy comparison across multiple items",
+      "Consistent data formatting"
+    ],
+    "when_not_to_use": [
+      "Small datasets — use lists or text blocks",
+      "Complex data better shown with charts/graphs",
+      "Mobile devices (especially with many columns) — horizontal scrolling required"
+    ],
+    "anatomy": ["Column headers (text or image)", "Rows", "Cells"],
+    "variants": [
+      "Text column headers (most common)",
+      "Image thumbnail column headers",
+      "Editable tables (note-taking apps like Notion)",
+      "Nutritional tables (static, standardized format)"
+    ],
+    "use_cases": ["Features & information (pricing plans, stock prices)", "Size guides (standardized measurements)", "Sports statistics & results"],
+    "conflicting_elements": {
+      "Stacked lists": "Stacked lists are single-column without strict grid; tables have multiple columns with headers enabling comparison."
+    }
+  },
+  {
+    "name": "Table of Contents",
+    "url": "https://mobbin.com/glossary/table-of-contents",
+    "platforms": ["Web"],
+    "synonyms": ["Index", "Navigation menu", "Chapter titles"],
+    "description": "Table of Contents lets users quickly navigate to a particular section of the page content. Used as a navigational tool for multi-page or multi-section websites. Follows heading hierarchy (H1, H2, H3). Can improve SEO by increasing session time.",
+    "when_to_use": [
+      "Long or complex articles with multiple sections",
+      "Non-linear navigation — jumping between sections"
+    ],
+    "when_not_to_use": [
+      "Short content readable in one go",
+      "Sequential content expected to be read start-to-finish"
+    ],
+    "anatomy": ["Heading links (H1, H2, H3 with indentation)"],
+    "variants": [
+      "Left rail design (sticky or non-sticky)",
+      "Right rail design (sticky or non-sticky)",
+      "Placed within body text (non-sticky, top of page only)"
+    ],
+    "use_cases": ["Blog posts", "Help Center articles", "Documentation"],
+    "conflicting_elements": {}
+  },
+  {
+    "name": "Text Area",
+    "url": "https://mobbin.com/glossary/text-area",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Multi line text field", "Text box", "Comment box"],
+    "description": "Text area allows users to enter multiple lines of text. A variant of text fields for collecting multiple lines of user input. Text fields can transform into Text Areas as more characters are added (e.g. Slack). Used for free form text in surveys or form data.",
+    "when_to_use": [
+      "Multi-line user input — comments, reviews, descriptions",
+      "Multiple lines of content — blog drafts, code snippets",
+      "User-friendly editing with formatting options"
+    ],
+    "when_not_to_use": [
+      "Short responses / single-line — use Text Field",
+      "Limited space — text areas take more room",
+      "Displaying non-editable static content"
+    ],
+    "anatomy": ["Label", "Placeholder", "Container (optional)", "Toolbar (optional)"],
+    "variants": [
+      "Outlined text area (grey border — differentiates from other components)",
+      "Text area without container (placeholder text only — common in word editors)",
+      "Text area with toolbar (older word editor UI)"
+    ],
+    "use_cases": ["User input (comments, reviews, messages)", "Form fields (descriptions, bio, address)", "Chat & messaging", "Code editing"],
+    "conflicting_elements": {
+      "Text fields": "Text fields are for shorter, single-line input; text areas are for longer multi-line input.",
+      "Search bars": "Search bars are for querying datasets; text areas are for free-form text input."
+    }
+  },
+  {
+    "name": "Text Field",
+    "url": "https://mobbin.com/glossary/text-field",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Input field", "Text box", "Form field", "Entry field"],
+    "description": "Text fields allow users to enter text into a UI. May include description labels, helper text, placeholder text, and inline validation. Versatile for collecting email, password, credit card, phone, verification codes, etc.",
+    "when_to_use": [
+      "User-generated input — names, emails, comments",
+      "Short & specific input — phone numbers, addresses",
+      "Flexible input with multiple answer formats"
+    ],
+    "when_not_to_use": [
+      "Predefined choices — use Dropdown, Radio button, or Checkbox",
+      "Long & complex input — use Text Area",
+      "No user input needed"
+    ],
+    "anatomy": ["Label/description", "Placeholder", "Container", "Helper/error text (optional)", "Leading icon (optional)", "Trailing icon/button (optional)"],
+    "variants": [
+      "Filled text field containers",
+      "Outlined text field containers",
+      "Bottom-edge outlined containers only",
+      "With helper/placeholder/description text",
+      "With error/inline validation text",
+      "Trailing icons (password eye, camera for card scan)",
+      "Numeric-only text fields (verification codes, phone numbers)",
+      "Grouped text fields (first+last name, email+password)",
+      "Text area (multi-line variant)"
+    ],
+    "use_cases": ["Data entry", "Forms & surveys", "Chat & messaging", "Note-taking & writing"],
+    "conflicting_elements": {
+      "Search bars": "Search bars are a special type of text field with magnifying glass icon."
+    }
+  },
+  {
+    "name": "Tile",
+    "url": "https://mobbin.com/glossary/tile",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Box selector", "Single select", "Multi select"],
+    "description": "A tile allows users to select single or multiple items from a list or grid. Tiles are radio buttons or checkboxes styled with icons or images. Can have multi or single select properties. Selection indicated by filled background, outlined border, or selection icon.",
+    "when_to_use": [
+      "Visual option selection — colors, product variations",
+      "Single or multi-select from visual options"
+    ],
+    "when_not_to_use": [
+      "Large numbers of options — use Dropdown Menus",
+      "Space constraints — use compact menu or list"
+    ],
+    "anatomy": ["Container", "Label/Icon/Image", "Selection indicator"],
+    "variants": [
+      "List format",
+      "Grid format",
+      "With checkbox icons (multi-select)",
+      "With radio button icons (single-select)",
+      "Circular shaped tiles (common in onboarding)"
+    ],
+    "use_cases": ["Choosing pricing options (monthly/yearly)", "Filtering & sorting", "Selecting user preferences in onboarding"],
+    "conflicting_elements": {
+      "Chips": "Chips are compact; tiles are larger. Both used for selection/filtering.",
+      "Cards": "Cards navigate to more content; tiles switch to selected state on tap.",
+      "Tabs": "Tabs switch between views; tiles select items from a list.",
+      "Segmented controls": "Segmented controls share a track container; tiles have distinct individual containers."
+    }
+  },
+  {
+    "name": "Time Picker",
+    "url": "https://mobbin.com/glossary/time-picker",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Time Selector", "Clock Picker"],
+    "description": "Time pickers help users select and set a specific time, or a range of times. Often paired with a date picker. Precision requirements vary (seconds for cooking timers vs. hour blocks for medical appointments). Three main variants: Scroll wheels, Clock dials, Select option.",
+    "when_to_use": [
+      "Precise time selection needed (hours, minutes, seconds)",
+      "Consistent time formatting required (24-hour or AM/PM)"
+    ],
+    "when_not_to_use": [
+      "Non-specific time frames — use Radio buttons (morning/evening)",
+      "Quick, simple input where typing is faster",
+      "Complex time ranges — use a range picker"
+    ],
+    "anatomy": {
+      "scroll_wheel": ["Hour wheel", "Minute wheel", "Period wheel (AM/PM)", "Selected time indicator"],
+      "clock_dial": ["Input field", "Period selector", "Clock dial face"],
+      "select_option": ["Trigger/input field", "Dropdown menu", "Selected time display"]
+    },
+    "variants": [
+      "Native iOS scroll wheel (most common — familiar from alarm app)",
+      "Native Android clock time picker",
+      "Native Android scroll wheel time picker",
+      "Standard (non-native) scrollable list",
+      "Combo date & time picker",
+      "Tile based time picker (for booking — shows available/unavailable slots)",
+      "Slider based time picker (for start and end time ranges)",
+      "Clock based time picker (visual clock face)",
+      "Stepper based time picker (for intervals like 5min, 30min, 1hr)",
+      "Radio button based time picker (select from list)"
+    ],
+    "use_cases": ["Alarms and reminders", "Booking & reservation", "Fitness & workout"],
+    "conflicting_elements": {}
+  },
+  {
+    "name": "Toast",
+    "url": "https://mobbin.com/glossary/toast",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Snackbar", "Notification"],
+    "description": "Toasts display brief, temporary messages. Meant to be noticed without disrupting the user. Should automatically disappear. Named after the physical toaster — it pops up then goes back down.",
+    "when_to_use": [
+      "Low-priority messages that don't disrupt experience",
+      "Optional user actions that encourage but don't require response",
+      "Self-dismissing messages that auto-disappear"
+    ],
+    "when_not_to_use": [
+      "High-priority notifications — use a Dialog",
+      "Urgent actions required — use Dialogs or Banners",
+      "Persistent messages — use a Banner instead"
+    ],
+    "anatomy": ["Container", "Supporting icon (optional)", "Supporting text", "Action button (optional)", "Close button (optional)"],
+    "variants": {
+      "placement_mobile": ["Top aligned", "Center aligned", "Bottom aligned"],
+      "placement_web": ["Left aligned", "Center aligned", "Right aligned"],
+      "form": ["Bar style (with different border radiuses)", "Full-bleed style", "Box style"],
+      "other": [
+        "With follow-up action CTA button (bottom placement for thumb reach)",
+        "With caret tip (directional nudge — resembles tooltip)"
+      ]
+    },
+    "use_cases": ["Success & acknowledgment (e.g. 'Task deleted' with Undo)", "Error handling (e.g. 'Network connection lost')"],
+    "conflicting_elements": {
+      "Dialogs": "Dialogs require user interaction; toasts auto-dismiss.",
+      "Banners": "Banners persist and are for important info; toasts are brief and auto-disappear.",
+      "Tooltips": "Tooltips give context/instructions; toasts give brief feedback after an action."
+    }
+  },
+  {
+    "name": "Toolbar",
+    "url": "https://mobbin.com/glossary/toolbar",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Command bar", "Control bar"],
+    "description": "Toolbar provides a set of actions or tools relevant to the user's current task or view. A group of icon or text buttons. Contextual — provides quick access to actions tailored to the current context. If too many actions, put non-essential ones under an action option icon.",
+    "when_to_use": [
+      "Frequent actions in a consistent, easy-to-reach location",
+      "Contextual tasks — quick access to functions for current view",
+      "Space efficiency with limited screen real estate"
+    ],
+    "when_not_to_use": [
+      "Too many actions — leads to clutter",
+      "Rarely used actions — use action options menu instead"
+    ],
+    "anatomy": ["Group of icon or text buttons", "Action option icon (overflow, optional)"],
+    "variants": [
+      "Icon-only toolbar buttons",
+      "Text-based toolbar buttons",
+      "Horizontal toolbars",
+      "Vertical floating toolbars (popular in social media — TikTok, Instagram)",
+      "Note-taking toolbars (bold, italic, strikethrough)",
+      "Chat toolbars (camera, microphone, file upload)",
+      "Edit flow toolbars (undo/redo)",
+      "Audio & video media toolbars (play/pause, fast-forward)",
+      "Media editing toolbars (complex, granular editing)"
+    ],
+    "use_cases": ["Action buttons for screen/context-specific actions", "Contextual actions (e.g. editing content)", "Media controls (play/pause, forward, backward)"],
+    "conflicting_elements": {
+      "Tab bar": "Tab bar is always at bottom and switches views; toolbar is not restricted to bottom and provides actions.",
+      "Menu": "Menu provides access to wide, infrequent options; toolbar provides quick access to frequent actions."
+    }
+  },
+  {
+    "name": "Tooltip",
+    "url": "https://mobbin.com/glossary/tooltip",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Hints", "Infotips", "Toggletips"],
+    "description": "Tooltips display informative text labels that provide contextual support, usually on hover (web) or on click/tap (mobile). Improve UX by providing timely, relevant information without cluttering the main interface. On web: triggered by hover over info icon. On mobile: triggered by click/tap or auto-triggered for new feature nudges.",
+    "when_to_use": [
+      "Useful context — brief explanation for specific features",
+      "Progressive disclosure — explaining unfamiliar terms, icons, or new features",
+      "User onboarding — directing attention towards key features"
+    ],
+    "when_not_to_use": [
+      "Complete attention needed — use a Dialog instead",
+      "Repeated usage — content users already know and revisit frequently",
+      "Essential information that every user needs — put it on the page"
+    ],
+    "anatomy": ["Text label", "Caret tip (optional)", "Container", "Icons (optional)", "CTA button (optional)", "Overlay (optional)"],
+    "variants": [
+      "With caret tip (most common — points to specific element)",
+      "Without caret tip",
+      "Rounded container",
+      "With icons (triggered by info (i) icon click)",
+      "With CTA buttons (interactive tooltip)",
+      "With overlay (forces interaction)"
+    ],
+    "use_cases": ["Feature explanation (icon/symbol labels)", "Feature discoverability (new or hidden features)", "Form field help (guidance for specific fields)", "Promotional info (temporary promotion highlights)"],
+    "conflicting_elements": {
+      "Menu": "Menus display a list of options; tooltips provide contextual information.",
+      "Toasts": "Toasts give feedback after an action; tooltips give context/instructions."
+    }
+  },
+  {
+    "name": "Top Navigation Bar",
+    "url": "https://mobbin.com/glossary/top-navigation-bar",
+    "platforms": ["iOS", "Android", "Web"],
+    "synonyms": ["Navbar", "Horizontal navigation bars"],
+    "description": "Top Navigation Bar is the header component at the top of the screen that provides navigation and actions. Allows users to take action (search, bookmark) or navigate (cart, back button). Also known as horizontal navigation bars. Primarily used in mobile apps.",
+    "when_to_use": [
+      "Brand identity or titles — app names, section titles, logo",
+      "Simple actions — Back, Search, Settings",
+      "Compact content that doesn't require much vertical space"
+    ],
+    "when_not_to_use": [
+      "Primary navigation for frequent section switching — use Tab Bar",
+      "Infrequent actions that clutter the area",
+      "Limited vertical space — opt for floating or collapsible alternatives"
+    ],
+    "anatomy": ["Title/Logo area", "Left action area", "Right action area"],
+    "variants": [
+      "Large headers in navbar",
+      "App logo in navbar (branding)",
+      "Right-aligned action buttons",
+      "Action buttons on both sides (when hamburger menu is present)",
+      "Back buttons",
+      "Integrated search bars",
+      "Floating top navigation bar (Snapchat, TikTok, McDonald's)"
+    ],
+    "use_cases": ["Title or branding", "Action buttons (Add, Search, Settings)", "Back and home navigation"],
+    "conflicting_elements": {}
+  },
+  {
+    "name": "Tree",
+    "url": "https://mobbin.com/glossary/tree",
+    "platforms": ["Web"],
+    "synonyms": ["Tree View", "Hierarchical List", "Node View"],
+    "description": "A tree visualizes the hierarchical structure of nodes / nested items. Has parent nodes (root nodes) and child nodes (leaf nodes), with multiple nesting levels. Parent nodes can expand or collapse to reveal/hide child nodes — similar to accordions.",
+    "when_to_use": [
+      "Hierarchical data — folders, categories, organizational charts",
+      "Expand or collapse nodes for progressive content exploration",
+      "Frequent navigation through structured content"
+    ],
+    "when_not_to_use": [
+      "Flat or simple data — use a List or Grid",
+      "Too many levels of nesting — overwhelming complexity",
+      "Mobile interfaces — too much cognitive overload on small screens"
+    ],
+    "anatomy": ["Root/parent nodes", "Child nodes (leaf nodes)", "Expand/collapse controls", "Connecting lines/indentation"],
+    "variants": [
+      "Tree nodes with icons and text (different icons for parent vs. child)",
+      "Tree nodes without icons",
+      "Tree nodes with checkboxes (for bulk actions)",
+      "Tree nodes for threaded conversations (Reddit-style comments)"
+    ],
+    "use_cases": ["Navigation (Table of Contents, hierarchical file system)", "Filtering & sorting (product categories in e-commerce)", "Comments / threaded discussions (Reddit-style)"],
+    "conflicting_elements": {}
+  }
+]
