@@ -1,10 +1,3 @@
-/* ── Widget grid — 2-col; full/compact modifiers on children ── */
-.home-widget-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--s-2);
-}
-
 .home-widget {
   display: grid;
   gap: var(--s-3);

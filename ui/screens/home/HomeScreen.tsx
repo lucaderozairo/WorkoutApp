@@ -1,9 +1,6 @@
 import { useEffect } from "react";
 import { Grid } from "@ui/layout";
 import { WelcomeWidget } from "@ui/components/widgets/WelcomeWidget";
-import { WidgetGrid } from "@ui/components/widgets/WidgetGrid";
-import { useWidgetGrid } from "@ui/components/widgets/useWidgetGrid";
-import { WIDGET_REGISTRY } from "@ui/components/widgets/widgetRegistry";
 import { ACHIEVEMENT_DEFINITIONS } from "@features/achievements";
 import type { AchievementUnlockedPayload } from "@features/achievements/contract";
 import { eventBus } from "@core/events/bus";
@@ -11,6 +8,15 @@ import { useHomeScreen } from "./useHomeScreen";
 import { useToast } from "@ui/molecules";
 import { SplitTabs, Section } from "@ui/patterns";
 import { UpcomingContent, ThisWeekContent } from "@ui/components/home/HomeSections";
+import {
+  HomeSleepWidget,
+  HomeReadinessWidget,
+  HomeStreakWidget,
+  HomeChecklistWidget,
+  HomeWeatherWidget,
+  HomeCalendarWidget,
+  HomeSessionCard,
+} from "@ui/components/home/HomeWidgetPanel";
 
 export function HomeScreen() {
   const {
@@ -21,26 +27,11 @@ export function HomeScreen() {
     score,
     weekDays,
     upcomingAppointments,
+    todayAppointments,
+    lastNight,
+    lastSessions,
   } = useHomeScreen();
   const toast = useToast();
-
-  const {
-    widgets,
-    contextMenu,
-    setContextMenu,
-    addPanelOpen,
-    setAddPanelOpen,
-    activeIds,
-    applyGoal,
-    setSize,
-    removeWidget,
-    addWidget,
-    handleDragStart,
-    handleDrop,
-    openContextMenu,
-    startLongPress,
-    cancelLongPress,
-  } = useWidgetGrid(WIDGET_REGISTRY);
 
   useEffect(() => {
     const token = eventBus.subscribe("AchievementUnlocked", (event) => {
@@ -84,15 +75,26 @@ export function HomeScreen() {
 
       <SplitTabs panels={statPanels} />
 
-      <Section
-        label="Widgets"
-        action={{ label: "Edit", onClick: () => setAddPanelOpen(true) }}>
-        <></>
+      <Section label="Widgets">
+        <div className="widget-grid">
+          {lastNight && <HomeSleepWidget session={lastNight} />}
+          <HomeWeatherWidget />
+          <HomeCalendarWidget appointments={todayAppointments} />
+          <HomeReadinessWidget score={score} hasEntry={hasReadinessEntry} />
+          <HomeStreakWidget streak={streak} />
+          <HomeChecklistWidget />
+        </div>
       </Section>
 
-      <Section label="Last Sessions">
-        <></>
-      </Section>
+      {lastSessions.length > 0 && (
+        <Section label="Last Sessions">
+          <Grid gap={2}>
+            {lastSessions.map(s => (
+              <HomeSessionCard key={s.id} session={s} />
+            ))}
+          </Grid>
+        </Section>
+      )}
     </Grid>
   );
 }
