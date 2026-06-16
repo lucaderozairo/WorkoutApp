@@ -48,6 +48,11 @@
     &[data-tone="bad"]  { color: var(--bad); }
   }
 
+  /* Sleep stage text colors — scoped to avoid leaking into other contexts */
+  & [data-stage="deep"]  { color: var(--color-sleep-deep-text); }
+  & [data-stage="rem"]   { color: var(--color-sleep-rem-text); }
+  & [data-stage="light"] { color: var(--color-sleep-light-text); }
+  & [data-stage="awake"] { color: var(--color-sleep-awake-text); }
 }
 
 /* ── Streak ── */

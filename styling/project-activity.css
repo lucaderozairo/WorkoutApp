@@ -79,12 +79,6 @@
   &[data-sport="mind"]   { color: var(--c-mind);      background: color-mix(in srgb, var(--c-mind)      12%, var(--surface-2)); }
 }
 
-/* ── Sleep stage text colors ── */
-.deep-text  { color: var(--color-sleep-deep-text); }
-.rem-text   { color: var(--color-sleep-rem-text); }
-.light-text { color: var(--color-sleep-light-text); }
-.awake-text { color: var(--color-sleep-awake-text); }
-
 /* ── Avatar: project default portrait gradient ──
    Generic .avatar ships a neutral gradient; this restores the
    fitness-brand strength→mind look as a project-level override. */
