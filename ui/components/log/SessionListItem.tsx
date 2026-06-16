@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import type { ActivityHistoryItem } from "@features/training_log";
 import type { CardioSession } from "@features/cardio";
@@ -6,8 +5,8 @@ import { EllipsisVertical } from "lucide-react";
 import { ACTIVITY_ICONS, getActivityLabel } from "@ui/icons/activityIcons";
 import { Carousel } from "../shared";
 import { Surface, Text } from "@ui/atoms";
-import { Badge, Button } from "@ui/molecules";
-import { Layer, Layered, Row, Column, Cluster } from "@ui/layout";
+import { Badge, Dropdown } from "@ui/molecules";
+import { Row, Column, Cluster } from "@ui/layout";
 import { formatDuration, formatPace, paceSecPerKm } from "@shared/utils";
 
 function formatTime(ts: number): string {
@@ -30,43 +29,16 @@ interface ActionMenuProps {
 }
 
 function ActionMenu({ onDelete }: ActionMenuProps) {
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    if (!open) return;
-    const close = () => setOpen(false);
-    document.addEventListener("click", close);
-    return () => document.removeEventListener("click", close);
-  }, [open]);
-
   return (
-    <Layered>
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        className="sm"
-        onClick={e => { e.stopPropagation(); setOpen(o => !o); }}
-        aria-label="Session actions"
-      >
-        <EllipsisVertical size={16} />
-      </Button>
-      {open && (
-        <Layer pin="below-right" z="fixed" className="dropdown surface actions">
-          <Column gap={1}>
-            <Button
-              type="button"
-              variant="ghost"
-              block
-              className="negative"
-              onClick={e => { e.stopPropagation(); onDelete(); setOpen(false); }}
-            >
-              Delete session
-            </Button>
-          </Column>
-        </Layer>
-      )}
-    </Layered>
+    <div onClick={e => e.stopPropagation()}>
+      <Dropdown
+        align="right"
+        trigger={<EllipsisVertical size={16} aria-label="Session actions" />}
+        items={[
+          { label: "Delete session", onClick: onDelete, destructive: true },
+        ]}
+      />
+    </div>
   );
 }
 
@@ -88,9 +60,9 @@ export function StrengthSessionItem({ session, matchedExercise, onDelete }: Stre
               <StrengthIcon size={20} />
               <Column gap={1}>
                 <Text size="detail">{ACTIVITY_ICONS['strength'].label}</Text>
-                <time className="caption muted" dateTime={new Date(session.startedAt).toISOString()}>
+                <Text as="time" size="caption" color="muted" dateTime={new Date(session.startedAt).toISOString()}>
                   {formatRelativeTime(session.startedAt)} · {formatTime(session.startedAt)}
-                </time>
+                </Text>
               </Column>
             </Row>
             {onDelete && <ActionMenu onDelete={onDelete} />}
@@ -155,9 +127,9 @@ export function CardioSessionItem({ session, onDelete }: CardioItemProps) {
                 <Text size="detail">
                   {sportLabel}{session.location && ` · ${session.location}`}
                 </Text>
-                <time className="caption muted" dateTime={new Date(session.startedAt).toISOString()}>
+                <Text as="time" size="caption" color="muted" dateTime={new Date(session.startedAt).toISOString()}>
                   {formatRelativeTime(session.startedAt)} · {formatTime(session.startedAt)}
-                </time>
+                </Text>
               </Column>
             </Row>
             {onDelete && <ActionMenu onDelete={onDelete} />}
