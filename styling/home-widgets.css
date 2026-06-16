@@ -48,18 +48,6 @@
     &[data-tone="bad"]  { color: var(--bad); }
   }
 
-  & .session-head {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    align-items: center;
-    gap: var(--s-3);
-  }
-
-  & .stat-tile-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--s-2);
-  }
 }
 
 /* ── Streak ── */

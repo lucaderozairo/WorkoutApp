@@ -272,30 +272,36 @@ export function HomeSessionCard({ session }: { session: ActivityHistoryItem }) {
 
   return (
     <Surface pad="sm" className="grid">
-      <div className="session-head">
+      <Row align="center" gap={3}>
         <IconFrame size="lg" sport={sport as 'lift' | 'run' | 'cycle' | 'swim' | 'rowing' | 'mind' | undefined}>
           <Cloud size={20} aria-hidden="true" />
         </IconFrame>
-        <Column gap={0} className="min-w-0">
+        <Column gap={0} className="grow min-w-0">
           <Text size="detail" bold truncate>{session.name}</Text>
           <Text size="caption" color="muted">{day}</Text>
         </Column>
         <CaretRight size={18} className="faint" aria-hidden="true" weight="bold" />
-      </div>
-      <div className="stat-tile-row">
-        <Surface variant="flat" pad="xs" className="q-tile column gap-1">
-          <Text as="strong" mono truncate>{fmtSecs(session.durationSeconds)}</Text>
-          <Text color="faint" truncate>Duration</Text>
+      </Row>
+      <Grid cols={3} gap={2}>
+        <Surface variant="flat" pad="xs" className="q-tile">
+          <Column gap={1}>
+            <Text as="strong" size="detail" mono truncate>{fmtSecs(session.durationSeconds)}</Text>
+            <Text size="caption" color="faint" truncate>Duration</Text>
+          </Column>
         </Surface>
-        <Surface variant="flat" pad="xs" className="q-tile column gap-1">
-          <Text as="strong" mono truncate>{session.totalSets} sets</Text>
-          <Text color="faint" truncate>Volume</Text>
+        <Surface variant="flat" pad="xs" className="q-tile">
+          <Column gap={1}>
+            <Text as="strong" size="detail" mono truncate>{session.totalSets} sets</Text>
+            <Text size="caption" color="faint" truncate>Volume</Text>
+          </Column>
         </Surface>
-        <Surface variant="flat" pad="xs" className="q-tile column gap-1">
-          <Text as="strong" mono truncate>{session.exerciseCount} ex</Text>
-          <Text color="faint" truncate>Exercises</Text>
+        <Surface variant="flat" pad="xs" className="q-tile">
+          <Column gap={1}>
+            <Text as="strong" size="detail" mono truncate>{session.exerciseCount} ex</Text>
+            <Text size="caption" color="faint" truncate>Exercises</Text>
+          </Column>
         </Surface>
-      </div>
+      </Grid>
     </Surface>
   );
 }
