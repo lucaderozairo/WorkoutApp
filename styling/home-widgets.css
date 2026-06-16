@@ -18,28 +18,6 @@
 
   /* ── Nested internals (previously flat) ── */
 
-  & .sleep-main {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: var(--s-3);
-    align-items: start;
-  }
-
-  & .sleep-stage-labels {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--s-2);
-  }
-
-  & .stage-label {
-    display: grid;
-    gap: var(--s-1);
-    min-width: 0;
-    text-align: center;
-
-    strong { font-size: var(--t-sm); font-weight: 700; }
-  }
-
   & .score-circle {
     --score-color: var(--accent);
     width: 56px;
