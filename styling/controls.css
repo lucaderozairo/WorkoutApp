@@ -4,11 +4,11 @@
 .switch {
   /* --sw-w/h: outer track; --sw-thumb: knob diameter; padding 2px each side */
   --sw-w: 40px;
-  --sw-h: var(--s-5);       /* 24px */
+  --sw-h: var(--s-5); /* 24px */
   --sw-thumb: 20px;
   --sw-pad: 2px;
-
   display: inline-flex;
+  justify-content: flex-start;
   align-items: center;
   width: var(--sw-w);
   height: var(--sw-h);
@@ -20,8 +20,13 @@
   transition: background var(--duration-short) var(--ease);
   flex-shrink: 0;
 
-  &[aria-checked="true"] { background: var(--accent); }
-  &:disabled { opacity: 0.4; cursor: not-allowed; }
+  &[aria-checked="true"] {
+    background: var(--accent);
+  }
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
 
   & .thumb {
     width: var(--sw-thumb);
@@ -34,12 +39,14 @@
 
   &[aria-checked="true"] .thumb {
     /* travel = track - 2×pad - thumb */
-    transform: translateX(calc(var(--sw-w) - 2 * var(--sw-pad) - var(--sw-thumb)));
+    transform: translateX(
+      calc(var(--sw-w) - 2 * var(--sw-pad) - var(--sw-thumb))
+    );
   }
 
   &.sm {
     --sw-w: 32px;
-    --sw-h: var(--s-4);     /* 20px (shared with --s-4) */
+    --sw-h: var(--s-4); /* 20px (shared with --s-4) */
     --sw-thumb: var(--s-4); /* 16px */
   }
 }
@@ -51,7 +58,9 @@
   display: flex;
   width: 100%;
 
-  & > * { flex: 1; }
+  & > * {
+    flex: 1;
+  }
 }
 
 .toggle,
@@ -111,90 +120,46 @@
   }
 }
 
+/* Dropdown list containers — both are identical, merged */
+:is(.combobox .combobox-list, .command .command-list) {
+  display: grid;
+  gap: var(--s-1);
+  margin-top: var(--s-1);
+  padding: var(--s-1);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--surface-1);
+  box-shadow: var(--shadow-2);
+}
+
+/* Popup list items — only true overrides on top of the :is(button,...) base rule */
+:is(.combobox .combobox-option, .command .command-item) {
+  justify-content: flex-start; /* base is center */
+  text-align: left;            /* base is center */
+  width: 100%;
+  min-height: 36px;
+  background: transparent;     /* base is surface-1 */
+  border-color: transparent;   /* base is line-strong */
+  border-radius: var(--r-sm);  /* base is --s-2 */
+
+  &[aria-selected="true"] {
+    background: var(--surface-2);
+    border-color: var(--line-strong);
+  }
+}
+
 .combobox {
   position: relative;
   min-width: 0;
-
-  & .combobox-list {
-    display: grid;
-    gap: var(--s-1);
-    margin-top: var(--s-1);
-    padding: var(--s-1);
-    border: 1px solid var(--line);
-    border-radius: var(--r-sm);
-    background: var(--surface-1);
-    box-shadow: var(--shadow-2);
-  }
-
-  & .combobox-option {
-    display: inline-flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: var(--s-2);
-    width: 100%;
-    min-height: 36px;
-    padding: var(--s-1) var(--s-3);
-    font-family: var(--font-ui);
-    font-size: var(--t-sm);
-    font-weight: 500;
-    color: var(--ink);
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: var(--r-sm);
-    text-align: left;
-    cursor: pointer;
-    transition:
-      background-color var(--duration-short) var(--ease),
-      border-color var(--duration-short) var(--ease);
-
-    &:not(:disabled):hover  { background: var(--surface-2); }
-    &:active                { transform: scale(0.98); }
-    &[aria-selected="true"] { background: var(--surface-2); border-color: var(--line-strong); }
-  }
 }
 
 .command {
   position: relative;
   min-width: 0;
 
-  & .command-list {
-    display: grid;
-    gap: var(--s-1);
-    margin-top: var(--s-1);
-    padding: var(--s-1);
-    border: 1px solid var(--line);
-    border-radius: var(--r-sm);
-    background: var(--surface-1);
-    box-shadow: var(--shadow-2);
+  & .command-empty {
+    padding: var(--s-2);
   }
-
-  & .command-item {
-    display: inline-flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: var(--s-2);
-    width: 100%;
-    min-height: 36px;
-    padding: var(--s-1) var(--s-3);
-    font-family: var(--font-ui);
-    font-size: var(--t-sm);
-    font-weight: 500;
-    color: var(--ink);
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: var(--r-sm);
-    text-align: left;
-    cursor: pointer;
-    transition:
-      background-color var(--duration-short) var(--ease),
-      border-color var(--duration-short) var(--ease);
-
-    &:not(:disabled):hover  { background: var(--surface-2); }
-    &:active                { transform: scale(0.98); }
-    &[aria-selected="true"] { background: var(--surface-2); border-color: var(--line-strong); }
-  }
-
-  & .command-empty { padding: var(--s-2); }
 }
 
 .breadcrumb {
@@ -254,8 +219,12 @@
     color 0.12s var(--ease),
     border-color 0.12s var(--ease);
 
-  &:first-child { border-top-left-radius: var(--r-sm); }
-  &:last-child  { border-top-right-radius: var(--r-sm); }
+  &:first-child {
+    border-top-left-radius: var(--r-sm);
+  }
+  &:last-child {
+    border-top-right-radius: var(--r-sm);
+  }
 
   &.active {
     color: var(--ink);
@@ -263,7 +232,9 @@
     background: var(--surface-1);
   }
 
-  &:hover:not(.active) { background: var(--surface-2); }
+  &:hover:not(.active) {
+    background: var(--surface-2);
+  }
 }
 
 .search-input {
