@@ -3,7 +3,7 @@ import { computeDashboard } from './dashboard';
 import type { ActivityHistoryItem } from './index';
 
 // Fix the clock so "today" and "this week" are deterministic.
-const FIXED_NOW = new Date('2026-06-18T12:00:00Z').getTime(); // Wednesday
+const FIXED_NOW = new Date('2026-06-18T12:00:00Z').getTime(); // Thursday
 
 beforeEach(() => {
   vi.useFakeTimers();
@@ -42,7 +42,7 @@ describe('computeDashboard', () => {
   });
 
   it('does not count a session from last week', () => {
-    const lastSunday = new Date('2026-06-14T10:00:00Z'); // before Mon Jun 16
+    const lastSunday = new Date('2026-06-14T10:00:00Z'); // before Mon Jun 15, the start of the week
     const result = computeDashboard([makeSession(lastSunday)]);
     expect(result.workoutsThisWeek).toBe(0);
   });

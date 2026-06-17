@@ -18,11 +18,11 @@ export function computeDashboard(history: ActivityHistoryItem[]): TrainingDashbo
   const workoutsThisWeek = history.filter(s => new Date(s.startedAt) >= startOfWeek).length;
 
   // streak — consecutive training days ending today or yesterday
-  const trained = new Set(history.map(s => new Date(s.startedAt).toLocaleDateString()));
+  const trained = new Set(history.map(s => new Date(s.startedAt).toLocaleDateString('en-CA')));
   const cursor = new Date();
-  if (!trained.has(cursor.toLocaleDateString())) cursor.setDate(cursor.getDate() - 1);
+  if (!trained.has(cursor.toLocaleDateString('en-CA'))) cursor.setDate(cursor.getDate() - 1);
   let streak = 0;
-  while (trained.has(cursor.toLocaleDateString())) {
+  while (trained.has(cursor.toLocaleDateString('en-CA'))) {
     streak++;
     cursor.setDate(cursor.getDate() - 1);
   }
