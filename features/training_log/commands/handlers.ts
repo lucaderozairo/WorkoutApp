@@ -50,7 +50,7 @@ projectionRegistry.register('sessions', sessionProjection);
 projectionRegistry.register('recent_exercises', recentExercisesProjection);
 
 
-export function applyAll(events: TrainingLogEvent[]): void {
+export function replayTrainingLogEvents(events: TrainingLogEvent[]): void {
   events.forEach(e => {
     sessionProjection.apply(e);
     recentExercisesProjection.apply(e);
@@ -62,20 +62,34 @@ export function applyAll(events: TrainingLogEvent[]): void {
   viewStore.set('activity_history', getActivityHistory());
 }
 
-const commitTrainingLogEvents = defineCommand<TrainingLogEvent[], Result<void, string>>({
-  execute: async (events) => {
-    applyAll(events);
-    return { events, result: ok(undefined) };
+const commitTrainingLogEvents = defineCommand({
+  projections: [
+    { key: 'sessions' as const, projection: sessionProjection },
+    { key: 'recent_exercises' as const, projection: recentExercisesProjection },
+  ],
+  execute: async (events: TrainingLogEvent[], ctx): Promise<Result<void, string>> => {
+    await ctx.commit(events);
+    const sessions = sessionProjection.getState();
+    viewStore.set('active_session', sessions.activeId ? sessions.byId[sessions.activeId] ?? null : null);
+    viewStore.set('activity_history', getActivityHistory());
+    return ok(undefined);
   },
 });
 
-const commitSessionStartedEvents = defineCommand<
-  { events: TrainingLogEvent[]; sessionId: string },
-  Result<{ sessionId: string }, string>
->({
-  execute: async ({ events, sessionId }) => {
-    applyAll(events);
-    return { events, result: ok({ sessionId }) };
+const commitSessionStartedEvents = defineCommand({
+  projections: [
+    { key: 'sessions' as const, projection: sessionProjection },
+    { key: 'recent_exercises' as const, projection: recentExercisesProjection },
+  ],
+  execute: async (
+    { events, sessionId }: { events: TrainingLogEvent[]; sessionId: string },
+    ctx,
+  ): Promise<Result<{ sessionId: string }, string>> => {
+    await ctx.commit(events);
+    const sessions = sessionProjection.getState();
+    viewStore.set('active_session', sessions.activeId ? sessions.byId[sessions.activeId] ?? null : null);
+    viewStore.set('activity_history', getActivityHistory());
+    return ok({ sessionId });
   },
 });
 
@@ -374,12 +388,8 @@ export async function handleSetBlockRounds(cmd: SetBlockRounds): Promise<Result<
   return commitTrainingLogEvents(events);
 }
 
-async function commit(events: TrainingLogEvent[]): Promise<Result<void, string>> {
-  return commitTrainingLogEvents(events);
-}
-
 export async function handleRemoveSet(cmd: RemoveSet): Promise<Result<void, string>> {
-  return commit([{
+  return commitTrainingLogEvents([{
     type: 'SetRemoved',
     aggregateId: cmd.sessionId,
     aggregateType: 'Session',
@@ -395,7 +405,7 @@ export async function handleUpdateSet(cmd: UpdateSet): Promise<Result<void, stri
   if (cmd.distanceMeters !== undefined && cmd.distanceMeters < 0) return err('Distance must be non-negative');
   if (cmd.durationSeconds !== undefined && cmd.durationSeconds < 0) return err('Duration must be non-negative');
 
-  return commit([{
+  return commitTrainingLogEvents([{
     type: 'SetUpdated',
     aggregateId: cmd.sessionId,
     aggregateType: 'Session',
@@ -418,7 +428,7 @@ export async function handleUpdateSet(cmd: UpdateSet): Promise<Result<void, stri
 }
 
 export async function handleUpdateSetComment(cmd: UpdateSetComment): Promise<Result<void, string>> {
-  return commit([{
+  return commitTrainingLogEvents([{
     type: 'SetCommentUpdated',
     aggregateId: cmd.sessionId,
     aggregateType: 'Session',
@@ -435,7 +445,7 @@ export async function handleUpdateSetComment(cmd: UpdateSetComment): Promise<Res
 
 export async function handleSetBlockRest(cmd: SetBlockRest): Promise<Result<void, string>> {
   if (cmd.restSeconds < 0 || cmd.restSeconds > 600) return err('Rest must be between 0 and 600 seconds');
-  return commit([{
+  return commitTrainingLogEvents([{
     type: 'BlockRestSet',
     aggregateId: cmd.sessionId,
     aggregateType: 'Session',
@@ -447,7 +457,7 @@ export async function handleSetBlockRest(cmd: SetBlockRest): Promise<Result<void
 
 export async function handleRenameSession(cmd: RenameSession): Promise<Result<void, string>> {
   if (!cmd.name.trim()) return err('Session name is required');
-  return commit([{
+  return commitTrainingLogEvents([{
     type: 'SessionRenamed',
     aggregateId: cmd.sessionId,
     aggregateType: 'Session',
@@ -459,7 +469,7 @@ export async function handleRenameSession(cmd: RenameSession): Promise<Result<vo
 
 export async function handleUpdateSessionStartTime(cmd: UpdateSessionStartTime): Promise<Result<void, string>> {
   if (!Number.isFinite(cmd.startedAt) || cmd.startedAt <= 0) return err('Invalid start time');
-  return commit([{
+  return commitTrainingLogEvents([{
     type: 'SessionStartTimeUpdated',
     aggregateId: cmd.sessionId,
     aggregateType: 'Session',
@@ -471,7 +481,7 @@ export async function handleUpdateSessionStartTime(cmd: UpdateSessionStartTime):
 
 export async function handleReorderBlocks(cmd: ReorderBlocks): Promise<Result<void, string>> {
   if (cmd.blockIds.length === 0) return err('blockIds is required');
-  return commit([{
+  return commitTrainingLogEvents([{
     type: 'BlocksReordered',
     aggregateId: cmd.sessionId,
     aggregateType: 'Session',
@@ -482,7 +492,7 @@ export async function handleReorderBlocks(cmd: ReorderBlocks): Promise<Result<vo
 }
 
 export async function handleAddToSuperset(cmd: AddToSuperset): Promise<Result<void, string>> {
-  return commit([{
+  return commitTrainingLogEvents([{
     type: 'BlockAddedToSuperset',
     aggregateId: cmd.sessionId,
     aggregateType: 'Session',
@@ -493,7 +503,7 @@ export async function handleAddToSuperset(cmd: AddToSuperset): Promise<Result<vo
 }
 
 export async function handleLeaveSuperset(cmd: LeaveSuperset): Promise<Result<void, string>> {
-  return commit([{
+  return commitTrainingLogEvents([{
     type: 'BlockLeftSuperset',
     aggregateId: cmd.sessionId,
     aggregateType: 'Session',
@@ -504,7 +514,7 @@ export async function handleLeaveSuperset(cmd: LeaveSuperset): Promise<Result<vo
 }
 
 export async function handleRemoveBlock(cmd: RemoveBlock): Promise<Result<void, string>> {
-  return commit([{
+  return commitTrainingLogEvents([{
     type: 'BlockRemoved',
     aggregateId: cmd.sessionId,
     aggregateType: 'Session',
@@ -515,7 +525,7 @@ export async function handleRemoveBlock(cmd: RemoveBlock): Promise<Result<void, 
 }
 
 export async function handleUpdateSessionNote(cmd: UpdateSessionNote): Promise<Result<void, string>> {
-  return commit([{
+  return commitTrainingLogEvents([{
     type: 'SessionNoteUpdated',
     aggregateId: cmd.sessionId,
     aggregateType: 'Session',
@@ -526,7 +536,7 @@ export async function handleUpdateSessionNote(cmd: UpdateSessionNote): Promise<R
 }
 
 export async function handleUpdateSessionDetails(cmd: UpdateSessionDetails): Promise<Result<void, string>> {
-  return commit([{
+  return commitTrainingLogEvents([{
     type: 'SessionUpdated',
     aggregateId: cmd.sessionId,
     aggregateType: 'Session',
