@@ -2,11 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import type { ActivityView, ActivitiesState } from '@features/training_log';
 import {
-  handleUpdateSessionNote,
-  handleRenameSession,
-  handleUpdateSessionStartTime,
-  handleUpdateSessionDetails,
-  handleFinishSessionWithDetails,
+  handleFinishOrUpdateSession,
 } from '@features/training_log';
 import { useCommand, useQuery } from '@ui/bindings';
 import { exportSessionBackup } from '@features/data_transfer';
@@ -75,11 +71,7 @@ export function useFinishSession() {
     return () => clearInterval(id);
   }, [finished, isAlreadyFinished]);
 
-  const { dispatch: updateNote } = useCommand(handleUpdateSessionNote);
-  const { dispatch: renameSession } = useCommand(handleRenameSession);
-  const { dispatch: updateStartTime } = useCommand(handleUpdateSessionStartTime);
-  const { dispatch: updateDetails } = useCommand(handleUpdateSessionDetails);
-  const { dispatch: finishWithDetails } = useCommand(handleFinishSessionWithDetails);
+  const { dispatch: finishOrUpdate } = useCommand(handleFinishOrUpdateSession);
   const { dispatch: saveTemplate } = useCommand(handleCreateTemplate);
 
   const rawTs = date && startTime ? new Date(`${date}T${startTime}`).getTime() : NaN;
@@ -109,44 +101,29 @@ export function useFinishSession() {
   const submit = async () => {
     if (!session) return;
     const sid = session.id;
-    const oldNotes = session.notes;
-    const oldName = session.name;
-    const oldStartedAt = session.startedAt;
 
     const newStartedAt = date && startTime ? new Date(`${date}T${startTime}`).getTime() : undefined;
     const newFinishedAt = date && endTime ? new Date(`${date}T${endTime}`).getTime() : undefined;
 
     if (isActiveSession) {
       finishedAtRef.current = newFinishedAt ?? Date.now();
+    }
 
-      await finishWithDetails({
-        type: 'FinishSessionWithDetails',
-        sessionId: sid,
-        ...(name !== oldName ? { name } : {}),
-        ...(notes !== oldNotes ? { notes } : {}),
-        ...(rpe !== null ? { sessionRpe: rpe } : {}),
-        ...(tags.length > 0 ? { tags } : {}),
-        ...(newStartedAt !== undefined && newStartedAt !== oldStartedAt ? { startedAt: newStartedAt } : {}),
-        finishedAt: newFinishedAt ?? Date.now(),
-        ...(photos.length > 0 ? { media: photos } : {}),
-      });
+    await finishOrUpdate({
+      type: 'FinishOrUpdateSession',
+      sessionId: sid,
+      isActive: isActiveSession,
+      name,
+      notes,
+      sessionRpe: rpe ?? undefined,
+      tags,
+      startedAt: newStartedAt,
+      finishedAt: isActiveSession ? (newFinishedAt ?? Date.now()) : newFinishedAt,
+    });
 
+    if (isActiveSession) {
       setFinished(true);
     } else {
-      if (name !== oldName)
-        await renameSession({ type: 'RenameSession', sessionId: sid, name });
-      if (newStartedAt !== undefined)
-        await updateStartTime({ type: 'UpdateSessionStartTime', sessionId: sid, startedAt: newStartedAt });
-      if (notes !== oldNotes)
-        await updateNote({ type: 'UpdateSessionNote', sessionId: sid, notes });
-      await updateDetails({
-        type: 'UpdateSessionDetails',
-        sessionId: sid,
-        ...(newFinishedAt !== undefined ? { finishedAt: newFinishedAt } : {}),
-        ...(rpe !== undefined ? { rpe } : {}),
-        ...(tags !== undefined ? { tags } : {}),
-        ...(photos.length > 0 ? { media: photos } : {}),
-      });
       navigate(`/sessions/${session.id}`);
     }
   };
