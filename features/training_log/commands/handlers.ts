@@ -49,6 +49,11 @@ import { getActivityHistory } from '../queries';
 projectionRegistry.register('sessions', sessionProjection);
 projectionRegistry.register('recent_exercises', recentExercisesProjection);
 
+function flushDerivedViews(): void {
+  const sessions = sessionProjection.getState();
+  viewStore.set('active_session', sessions.activeId ? sessions.byId[sessions.activeId] ?? null : null);
+  viewStore.set('activity_history', getActivityHistory());
+}
 
 export function replayTrainingLogEvents(events: TrainingLogEvent[]): void {
   events.forEach(e => {
@@ -68,10 +73,8 @@ const commitTrainingLogEvents = defineCommand({
     { key: 'recent_exercises' as const, projection: recentExercisesProjection },
   ],
   execute: async (events: TrainingLogEvent[], ctx): Promise<Result<void, string>> => {
-    await ctx.commit(events);
-    const sessions = sessionProjection.getState();
-    viewStore.set('active_session', sessions.activeId ? sessions.byId[sessions.activeId] ?? null : null);
-    viewStore.set('activity_history', getActivityHistory());
+    await ctx.commit(events); // also wrote 'sessions' and 'recent_exercises' to viewStore
+    flushDerivedViews();
     return ok(undefined);
   },
 });
@@ -85,10 +88,8 @@ const commitSessionStartedEvents = defineCommand({
     { events, sessionId }: { events: TrainingLogEvent[]; sessionId: string },
     ctx,
   ): Promise<Result<{ sessionId: string }, string>> => {
-    await ctx.commit(events);
-    const sessions = sessionProjection.getState();
-    viewStore.set('active_session', sessions.activeId ? sessions.byId[sessions.activeId] ?? null : null);
-    viewStore.set('activity_history', getActivityHistory());
+    await ctx.commit(events); // also wrote 'sessions' and 'recent_exercises' to viewStore
+    flushDerivedViews();
     return ok({ sessionId });
   },
 });
