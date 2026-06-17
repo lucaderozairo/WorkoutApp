@@ -131,11 +131,20 @@ export default tseslint.config({
     // Cross-feature domain imports must go through contract.ts.
     // Own-feature internal imports must use relative paths (e.g. '../domain/types')
     // rather than absolute aliases (e.g. '@features/cardio/domain/types') to avoid
-    // triggering this rule — no mechanical self-exemption is possible with no-restricted-imports.
+    // triggering this rule.
+    // No self-exemption via `allow` is possible here — `no-restricted-imports` cannot
+    // condition on the importing file's path, only on the import string itself.
     'no-restricted-imports': ['error', {
       patterns: [
         {
-          group: ['@features/*/domain/*', '@features/*/commands/*', '@features/*/projections/*', '@features/*/queries/*', '@features/*/policies/*'],
+          group: [
+            '@features/*/domain/**',
+            '@features/*/commands/**',
+            '@features/*/projections/**',
+            '@features/*/queries/**',
+            '@features/*/policies/**',
+            '@features/*/events/**',
+          ],
           message: 'Cross-feature imports must go through contract.ts only. Import from @features/<name>/contract instead.',
         },
       ],

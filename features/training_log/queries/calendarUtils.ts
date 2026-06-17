@@ -1,5 +1,5 @@
 import type { CardioSession, CardioSport } from '@features/cardio/contract';
-import type { ActivityHistoryItem } from '@features/training_log';
+import type { ActivityHistoryItem } from '../projections';
 
 export type TypeFilter = 'all' | 'strength' | CardioSport;
 
