@@ -1,2 +1,3 @@
-// Re-exports the nutrition domain under the Health umbrella.
-export * from '@features/nutrition';
+// Re-exports nutrition types needed by the profile health domain.
+// Import from contract only — never from @features/nutrition barrel.
+export type { NutritionCategory, NutritionEntry, NutritionEntryView } from '@features/nutrition/contract';
