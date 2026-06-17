@@ -1,4 +1,4 @@
-import type { Result } from '@shared/types';
+import type { Result, Id } from '@shared/types';
 import { ok, err } from '@shared/types';
 import type {
   StartSession,
@@ -27,6 +27,7 @@ import type {
   RemoveBlock,
   UpdateSessionDetails,
   FinishSessionWithDetails,
+  FinishOrUpdateSession,
   TrainingLogEvent,
   ExerciseSummary,
   SetEntry,
@@ -638,4 +639,63 @@ export async function handleFinishSessionWithDetails(
   }
 
   return commitTrainingLogEvents(events);
+}
+
+export async function handleFinishOrUpdateSession(
+  cmd: FinishOrUpdateSession,
+): Promise<Result<void, string>> {
+  if (cmd.isActive) {
+    // Active session: one atomic finish-with-details event covers everything
+    if (!cmd.finishedAt) return err('finishedAt is required to finish an active session');
+    return handleFinishSessionWithDetails({
+      type: 'FinishSessionWithDetails',
+      sessionId: cmd.sessionId as Id<'Activity'>,
+      name: cmd.name,
+      notes: cmd.notes,
+      sessionRpe: cmd.sessionRpe,
+      tags: cmd.tags,
+      finishedAt: cmd.finishedAt,
+    });
+  }
+
+  // Already-finished session: dispatch one event per changed field
+  const results: Array<Result<void, string>> = [];
+
+  if (cmd.name !== undefined) {
+    results.push(await handleRenameSession({
+      type: 'RenameSession',
+      sessionId: cmd.sessionId as Id<'Activity'>,
+      name: cmd.name,
+    }));
+  }
+
+  if (cmd.notes !== undefined) {
+    results.push(await handleUpdateSessionNote({
+      type: 'UpdateSessionNote',
+      sessionId: cmd.sessionId as Id<'Activity'>,
+      notes: cmd.notes,
+    }));
+  }
+
+  if (cmd.startedAt !== undefined) {
+    results.push(await handleUpdateSessionStartTime({
+      type: 'UpdateSessionStartTime',
+      sessionId: cmd.sessionId as Id<'Activity'>,
+      startedAt: cmd.startedAt,
+    }));
+  }
+
+  if (cmd.sessionRpe !== undefined || cmd.tags !== undefined || cmd.finishedAt !== undefined) {
+    results.push(await handleUpdateSessionDetails({
+      type: 'UpdateSessionDetails',
+      sessionId: cmd.sessionId as Id<'Activity'>,
+      ...(cmd.sessionRpe !== undefined ? { rpe: cmd.sessionRpe } : {}),
+      tags: cmd.tags,
+      finishedAt: cmd.finishedAt,
+    }));
+  }
+
+  const failure = results.find(r => !r.ok);
+  if (failure) return failure;
+  return ok(undefined);
 }
