@@ -1,14 +1,12 @@
 import { viewStore } from '@data/projections/views';
-import type { ActivitiesState } from './index';
 import type { TrainingDashboardView } from './dashboardTypes';
+import type { ActivityHistoryItem } from './index';
 import { getActivityHistory } from '../queries';
 
-// ─── Helpers ──────────────────────────────────────────────────
+// ─── Pure computation ──────────────────────────────────────────
 
-function computeDashboard(state: ActivitiesState | undefined): TrainingDashboardView {
-  if (!state) return { streak: 0, workoutsThisWeek: 0, totalSessions: 0 };
-
-  const history = getActivityHistory();
+export function computeDashboard(history: ActivityHistoryItem[]): TrainingDashboardView {
+  if (history.length === 0) return { streak: 0, workoutsThisWeek: 0, totalSessions: 0 };
 
   // workoutsThisWeek — Mon–Sun calendar week
   const now = new Date();
@@ -40,12 +38,13 @@ export function registerTrainingDashboardProjection(): void {
   if (registered) return;
   registered = true;
 
-  const initial = computeDashboard(viewStore.get('sessions'));
-  viewStore.set('training_log_dashboard', initial);
-  viewStore.set('activity_history', getActivityHistory());
+  const history = getActivityHistory();
+  viewStore.set('training_log_dashboard', computeDashboard(history));
+  viewStore.set('activity_history', history);
 
-  viewStore.subscribe('sessions', (state) => {
-    viewStore.set('training_log_dashboard', computeDashboard(state));
-    viewStore.set('activity_history', getActivityHistory());
+  viewStore.subscribe('sessions', () => {
+    const h = getActivityHistory();
+    viewStore.set('training_log_dashboard', computeDashboard(h));
+    viewStore.set('activity_history', h);
   });
 }

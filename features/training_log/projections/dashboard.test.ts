@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { computeDashboard } from './dashboard';
-import type { ActivityView } from './index';
+import type { ActivityHistoryItem } from './index';
 
 // Fix the clock so "today" and "this week" are deterministic.
 const FIXED_NOW = new Date('2026-06-18T12:00:00Z').getTime(); // Wednesday
@@ -14,19 +14,19 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-function makeSession(startedAt: Date): ActivityView {
+function makeSession(startedAt: Date): ActivityHistoryItem {
   return {
     id: `s-${startedAt.getTime()}` as never,
     name: 'Test',
-    status: 'finished',
+    primarySport: 'strength',
     startedAt: startedAt.getTime(),
     finishedAt: startedAt.getTime() + 3600_000,
-    segments: [],
-    rpe: undefined,
-    notes: undefined,
-    tags: [],
-    primarySport: undefined,
-  } as unknown as ActivityView;
+    durationSeconds: 3600,
+    totalSets: 0,
+    exerciseCount: 0,
+    hasPR: false,
+    category: 'compound',
+  } as unknown as ActivityHistoryItem;
 }
 
 describe('computeDashboard', () => {
