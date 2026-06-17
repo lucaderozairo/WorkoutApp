@@ -52,6 +52,7 @@ export type {
   RemoveBlock,
   UpdateSessionDetails,
   FinishSessionWithDetails,
+  FinishOrUpdateSession,
 } from './domain/types';
 
 export type {
@@ -62,7 +63,7 @@ export type {
   RecentExercise,
 } from './projections';
 
-export { applyAll as replayTrainingLogEvents } from './commands/handlers';
+export { replayTrainingLogEvents } from './commands/handlers';
 
 export {
   handleStartSession,
@@ -91,6 +92,7 @@ export {
   handleRemoveBlock,
   handleUpdateSessionDetails,
   handleFinishSessionWithDetails,
+  handleFinishOrUpdateSession,
 } from './commands/handlers';
 
 export {

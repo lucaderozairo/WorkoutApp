@@ -19,6 +19,7 @@ export type {
   LogCardioSet,
   FinishSession,
   DeleteSession,
+  FinishOrUpdateSession,
 } from './domain/types';
 
 // Domain types consumed by UI components, screens, policies and shared utils.
