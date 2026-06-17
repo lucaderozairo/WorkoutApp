@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { epleyOneRepMax, computeVolumeEntry, detectPlateau } from './compute';
+// eslint-disable-next-line no-restricted-imports -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
 import type { StrengthSet } from '@features/training_log/domain/types';
 
 const makeSet = (weight: number, reps: number, isWarmup = false): StrengthSet => ({

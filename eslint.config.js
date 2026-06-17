@@ -125,4 +125,16 @@ export default tseslint.config({
       },
     ],
   },
+}, {
+  files: ['features/**/*.ts', 'features/**/*.tsx'],
+  rules: {
+    'no-restricted-imports': ['error', {
+      patterns: [
+        {
+          group: ['@features/*/domain/*', '@features/*/commands/*', '@features/*/projections/*', '@features/*/queries/*', '@features/*/policies/*'],
+          message: 'Cross-feature imports must go through contract.ts only. Import from @features/<name>/contract instead.',
+        },
+      ],
+    }],
+  },
 }, storybook.configs["flat/recommended"]);

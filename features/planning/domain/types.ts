@@ -1,6 +1,6 @@
 import type { Id, DomainEvent } from '@shared/types';
 import type { RouteSummary } from '@shared/contracts';
-// eslint-disable-next-line boundaries/element-types -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
+// eslint-disable-next-line boundaries/element-types, no-restricted-imports -- TODO(arch): cross-layer import baselined; see docs/superpowers/plans/2026-06-03-architecture-rule-enforcement.md
 import type { SportType } from '@features/training_log/domain/types';
 
 export type PlanType = SportType;
