@@ -600,6 +600,18 @@ export interface FinishSessionWithDetails {
   media?: string[];
 }
 
+export interface FinishOrUpdateSession {
+  type: 'FinishOrUpdateSession';
+  sessionId: string;
+  isActive: boolean;          // true = session is still running; false = already finished
+  name?: string;
+  notes?: string;
+  sessionRpe?: number;
+  tags?: string[];
+  startedAt?: number;         // ms epoch
+  finishedAt?: number;        // ms epoch — required when isActive = true
+}
+
 export interface ImportSession {
   type: 'ImportSession';
   parsedData: import('@shared/utils/importCsv').ParsedCsvData;
@@ -632,4 +644,5 @@ export type TrainingLogCommand =
   | RemoveBlock
   | UpdateSessionDetails
   | FinishSessionWithDetails
+  | FinishOrUpdateSession
   | ImportSession;
