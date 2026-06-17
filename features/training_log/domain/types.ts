@@ -608,6 +608,7 @@ export interface FinishOrUpdateSession {
   notes?: string;
   sessionRpe?: number;
   tags?: string[];
+  media?: string[];
   startedAt?: number;         // ms epoch
   finishedAt?: number;        // ms epoch — required when isActive = true
 }

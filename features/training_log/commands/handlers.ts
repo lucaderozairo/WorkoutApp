@@ -655,6 +655,8 @@ export async function handleFinishOrUpdateSession(
       sessionRpe: cmd.sessionRpe,
       tags: cmd.tags,
       finishedAt: cmd.finishedAt,
+      startedAt: cmd.startedAt,
+      media: cmd.media,
     });
   }
 
@@ -685,13 +687,14 @@ export async function handleFinishOrUpdateSession(
     }));
   }
 
-  if (cmd.sessionRpe !== undefined || cmd.tags !== undefined || cmd.finishedAt !== undefined) {
+  if (cmd.sessionRpe !== undefined || cmd.tags !== undefined || cmd.finishedAt !== undefined || cmd.media !== undefined) {
     results.push(await handleUpdateSessionDetails({
       type: 'UpdateSessionDetails',
       sessionId: cmd.sessionId as Id<'Activity'>,
       ...(cmd.sessionRpe !== undefined ? { rpe: cmd.sessionRpe } : {}),
-      tags: cmd.tags,
-      finishedAt: cmd.finishedAt,
+      ...(cmd.tags !== undefined ? { tags: cmd.tags } : {}),
+      ...(cmd.finishedAt !== undefined ? { finishedAt: cmd.finishedAt } : {}),
+      ...(cmd.media !== undefined ? { media: cmd.media } : {}),
     }));
   }
 

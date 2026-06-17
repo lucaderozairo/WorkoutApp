@@ -110,6 +110,24 @@ describe('handleFinishOrUpdateSession', () => {
     expect(session?.notes).toBe('Good session');
     expect(session?.status).toBe('finished');
     expect(session?.rpe).toBe(7);
+    expect(session?.tags).toEqual(['legs']);
+  });
+
+  it('active session without finishedAt returns error', async () => {
+    const USER = 'u-fous-3' as Id<'User'>;
+    const start = await handleStartSession({ type: 'StartSession', userId: USER, name: 'Test' });
+    expect(start.ok).toBe(true);
+    const sessionId = (start as { ok: true; value: { sessionId: string } }).value.sessionId as Id<'Activity'>;
+
+    const result = await handleFinishOrUpdateSession({
+      type: 'FinishOrUpdateSession',
+      sessionId,
+      isActive: true,
+      // finishedAt intentionally omitted
+    });
+
+    expect(result.ok).toBe(false);
+    expect((result as { ok: false; error: string }).error).toContain('finishedAt');
   });
 
   it('finished session: updates note and name separately', async () => {
