@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   handleStartSession, handleAddBlock,
   handleFinishSessionWithDetails,
+  handleFinishOrUpdateSession,
 } from './handlers';
 import { viewStore } from '@data/projections/views';
 import type { ActivityView, ActivitiesState } from '../projections';
@@ -80,5 +81,62 @@ describe('handleFinishSessionWithDetails', () => {
     const session = state?.byId[sessionId];
     expect(session?.name).toBe('Keep This Name');
     expect(session?.status).toBe('finished');
+  });
+});
+
+describe('handleFinishOrUpdateSession', () => {
+  it('active session: finishes with all details in one call', async () => {
+    const USER = 'u-fous-1' as Id<'User'>;
+    const start = await handleStartSession({ type: 'StartSession', userId: USER, name: 'Old Name' });
+    expect(start.ok).toBe(true);
+    const sessionId = (start as { ok: true; value: { sessionId: string } }).value.sessionId as Id<'Activity'>;
+
+    const now = Date.now();
+    const result = await handleFinishOrUpdateSession({
+      type: 'FinishOrUpdateSession',
+      sessionId,
+      isActive: true,
+      name: 'New Name',
+      notes: 'Good session',
+      sessionRpe: 7,
+      tags: ['legs'],
+      finishedAt: now,
+    });
+
+    expect(result.ok).toBe(true);
+    const state = viewStore.get('sessions');
+    const session = state?.byId[sessionId];
+    expect(session?.name).toBe('New Name');
+    expect(session?.notes).toBe('Good session');
+    expect(session?.status).toBe('finished');
+    expect(session?.rpe).toBe(7);
+  });
+
+  it('finished session: updates note and name separately', async () => {
+    const USER = 'u-fous-2' as Id<'User'>;
+    const start = await handleStartSession({ type: 'StartSession', userId: USER, name: 'Original' });
+    expect(start.ok).toBe(true);
+    const sessionId = (start as { ok: true; value: { sessionId: string } }).value.sessionId as Id<'Activity'>;
+
+    await handleFinishSessionWithDetails({
+      type: 'FinishSessionWithDetails',
+      sessionId,
+      sessionRpe: 5,
+      finishedAt: Date.now(),
+    });
+
+    const result = await handleFinishOrUpdateSession({
+      type: 'FinishOrUpdateSession',
+      sessionId,
+      isActive: false,
+      name: 'Updated Name',
+      notes: 'Added later',
+    });
+
+    expect(result.ok).toBe(true);
+    const state = viewStore.get('sessions');
+    const session = state?.byId[sessionId];
+    expect(session?.name).toBe('Updated Name');
+    expect(session?.notes).toBe('Added later');
   });
 });
