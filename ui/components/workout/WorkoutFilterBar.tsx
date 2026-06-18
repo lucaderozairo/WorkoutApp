@@ -1,44 +1,18 @@
 import { useState } from 'react';
-import { ChevronDown, Check, SlidersHorizontal, Search, X } from 'lucide-react';
-import type { SessionFilters, TypeFilter, ViewMode } from '@ui/components/log/SessionFilterBar';
+import { SlidersHorizontal, Search, X } from 'lucide-react';
+import type { SessionFilters, ViewMode } from '@ui/components/log/SessionFilterBar';
 import { Row, Column, Cluster, Layered } from '@ui/layout';
 import { Text, Chip } from '@ui/atoms';
 import { Button, FloatingPanel, Input } from '@ui/molecules';
-
-const DATE_OPTIONS: { key: SessionFilters['dateRange']; label: string }[] = [
-  { key: 'all', label: 'All time' },
-  { key: '7d', label: 'Past 7 days' },
-  { key: '30d', label: 'Past 30 days' },
-];
+import { DateFilterPanel } from './DateFilterPanel';
+import { TypeFilterPanel, TYPE_LABEL } from './TypeFilterPanel';
+import { ExerciseSearchFilter } from './ExerciseSearchFilter';
 
 const DATE_LABEL: Record<SessionFilters['dateRange'], string> = {
   all: 'All time',
   '7d': 'Past 7d',
   '30d': 'Past 30d',
 };
-
-const TYPE_OPTIONS: { key: TypeFilter; label: string }[] = [
-  { key: 'all', label: 'All' },
-  { key: 'strength', label: 'Gym' },
-  { key: 'run', label: 'Run' },
-  { key: 'cycle', label: 'Cycle' },
-  { key: 'hike', label: 'Hike' },
-  { key: 'swim', label: 'Swim' },
-  { key: 'row', label: 'Row' },
-  { key: 'ski', label: 'Ski' },
-  { key: 'snowboard', label: 'Snowboard' },
-  { key: 'climb', label: 'Climb' },
-  { key: 'surf', label: 'Surf' },
-  { key: 'kayak', label: 'Kayak' },
-  { key: 'yoga', label: 'Yoga' },
-  { key: 'boxing', label: 'Boxing' },
-  { key: 'stretch', label: 'Stretch' },
-  { key: 'hiit', label: 'HIIT' },
-];
-
-const TYPE_LABEL: Record<string, string> = Object.fromEntries(
-  TYPE_OPTIONS.map(o => [o.key, o.label])
-);
 
 interface WorkoutFilterBarProps {
   filters: SessionFilters;
@@ -49,11 +23,6 @@ interface WorkoutFilterBarProps {
 
 export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: WorkoutFilterBarProps) {
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [dateExpanded, setDateExpanded] = useState(true);
-  const [datePickerExpanded, setDatePickerExpanded] = useState(false);
-  const [typeExpanded, setTypeExpanded] = useState(true);
-  const [exerciseSearch, setExerciseSearch] = useState('');
-  const [exerciseFocused, setExerciseFocused] = useState(false);
 
   const activeCount = [
     filters.type !== 'all',
@@ -63,10 +32,6 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
   ].filter(Boolean).length;
 
   const hasActivechips = activeCount > 0 || filters.sessionName !== '' || filters.sort !== 'newest';
-
-  const matchingExercises = exerciseOptions.filter(n =>
-    n.toLowerCase().includes(exerciseSearch.toLowerCase())
-  );
 
   function clearAll() {
     onChange({
@@ -128,162 +93,9 @@ export function WorkoutFilterBar({ filters, onChange, exerciseOptions, view }: W
                   </Row>
 
 
-                  {/* Date range — list view only */}
-                  {view === 'list' && (
-                    <>
-                      <Button
-                        variant="ghost"
-                        block
-                        className="flush"
-                        onClick={() => setDateExpanded(e => !e)}
-                      >
-                          <Row justify="between" align="center">
-                            Date range
-                            <ChevronDown size={12} className={`chevron${dateExpanded ? ' open' : ''}`} />
-                      </Row>
-                      </Button>
-                      {dateExpanded && (
-                        <Cluster gap={1}>
-                          {DATE_OPTIONS.map(opt => (
-                            <Chip
-                              key={opt.key}
-                              active={filters.dateRange === opt.key}
-                              onClick={() => onChange({ ...filters, dateRange: opt.key, dateFrom: '', dateTo: '' })}
-                            >
-                              {opt.label}
-                            </Chip>
-                          ))}
-                        </Cluster>
-                      )}
-
-                    </>
-                  )}
-
-                  {/* Custom date picker */}
-                  <Button
-                    variant="ghost"
-                    block
-                    className="flush"
-                    onClick={() => setDatePickerExpanded(e => !e)}
-                  >
-                      <Row justify="between" align="center">
-                        Custom date
-                        <ChevronDown size={12} className={`chevron${datePickerExpanded ? ' open' : ''}`} />
-                  </Row>
-                  </Button>
-                  {datePickerExpanded && (
-                    <Column gap={1}>
-                      <Column gap={1}>
-                        <Text size="caption" color="muted">From</Text>
-                        <Input
-                          type="date"
-                          className="min-w-0"
-                          value={filters.dateFrom}
-                          onChange={e => onChange({ ...filters, dateFrom: e.target.value, dateRange: 'all' })}
-                        />
-                      </Column>
-                      <Column gap={1}>
-                        <Text size="caption" color="muted">To</Text>
-                        <Input
-                          type="date"
-                          className="min-w-0"
-                          value={filters.dateTo}
-                          min={filters.dateFrom || undefined}
-                          onChange={e => onChange({ ...filters, dateTo: e.target.value, dateRange: 'all' })}
-                        />
-                      </Column>
-                      {(filters.dateFrom || filters.dateTo) && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onChange({ ...filters, dateFrom: '', dateTo: '' })}
-                        >
-                          <Row justify="between" align="center">
-                            Clear dates <X size={12} />
-                          </Row>
-                        </Button>
-                      )}
-                    </Column>
-                  )}
-
-
-                  {/* Workout type */}
-                  <Button
-                    variant="ghost"
-                    block
-                    className="flush"
-                    onClick={() => setTypeExpanded(e => !e)}
-                  >
-                      <Row justify="between" align="center">
-                        Workout type
-                        <ChevronDown size={12} className={`chevron${typeExpanded ? ' open' : ''}`} />
-                  </Row>
-                  </Button>
-                  {typeExpanded && (
-                    <Cluster gap={1}>
-                      {TYPE_OPTIONS.map(opt => (
-                        <Chip
-                          key={opt.key}
-                          active={filters.type === opt.key}
-                          onClick={() => onChange({ ...filters, type: opt.key })}
-                        >
-                          {opt.label}
-                        </Chip>
-                      ))}
-                    </Cluster>
-
-                  )}
-
-
-                  {/* Exercise search */}
-                  <Text size="caption" color="muted">Exercise</Text>
-                  <Layered className="min-w-0">
-                    <Row gap={1} align="center">
-                      <Input
-                        className="min-w-0"
-                        placeholder="Search exercises…"
-                        value={exerciseSearch}
-                        onChange={e => setExerciseSearch(e.target.value)}
-                        onFocus={() => setExerciseFocused(true)}
-                        onBlur={() => setTimeout(() => setExerciseFocused(false), 150)}
-                      />
-                    </Row>
-                    {exerciseFocused && exerciseSearch && matchingExercises.length > 0 && (
-                      <FloatingPanel pin="below-left" z="fixed" pad="sm" className="exercise-suggestions">
-                          {matchingExercises.slice(0, 6).map(name => (
-                            <Button
-                              key={name}
-                              variant="ghost"
-                              block
-                              onMouseDown={() => {
-                                onChange({ ...filters, exercise: name });
-                                setExerciseSearch('');
-                              }}
-                            >
-                              <Row justify="between" align="center">
-                                {name}
-                                {filters.exercise === name && <Check size={12} />}
-                              </Row>
-                            </Button>
-                          ))}
-                          {filters.exercise && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              block
-                              onMouseDown={() => onChange({ ...filters, exercise: '' })}
-                            >
-                              Clear ✕
-                            </Button>
-                          )}
-                      </FloatingPanel>
-                    )}
-                  </Layered>
-                  {filters.exercise && (
-                    <Chip active trailing={<X size={9} />} onClick={() => onChange({ ...filters, exercise: '' })}>
-                      {filters.exercise}
-                    </Chip>
-                  )}
+                  <DateFilterPanel filters={filters} onChange={onChange} view={view} />
+                  <TypeFilterPanel filters={filters} onChange={onChange} />
+                  <ExerciseSearchFilter filters={filters} onChange={onChange} exerciseOptions={exerciseOptions} />
                 </Column>
             </FloatingPanel>
           )}
