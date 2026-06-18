@@ -7,8 +7,23 @@ import {
 import { viewStore } from '@data/projections/views';
 import type { ActivityView, ActivitiesState } from '../projections';
 import type { Id } from '@shared/types';
+import type { PaceTarget } from '@features/planning/domain/types';
 
 describe('handleStartSession → active_session view', () => {
+  it('preserves paceTarget on SessionStarted when provided', async () => {
+    const USER = 'u-pace-1' as Id<'User'>;
+    const paceTarget: PaceTarget = {
+      kind: 'segments',
+      segments: [
+        { fromKm: 0, toKm: 2, paceSecPerKm: 300 },
+        { fromKm: 2, toKm: 5, paceSecPerKm: 280 },
+      ],
+    };
+    const r = await handleStartSession({ type: 'StartSession', userId: USER, name: 'Test Run', paceTarget });
+    expect(r.ok).toBe(true);
+    const view = viewStore.get('active_session');
+    expect(view?.paceTarget).toEqual(paceTarget);
+  });
   it('populates active_session in the viewStore', async () => {
     const USER = 'u-test-1' as Id<'User'>;
     const r = await handleStartSession({ type: 'StartSession', userId: USER, name: 'Test' });

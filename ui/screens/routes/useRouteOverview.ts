@@ -147,6 +147,7 @@ export function useRouteOverview() {
         waypoints: route.waypoints,
         distanceKm: route.distanceKm,
         profile: route.profile,
+        paceTarget,
         callerState: { selected, name: route.name, date: todayIso() },
       },
     });

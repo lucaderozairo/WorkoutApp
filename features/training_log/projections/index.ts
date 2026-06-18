@@ -1,4 +1,5 @@
 import type { Id } from '@shared/types';
+import type { PaceTarget } from '@features/planning/domain/types';
 import type { ActivityComment } from '../domain/types';
 import type {
   TrainingLogEvent,
@@ -63,6 +64,7 @@ export interface ActivityView {
   media?: string[];
   sources: SourceContribution[];
   with?: ActivityPartner[];
+  paceTarget?: PaceTarget;
 }
 
 export interface ActivitiesState {
@@ -124,7 +126,7 @@ export const sessionProjection = new ProjectionBuilder<ActivitiesState, Training
   {
     SessionStarted: (state, event) => {
       if (event.type !== 'SessionStarted') return state;
-      const { sessionId, name, primarySport } = event.payload;
+      const { sessionId, name, primarySport, paceTarget } = event.payload;
       return {
         byId: {
           ...state.byId,
@@ -138,6 +140,7 @@ export const sessionProjection = new ProjectionBuilder<ActivitiesState, Training
             segments: [],
             notes: '',
             sources: [],
+            ...(paceTarget ? { paceTarget } : {}),
           },
         },
         activeId: sessionId,

@@ -1,6 +1,7 @@
 import type { Id, DomainEvent, ExerciseCategory, SportType } from '@shared/types';
 import type { GpsTrack } from '@data/sources/files/gps';
 import type { WorkoutTemplateExercise } from '@shared/contracts/templates';
+import type { PaceTarget } from '@features/planning/domain/types';
 
 // ─── Re-export ────────────────────────────────────────────────
 export type { ExerciseCategory, SportType };
@@ -184,6 +185,7 @@ export type Block = StrengthSegment & {
 export type TrainingSession = Activity & {
   name: string;
   blocks: Block[];
+  paceTarget?: PaceTarget;
 };
 
 // ─── Events ──────────────────────────────────────────────────
@@ -226,6 +228,7 @@ export interface SessionStartedPayload {
   userId: Id<'User'>;
   name: string;
   primarySport?: SportType;
+  paceTarget?: PaceTarget;
 }
 
 export interface BlockAddedPayload {
@@ -402,6 +405,7 @@ export interface StartSession {
   userId: Id<'User'>;
   name: string;
   primarySport?: SportType;
+  paceTarget?: PaceTarget;
 }
 
 export interface StartSessionFromTemplate {

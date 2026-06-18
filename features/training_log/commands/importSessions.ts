@@ -1,6 +1,6 @@
 import type { ParsedCsvData } from '@shared/utils/importCsv';
 import type { TrainingLogEvent, SessionImportedPayload, SetEntry } from '../domain/types';
-import { applyAll } from './handlers';
+import { replayTrainingLogEvents } from './handlers';
 import { eventRepository } from '@data/event-repository';
 import { systemClock } from '@core/clock';
 import type { Id } from '@shared/types';
@@ -193,7 +193,7 @@ export async function handleImportSessions(data: ParsedCsvData): Promise<ImportS
     : parseSimpleRows(data.headers, data.rows);
 
   if (events.length > 0) {
-    applyAll(events);
+    replayTrainingLogEvents(events);
     await eventRepository.commit(events);
   }
 

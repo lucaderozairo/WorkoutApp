@@ -113,6 +113,7 @@ export async function handleStartSession(cmd: StartSession): Promise<Result<{ se
       userId: cmd.userId,
       name: cmd.name.trim(),
       primarySport: cmd.primarySport,
+      ...(cmd.paceTarget ? { paceTarget: cmd.paceTarget } : {}),
     },
   }];
 
@@ -164,7 +165,7 @@ export async function handleStartSessionFromTemplate(
 export async function handleAddBlock(cmd: AddBlock): Promise<Result<void, string>> {
   if (!cmd.exerciseName.trim()) return err('Exercise name is required');
 
-  const sessionsState = viewStore.get<ActivitiesState>('sessions');
+  const sessionsState = viewStore.get('sessions');
   const order = sessionsState?.byId[cmd.sessionId]?.segments.length ?? 0;
 
   const blockId = cmd.blockId ?? cryptoIdGenerator.next<'Block'>();
@@ -194,7 +195,7 @@ export async function handleLogStrengthSet(cmd: LogStrengthSet): Promise<Result<
   if (cmd.weightKg < 0) return err('Weight must be non-negative');
   if (cmd.reps < 1) return err('Reps must be at least 1');
 
-  const sessionsStrength = viewStore.get<ActivitiesState>('sessions');
+  const sessionsStrength = viewStore.get('sessions');
   const blockStrength = sessionsStrength?.byId[cmd.sessionId]?.segments.find(s => s.id === cmd.blockId);
   const setNumber = (blockStrength?.sets.length ?? 0) + 1;
 
@@ -226,7 +227,7 @@ export async function handleLogCardioSet(cmd: LogCardioSet): Promise<Result<void
   if (cmd.distanceMeters < 0) return err('Distance must be non-negative');
   if (cmd.durationSeconds < 0) return err('Duration must be non-negative');
 
-  const sessionsCardio = viewStore.get<ActivitiesState>('sessions');
+  const sessionsCardio = viewStore.get('sessions');
   const blockCardio = sessionsCardio?.byId[cmd.sessionId]?.segments.find(s => s.id === cmd.blockId);
   const setNumber = (blockCardio?.sets.length ?? 0) + 1;
 
@@ -255,7 +256,7 @@ export async function handleLogCardioSet(cmd: LogCardioSet): Promise<Result<void
 }
 
 export async function handleFinishSession(cmd: FinishSession): Promise<Result<void, string>> {
-  const sessionsState = viewStore.get<ActivitiesState>('sessions');
+  const sessionsState = viewStore.get('sessions');
   const session = sessionsState?.byId[cmd.sessionId];
 
   if (!session || session.status !== 'active') return err('No active session found');
@@ -557,7 +558,7 @@ export async function handleUpdateSessionDetails(cmd: UpdateSessionDetails): Pro
 export async function handleFinishSessionWithDetails(
   cmd: FinishSessionWithDetails,
 ): Promise<Result<void, string>> {
-  const sessionsState = viewStore.get<ActivitiesState>('sessions');
+  const sessionsState = viewStore.get('sessions');
   const session = sessionsState?.byId[cmd.sessionId];
   if (!session) return err(`Session ${cmd.sessionId} not found`);
 

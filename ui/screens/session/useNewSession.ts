@@ -15,6 +15,7 @@ import {
 
 import { defaultSessionName } from '@features/planning/domain/utils';
 import type { SportType } from '@features/training_log/domain/types';
+import type { PaceTarget } from '@features/planning/domain/types';
 import type { Id } from '@shared/types';
 import { viewStore } from '@data/projections/views';
 
@@ -47,6 +48,7 @@ interface ReturnedRouteState {
   waypoints?: [number, number][];
   distanceKm?: number;
   profile?: 'foot' | 'bike';
+  paceTarget?: PaceTarget;
   callerState?: { selected: SportType; name: string; date: string };
 }
 
@@ -164,7 +166,7 @@ export function useNewSession() {
       return;
     }
 
-    const result = await startSession({ type: 'StartSession', userId: USER_ID, name, primarySport: selected });
+    const result = await startSession({ type: 'StartSession', userId: USER_ID, name, primarySport: selected, paceTarget: returned.paceTarget });
     if (!result.ok) return;
 
     const sessionId = result.value!.sessionId as Id<'Session'>;
