@@ -1,7 +1,8 @@
-﻿import { ScoreRing, SleepStagesBar, SparklineArea, fmtMin } from '@ui/components/charts/domain-charts';
+﻿import type { ReactNode } from 'react';
+import { ScoreRing, SleepStagesBar, SparklineArea, fmtMin } from '@ui/components/charts/domain-charts';
 import { Grid, Row, Column, Cluster, Spacer } from '@ui/layout';
-import { Surface, Text, Metric, Divider } from '@ui/atoms';
-import { Badge } from '@ui/molecules';
+import { Surface, Text, Divider } from '@ui/atoms';
+import { Badge, Metric } from '@ui/molecules';
 import type { SleepSession } from '@features/readiness';
 import type { HealthMetricsView } from '@features/readiness';
 import type { Appointment } from '@features/scheduling';
@@ -29,6 +30,18 @@ function scoreBadge(score: number) {
 }
 
 const EMPTY_SCORE_HISTORY: Array<{ x: string; y: number }> = [];
+
+function ScoreRingDetail({ score, color, primary, secondary }: { score: number; color?: string; primary: ReactNode; secondary: ReactNode }) {
+  return (
+    <Row align="center">
+      <ScoreRing score={score} color={color} subtitle="score" size={72} />
+      <Column gap={1} className="min-w-0">
+        <Text size="detail">{primary}</Text>
+        <Text size="caption" color="faint">{secondary}</Text>
+      </Column>
+    </Row>
+  );
+}
 
 // ── Sleep ────────────────────────────────────────────────────────────────────
 
@@ -92,13 +105,7 @@ export function SleepWidget({
         <Text size="caption">Sleep</Text>
         <Badge className={badge.cls}>{badge.label}</Badge>
       </Row>
-      <Row align="center">
-        <ScoreRing score={session.score} subtitle="score" size={72} />
-        <Column gap={1} className="min-w-0">
-          <Text size="detail">{duration}</Text>
-          <Text size="caption" color="faint">{debtLabel}</Text>
-        </Column>
-      </Row>
+      <ScoreRingDetail score={session.score} primary={duration} secondary={debtLabel} />
       <SleepStagesBar stages={session.stages} height={10} />
       <Cluster gap={1}>
         <Badge className="deep">Deep {fmtMin(session.stages.deep)}</Badge>
@@ -347,18 +354,27 @@ export function ReadinessRecoveryWidget({ size, score, scoreClass }: { size: Wid
         <Text size="caption">Readiness · Recovery</Text>
         <Badge className={BADGE_CLASS[scoreClass]}>{RECOVERY_LABEL[scoreClass]}</Badge>
       </Row>
-      <Row align="center">
-        <ScoreRing score={score} color={ringColor} subtitle="score" size={72} />
-        <Column gap={1} className="min-w-0">
-          <Text size="detail">{RECOVERY_DETAIL[scoreClass]}</Text>
-          <Text size="caption" color="faint">{RECOVERY_TIP[scoreClass]}</Text>
-        </Column>
-      </Row>
+      <ScoreRingDetail score={score} color={ringColor} primary={RECOVERY_DETAIL[scoreClass]} secondary={RECOVERY_TIP[scoreClass]} />
     </Column></Surface>
   );
 }
 
 // ── HR + HRV (combined) ───────────────────────────────────────────────────────
+
+function HeartStatRow({ bpm, hrv, bpmLabel }: { bpm: number | null; hrv: number | null; bpmLabel: string }) {
+  return (
+    <Row justify="between" align="center">
+      <Column gap={1}>
+        <Metric value={bpm ?? '—'} unit="bpm" />
+        <Text size="caption" color="faint">{bpmLabel}</Text>
+      </Column>
+      <Column gap={1} align="end">
+        <Metric value={hrv ?? '—'} unit="ms" />
+        <Text size="caption" color="faint">HRV</Text>
+      </Column>
+    </Row>
+  );
+}
 
 export function HeartStatsWidget({ size, bpm, hrv, history }: { size: WidgetSize; bpm: number | null; hrv: number | null; history: HealthMetricsView[] }) {
   const hrData = history
@@ -377,16 +393,7 @@ export function HeartStatsWidget({ size, bpm, hrv, history }: { size: WidgetSize
     return (
       <Surface><Column gap={1} className="h-full">
         <Text size="caption">Heart</Text>
-        <Row justify="between" align="center">
-          <Column gap={1}>
-            <Metric value={bpm ?? '—'} unit="bpm" />
-            <Text size="caption" color="faint">HR</Text>
-          </Column>
-          <Column gap={1} align="end">
-            <Metric value={hrv ?? '—'} unit="ms" />
-            <Text size="caption" color="faint">HRV</Text>
-          </Column>
-        </Row>
+        <HeartStatRow bpm={bpm} hrv={hrv} bpmLabel="HR" />
       </Column></Surface>
     );
   }
@@ -395,16 +402,7 @@ export function HeartStatsWidget({ size, bpm, hrv, history }: { size: WidgetSize
     return (
       <Surface><Column gap={1} className="h-full">
         <Text size="caption">Heart</Text>
-        <Row justify="between" align="center">
-          <Column gap={1}>
-            <Metric value={bpm ?? '—'} unit="bpm" />
-            <Text size="caption" color="faint">Resting HR</Text>
-          </Column>
-          <Column gap={1} align="end">
-            <Metric value={hrv ?? '—'} unit="ms" />
-            <Text size="caption" color="faint">HRV</Text>
-          </Column>
-        </Row>
+        <HeartStatRow bpm={bpm} hrv={hrv} bpmLabel="Resting HR" />
       </Column></Surface>
     );
   }
@@ -412,16 +410,7 @@ export function HeartStatsWidget({ size, bpm, hrv, history }: { size: WidgetSize
   return (
     <Surface><Column gap={1} className="h-full">
       <Text size="caption">Heart</Text>
-      <Row justify="between" align="center">
-        <Column gap={1}>
-          <Metric value={bpm ?? '—'} unit="bpm" />
-          <Text size="caption" color="faint">Resting HR</Text>
-        </Column>
-        <Column gap={1} align="end">
-          <Metric value={hrv ?? '—'} unit="ms" />
-          <Text size="caption" color="faint">HRV</Text>
-        </Column>
-      </Row>
+      <HeartStatRow bpm={bpm} hrv={hrv} bpmLabel="Resting HR" />
       {hrData.length > 0 && (
         <SparklineArea
           data={hrData}
