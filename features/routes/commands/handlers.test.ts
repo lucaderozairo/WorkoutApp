@@ -42,7 +42,7 @@ describe('routes commands', () => {
 
     expect(result.ok).toBe(true);
     expect(result.value?.routeId).toBe(routeId);
-    const routes = viewStore.get<SavedRoute[]>('saved_routes') ?? [];
+    const routes = viewStore.get('saved_routes') ?? [];
     expect(routes[0]).toEqual(expect.objectContaining({
       id: routeId,
       name: 'Morning Loop',

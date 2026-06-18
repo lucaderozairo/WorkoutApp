@@ -32,7 +32,7 @@ describe('handleImportSessions', () => {
     expect(result.sessionCount).toBe(1);
     expect(result.errors).toHaveLength(0);
 
-    const state = viewStore.get<ActivitiesState>('sessions');
+    const state = viewStore.get('sessions');
     const sessions = Object.values(state?.byId ?? {});
     expect(sessions).toHaveLength(1);
     expect(sessions[0].name).toBe('Morning Lift');
@@ -65,7 +65,7 @@ describe('handleImportSessions', () => {
     };
     const result = await handleImportSessions(simpleData);
     expect(result.sessionCount).toBe(1);
-    const state = viewStore.get<ActivitiesState>('sessions');
+    const state = viewStore.get('sessions');
     const sessions = Object.values(state?.byId ?? {});
     expect(sessions[0].segments[0].exerciseName).toBe('Deadlift');
   });

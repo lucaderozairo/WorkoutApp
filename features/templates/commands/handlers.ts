@@ -44,9 +44,9 @@ function applyTemplateEvents(events: TemplateEvent[]): void {
 }
 
 function syncTemplateStateFromViewStore(): TemplateState {
-  const stored = viewStore.get<TemplateState>('template_state');
+  const stored = viewStore.get('template_state');
   if (stored) templateStateProjection.setState(stored);
-  templateListProjection.setState(stored ? getVisibleTemplates(stored) : viewStore.get<WorkoutTemplate[]>('template_list') ?? []);
+  templateListProjection.setState(stored ? getVisibleTemplates(stored) : viewStore.get('template_list') ?? []);
   favoriteTemplatesProjection.setState(templateListProjection.getState().filter(t => t.favorite));
   return templateStateProjection.getState();
 }

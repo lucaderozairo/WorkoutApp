@@ -83,7 +83,7 @@ export const handleSaveTemplate = defineCommand<SaveTemplate, Result<void, strin
 
 export const handleDeleteSavedTemplate = defineCommand<DeleteSavedTemplate, Result<void, string>>({
   execute: async (cmd) => {
-    const exists = viewStore.get<SavedTemplate[]>('saved_templates')?.some(t => t.id === cmd.templateId);
+    const exists = viewStore.get('saved_templates')?.some(t => t.id === cmd.templateId);
     if (!exists) return { events: [], result: err('Saved template not found') };
 
     const event: PlanningEvent = {

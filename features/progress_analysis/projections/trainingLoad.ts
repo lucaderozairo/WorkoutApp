@@ -24,7 +24,7 @@ export function registerTrainingLoadProjection(): void {
   if (registered) return;
   registered = true;
 
-  viewStore.set('training_load_series', viewStore.get<DailyLoad[]>('training_load_series') ?? []);
+  viewStore.set('training_load_series', viewStore.get('training_load_series') ?? []);
   viewStore.set('cardio_hr_sessions', viewStore.get('cardio_hr_sessions') ?? []);
 
   eventBus.subscribe<DomainEvent<'SessionFinished', SessionFinishedPayload>>('SessionFinished', (event) => {
@@ -34,7 +34,7 @@ export function registerTrainingLoadProjection(): void {
       Math.round(event.payload.exerciseSummaries.reduce((total, summary) => total + summary.sets.length * 2, 0)),
     );
     const load = computeSessionLoad(durationMinutes, event.payload.sessionRpe);
-    const current = viewStore.get<DailyLoad[]>('training_load_series') ?? [];
+    const current = viewStore.get('training_load_series') ?? [];
     viewStore.set('training_load_series', mergeLoad(current, date, load));
   });
 
@@ -44,11 +44,11 @@ export function registerTrainingLoadProjection(): void {
     const timestamp = event.payload.recordedAt ?? Date.now();
     const durationMinutes = Math.max(1, Math.round((event.payload.durationSeconds ?? 0) / 60));
     const load = computeSessionLoad(durationMinutes, event.payload.sessionRpe);
-    const current = viewStore.get<DailyLoad[]>('training_load_series') ?? [];
+    const current = viewStore.get('training_load_series') ?? [];
     viewStore.set('training_load_series', mergeLoad(current, toISODate(timestamp), load));
 
     if (event.payload.avgHrBpm) {
-      const hrSessions = viewStore.get<Array<{ avgHrBpm: number; durationMinutes: number }>>('cardio_hr_sessions') ?? [];
+      const hrSessions = viewStore.get('cardio_hr_sessions') ?? [];
       viewStore.set('cardio_hr_sessions', [
         ...hrSessions,
         { avgHrBpm: event.payload.avgHrBpm, durationMinutes },

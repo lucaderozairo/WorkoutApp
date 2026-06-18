@@ -23,18 +23,18 @@ describe('template commands', () => {
     const templateId = created.value!.templateId;
 
     await handleSetTemplateFavorite({ type: 'SetTemplateFavorite', templateId, favorite: true });
-    const templates = viewStore.get<WorkoutTemplate[]>('template_list') ?? [];
+    const templates = viewStore.get('template_list') ?? [];
     expect(templates[0]).toEqual(expect.objectContaining({ id: templateId, favorite: true }));
 
     const duplicated = await handleDuplicateTemplate({ type: 'DuplicateTemplate', templateId });
     expect(duplicated.ok).toBe(true);
-    const afterDuplicate = viewStore.get<WorkoutTemplate[]>('template_list') ?? [];
+    const afterDuplicate = viewStore.get('template_list') ?? [];
     expect(afterDuplicate).toHaveLength(2);
     const copy = afterDuplicate.find(template => template.id === duplicated.value!.templateId);
     expect(copy?.exercises[0].id).not.toBe(templates[0].exercises[0].id);
 
     await handleDeleteTemplate({ type: 'DeleteTemplate', templateId });
-    const afterDelete = viewStore.get<WorkoutTemplate[]>('template_list') ?? [];
+    const afterDelete = viewStore.get('template_list') ?? [];
     expect(afterDelete.some(template => template.id === templateId)).toBe(false);
   });
 
@@ -51,7 +51,7 @@ describe('template commands', () => {
     });
 
     expect(result.ok).toBe(true);
-    const sessions = viewStore.get<ActivitiesState>('sessions');
+    const sessions = viewStore.get('sessions');
     const session = sessions?.byId[result.value!.sessionId];
     expect(session?.name).toBe('Push Day');
     expect(session?.segments.map(segment => segment.exerciseName)).toEqual(['Bench Press', 'Overhead Press']);

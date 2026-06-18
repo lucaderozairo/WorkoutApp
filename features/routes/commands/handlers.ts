@@ -59,7 +59,7 @@ export const handleUpdateRoute = defineCommand<UpdateRoute, Result<void, string>
     if (!cmd.name.trim()) return { events: [], result: err('Route name is required') };
     if (cmd.waypoints.length < 2) return { events: [], result: err('Need at least 2 waypoints') };
 
-    const existing = viewStore.get<SavedRoute[]>('saved_routes')?.find(r => r.id === cmd.routeId);
+    const existing = viewStore.get('saved_routes')?.find(r => r.id === cmd.routeId);
     if (!existing) return { events: [], result: err('Saved route not found') };
 
     const route: SavedRoute = {
@@ -100,7 +100,7 @@ export const handleUpdateRoute = defineCommand<UpdateRoute, Result<void, string>
 
 export const handleDeleteSavedRoute = defineCommand<DeleteSavedRoute, Result<void, string>>({
   execute: async (cmd) => {
-    const exists = viewStore.get<SavedRoute[]>('saved_routes')?.some(r => r.id === cmd.routeId);
+    const exists = viewStore.get('saved_routes')?.some(r => r.id === cmd.routeId);
     if (!exists) return { events: [], result: err('Saved route not found') };
 
     const event: RoutesEvent = {

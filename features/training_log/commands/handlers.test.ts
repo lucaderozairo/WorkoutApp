@@ -13,7 +13,7 @@ describe('handleStartSession → active_session view', () => {
     const USER = 'u-test-1' as Id<'User'>;
     const r = await handleStartSession({ type: 'StartSession', userId: USER, name: 'Test' });
     expect(r.ok).toBe(true);
-    const view = viewStore.get<ActivityView>('active_session');
+    const view = viewStore.get('active_session');
     expect(view).not.toBeNull();
     expect(view?.name).toBe('Test');
     expect(view?.segments).toEqual([]);
@@ -22,7 +22,7 @@ describe('handleStartSession → active_session view', () => {
   it('AddBlock appends to active_session.segments', async () => {
     const USER = 'u-test-2' as Id<'User'>;
     await handleStartSession({ type: 'StartSession', userId: USER, name: 'Test 2' });
-    const view = viewStore.get<ActivityView>('active_session');
+    const view = viewStore.get('active_session');
     expect(view).toBeTruthy();
     if (!view) return;
     await handleAddBlock({
@@ -31,7 +31,7 @@ describe('handleStartSession → active_session view', () => {
       exerciseName: 'Bench',
       exerciseCategory: 'strength',
     });
-    const after = viewStore.get<ActivityView>('active_session');
+    const after = viewStore.get('active_session');
     expect(after?.segments).toHaveLength(1);
     expect(after?.segments[0].exerciseName).toBe('Bench');
   });
@@ -54,7 +54,7 @@ describe('handleFinishSessionWithDetails', () => {
       finishedAt: Date.now(),
     });
 
-    const state = viewStore.get<ActivitiesState>('sessions');
+    const state = viewStore.get('sessions');
     const session = state?.byId[sessionId];
     expect(session).toBeDefined();
     expect(session?.name).toBe('New Name');
@@ -67,7 +67,7 @@ describe('handleFinishSessionWithDetails', () => {
   it('skips rename event if name is undefined', async () => {
     const USER = 'u-finish-2' as Id<'User'>;
     await handleStartSession({ type: 'StartSession', userId: USER, name: 'Keep This Name' });
-    const active = viewStore.get<ActivityView>('active_session');
+    const active = viewStore.get('active_session');
     expect(active).not.toBeNull();
     const sessionId = active!.id;
 
@@ -77,7 +77,7 @@ describe('handleFinishSessionWithDetails', () => {
       sessionRpe: 7,
     });
 
-    const state = viewStore.get<ActivitiesState>('sessions');
+    const state = viewStore.get('sessions');
     const session = state?.byId[sessionId];
     expect(session?.name).toBe('Keep This Name');
     expect(session?.status).toBe('finished');

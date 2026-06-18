@@ -39,13 +39,13 @@ function makeSessionFinishedEvent(
 
 describe('registerProgressionPolicy', () => {
   beforeEach(() => {
-    viewStore.set<ProgressionState>('exercise_progressions', {});
+    viewStore.set('exercise_progressions', {});
   });
 
   it('creates a progression entry for a new exercise after SessionFinished', async () => {
     registerProgressionPolicy();
     await eventBus.publish(makeSessionFinishedEvent('Bench Press', [{ weight: 100, reps: 5 }]));
-    const state = viewStore.get<ProgressionState>('exercise_progressions');
+    const state = viewStore.get('exercise_progressions');
     expect(state?.['Bench Press']).toBeDefined();
     expect(state?.['Bench Press'].history).toHaveLength(1);
     expect(state?.['Bench Press'].history[0].volume).toBe(500);
@@ -55,7 +55,7 @@ describe('registerProgressionPolicy', () => {
     registerProgressionPolicy();
     await eventBus.publish(makeSessionFinishedEvent('Squat', [{ weight: 120, reps: 5 }]));
     await eventBus.publish(makeSessionFinishedEvent('Squat', [{ weight: 125, reps: 5 }]));
-    const state = viewStore.get<ProgressionState>('exercise_progressions');
+    const state = viewStore.get('exercise_progressions');
     expect(state?.['Squat'].history).toHaveLength(2);
   });
 });

@@ -29,7 +29,7 @@ describe('handleImportCardioSessions', () => {
     expect(result.cardioCount).toBe(1);
     expect(result.errors).toHaveLength(0);
 
-    const state = viewStore.get<RecentCardioView>('recent_cardio_sessions');
+    const state = viewStore.get('recent_cardio_sessions');
     expect(state?.sessions).toHaveLength(1);
     expect(state?.sessions[0].distanceMeters).toBe(5000);
     expect(state?.sessions[0].durationSeconds).toBe(1800);

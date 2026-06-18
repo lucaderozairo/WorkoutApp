@@ -16,7 +16,7 @@ interface SavedRestTimer {
 
 export function RestTimerAlert({ initialSeconds, onSkip }: Props) {
   const [remaining, setRemaining] = useState(() => {
-    const saved = viewStore.get<SavedRestTimer>('rest_timer_state');
+    const saved = viewStore.get('rest_timer_state');
     if (!saved) return initialSeconds;
     const elapsed = Math.floor((Date.now() - saved.savedAt) / 1000);
     const restored = Math.max(0, saved.remaining - elapsed);

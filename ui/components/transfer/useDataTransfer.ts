@@ -61,7 +61,7 @@ export function useDataTransfer() {
 
   function exportAllCsv(): void {
     const history = getActivityHistory();
-    const cardio = viewStore.get<{ sessions: CardioSession[] }>('recent_cardio_sessions')?.sessions ?? [];
+    const cardio = viewStore.get('recent_cardio_sessions')?.sessions ?? [];
     exportAllSessionsCsv(history, cardio);
   }
 

@@ -30,7 +30,7 @@ describe('handleRecordCardioSession', () => {
 
     expect(result.ok).toBe(true);
 
-    const recent = viewStore.get<RecentCardioView>('recent_cardio_sessions');
+    const recent = viewStore.get('recent_cardio_sessions');
     expect(recent?.sessions).toHaveLength(1);
     expect(recent?.sessions[0]).toEqual(expect.objectContaining({
       id: 'cardio-1',
@@ -39,7 +39,7 @@ describe('handleRecordCardioSession', () => {
       durationSeconds: 1800,
     }));
 
-    const monthly = viewStore.get<MonthlyCardioEntry[]>('monthly_cardio_progression');
+    const monthly = viewStore.get('monthly_cardio_progression');
     expect(monthly).toHaveLength(1);
     expect(monthly?.[0]).toEqual(expect.objectContaining({
       sport: 'run',
