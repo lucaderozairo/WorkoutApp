@@ -13,6 +13,7 @@ import { CARDIO_FIELDS } from './CardioEditor';
 import ChartContainer from '@ui/patterns/charts/charts';
 import { LetterBadge } from './LetterBadge';
 import { SetRow } from './SetRow';
+import { SegmentSplitsCard } from './SegmentSplitsCard';
 import { domainBlocksToUIBlocks } from '@features/training_log/projections/mappers';
 import { triggerDownload } from '@shared/utils/csv';
 import { Carousel } from '@ui/components/shared/Carousel';
@@ -156,6 +157,18 @@ export function FinishedView({ session, onEdit }: { session: ActivityView; onEdi
             <Text color="muted">{session.notes}</Text>
           </Column>
         </Surface>
+      )}
+
+      {/* Segment Splits */}
+      {session.paceTarget?.kind === 'segments' && (
+        <SegmentSplitsCard
+          segments={session.paceTarget.segments}
+          cardioSets={session.segments
+            .flatMap(s => s.sets)
+            .filter(s => (s.distanceMeters !== undefined || s.durationSeconds !== undefined) &&
+                         s.weightKg === undefined && s.reps === undefined)
+          }
+        />
       )}
 
       {/* Photos */}
