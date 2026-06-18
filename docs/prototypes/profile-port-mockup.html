@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Profile Port Mockup</title>
+    <style>
+      @layer tokens, base, project;
+
+      @layer tokens {
+        :root {
+          color-scheme: light;
+          --font-ui: "Geist", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+          --t-xs: 12px;
+          --t-sm: 14px;
+          --t-md: 16px;
+          --t-2xl: 28px;
+          --s-1: 4px;
+          --s-2: 8px;
+          --s-3: 12px;
+          --s-4: 16px;
+          --s-5: 24px;
+          --s-6: 32px;
+          --r-sm: 8px;
+          --r-md: 14px;
+          --r-pill: 999px;
+          --surface-0: #f4f6fb;
+          --surface-1: #ffffff;
+          --surface-2: #ebf0fa;
+          --ink: #0e1320;
+          --ink-muted: #4a5270;
+          --ink-faint: #8e96b0;
+          --line: #dde5f5;
+          --line-strong: #c5d0e8;
+          --accent: #4f8ef7;
+          --accent-soft: #c5d9fc;
+          --shadow-1: 0 1px 2px rgb(14 19 32 / 6%), 0 1px 1px rgb(14 19 32 / 4%);
+        }
+      }
+
+      @layer base {
+        * {
+          box-sizing: border-box;
+        }
+
+        body {
+          min-height: 100vh;
+          margin: 0;
+          background:
+            linear-gradient(180deg, rgb(255 255 255 / 72%), transparent 220px),
+            var(--surface-0);
+          color: var(--ink);
+          font-family: var(--font-ui);
+          line-height: 1.4;
+        }
+
+        button {
+          font: inherit;
+        }
+
+        svg {
+          display: block;
+          flex: none;
+        }
+      }
+
+      @layer project {
+        .phone-screen {
+          width: min(100%, 430px);
+          min-height: 100vh;
+          margin: 0 auto;
+          padding: var(--s-4) var(--s-4) var(--s-6);
+        }
+
+        .column {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .row {
+          display: flex;
+          flex-direction: row;
+        }
+
+        .gap-1 {
+          gap: var(--s-1);
+        }
+
+        .gap-2 {
+          gap: var(--s-2);
+        }
+
+        .gap-3 {
+          gap: var(--s-3);
+        }
+
+        .gap-4 {
+          gap: var(--s-4);
+        }
+
+        .align-center {
+          align-items: center;
+        }
+
+        .justify-between {
+          justify-content: space-between;
+        }
+
+        .min-w-0 {
+          min-width: 0;
+        }
+
+        .truncate {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .eyebrow {
+          color: var(--ink-muted);
+          font-size: var(--t-xs);
+          font-weight: 600;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
+
+        h1,
+        h2,
+        p {
+          margin: 0;
+        }
+
+        h1 {
+          color: var(--ink);
+          font-size: var(--t-md);
+          font-weight: 650;
+        }
+
+        .caption {
+          color: var(--ink-muted);
+          font-weight: 600;
+          font-size: var(--t-xs);
+        }
+
+        .muted {
+          color: var(--ink-muted);
+        }
+
+        .mono {
+          font-family: var(--font-mono);
+          font-variant-numeric: tabular-nums;
+        }
+
+        .surface {
+          background: var(--surface-1);
+          border: 1px solid var(--line);
+          border-radius: var(--r-md);
+          box-shadow: var(--shadow-1);
+        }
+
+        .surface.flat {
+          background: var(--surface-2);
+          border-color: transparent;
+          box-shadow: none;
+        }
+
+        .pad-sm {
+          padding: var(--s-4);
+        }
+
+        .pad-xs {
+          padding: var(--s-2);
+        }
+
+        .button {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 32px;
+          border: 1px solid var(--line-strong);
+          border-radius: var(--r-sm);
+          background: var(--surface-1);
+          color: var(--ink);
+          cursor: pointer;
+          font-size: var(--t-xs);
+          font-weight: 600;
+          padding: var(--s-2) var(--s-3);
+          white-space: nowrap;
+        }
+
+        .avatar-lg {
+          display: grid;
+          width: 56px;
+          height: 56px;
+          place-items: center;
+          border-radius: var(--r-pill);
+          background: var(--accent-soft);
+          color: var(--accent);
+          font-weight: 700;
+          font-size: var(--t-md);
+        }
+
+        .icon-box {
+          display: grid;
+          width: 28px;
+          height: 28px;
+          place-items: center;
+          border-radius: var(--r-sm);
+          background: var(--surface-1);
+          color: var(--accent);
+        }
+
+        .health-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: var(--s-2);
+        }
+
+        .health-tile {
+          display: flex;
+          align-items: center;
+          gap: var(--s-2);
+        }
+
+        .health-tile-text {
+          display: flex;
+          flex-direction: column;
+          min-width: 0;
+
+          strong {
+            font-size: var(--t-sm);
+            font-weight: 700;
+          }
+
+          span {
+            color: var(--ink-faint);
+            font-size: var(--t-xs);
+            font-weight: 600;
+          }
+        }
+
+        .heatmap {
+          display: grid;
+          grid-auto-flow: column;
+          grid-template-rows: repeat(7, 1fr);
+          gap: 3px;
+          height: 100px;
+        }
+
+        .heatmap-cell {
+          width: 11px;
+          border-radius: 2px;
+          background: var(--surface-2);
+
+          &[data-level="1"] {
+            background: color-mix(in srgb, var(--accent) 30%, var(--surface-2));
+          }
+
+          &[data-level="2"] {
+            background: color-mix(in srgb, var(--accent) 60%, var(--surface-2));
+          }
+
+          &[data-level="3"] {
+            background: var(--accent);
+          }
+        }
+
+        .heatmap-months {
+          display: flex;
+          justify-content: space-between;
+          margin-top: var(--s-2);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="phone-screen" aria-label="Profile prototype">
+      <div class="column gap-4">
+        <header class="surface pad-sm row align-center justify-between gap-3">
+          <div class="row align-center gap-3">
+            <span class="avatar-lg" aria-hidden="true">A</span>
+            <div class="column gap-1 min-w-0">
+              <h1 class="truncate">Alex Morgan</h1>
+              <p class="caption muted">@alexmorgan · Joined March 2024</p>
+            </div>
+          </div>
+          <button class="button" type="button">Edit Profile</button>
+        </header>
+
+        <section class="column gap-3" aria-labelledby="health-title">
+          <div class="row align-center justify-between">
+            <h2 class="eyebrow" id="health-title">Health Data</h2>
+            <button class="button" type="button">See all</button>
+          </div>
+          <div class="health-grid">
+            <div class="surface flat pad-xs health-tile">
+              <span class="icon-box" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 14h3l2-5 4 10 2-5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="health-tile-text">
+                <strong class="mono">8,412</strong>
+                <span>Steps</span>
+              </span>
+            </div>
+            <div class="surface flat pad-xs health-tile">
+              <span class="icon-box" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 21s7-7.5 7-12a7 7 0 1 0-14 0c0 4.5 7 12 7 12Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="health-tile-text">
+                <strong class="mono">72 bpm</strong>
+                <span>Heart Rate</span>
+              </span>
+            </div>
+            <div class="surface flat pad-xs health-tile">
+              <span class="icon-box" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M6 8v8M18 8v8M3 10v4M21 10v4M6 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <span class="health-tile-text">
+                <strong class="mono">78.2 kg</strong>
+                <span>Weight</span>
+              </span>
+            </div>
+            <div class="surface flat pad-xs health-tile">
+              <span class="icon-box" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 3v6l4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" stroke="currentColor" stroke-width="1.8"/>
+                </svg>
+              </span>
+              <span class="health-tile-text">
+                <strong class="mono">7h 24m</strong>
+                <span>Sleep</span>
+              </span>
+            </div>
+            <div class="surface flat pad-xs health-tile">
+              <span class="icon-box" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2s5 5.5 5 10a5 5 0 1 1-10 0c0-4.5 5-10 5-10Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="health-tile-text">
+                <strong class="mono">2,180 kcal</strong>
+                <span>Calories</span>
+              </span>
+            </div>
+            <div class="surface flat pad-xs health-tile">
+              <span class="icon-box" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 18h4l2-10 3 14 2-8 2 4h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="health-tile-text">
+                <strong class="mono">46</strong>
+                <span>VO2 Max</span>
+              </span>
+            </div>
+            <div class="surface flat pad-xs health-tile">
+              <span class="icon-box" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0-4a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" stroke="currentColor" stroke-width="1.8"/>
+                </svg>
+              </span>
+              <span class="health-tile-text">
+                <strong class="mono">16%</strong>
+                <span>Body Fat</span>
+              </span>
+            </div>
+            <div class="surface flat pad-xs health-tile">
+              <span class="icon-box" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2s5 5.5 5 10a5 5 0 1 1-10 0c0-4.5 5-10 5-10Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="health-tile-text">
+                <strong class="mono">1.8 L</strong>
+                <span>Hydration</span>
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <section class="column gap-3" aria-labelledby="activity-title">
+          <div class="row align-center justify-between">
+            <h2 class="eyebrow" id="activity-title">Activity History</h2>
+            <button class="button" type="button">See all</button>
+          </div>
+          <div class="surface pad-sm">
+            <div class="heatmap" id="activity-heatmap" aria-label="Activity over the last 18 weeks"></div>
+            <div class="heatmap-months">
+              <span class="caption muted">Jan</span>
+              <span class="caption muted">Feb</span>
+              <span class="caption muted">Mar</span>
+              <span class="caption muted">Apr</span>
+              <span class="caption muted">May</span>
+              <span class="caption muted">Jun</span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      // ponytail: deterministic pseudo-activity pattern, not real data — fine for a static mockup.
+      const levels = [0, 1, 2, 3];
+      const weeks = 18;
+      const days = 7;
+      const heatmap = document.getElementById('activity-heatmap');
+      const fragment = document.createDocumentFragment();
+
+      for (let w = 0; w < weeks; w += 1) {
+        for (let d = 0; d < days; d += 1) {
+          const cell = document.createElement('span');
+          const level = levels[(w * 3 + d * 5) % levels.length];
+          cell.className = 'heatmap-cell';
+          cell.setAttribute('data-level', String(level));
+          fragment.appendChild(cell);
+        }
+      }
+
+      heatmap.appendChild(fragment);
+    </script>
+  </body>
+</html>
