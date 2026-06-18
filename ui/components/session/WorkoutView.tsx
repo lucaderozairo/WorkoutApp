@@ -33,6 +33,7 @@ import { triggerDownload } from '@shared/utils/csv';
 import { InjuryBanner } from './InjuryBanner';
 import { BlockCard } from './BlockCard';
 import { PlateCalculatorModal } from './PlateCalculatorModal';
+import { SegmentGuide } from './SegmentGuide';
 import { getPreviousPerformance, getOverloadHint } from '@features/progression';
 import type { PreviousExercisePerformance, ProgressiveOverloadHint } from '@shared/contracts';
 
@@ -105,6 +106,18 @@ export function WorkoutView({
   const { dispatch: addBlock } = useCommand(handleAddBlock);
 
   const isMultisport = session ? MULTISPORT_SPORTS.has(session.primarySport) : false;
+
+const completedDistanceKm = (session?.segments ?? [])
+  .filter(s => s.exerciseCategory === 'cardio')
+  .flatMap(s => s.sets)
+  .reduce((acc, set) => acc + (set.distanceMeters ?? 0), 0) / 1000;
+
+function parseTimerDisplay(display: string): number {
+  const parts = display.split(':').map(Number);
+  if (parts.length === 2) return parts[0] * 60 + parts[1];
+  if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  return 0;
+}
 
   const blocksSig = domainBlocks.reduce((acc, b) =>
     acc + b.sets.reduce((s, set) => {
@@ -462,6 +475,14 @@ export function WorkoutView({
       )}
 
       <InjuryBanner conditions={conditions} />
+
+      {session?.paceTarget?.kind === 'segments' && (
+        <SegmentGuide
+          segments={session.paceTarget.segments}
+          completedDistanceKm={completedDistanceKm}
+          elapsedSeconds={parseTimerDisplay(timerDisplay)}
+        />
+      )}
 
       <UndoToast />
 
