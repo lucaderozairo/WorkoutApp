@@ -16,7 +16,7 @@ const USER_ID = 'user-001' as Id<'User'>;
 type ProfileView = { displayName: string; email: string; unitPreference: string };
 
 export function SettingsContent() {
-  const profile = useQuery<ProfileView>('profile');
+  const profile = useQuery('profile');
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {

@@ -8,7 +8,7 @@ import type { Appointment } from '@features/scheduling/contract';
 
 export function NextWorkoutWidget({ size: _size }: { size: WidgetSize }) {
   const navigate = useNavigate();
-  const allAppointments = (useQuery<Appointment[]>('appointments_by_date') ?? []) as Appointment[];
+  const allAppointments = (useQuery('appointments_by_date') ?? []) as Appointment[];
 
   const now = Date.now();
   const next = allAppointments

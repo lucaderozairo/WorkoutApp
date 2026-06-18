@@ -144,7 +144,7 @@ export function useRoutePlanner(options: UseRoutePlannerOptions = {}) {
   const navigate = useNavigate();
   const location = useLocation();
   const incoming = (location.state ?? {}) as RoutePlannerState;
-  const savedRoutes = (useQuery<SavedRoute[]>('saved_routes') ?? []) as SavedRoute[];
+  const savedRoutes = (useQuery('saved_routes') ?? []) as SavedRoute[];
   const editingRoute = options.routeId
     ? savedRoutes.find(route => route.id === options.routeId)
     : undefined;

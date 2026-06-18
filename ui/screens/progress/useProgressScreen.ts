@@ -25,9 +25,9 @@ export function useProgressScreen() {
 
   const navigate = useNavigate();
 
-  const sessionsState = useQuery<ActivitiesState>('sessions');
+  const sessionsState = useQuery('sessions');
   const history = useMemo(() => getActivityHistory(), [sessionsState]);
-  const progressionsRaw = useQuery<ProgressionState>('exercise_progressions');
+  const progressionsRaw = useQuery('exercise_progressions');
   const exerciseList = useMemo<ExerciseProgression[]>(
     () => {
       const progressions = Object.values(progressionsRaw ?? {}) as ExerciseProgression[];
@@ -46,8 +46,8 @@ export function useProgressScreen() {
     return map;
   }, [history]);
 
-  const insights = (useQuery<Insight[]>('insights') ?? []) as Insight[];
-  const recentCardioRaw = useQuery<RecentCardioView>('recent_cardio_sessions');
+  const insights = (useQuery('insights') ?? []) as Insight[];
+  const recentCardioRaw = useQuery('recent_cardio_sessions');
   const allCardio = useMemo(
     () => (recentCardioRaw as RecentCardioView | null)?.sessions ?? [],
     [recentCardioRaw],

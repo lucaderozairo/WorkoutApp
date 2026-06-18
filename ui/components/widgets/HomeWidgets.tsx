@@ -44,7 +44,7 @@ function RingProgress({ score, color }: { score: number; color: string }) {
 // ── Readiness ─────────────────────────────────────────────────────────────────
 
 export function ReadinessHomeWidget({ size }: { size: WidgetSize }) {
-  const readiness = useQuery<TodayReadinessView>('today_readiness');
+  const readiness = useQuery('today_readiness');
   const hasEntry = readiness?.hasEntry ?? false;
   const score = readiness?.score ?? 0;
 
@@ -159,7 +159,7 @@ const SLEEP_7DAY = [
 ];
 
 export function SleepHomeWidget({ size }: { size: WidgetSize }) {
-  const sleepTrend = useQuery<SleepTrendView>('sleep_trend');
+  const sleepTrend = useQuery('sleep_trend');
   const hasData = sleepTrend?.lastNight != null || (sleepTrend?.weeklyTrend?.length ?? 0) > 0;
   const lastNightScore = sleepTrend?.lastNight?.score ?? 0;
 

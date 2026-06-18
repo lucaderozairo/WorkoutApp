@@ -12,7 +12,7 @@ export function CalendarGrid({ year, month }: { year: number; month: number }) {
   const todayDate = today.getDate();
   const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
 
-  const workoutCalendar = (useQuery<Record<number, SportType[]>>('workout_calendar') ?? {}) as Record<number, SportType[]>;
+  const workoutCalendar = (useQuery('workout_calendar') ?? {}) as Record<number, SportType[]>;
 
   const startOffset = (new Date(year, month, 1).getDay() + 6) % 7;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -52,7 +52,7 @@ export function CalendarGrid({ year, month }: { year: number; month: number }) {
 export function CalendarLarge() {
   const today = new Date();
   const label = today.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
-  const upcoming = (useQuery<MockCalendarEvent[]>('calendar_upcoming') ?? []) as MockCalendarEvent[];
+  const upcoming = (useQuery('calendar_upcoming') ?? []) as MockCalendarEvent[];
 
   return (
     <Surface>

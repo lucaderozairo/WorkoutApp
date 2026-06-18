@@ -32,6 +32,7 @@ import type { Id } from '@shared/types';
 import type {
   ActivitiesState,
   ActivityView,
+  ActivityHistoryItem,
   RecentExercise,
   UICondition,
 } from '@features/training_log/contract';
@@ -119,6 +120,7 @@ import type { StretchingSessionView } from '@features/stretching/contract';
 import type {
   PersonalRecord,
   ChartAnnotation,
+  StatsSummary,
 } from '@features/progress_analysis/contract';
 import type { DailyLoad } from '@features/progress_analysis/contract';
 
@@ -203,6 +205,8 @@ export type ViewRegistry = {
   active_session:              ActivityView | null;
   /** Dashboard summary: streak + workoutsThisWeek (features/training_log/projections/dashboard). */
   training_log_dashboard:      TrainingDashboardView;
+  /** Ordered list of finished activities for history display (features/training_log/projections/dashboard). */
+  activity_history:            ActivityHistoryItem[];
 
   // ── cardio ──────────────────────────────────────────────────────────--
   recent_cardio_sessions:      RecentCardioView;
@@ -283,6 +287,8 @@ export type ViewRegistry = {
   chart_annotations:           Record<string, ChartAnnotation[]>;
   training_load_series:        DailyLoad[];
   cardio_hr_sessions:          CardioHrSession[];
+  /** Overall stats summary for the profile screen (features/progress_analysis/queries). */
+  stats_summary:               StatsSummary | null;
 
   // ── profile ──────────────────────────────────────────────────────────-
   /** User profile snapshot (features/profile/projections/index.ts). */

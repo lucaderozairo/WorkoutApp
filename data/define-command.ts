@@ -2,6 +2,7 @@ import type { DomainEvent } from '@shared/types';
 import { EventRepository, eventRepository as defaultRepo } from './event-repository';
 import { PERSISTED_KEYS, loadFromStorage, type PersistedKey } from './sources/local/persistence';
 import { viewStore } from './projections/views';
+import type { ViewKey } from './projections/views/schema';
 
 type ProjectionEvent = DomainEvent<string, object>;
 
@@ -90,7 +91,7 @@ export function defineCommand<TCmd, TResult = void>(
       const state: Record<string, unknown> = {};
 
       for (const slot of definition.projections) {
-        const live = viewStore.get(slot.key);
+        const live = viewStore.get(slot.key as ViewKey);
         const stored = live === undefined && isPersistedKey(slot.key)
           ? loadFromStorage(slot.key)
           : null;
@@ -111,7 +112,7 @@ export function defineCommand<TCmd, TResult = void>(
             }
           }
           for (const slot of definition.projections) {
-            viewStore.set(slot.key, slot.projection.getState());
+            viewStore.set(slot.key as ViewKey, slot.projection.getState() as never);
           }
           await repo.commit(events);
         },

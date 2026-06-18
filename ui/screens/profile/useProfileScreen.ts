@@ -8,8 +8,8 @@ export type ProfileTab = 'activities' | 'health';
 
 export function useProfileScreen() {
   const [activeTab, setActiveTab] = useState<ProfileTab>('health');
-  const profile = useQuery<ProfileView>('profile');
-  const stats = useQuery<StatsSummary>('stats_summary');
+  const profile = useQuery('profile');
+  const stats = useQuery('stats_summary');
   const initial = profile?.displayName?.charAt(0).toUpperCase() ?? 'Y';
 
   return { activeTab, setActiveTab, profile, stats, initial };

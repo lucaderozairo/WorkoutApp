@@ -39,7 +39,7 @@ function msToTimeInput(ms: number): string {
 export function useFinishSession() {
   const navigate = useNavigate();
   const { sessionId } = useParams<{ sessionId: string }>();
-  const sessionsState = useQuery<ActivitiesState>('sessions');
+  const sessionsState = useQuery('sessions');
 
   const session: ActivityView | null = sessionId
     ? sessionsState?.byId[sessionId] ?? null

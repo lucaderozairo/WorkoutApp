@@ -86,7 +86,7 @@ describe('defineCommand', () => {
       },
     );
     const { repo } = makeRepo();
-    viewStore.set('define_command_counter_preload', { count: 5 });
+    viewStore.set('define_command_counter_preload' as never, { count: 5 } as never);
 
     const handler = defineCommand({
       projections: [{ key: 'define_command_counter_preload' as const, projection }],
@@ -109,7 +109,7 @@ describe('defineCommand', () => {
       },
     );
     const { repo, store, bus } = makeRepo();
-    viewStore.set('define_command_counter_commit', { count: 0 });
+    viewStore.set('define_command_counter_commit' as never, { count: 0 } as never);
 
     const event: CounterEvent = {
       type: 'CounterIncremented',
@@ -128,7 +128,7 @@ describe('defineCommand', () => {
     }, repo);
 
     await expect(handler()).resolves.toBe('committed');
-    expect(viewStore.get<{ count: number }>('define_command_counter_commit')).toEqual({ count: 3 });
+    expect(viewStore.get('define_command_counter_commit' as never) as { count: number } | undefined).toEqual({ count: 3 });
     expect(store.calls).toEqual([event]);
     expect(bus.published).toEqual([event]);
   });

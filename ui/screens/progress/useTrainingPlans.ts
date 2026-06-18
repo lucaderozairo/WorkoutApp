@@ -80,10 +80,10 @@ export function useTrainingPlans() {
   const [panelView, setPanelView] = useState<'plans' | 'builder'>('plans');
   const [currentDate, setCurrentDate] = useState(() => new Date());
 
-  const workoutCalendar = (useQuery<Record<number, SportType[]>>('workout_calendar') ?? {}) as Record<number, SportType[]>;
-  const plans = (useQuery<TrainingPlan[]>('plan_list') ?? []) as TrainingPlan[];
-  const adherence = (useQuery<PlanAdherence>('plan_adherence') ?? getPlanAdherence()) as PlanAdherence | null;
-  const plannedSessions = (useQuery<PlannedSession[]>('planned_sessions') ?? []) as PlannedSession[];
+  const workoutCalendar = (useQuery('workout_calendar') ?? {}) as Record<number, SportType[]>;
+  const plans = (useQuery('plan_list') ?? []) as TrainingPlan[];
+  const adherence = (useQuery('plan_adherence') ?? getPlanAdherence()) as PlanAdherence | null;
+  const plannedSessions = (useQuery('planned_sessions') ?? []) as PlannedSession[];
   const upcomingPlanned = plannedSessions.filter(p => p.scheduledAt > Date.now()).slice(0, 10);
 
   const today = new Date();

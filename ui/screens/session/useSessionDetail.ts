@@ -12,8 +12,8 @@ export function useSessionDetail() {
   const navigate = useNavigate();
   const { sessionId } = useParams<{ sessionId: string }>();
 
-  const sessionsState = useQuery<ActivitiesState>('sessions');
-  const cardioView = (useQuery<RecentCardioView>('recent_cardio_sessions') ?? { sessions: [] }) as RecentCardioView;
+  const sessionsState = useQuery('sessions');
+  const cardioView = (useQuery('recent_cardio_sessions') ?? { sessions: [] }) as RecentCardioView;
 
   const strengthSession: ActivityView | undefined = sessionId
     ? sessionsState?.byId[sessionId]

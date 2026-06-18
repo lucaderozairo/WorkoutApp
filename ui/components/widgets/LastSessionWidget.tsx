@@ -8,7 +8,7 @@ import type { ActivityHistoryItem } from '@features/training_log/contract';
 
 export function LastSessionWidget({ size }: { size: WidgetSize }) {
   const navigate = useNavigate();
-  const history = (useQuery<ActivityHistoryItem[]>('activity_history') ?? []) as ActivityHistoryItem[];
+  const history = (useQuery('activity_history') ?? []) as ActivityHistoryItem[];
   const last = history[0];
 
   return (

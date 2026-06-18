@@ -6,7 +6,7 @@ import { Surface, Avatar, Text } from '@ui/atoms';
 import { Button } from '@ui/molecules';
 
 export function GroupsTab() {
-  const mockGroups = (useQuery<MockSuggestedGroup[]>('social_groups_mock') ?? []) as MockSuggestedGroup[];
+  const mockGroups = (useQuery('social_groups_mock') ?? []) as MockSuggestedGroup[];
 
   return (
     <Surface>

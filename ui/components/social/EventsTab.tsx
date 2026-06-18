@@ -6,7 +6,7 @@ import { Surface, Avatar, Text } from '@ui/atoms';
 import { Button } from '@ui/molecules';
 
 export function EventsTab() {
-  const mockEvents = (useQuery<MockSocialEvent[]>('social_events_mock') ?? []) as MockSocialEvent[];
+  const mockEvents = (useQuery('social_events_mock') ?? []) as MockSocialEvent[];
 
   return (
     <Surface>

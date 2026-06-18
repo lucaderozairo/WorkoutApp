@@ -8,12 +8,12 @@ import type { WeatherCondition, SuitabilityEntry } from '@features/conditions/co
 import type { Appointment } from '@features/scheduling/contract';
 
 export function useHomeScreen() {
-  const readiness = useQuery<TodayReadinessView>('today_readiness');
-  const dashboard = useQuery<TrainingDashboardView>('training_log_dashboard');
-  const sleepTrend = useQuery<SleepTrendView>('sleep_trend');
-  const allAppointments = (useQuery<Appointment[]>('appointments_by_date') ?? []) as Appointment[];
-  const _conditions = useQuery<WeatherCondition>('current_conditions');
-  const _suitability = (useQuery<SuitabilityEntry[]>('suitability_by_sport') ?? []) as SuitabilityEntry[];
+  const readiness = useQuery('today_readiness');
+  const dashboard = useQuery('training_log_dashboard');
+  const sleepTrend = useQuery('sleep_trend');
+  const allAppointments = (useQuery('appointments_by_date') ?? []) as Appointment[];
+  const _conditions = useQuery('current_conditions');
+  const _suitability = (useQuery('suitability_by_sport') ?? []) as SuitabilityEntry[];
   const { dispatch: refreshConditions } = useCommand(handleRefreshConditions);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export function useHomeScreen() {
     : score >= 60 ? 'warning' as const
     : 'poor' as const;
 
-  const history = (useQuery<ActivityHistoryItem[]>('activity_history') ?? []) as ActivityHistoryItem[];
+  const history = (useQuery('activity_history') ?? []) as ActivityHistoryItem[];
 
   // This-week day breakdown (Mon-indexed)
   const now = new Date();

@@ -32,10 +32,10 @@ export function useLogScreen() {
   const navigate = useNavigate();
   const { sessionId: routeSessionId } = useParams<{ sessionId: string }>();
 
-  const sessionsState = useQuery<ActivitiesState>('sessions');
-  const conditions = (useQuery<UICondition[]>('active_conditions') ?? []) as UICondition[];
-  const cardioView = (useQuery<RecentCardioView>('recent_cardio_sessions') ?? { sessions: [] }) as RecentCardioView;
-  const exerciseProgressions = useQuery<Record<string, unknown>>('exercise_progressions') ?? {};
+  const sessionsState = useQuery('sessions');
+  const conditions = (useQuery('active_conditions') ?? []) as UICondition[];
+  const cardioView = (useQuery('recent_cardio_sessions') ?? { sessions: [] }) as RecentCardioView;
+  const exerciseProgressions = useQuery('exercise_progressions') ?? {};
 
   const activeSession: ActivityView | null = sessionsState?.activeId
     ? sessionsState.byId[sessionsState.activeId] ?? null

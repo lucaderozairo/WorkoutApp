@@ -1,7 +1,7 @@
 import { eventBus } from '@core/events/bus';
 import { ProjectionBuilder, projectionRegistry } from '@data/projections/builders';
 import { viewStore } from '@data/projections/views';
-import type { DomainEvent } from '@shared/types';
+import type { DomainEvent, Id } from '@shared/types';
 import type { BodyweightLoggedPayload } from '../domain/types';
 import type {
   BodyTrackingEvent,
@@ -13,7 +13,7 @@ import type {
 } from '../domain/body';
 
 export const bodyweightHistoryProjection = new ProjectionBuilder<
-  Array<{ id: string; weightKg: number; date: string; loggedAt: number }>,
+  Array<{ id: Id<'BodyweightEntry'>; weightKg: number; date: string; loggedAt: number }>,
   DomainEvent<'BodyweightLogged', BodyweightLoggedPayload>
 >('bodyweight_history', [], {
   BodyweightLogged: (state, event) => {

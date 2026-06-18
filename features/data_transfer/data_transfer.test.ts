@@ -24,7 +24,7 @@ describe('restoreBackup', () => {
     const result = restoreBackup(json);
     expect(result).toEqual<RestoreResult>({ ok: true, sessionCount: 0 });
     expect(viewStore.get('recent_exercises')).toEqual([{ name: 'Bench' }]);
-    expect(viewStore.get('not_a_real_key')).toBeUndefined();
+    expect(viewStore.get('not_a_real_key' as never)).toBeUndefined();
   });
 
   it('counts restored sessions from sessions.byId', () => {

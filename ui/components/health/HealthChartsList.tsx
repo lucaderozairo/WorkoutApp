@@ -13,7 +13,7 @@ interface Props {
 }
 
 export function HealthChartsList({ slug, height = 120, fallback = null }: Props) {
-  const charts = useQuery<HealthChartMap>('health_charts') ?? {};
+  const charts = useQuery('health_charts') ?? {};
   const list = charts[slug] ?? [];
   if (list.length === 0) return <>{fallback}</>;
   return (

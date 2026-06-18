@@ -10,7 +10,7 @@ type InjuryView = { id: Id<'Injury'>; description: string; bodyPart: string; rec
 const USER_ID = 'user-001' as Id<'User'>;
 
 export function InjuriesView() {
-  const injuries = (useQuery<InjuryView[]>('active_injuries') ?? []) as InjuryView[];
+  const injuries = (useQuery('active_injuries') ?? []) as InjuryView[];
   const { dispatch } = useCommand(handleResolveInjury);
 
   return (

@@ -6,6 +6,7 @@
 // in the UI transfer module instead (UI may legally see multiple features).
 
 import { viewStore } from '@data/projections/views';
+import type { ViewKey } from '@data/projections/views/schema';
 import {
   exportEnvelope,
   exportSessionEnvelope,
@@ -46,7 +47,7 @@ export function restoreBackup(json: string): RestoreResult {
 
   const valid = new Set<string>(PERSISTED_KEYS);
   for (const [key, value] of Object.entries(parsed.data)) {
-    if (valid.has(key)) viewStore.set(key as PersistedKey, value);
+    if (valid.has(key)) viewStore.set(key as PersistedKey as ViewKey, value as never);
   }
 
   const sessionsData = parsed.data.sessions as { byId?: Record<string, unknown> } | undefined;

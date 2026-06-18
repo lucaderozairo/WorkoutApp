@@ -135,7 +135,7 @@ function CategoryRow({ cat, isPinned = false, onClick, onLongPress, charts }: Ca
 
 export function HealthOverviewTab() {
   const navigate = useNavigate()
-  const healthCharts = (useQuery<HealthChartMap>('health_charts') ?? {}) as HealthChartMap
+  const healthCharts = (useQuery('health_charts') ?? {}) as HealthChartMap
 
   const [query, setQuery] = useState('')
   const [view, setView] = useState<'grid' | 'list'>('grid')

@@ -24,7 +24,7 @@ const SPORT_LABELS: Record<string, string> = {
 
 export function ActivitiesTab() {
   const navigate = useNavigate();
-  const allPosts = (useQuery<SharedPost[]>('social_feed') ?? []) as SharedPost[];
+  const allPosts = (useQuery('social_feed') ?? []) as SharedPost[];
   const myPosts  = allPosts.filter(p => p.authorId === USER_ID);
 
   if (myPosts.length === 0) {

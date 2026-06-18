@@ -26,7 +26,7 @@ function fmtMin(min: number | null): string {
 }
 
 export function SleepView() {
-  const sleepEntries = (useQuery<SleepEntryView[]>('sleep_history') ?? []) as SleepEntryView[];
+  const sleepEntries = (useQuery('sleep_history') ?? []) as SleepEntryView[];
   const { dispatch: dispatchImportSleepFromCSV } = useCommand(handleImportSleepFromCSV);
   const { dispatch: dispatchLogSleep } = useCommand(handleLogSleep);
   const [weeklyTrend, setWeeklyTrend] = useState<WeeklySleepTrend[]>([]);

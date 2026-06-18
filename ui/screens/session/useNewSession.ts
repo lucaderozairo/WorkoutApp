@@ -70,7 +70,7 @@ export function useNewSession() {
   const [nameTouched, setNameTouched] = useState(!!returned.callerState?.name);
   const [pendingTemplate, setPendingTemplate] = useState<WorkoutTemplate | RecentRoutine | null>(null);
 
-  const savedTemplates = (useQuery<WorkoutTemplate[]>('template_list') ?? []) as WorkoutTemplate[];
+  const savedTemplates = (useQuery('template_list') ?? []) as WorkoutTemplate[];
   useQuery('sessions');
   const recentRoutines = getRecentRoutines();
 
@@ -90,7 +90,7 @@ export function useNewSession() {
 
 
   function recordRecentSport(sport: SportType) {
-    const current = (viewStore.get<SportType[]>('wapp_recent_sports') ?? [])
+    const current = (viewStore.get('wapp_recent_sports') ?? [])
       .filter(s => s !== sport);
     viewStore.set('wapp_recent_sports', [sport, ...current].slice(0, 10));
   }

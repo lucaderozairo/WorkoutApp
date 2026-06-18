@@ -47,10 +47,10 @@ function deriveHistory(state: ActivitiesState | null): ActivityHistoryItem[] {
 
 export function FeedTab() {
   const [body, setBody] = useState('');
-  const liveFeed    = (useQuery<Post[]>('social_feed') ?? []) as PostWithMeta[];
-  const mockPosts   = (useQuery<PostWithMeta[]>('social_posts_mock') ?? []) as PostWithMeta[];
-  const sessionsState = useQuery<ActivitiesState>('sessions');
-  const cardioState   = useQuery<{ sessions: CardioSession[] }>('recent_cardio_sessions');
+  const liveFeed    = (useQuery('social_feed') ?? []) as PostWithMeta[];
+  const mockPosts   = (useQuery('social_posts_mock') ?? []) as PostWithMeta[];
+  const sessionsState = useQuery('sessions');
+  const cardioState   = useQuery('recent_cardio_sessions');
   const { dispatch: createPost } = useCommand(handleCreatePost);
 
   const strengthSessions = deriveHistory(sessionsState ?? null);

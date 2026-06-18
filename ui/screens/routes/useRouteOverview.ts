@@ -37,7 +37,7 @@ export interface OverviewSegment {
 export function useRouteOverview() {
   const navigate = useNavigate();
   const { routeId } = useParams<{ routeId: string }>();
-  const savedRoutes = (useQuery<SavedRoute[]>('saved_routes') ?? []) as SavedRoute[];
+  const savedRoutes = (useQuery('saved_routes') ?? []) as SavedRoute[];
   const route = savedRoutes.find(r => r.id === routeId);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);

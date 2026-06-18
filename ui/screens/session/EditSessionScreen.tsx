@@ -41,9 +41,9 @@ function msToTimeInput(ms: number): string {
 export function EditSessionScreen() {
   const navigate = useNavigate();
   const { sessionId } = useParams<{ sessionId: string }>();
-  const sessionsState = useQuery<ActivitiesState>('sessions');
-  const cardioView = useQuery<{ sessions: CardioSession[] }>('recent_cardio_sessions') ?? { sessions: [] };
-  const conditions = (useQuery<UICondition[]>('active_conditions') ?? []) as UICondition[];
+  const sessionsState = useQuery('sessions');
+  const cardioView = useQuery('recent_cardio_sessions') ?? { sessions: [] };
+  const conditions = (useQuery('active_conditions') ?? []) as UICondition[];
 
   const strengthSession = sessionId ? sessionsState?.byId[sessionId] ?? null : null;
   const cardioSession = sessionId ? cardioView.sessions.find(s => s.id === sessionId) ?? null : null;

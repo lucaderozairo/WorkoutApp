@@ -8,18 +8,16 @@ import type { ViewRegistry } from '@data/projections/views/schema';
  * useQuery subscribes to a view store key and re-renders when it changes.
  * Uses subscription-based change notification instead of polling.
  */
-export function useQuery<K extends keyof ViewRegistry>(key: K): ViewRegistry[K] | null;
-export function useQuery<T>(key: string): T | null;
-export function useQuery<T>(key: string): T | null {
-  const [data, setData] = useState<T | null>(() => (viewStore.get(key) as T | undefined) ?? null);
+export function useQuery<K extends keyof ViewRegistry>(key: K): ViewRegistry[K] | null {
+  const [data, setData] = useState<ViewRegistry[K] | null>(() => viewStore.get(key) ?? null);
 
   useEffect(() => {
     // Sync on mount in case the view was set before this component rendered
-    const current = (viewStore.get(key) as T | undefined) ?? null;
+    const current = viewStore.get(key) ?? null;
     setData(prev => (prev === current ? prev : current));
 
     return viewStore.subscribe(key, () => {
-      setData((viewStore.get(key) as T | undefined) ?? null);
+      setData(viewStore.get(key) ?? null);
     });
   }, [key]);
 

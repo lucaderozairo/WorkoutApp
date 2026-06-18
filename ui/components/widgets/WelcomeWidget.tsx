@@ -13,7 +13,7 @@ interface WelcomeWidgetProps {
 }
 
 export function WelcomeWidget({ workoutsThisWeek, streak, scoreClass, hasReadinessEntry, score }: WelcomeWidgetProps) {
-  const displayName = useQuery<string>('display_name') ?? 'there';
+  const displayName = useQuery('display_name') ?? 'there';
   const now = new Date();
   const hour = now.getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';

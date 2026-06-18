@@ -3,7 +3,7 @@ import { useQuery } from '@ui/bindings';
 import { Alert } from '@ui/molecules/Alert';
 
 export function StorageWarningBanner() {
-  const warning = useQuery<string>('storage_warning');
+  const warning = useQuery('storage_warning');
   if (!warning) return null;
 
   return (

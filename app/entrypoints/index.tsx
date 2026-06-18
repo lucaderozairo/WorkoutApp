@@ -4,6 +4,7 @@ import { HashRouter } from 'react-router-dom';
 import { App } from '@app/registry/App';
 import { bootstrapFeatures } from '@app/registry/bootstrap';
 import { viewStore } from '@data/projections/views';
+import type { ViewKey } from '@data/projections/views/schema';
 import { PERSISTED_KEYS, loadFromStorage, clearStorage, checkStorageQuota, saveCheckpointTimestamp, loadCheckpointTimestamp } from '@data/sources/local/persistence';
 import { clearEventDB } from '@data/sources/local/event-db';
 import { inMemoryEventStore } from '@data/store/event-store';
@@ -106,16 +107,16 @@ window.addEventListener('unhandledrejection', (e) => {
     for (const key of PERSISTED_KEYS) {
       if (key === 'sessions' || key === 'recent_exercises') continue;
       const saved = loadFromStorage(key);
-      if (saved !== null) viewStore.set(key, saved);
+      if (saved !== null) viewStore.set(key as ViewKey, saved as never);
     }
   } else {
     // No events yet (first run / migration): load snapshot from localStorage
     for (const key of PERSISTED_KEYS) {
       const saved = loadFromStorage(key);
-      if (saved !== null) viewStore.set(key, saved);
+      if (saved !== null) viewStore.set(key as ViewKey, saved as never);
     }
     // Seed sessionProjection so the first command doesn't overwrite saved state
-    const savedSessions = viewStore.get<ActivitiesState>('sessions');
+    const savedSessions = viewStore.get('sessions');
     if (savedSessions) sessionProjection.setState(savedSessions);
   }
 
@@ -126,16 +127,16 @@ window.addEventListener('unhandledrejection', (e) => {
   // Sync cardio projection from whatever is now in viewStore (seeded or loaded).
   // Mirrors the sessionProjection.setState() call above so the first cardio
   // command doesn't overwrite live data with the projection's empty initial state.
-  const savedCardio = viewStore.get<RecentCardioView>('recent_cardio_sessions');
+  const savedCardio = viewStore.get('recent_cardio_sessions');
   if (savedCardio) recentCardioProjection.setState(savedCardio);
 
-  const savedTemplates = viewStore.get<SavedTemplate[]>('saved_templates');
+  const savedTemplates = viewStore.get('saved_templates');
   if (savedTemplates) savedTemplatesProjection.setState(savedTemplates);
 
-  const savedRoutes = viewStore.get<SavedRoute[]>('saved_routes');
+  const savedRoutes = viewStore.get('saved_routes');
   if (savedRoutes) savedRoutesProjection.setState(savedRoutes);
 
-  const savedTemplateState = viewStore.get<TemplateState>('template_state');
+  const savedTemplateState = viewStore.get('template_state');
   if (savedTemplateState) {
     templateStateProjection.setState(savedTemplateState);
     const templateList = getVisibleTemplates(savedTemplateState);

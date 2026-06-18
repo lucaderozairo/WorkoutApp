@@ -24,7 +24,7 @@ import { Button } from '@ui/molecules';
 import { useWidgetPrototype, type WidgetSize, type WidgetInstance, type WidgetDef } from './useWidgetPrototype';
 
 function useLastNightSession(): SleepSession | null {
-  const history = (useQuery<SleepEntryView[]>('sleep_history') ?? []) as SleepEntryView[];
+  const history = (useQuery('sleep_history') ?? []) as SleepEntryView[];
   const latest = history[history.length - 1];
   return latest ? sleepEntryToSession(latest) : null;
 }

@@ -13,7 +13,7 @@ export function useSavedRoutes() {
   const navigate = useNavigate();
   const location = useLocation();
   const incoming = (location.state ?? {}) as SavedRoutesState;
-  const savedRoutes = (useQuery<SavedRoute[]>('saved_routes') ?? []) as SavedRoute[];
+  const savedRoutes = (useQuery('saved_routes') ?? []) as SavedRoute[];
   const { dispatch: deleteRoute } = useCommand(handleDeleteSavedRoute);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 

@@ -6,7 +6,7 @@ import { Surface, Text } from '@ui/atoms';
 import { Button, Input } from '@ui/molecules';
 
 export function EditDisplayNameWidget() {
-  const displayName = useQuery<string>('display_name');
+  const displayName = useQuery('display_name');
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState('');
 

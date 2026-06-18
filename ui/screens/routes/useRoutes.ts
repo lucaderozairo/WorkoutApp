@@ -22,7 +22,7 @@ export function useRoutes() {
   const navigate = useNavigate();
   const location = useLocation();
   const incoming = (location.state ?? {}) as RoutesState;
-  const savedRoutes = (useQuery<SavedRoute[]>('saved_routes') ?? []) as SavedRoute[];
+  const savedRoutes = (useQuery('saved_routes') ?? []) as SavedRoute[];
   const [search, setSearch] = useState('');
   const [profileFilter, setProfileFilter] = useState<RouteProfileFilter>('all');
   const [distanceFilter, setDistanceFilter] = useState<RouteDistanceFilter>('all');

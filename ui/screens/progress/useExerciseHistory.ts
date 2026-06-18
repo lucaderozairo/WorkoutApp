@@ -63,7 +63,7 @@ export function useExerciseHistory() {
   const navigate = useNavigate();
   const exerciseName = rawParam ? decodeURIComponent(rawParam) : '';
 
-  const progressions = useQuery<ProgressionState>('exercise_progressions');
+  const progressions = useQuery('exercise_progressions');
   const progression = progressions?.[exerciseName];
 
   if (!progression || progression.history.length === 0) {
