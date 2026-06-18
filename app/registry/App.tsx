@@ -64,7 +64,7 @@ const SettingsScreen = lazy(() =>
   })),
 );
 const NotificationsScreen = lazy(() =>
-  import("@ui/screens/health/NotificationsScreen").then((m) => ({
+  import("@ui/screens/notifications").then((m) => ({
     default: m.NotificationsScreen,
   })),
 );
@@ -74,7 +74,7 @@ const HealthCategoryScreen = lazy(() =>
   })),
 );
 const WeatherScreen = lazy(() =>
-  import("@ui/screens/health/WeatherScreen").then((m) => ({
+  import("@ui/screens/weather").then((m) => ({
     default: m.WeatherScreen,
   })),
 );
