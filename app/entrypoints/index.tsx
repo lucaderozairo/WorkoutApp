@@ -4,7 +4,7 @@ import { HashRouter } from 'react-router-dom';
 import { App } from '@app/registry/App';
 import { bootstrapFeatures } from '@app/registry/bootstrap';
 import { viewStore } from '@data/projections/views';
-import type { ViewKey } from '@data/projections/views/schema';
+import type { ViewKey, ViewRegistry } from '@data/projections/views/schema';
 import { PERSISTED_KEYS, loadFromStorage, clearStorage, checkStorageQuota, saveCheckpointTimestamp, loadCheckpointTimestamp } from '@data/sources/local/persistence';
 import { clearEventDB } from '@data/sources/local/event-db';
 import { inMemoryEventStore } from '@data/store/event-store';
@@ -107,13 +107,13 @@ window.addEventListener('unhandledrejection', (e) => {
     for (const key of PERSISTED_KEYS) {
       if (key === 'sessions' || key === 'recent_exercises') continue;
       const saved = loadFromStorage(key);
-      if (saved !== null) viewStore.set(key as ViewKey, saved as never);
+      if (saved !== null) viewStore.set(key as ViewKey, saved as unknown as ViewRegistry[ViewKey]);
     }
   } else {
     // No events yet (first run / migration): load snapshot from localStorage
     for (const key of PERSISTED_KEYS) {
       const saved = loadFromStorage(key);
-      if (saved !== null) viewStore.set(key as ViewKey, saved as never);
+      if (saved !== null) viewStore.set(key as ViewKey, saved as unknown as ViewRegistry[ViewKey]);
     }
     // Seed sessionProjection so the first command doesn't overwrite saved state
     const savedSessions = viewStore.get('sessions');

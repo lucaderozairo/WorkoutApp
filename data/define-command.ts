@@ -2,7 +2,7 @@ import type { DomainEvent } from '@shared/types';
 import { EventRepository, eventRepository as defaultRepo } from './event-repository';
 import { PERSISTED_KEYS, loadFromStorage, type PersistedKey } from './sources/local/persistence';
 import { viewStore } from './projections/views';
-import type { ViewKey } from './projections/views/schema';
+import type { ViewKey, ViewRegistry } from './projections/views/schema';
 
 type ProjectionEvent = DomainEvent<string, object>;
 
@@ -112,7 +112,7 @@ export function defineCommand<TCmd, TResult = void>(
             }
           }
           for (const slot of definition.projections) {
-            viewStore.set(slot.key as ViewKey, slot.projection.getState() as never);
+            viewStore.set(slot.key as ViewKey, slot.projection.getState() as unknown as ViewRegistry[ViewKey]);
           }
           await repo.commit(events);
         },
