@@ -57,6 +57,7 @@ export function domainBlocksToUIBlocks(segments: ActivityView['segments']): UIBl
               warmup: set.isWarmup ?? false,
               comment: set.comment ?? null,
               setType: set.setType,
+              ...(set.isPR ? { isPR: true } : {}),
             })),
         })),
       });
@@ -110,6 +111,7 @@ export function domainBlocksToUIBlocks(segments: ActivityView['segments']): UIBl
               warmup: set.isWarmup ?? false,
               comment: set.comment ?? null,
               setType: set.setType,
+              ...(set.isPR ? { isPR: true } : {}),
             })),
           cardioSet: cardioSets[0] ?? null,
           cardioSets,

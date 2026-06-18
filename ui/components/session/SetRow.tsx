@@ -4,7 +4,7 @@ import type { UISet } from '@features/training_log/projections/viewTypes';
 import type { SetMode } from '@data/static/exercises';
 import { Row, Column, Cluster, Spacer } from '@ui/layout';
 import { Surface, Text, Chip } from '@ui/atoms';
-import { Button, Input, Textarea } from '@ui/molecules';
+import { Badge, Button, Input, Textarea } from '@ui/molecules';
 
 export interface SetRowProps {
   num: number;
@@ -29,7 +29,7 @@ export function SetRow({
   num, set, menuKey, openMenu, onOpenMenu, onToggleWarmup, onToggleDone, onDeleteRequest, onUpdate, onComment,
   onToggleDropset, onPlateCalculator, currentMode, availableModes, onSetModeChange, disabled = false,
 }: SetRowProps) {
-  const { w, r, done: _done, warmup, comment, setType } = set;
+  const { w, r, done: _done, warmup, comment, setType, isPR } = set;
   const isDropset = setType === 'dropset';
   const isOpen = openMenu === menuKey;
 
@@ -67,6 +67,7 @@ export function SetRow({
             {label}
           </span>
           {isDropset && <Chip active>DROP</Chip>}
+          {isPR && <Badge tone="ok">PR</Badge>}
         </Row>
         <Row className="min-w-0" align="center" gap={1}>
           {currentMode === 'wt-reps' && (

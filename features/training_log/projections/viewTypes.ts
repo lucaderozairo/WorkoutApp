@@ -9,6 +9,7 @@ export interface UISet {
   warmup: boolean;
   comment: string | null;
   setType?: 'normal' | 'dropset' | 'emom' | 'amrap';
+  isPR?: boolean;
 }
 
 export interface UICardioSet {
