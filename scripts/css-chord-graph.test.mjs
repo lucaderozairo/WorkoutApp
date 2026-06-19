@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { stripCommentsAndStrings, tokenize, detectKnownPattern, resolveLayerFiles, computeCoverage, isSubset } from './css-chord-graph.mjs';
+import { stripCommentsAndStrings, tokenize, detectKnownPattern, resolveLayerFiles, computeCoverage, isSubset, buildModel } from './css-chord-graph.mjs';
 
 describe('stripCommentsAndStrings', () => {
   it('masks comments and string literals without changing length', () => {
@@ -177,5 +177,44 @@ describe('computeCoverage', () => {
     const result = computeCoverage(raw, baselineBlocks);
     expect(result.knownPattern).toBe('column');
     expect(result.covered).toBe(true);
+  });
+});
+
+describe('buildModel', () => {
+  it('builds a symmetric co-occurrence matrix and marks covered pairs from a covered block', () => {
+    const baselineBlocks = [
+      { file: 'layout.css', selector: '.row', tier: 'layout', properties: new Set(['display', 'flex-direction', 'gap']) },
+    ];
+    const rawBlocks = [
+      {
+        file: 'home-widgets.css',
+        selector: '.stat-row',
+        tier: 'project',
+        properties: new Set(['display', 'flex-direction', 'gap']),
+        declarations: new Map([['display', 'flex'], ['flex-direction', 'row']]),
+      },
+      {
+        file: 'route-planner.css',
+        selector: '.weird',
+        tier: 'project',
+        properties: new Set(['color', 'cursor']),
+        declarations: new Map([['color', 'red']]),
+      },
+    ];
+    const model = buildModel({ rawBlocks, baselineBlocks, meta: {} }, { minOccurrence: 1 });
+
+    expect(model.matrix.length).toBe(model.properties.length);
+    const displayIdx = model.properties.findIndex((p) => p.key === 'display');
+    const gapIdx = model.properties.findIndex((p) => p.key === 'gap');
+    expect(model.matrix[displayIdx][gapIdx]).toBe(model.matrix[gapIdx][displayIdx]);
+    expect(model.matrix[displayIdx][gapIdx]).toBe(1);
+
+    const pair = model.pairCoverage.find(
+      (p) => (p.a === 'display' && p.b === 'flex-direction') || (p.a === 'flex-direction' && p.b === 'display'),
+    );
+    expect(pair.covered).toBe(true);
+
+    expect(model.meta.rawRuleBlockCount).toBe(2);
+    expect(model.meta.coveredRawRuleBlockCount).toBe(1);
   });
 });

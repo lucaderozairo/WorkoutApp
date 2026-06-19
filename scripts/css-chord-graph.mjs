@@ -127,6 +127,122 @@ export function computeCoverage(rawBlock, baselineBlocks) {
   };
 }
 
+const MIN_OCCURRENCE_DEFAULT = 2;
+const MAX_PROPERTIES_DEFAULT = 40;
+
+export function buildModel({ rawBlocks, baselineBlocks, meta }, options = {}) {
+  const minOccurrence = options.minOccurrence ?? MIN_OCCURRENCE_DEFAULT;
+  const maxProperties = options.maxProperties ?? MAX_PROPERTIES_DEFAULT;
+
+  const enrichedRawBlocks = rawBlocks.map((rawBlock) => ({
+    ...rawBlock,
+    properties: [...rawBlock.properties],
+    ...computeCoverage(rawBlock, baselineBlocks),
+  }));
+
+  const propertyCounts = new Map();
+  for (const block of enrichedRawBlocks) {
+    for (const key of block.properties) {
+      propertyCounts.set(key, (propertyCounts.get(key) ?? 0) + 1);
+    }
+  }
+
+  const properties = [...propertyCounts.entries()]
+    .filter(([, count]) => count >= minOccurrence)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, maxProperties)
+    .map(([key, count]) => ({ key, count }));
+  const index = new Map(properties.map((p, i) => [p.key, i]));
+
+  const n = properties.length;
+  const matrix = Array.from({ length: n }, () => new Array(n).fill(0));
+  const pairCoverage = new Map();
+
+  for (const block of enrichedRawBlocks) {
+    const keys = block.properties.filter((k) => index.has(k));
+    for (let i = 0; i < keys.length; i++) {
+      for (let j = i + 1; j < keys.length; j++) {
+        const [a, b] = [keys[i], keys[j]].sort();
+        const ia = index.get(a);
+        const ib = index.get(b);
+        matrix[ia][ib] += 1;
+        matrix[ib][ia] += 1;
+
+        const pairKey = `${a}|${b}`;
+        const existing = pairCoverage.get(pairKey) ?? {
+          a,
+          b,
+          count: 0,
+          covered: false,
+          coveringBaseline: null,
+          exampleRawRule: { file: block.file, selector: block.selector },
+        };
+        existing.count += 1;
+        if (block.covered) {
+          existing.covered = true;
+          if (!existing.coveringBaseline && block.coveringBaseline) {
+            existing.coveringBaseline = block.coveringBaseline;
+          }
+        }
+        pairCoverage.set(pairKey, existing);
+      }
+    }
+  }
+
+  return {
+    properties,
+    matrix,
+    pairCoverage: [...pairCoverage.values()],
+    rawBlocks: enrichedRawBlocks,
+    meta: {
+      generatedAt: new Date().toISOString(),
+      ...meta,
+      totalRuleBlocks: rawBlocks.length + baselineBlocks.length,
+      totalPropertyKeys: properties.length,
+      baselineRuleBlockCount: baselineBlocks.length,
+      rawRuleBlockCount: rawBlocks.length,
+      coveredRawRuleBlockCount: enrichedRawBlocks.filter((b) => b.covered).length,
+    },
+  };
+}
+
+export function buildModelFromDir(stylingDir, options = {}) {
+  const baselineLayers = options.baselineLayers ?? ['layout', 'atoms', 'base'];
+  const rawLayers = options.rawLayers ?? ['molecules', 'patterns', 'project', 'utilities', 'overrides'];
+
+  const allFiles = readdirSync(stylingDir).filter((f) => f.endsWith('.css'));
+  const globalCssText = readFileSync(path.join(stylingDir, 'global.css'), 'utf8');
+  const layerResult = resolveLayerFiles(globalCssText, allFiles, { baselineLayers, rawLayers });
+
+  const collect = (fileNames) => {
+    const blocks = [];
+    for (const fileName of fileNames) {
+      const text = readFileSync(path.join(stylingDir, fileName), 'utf8');
+      const tier = layerResult.fileLayer.get(fileName);
+      for (const rawBlock of tokenize(text, fileName)) {
+        blocks.push({ ...rawBlock, tier });
+      }
+    }
+    return blocks;
+  };
+
+  return buildModel(
+    {
+      rawBlocks: collect(layerResult.rawFiles),
+      baselineBlocks: collect(layerResult.baselineFiles),
+      meta: {
+        scannedFiles: allFiles,
+        rawFiles: layerResult.rawFiles,
+        baselineFiles: layerResult.baselineFiles,
+        ignoredFiles: layerResult.ignoredFiles,
+        orphanFiles: layerResult.orphanFiles,
+        layerWarnings: layerResult.warnings,
+      },
+    },
+    options,
+  );
+}
+
 function parseDeclarations(text, frame) {
   const decls = text.split(';');
   for (const statement of decls) {
