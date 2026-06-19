@@ -280,3 +280,149 @@ export function tokenize(cssText, file) {
   }
   return blocks;
 }
+
+const CHART_SCRIPT = `
+(function () {
+  const width = 900, height = 900, cx = 0, cy = 0;
+  const svg = d3.select('#chart').attr('viewBox', [-width / 2, -height / 2, width, height]);
+  const toXY = (angle, radius) => [Math.cos(angle - Math.PI / 2) * radius, Math.sin(angle - Math.PI / 2) * radius];
+  const lineRadial = d3.lineRadial().angle((d) => d.angle).radius((d) => d.radius);
+
+  svg.append('g').selectAll('text').data(MODEL.keys).join('text')
+    .attr('x', (d) => toXY(d.angle, 400)[0])
+    .attr('y', (d) => toXY(d.angle, 400)[1])
+    .attr('font-size', 11)
+    .attr('text-anchor', 'middle')
+    .text((d) => d.key);
+
+  svg.append('g').selectAll('circle').data(MODEL.points).join('circle')
+    .attr('cx', (d) => toXY(d.angle, d.radius)[0])
+    .attr('cy', (d) => toXY(d.angle, d.radius)[1])
+    .attr('r', 5)
+    .attr('fill', '#1565c0')
+    .append('title')
+    .text((d) => d.owners.join(', ') + ': ' + d.key + ' = ' + d.value);
+
+  const tierColor = { project: '#c62828', utilities: '#ef6c00', overrides: '#ad1457', patterns: '#6a1b9a', molecules: '#546e7a' };
+
+  svg.append('g').selectAll('g').data(MODEL.selectors.filter((s) => s.matchedPoints.length > 0)).join('g')
+    .each(function (selectorRecord) {
+      const g = d3.select(this);
+      const hub = [0, 0];
+      selectorRecord.matchedPoints.forEach((point) => {
+        const [x, y] = toXY(point.angle, point.radius);
+        g.append('line')
+          .attr('x1', hub[0]).attr('y1', hub[1])
+          .attr('x2', x).attr('y2', y)
+          .attr('stroke', selectorRecord.covered ? '#2e7d32' : (tierColor[selectorRecord.tier] || '#999'))
+          .attr('stroke-width', 1.5)
+          .attr('opacity', 0.6)
+          .append('title')
+          .text(selectorRecord.file + ' ' + selectorRecord.selector + ' -> ' + point.key + ': ' + point.value);
+      });
+    });
+
+  function renderTable(id, rows, columns) {
+    const table = d3.select(id);
+    const header = table.append('thead').append('tr');
+    columns.forEach((c) => header.append('th').text(c));
+    const tbody = table.append('tbody');
+    rows.forEach((row) => {
+      const tr = tbody.append('tr');
+      columns.forEach((c) => tr.append('td').text(row[c] ?? ''));
+    });
+  }
+
+  const tierRank = { project: 0, utilities: 1, overrides: 2, patterns: 3, molecules: 4 };
+  const byTierThenPoints = (a, b) => (tierRank[a.tier] - tierRank[b.tier]) || (b.matchedPoints.length - a.matchedPoints.length);
+
+  renderTable('#compositions',
+    MODEL.selectors.filter((s) => s.composition.length >= 2).sort(byTierThenPoints).slice(0, 25)
+      .map((s) => ({ tier: s.tier, file: s.file, selector: s.selector, composedOf: s.composition.map((c) => c.owner).join(' + ') })),
+    ['tier', 'file', 'selector', 'composedOf']);
+
+  renderTable('#known-pattern',
+    MODEL.selectors.filter((s) => s.knownPattern).sort(byTierThenPoints).slice(0, 25)
+      .map((s) => ({ tier: s.tier, file: s.file, selector: s.selector, knownPattern: s.knownPattern })),
+    ['tier', 'file', 'selector', 'knownPattern']);
+
+  renderTable('#uncovered',
+    MODEL.selectors.filter((s) => !s.covered).sort((a, b) => b.uncoveredPoints.length - a.uncoveredPoints.length).slice(0, 25)
+      .map((s) => ({ tier: s.tier, file: s.file, selector: s.selector, declaredPoints: s.matchedPoints.length + s.uncoveredPoints.length })),
+    ['tier', 'file', 'selector', 'declaredPoints']);
+})();
+`;
+
+const D3_SRI = 'sha256-8glLv2FBs1lyLE/kVOtsSw8OQswQzHr5IfwVj864ZTk=';
+
+export function renderHtml(model) {
+  const modelJson = JSON.stringify(model);
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>CSS radial composition network</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js" integrity="${D3_SRI}" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 2rem; }
+  .legend { font-size: 0.9rem; color: #444; max-width: 760px; }
+  table { border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+  th, td { border: 1px solid #ddd; padding: 0.25rem 0.5rem; text-align: left; }
+</style>
+</head>
+<body>
+<h1>CSS radial composition network</h1>
+<p class="legend">
+  The atomic unit here is the <strong>React component</strong> (Row/Column/Grid/Text), not CSS. Each point is one exact
+  <code>(property, value)</code> pair declared by a primitive component's own CSS — angle is the property, radius is the
+  value, so two selectors only converge on the same point when both the key <em>and</em> the value match exactly. Lines
+  fan out from each raw selector to every point it declares; green lines mean that point is owned by a component. A
+  selector whose lines land on two different components' points (e.g. Row's shape points and Text's typography points)
+  is an undeclared composition — it should become that component nesting instead of bespoke CSS. Because
+  <code>project</code>/<code>utilities</code>/<code>overrides</code> sit at higher cascade priority than
+  <code>layout</code>/<code>atoms</code>/<code>base</code>, a match is a silent-override risk, not just duplication.
+</p>
+<svg id="chart" width="900" height="900"></svg>
+<h2>Compositions (2+ owners matched)</h2>
+<table id="compositions"></table>
+<h2>Obvious Row/Column/Grid candidates</h2>
+<table id="known-pattern"></table>
+<h2>Most uncovered selectors</h2>
+<table id="uncovered"></table>
+<script>
+const MODEL = ${modelJson};
+${CHART_SCRIPT}
+</script>
+</body>
+</html>`;
+}
+
+function parseArgs(argv) {
+  const args = {
+    stylingDir: 'styling',
+    out: 'graphify-out/css-radial-graph.html',
+    baselineLayers: ['layout', 'atoms', 'base'],
+    rawLayers: ['molecules', 'patterns', 'project', 'utilities', 'overrides'],
+  };
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === '--styling-dir') args.stylingDir = argv[++i];
+    else if (arg === '--out') args.out = argv[++i];
+    else if (arg === '--baseline-layers') args.baselineLayers = argv[++i].split(',');
+    else if (arg === '--raw-layers') args.rawLayers = argv[++i].split(',');
+  }
+  return args;
+}
+
+export function runCli(argv) {
+  const args = parseArgs(argv);
+  const model = buildModelFromDir(args.stylingDir, args);
+  const html = renderHtml(model);
+  mkdirSync(path.dirname(args.out), { recursive: true });
+  writeFileSync(args.out, html);
+  console.log(`Wrote ${args.out} (${model.meta.rawRuleBlockCount} raw blocks, ${model.meta.coveredRawRuleBlockCount} covered)`);
+}
+
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  runCli(process.argv.slice(2));
+}

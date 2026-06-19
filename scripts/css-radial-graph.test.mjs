@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { stripCommentsAndStrings, tokenize, expandOwnerSelectors, detectKnownPattern, resolveLayerFiles, buildPointIndex, computeOwnership, pointKey, buildModel } from './css-radial-graph.mjs';
+import { stripCommentsAndStrings, tokenize, expandOwnerSelectors, detectKnownPattern, resolveLayerFiles, buildPointIndex, computeOwnership, pointKey, buildModel, renderHtml } from './css-radial-graph.mjs';
 
 describe('stripCommentsAndStrings', () => {
   it('masks comments and string literals without changing length', () => {
@@ -129,6 +129,15 @@ describe('buildPointIndex / computeOwnership', () => {
     const result = computeOwnership(raw, pointIndex);
     expect(result.knownPattern).toBe('column');
     expect(result.covered).toBe(true);
+  });
+});
+
+describe('renderHtml', () => {
+  it('embeds the model JSON and the radial-network rendering call', () => {
+    const model = buildModel({ rawBlocks: [], baselineBlocks: [], meta: { scannedFiles: [], baselineFiles: [], orphanFiles: [] } });
+    const html = renderHtml(model);
+    expect(html).toContain('"generatedAt"');
+    expect(html).toContain('d3.lineRadial(');
   });
 });
 
