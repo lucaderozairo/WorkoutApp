@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { stripCommentsAndStrings, tokenize, expandOwnerSelectors, detectKnownPattern, resolveLayerFiles, buildPointIndex, computeOwnership, pointKey } from './css-radial-graph.mjs';
+import { stripCommentsAndStrings, tokenize, expandOwnerSelectors, detectKnownPattern, resolveLayerFiles, buildPointIndex, computeOwnership, pointKey, buildModel } from './css-radial-graph.mjs';
 
 describe('stripCommentsAndStrings', () => {
   it('masks comments and string literals without changing length', () => {
@@ -129,6 +129,38 @@ describe('buildPointIndex / computeOwnership', () => {
     const result = computeOwnership(raw, pointIndex);
     expect(result.knownPattern).toBe('column');
     expect(result.covered).toBe(true);
+  });
+});
+
+describe('buildModel', () => {
+  it('assigns one angle per distinct key and places a raw composition selector with matched points', () => {
+    const baselineBlocks = [
+      { file: 'layout.css', selector: '.row', tier: 'layout', declarations: decls({ display: 'flex', 'flex-direction': 'row' }) },
+      { file: 'typography.css', selector: '.text-detail', tier: 'base', declarations: decls({ 'font-size': 'var(--t-md)', 'font-weight': '500' }) },
+    ];
+    const rawBlocks = [
+      {
+        file: 'home-widgets.css',
+        selector: '.stat-label',
+        tier: 'project',
+        declarations: decls({ display: 'flex', 'flex-direction': 'row', 'font-size': 'var(--t-md)', 'font-weight': '500' }),
+      },
+    ];
+    const model = buildModel({ rawBlocks, baselineBlocks, meta: {} });
+
+    const distinctKeys = new Set(model.keys.map((k) => k.key));
+    expect(distinctKeys).toEqual(new Set(['display', 'flex-direction', 'font-size', 'font-weight']));
+    expect(new Set(model.keys.map((k) => k.angle)).size).toBe(model.keys.length);
+
+    const statLabel = model.selectors.find((s) => s.selector === '.stat-label');
+    expect(statLabel.covered).toBe(true);
+    expect(statLabel.matchedPoints).toHaveLength(4);
+    const owners = statLabel.composition.map((c) => c.owner);
+    expect(owners).toContain('.row');
+    expect(owners).toContain('.text-detail');
+
+    expect(model.meta.rawRuleBlockCount).toBe(1);
+    expect(model.meta.coveredRawRuleBlockCount).toBe(1);
   });
 });
 

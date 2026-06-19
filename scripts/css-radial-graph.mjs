@@ -109,6 +109,114 @@ export function computeOwnership(rawBlock, pointIndex) {
   return { covered, knownPattern, matchedPoints, uncoveredPoints, composition };
 }
 
+function assignAngles(keys) {
+  const sorted = [...keys].sort();
+  return new Map(sorted.map((key, i) => [key, (i / sorted.length) * 2 * Math.PI]));
+}
+
+function assignRadii(blocksWithDeclarations, key, innerR, outerR) {
+  const values = [...new Set(blocksWithDeclarations.flatMap((b) => (b.declarations.has(key) ? [b.declarations.get(key)] : [])))];
+  const allNumeric = values.length > 0 && values.every((v) => v !== '' && !Number.isNaN(Number(v)));
+  values.sort(allNumeric ? (a, b) => Number(a) - Number(b) : undefined);
+  const radiusFor = new Map();
+  values.forEach((v, i) => {
+    radiusFor.set(v, values.length > 1 ? innerR + (i / (values.length - 1)) * (outerR - innerR) : (innerR + outerR) / 2);
+  });
+  return radiusFor;
+}
+
+export function buildModel({ rawBlocks, baselineBlocks, meta }) {
+  const ownedBaselineBlocks = baselineBlocks.map((b) => ({ ...b, owners: expandOwnerSelectors(b.selector) }));
+  const pointIndex = buildPointIndex(ownedBaselineBlocks);
+
+  const allDeclaringBlocks = [...ownedBaselineBlocks, ...rawBlocks];
+  const allKeys = new Set();
+  for (const block of allDeclaringBlocks) for (const key of block.declarations.keys()) allKeys.add(key);
+  const angleByKey = assignAngles(allKeys);
+
+  const innerR = 80;
+  const outerR = 380;
+  const radiusByKey = new Map([...allKeys].map((key) => [key, assignRadii(allDeclaringBlocks, key, innerR, outerR)]));
+
+  const toPlottedPoint = (key, value, owners) => ({
+    key,
+    value,
+    angle: angleByKey.get(key),
+    radius: radiusByKey.get(key).get(value),
+    owners,
+  });
+
+  const points = [];
+  const seenPoints = new Set();
+  for (const block of ownedBaselineBlocks) {
+    for (const [key, value] of block.declarations) {
+      const pk = pointKey(key, value);
+      if (seenPoints.has(pk)) continue;
+      seenPoints.add(pk);
+      points.push(toPlottedPoint(key, value, [...pointIndex.get(pk)]));
+    }
+  }
+
+  const selectors = rawBlocks.map((block) => {
+    const ownership = computeOwnership(block, pointIndex);
+    return {
+      file: block.file,
+      selector: block.selector,
+      tier: block.tier,
+      covered: ownership.covered,
+      knownPattern: ownership.knownPattern,
+      matchedPoints: ownership.matchedPoints.map((m) => toPlottedPoint(m.key, m.value, m.owners)),
+      uncoveredPoints: ownership.uncoveredPoints,
+      composition: ownership.composition,
+    };
+  });
+
+  return {
+    keys: [...angleByKey.entries()].map(([key, angle]) => ({ key, angle })),
+    points,
+    selectors,
+    meta: {
+      generatedAt: new Date().toISOString(),
+      ...meta,
+      baselineRuleBlockCount: baselineBlocks.length,
+      rawRuleBlockCount: rawBlocks.length,
+      coveredRawRuleBlockCount: selectors.filter((s) => s.covered).length,
+    },
+  };
+}
+
+export function buildModelFromDir(stylingDir, options = {}) {
+  const baselineLayers = options.baselineLayers ?? ['layout', 'atoms', 'base'];
+  const rawLayers = options.rawLayers ?? ['molecules', 'patterns', 'project', 'utilities', 'overrides'];
+
+  const allFiles = readdirSync(stylingDir).filter((f) => f.endsWith('.css'));
+  const globalCssText = readFileSync(path.join(stylingDir, 'global.css'), 'utf8');
+  const layerResult = resolveLayerFiles(globalCssText, allFiles, { baselineLayers, rawLayers });
+
+  const collect = (fileNames) => {
+    const blocks = [];
+    for (const fileName of fileNames) {
+      const text = readFileSync(path.join(stylingDir, fileName), 'utf8');
+      const tier = layerResult.fileLayer.get(fileName);
+      for (const block of tokenize(text, fileName)) blocks.push({ ...block, tier });
+    }
+    return blocks;
+  };
+
+  return buildModel({
+    rawBlocks: collect(layerResult.rawFiles),
+    baselineBlocks: collect(layerResult.baselineFiles),
+    meta: {
+      scannedFiles: allFiles,
+      rawFiles: layerResult.rawFiles,
+      baselineFiles: layerResult.baselineFiles,
+      ignoredFiles: layerResult.ignoredFiles,
+      orphanFiles: layerResult.orphanFiles,
+      layerWarnings: layerResult.warnings,
+    },
+  });
+}
+
 export function resolveLayerFiles(globalCssText, allFiles, { baselineLayers, rawLayers }) {
   const fileLayer = new Map();
   const warnings = [];
