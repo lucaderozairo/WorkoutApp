@@ -38,6 +38,23 @@ describe('tokenize', () => {
     expect(blocks.find((b) => b.selector === '.after').declarations.get('display')).toBe('flex');
   });
 
+  it('does not swallow declarations into the selector of a nested rule that follows them', () => {
+    const css = `.layout {
+      display: grid;
+      gap: var(--gap);
+
+      .header {
+        grid-area: header;
+      }
+    }`;
+    const blocks = tokenize(css, 'layout.css');
+    const layout = blocks.find((b) => b.selector === '.layout');
+    const header = blocks.find((b) => b.selector === '.header');
+    expect(layout.declarations.get('display')).toBe('grid');
+    expect(layout.declarations.get('gap')).toBe('var(--gap)');
+    expect(header.declarations.get('grid-area')).toBe('header');
+  });
+
   it('keeps a literal :is(...) selector intact for later owner expansion', () => {
     const css = `:is(.row, .column, .scroll-row) { gap: var(--s-3); }`;
     const blocks = tokenize(css, 'layout.css');
@@ -61,6 +78,11 @@ describe('expandOwnerSelectors', () => {
 
   it('does not expand a compound selector with an embedded :is(...) (out of scope)', () => {
     expect(expandOwnerSelectors('.foo :is(.row, .column) .bar')).toEqual(['.foo :is(.row, .column) .bar']);
+  });
+
+  it('expands a whole-selector :is(...) group whose members contain their own parens', () => {
+    const selector = ':is(.input, .textarea, input:not([type="checkbox"]):not([type="radio"]), select)';
+    expect(expandOwnerSelectors(selector)).toEqual(['.input', '.textarea', 'input:not([type="checkbox"]):not([type="radio"])', 'select']);
   });
 });
 

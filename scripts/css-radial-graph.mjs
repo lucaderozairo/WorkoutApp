@@ -36,11 +36,36 @@ export function detectKnownPattern(declarations) {
   return null;
 }
 
+function splitTopLevelCommas(text) {
+  const parts = [];
+  let depth = 0;
+  let start = 0;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '(') depth++;
+    else if (ch === ')') depth--;
+    else if (ch === ',' && depth === 0) {
+      parts.push(text.slice(start, i));
+      start = i + 1;
+    }
+  }
+  parts.push(text.slice(start));
+  return parts;
+}
+
 export function expandOwnerSelectors(selectorText) {
   const trimmed = selectorText.trim();
-  const match = /^:(?:is|where)\(([^)]*)\)$/.exec(trimmed);
-  if (match) {
-    return match[1].split(',').map((s) => s.trim()).filter(Boolean);
+  const prefixMatch = /^:(?:is|where)\(/.exec(trimmed);
+  if (prefixMatch && trimmed.endsWith(')')) {
+    const inner = trimmed.slice(prefixMatch[0].length, -1);
+    let depth = 0;
+    for (const ch of inner) {
+      if (ch === '(') depth++;
+      else if (ch === ')') depth--;
+    }
+    if (depth === 0) {
+      return splitTopLevelCommas(inner).map((s) => s.trim()).filter(Boolean);
+    }
   }
   return [trimmed];
 }
@@ -252,29 +277,36 @@ export function tokenize(cssText, file) {
   const stack = [];
   let scanPos = 0;
 
+  const flushDeclarations = (text) => {
+    const top = stack[stack.length - 1];
+    if (top && top.type === 'rule' && text.trim()) parseDeclarations(text, top);
+  };
+
   for (let i = 0; i < css.length; i++) {
     const ch = css[i];
     if (ch === '{') {
-      const header = css.slice(scanPos, i).trim();
+      const chunk = css.slice(scanPos, i);
+      const lastSemi = chunk.lastIndexOf(';');
+      const declText = lastSemi >= 0 ? chunk.slice(0, lastSemi + 1) : '';
+      const header = (lastSemi >= 0 ? chunk.slice(lastSemi + 1) : chunk).trim();
+      flushDeclarations(declText);
+
       const top = stack[stack.length - 1];
       if (top && top.type === 'skip') {
-        stack.push({ type: 'skip', bodyStart: i + 1 });
+        stack.push({ type: 'skip' });
       } else if (header.startsWith('@')) {
         const name = header.split(/[\s({]/)[0].toLowerCase();
-        stack.push(SKIP_AT_RULES.has(name) ? { type: 'skip', bodyStart: i + 1 } : { type: 'at-rule', name, bodyStart: i + 1 });
+        stack.push(SKIP_AT_RULES.has(name) ? { type: 'skip' } : { type: 'at-rule', name });
       } else {
-        stack.push({ type: 'rule', selector: header, properties: new Set(), declarations: new Map(), bodyStart: i + 1 });
+        stack.push({ type: 'rule', selector: header, properties: new Set(), declarations: new Map() });
       }
       scanPos = i + 1;
     } else if (ch === '}') {
+      flushDeclarations(css.slice(scanPos, i));
       const top = stack.pop();
       scanPos = i + 1;
-      if (top && top.type === 'rule') {
-        const body = css.slice(top.bodyStart, i);
-        parseDeclarations(body, top);
-        if (top.properties.size > 0) {
-          blocks.push({ file, selector: top.selector, properties: top.properties, declarations: top.declarations });
-        }
+      if (top && top.type === 'rule' && top.properties.size > 0) {
+        blocks.push({ file, selector: top.selector, properties: top.properties, declarations: top.declarations });
       }
     }
   }
