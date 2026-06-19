@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { stripCommentsAndStrings, tokenize, detectKnownPattern } from './css-chord-graph.mjs';
+import { stripCommentsAndStrings, tokenize, detectKnownPattern, resolveLayerFiles } from './css-chord-graph.mjs';
 
 describe('stripCommentsAndStrings', () => {
   it('masks comments and string literals without changing length', () => {
@@ -84,5 +84,48 @@ describe('detectKnownPattern', () => {
   });
   it('returns null when there is no display key', () => {
     expect(detectKnownPattern(new Map([['color', 'red']]))).toBeNull();
+  });
+});
+
+const SAMPLE_GLOBAL_CSS = `
+  @import "./reset.css" layer(reset);
+  @import "./tokens.css" layer(tokens);
+  @import "./typography.css" layer(base);
+  @import "./layout.css" layer(layout);
+  @import "./surface.css" layer(atoms);
+  @import "./controls.css" layer(molecules);
+  @import "./patterns.css" layer(patterns);
+  @import "./home-widgets.css" layer(project);
+  @import "./utilities.css" layer(utilities);
+  @import "./map.css" layer(overrides);
+`;
+const LAYERS = {
+  baselineLayers: ['layout', 'atoms', 'base'],
+  rawLayers: ['molecules', 'patterns', 'project', 'utilities', 'overrides'],
+};
+
+describe('resolveLayerFiles', () => {
+  it('classifies files into baseline, raw, and ignored per layer', () => {
+    const result = resolveLayerFiles(
+      SAMPLE_GLOBAL_CSS,
+      ['reset.css', 'tokens.css', 'typography.css', 'layout.css', 'surface.css', 'controls.css', 'patterns.css', 'home-widgets.css', 'utilities.css', 'map.css'],
+      LAYERS,
+    );
+    expect(result.baselineFiles.sort()).toEqual(['layout.css', 'surface.css', 'typography.css']);
+    expect(result.rawFiles.sort()).toEqual(['controls.css', 'home-widgets.css', 'map.css', 'patterns.css', 'utilities.css']);
+    expect(result.ignoredFiles.sort()).toEqual(['reset.css', 'tokens.css']);
+  });
+
+  it('reports files present on disk but not imported as orphans', () => {
+    const result = resolveLayerFiles(SAMPLE_GLOBAL_CSS, ['layout.css', 'orphan.css'], LAYERS);
+    expect(result.orphanFiles).toEqual(['orphan.css']);
+  });
+
+  it('warns and keeps the first layer when a file is imported twice under different layers', () => {
+    const dup = SAMPLE_GLOBAL_CSS + `\n@import "./layout.css" layer(project);`;
+    const result = resolveLayerFiles(dup, ['layout.css'], LAYERS);
+    expect(result.baselineFiles).toContain('layout.css');
+    expect(result.rawFiles).not.toContain('layout.css');
+    expect(result.warnings.some((w) => w.includes('layout.css'))).toBe(true);
   });
 });
