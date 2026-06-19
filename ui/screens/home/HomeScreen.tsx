@@ -76,14 +76,14 @@ export function HomeScreen() {
       <SplitTabs panels={statPanels} />
 
       <Section label="Widgets" labelSurface='ghost'>
-        <div className="widget-grid">
+        <Grid cols="repeat(2, minmax(0, 1fr))" gap={2}>
           {lastNight && <HomeSleepWidget session={lastNight} />}
           <HomeWeatherWidget />
           <HomeCalendarWidget appointments={todayAppointments} />
           <HomeReadinessWidget score={score} hasEntry={hasReadinessEntry} />
           <HomeStreakWidget streak={streak} />
           <HomeChecklistWidget />
-        </div>
+        </Grid>
       </Section>
 
       {lastSessions.length > 0 && (

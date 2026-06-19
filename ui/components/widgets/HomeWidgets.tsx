@@ -71,7 +71,9 @@ export function ReadinessHomeWidget({ size }: { size: WidgetSize }) {
           <Text size="caption" color="muted">Readiness</Text>
           <div className="readiness-ring-wrap">
             <RingProgress score={score} color={ringColor} />
-            <Metric value={hasEntry ? score : '—'} size="sm" className="readiness-ring-label" />
+            <Row as="span" align="center" justify="center" className="readiness-ring-label">
+              <Metric value={hasEntry ? score : '—'} size="sm" />
+            </Row>
           </div>
         </Column>
       </Surface>

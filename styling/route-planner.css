@@ -30,14 +30,7 @@
   --route-detail-map-compact-min-height: var(--media-lg);
 }
 
-.route-planner-screen {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  min-height: 0;
-}
-
 .route-planner-stage {
-  grid-row: 2;
   align-self: stretch;
   height: auto;
   min-height: 0;
@@ -355,8 +348,6 @@
 
 .route-explore-card {
   appearance: none;
-  display: grid;
-  grid-template-rows: var(--route-card-media-min) auto;
   min-width: 0;
   min-height: var(--route-card-min-height);
   padding: 0;
@@ -448,26 +439,8 @@
   will-change: auto;
 }
 
-.route-explore-map-empty {
-  display: grid;
-  width: 100%;
-  height: 100%;
-  min-height: inherit;
-  place-items: center;
-  color: var(--ink-muted);
-  transform: translateX(var(--route-parallax-x));
-  transition: transform var(--duration-short) linear;
-
-  @media (prefers-reduced-motion: reduce) {
-    transform: none;
-    transition: none;
-    will-change: auto;
-  }
-}
-
 .route-preview-svg,
 .route-preview-empty {
-  display: block;
   width: 100%;
   height: 100%;
   min-height: inherit;
@@ -477,9 +450,11 @@
   background-size: var(--s-6) var(--s-6);
 }
 
+.route-preview-svg {
+  display: block;
+}
+
 .route-preview-empty {
-  display: grid;
-  place-items: center;
   color: var(--ink-muted);
 }
 

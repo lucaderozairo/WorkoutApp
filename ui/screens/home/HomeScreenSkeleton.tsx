@@ -46,11 +46,11 @@ export function HomeScreenSkeleton() {
       <SplitTabs.Skeleton />
 
       <Section.Skeleton labelSurface="ghost" rows={0}>
-        <div className="widget-grid">
+        <Grid cols="repeat(2, minmax(0, 1fr))" gap={2}>
           {Array.from({ length: 6 }, (_, index) => (
             <WidgetCard.Skeleton key={index} />
           ))}
-        </div>
+        </Grid>
       </Section.Skeleton>
 
       <Section.Skeleton rows={0}>

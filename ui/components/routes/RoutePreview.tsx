@@ -1,4 +1,5 @@
 import { Map } from 'lucide-react';
+import { Grid } from '@ui/layout';
 import type { SavedRoute } from '@features/routes/contract';
 import { routeToSvgPoints } from '@features/routes/domain/preview';
 
@@ -17,9 +18,9 @@ export function RoutePreview({ route, width = 320, height = 160 }: RoutePreviewP
 
   if (!points) {
     return (
-      <span className="route-preview-empty" aria-hidden="true">
+      <Grid as="span" placeItems="center" className="route-preview-empty" aria-hidden="true">
         <Map size={24} />
-      </span>
+      </Grid>
     );
   }
 

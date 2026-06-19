@@ -101,7 +101,7 @@ function WeekView({ anchor, workoutCalendar }: { anchor: Date; workoutCalendar: 
           return (
             <Column key={i} gap={1} align="center">
               <Text mono size="caption" color="faint">{DOW_SHORT[i]}</Text>
-              <span className={className} data-sport={sport}>{d.getDate()}</span>
+              <Row as="span" align="center" justify="center" className={className} data-sport={sport}>{d.getDate()}</Row>
             </Column>
           );
         })}

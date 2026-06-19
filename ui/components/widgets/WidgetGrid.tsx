@@ -2,6 +2,7 @@ import { WIDGET_REGISTRY } from './widgetRegistry';
 import { WidgetContextMenu } from './WidgetContextMenu';
 import { WidgetAddPanel } from './WidgetAddPanel';
 import { Button } from '@ui/molecules';
+import { Grid } from '@ui/layout';
 import type { ContextMenuState, WidgetDef, WidgetInstance, WidgetSize } from './widgetTypes';
 
 interface WidgetGridProps {
@@ -46,7 +47,7 @@ export function WidgetGrid({
 
   return (
     <>
-      <div className="widget-grid">
+      <Grid cols="repeat(2, minmax(0, 1fr))" gap={2}>
         {widgets.map(instance => {
           const def = WIDGET_REGISTRY.find(d => d.id === instance.id);
           if (!def) return null;
@@ -79,7 +80,7 @@ export function WidgetGrid({
         >
           +
         </Button>
-      </div>
+      </Grid>
 
       {contextMenu && contextInstance && contextDef && (
         <WidgetContextMenu

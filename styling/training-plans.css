@@ -14,9 +14,6 @@
   width: var(--s-6);
   height: var(--s-6);
   border-radius: var(--r-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-family: var(--font-mono);
   font-size: var(--t-xs);
 

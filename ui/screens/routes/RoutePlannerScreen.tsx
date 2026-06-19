@@ -237,6 +237,7 @@ export function RoutePlannerScreen({ routeId }: RoutePlannerScreenProps = {}) {
 
   return (
     <FillScreen className="route-planner-screen">
+      <Grid rows="auto minmax(0, 1fr)" className="self-fill">
       {/* ── MOBILE HEADER ── */}
       <Column gap={1} className="mobile-only">
         <ScreenHeader
@@ -536,6 +537,7 @@ export function RoutePlannerScreen({ routeId }: RoutePlannerScreenProps = {}) {
 
           </Layered>
         </Column>
+      </Grid>
       </Grid>
 
       {/* ── MOBILE BOTTOM SHEET ── */}

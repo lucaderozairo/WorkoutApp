@@ -74,44 +74,42 @@ export function HomeSleepWidget({ session }: { session: SleepSession }) {
 
   return (
     <Surface pad="sm" className="home-widget full" aria-labelledby="hw-sleep-title">
-      <Row align="start" gap={3}>
-        <Column gap={1} grow>
-          <Text size="eyebrow" id="hw-sleep-title">Sleep</Text>
-          <Metric value={sleepDuration(session)} size="lg" mono />
-          <Text mono size="caption" color="muted">{sleepTimings(session)}</Text>
-        </Column>
-        <Column gap={1} align="center" className="shrink-0">
-          <div
-            className="score-circle"
-            data-tone="sleep"
-            aria-label={`Sleep score ${session.score}`}
-          >
-            {session.score}
-          </div>
-          <Text size="caption" color="faint">score</Text>
-        </Column>
-      </Row>
+      <Column gap={3}>
+        <Row align="start" gap={3}>
+          <Column gap={1} grow>
+            <Text size="eyebrow" id="hw-sleep-title">Sleep</Text>
+            <Metric value={sleepDuration(session)} size="lg" mono />
+            <Text mono size="caption" color="muted">{sleepTimings(session)}</Text>
+          </Column>
+          <Column gap={1} align="center" className="shrink-0">
+            <Grid placeItems="center" className="score-circle" data-tone="sleep" aria-label={`Sleep score ${session.score}`}>
+              {session.score}
+            </Grid>
+            <Text size="caption" color="faint">score</Text>
+          </Column>
+        </Row>
 
-      <MultiSegmentBar segments={segments} aria-label="Sleep stages breakdown" />
+        <MultiSegmentBar segments={segments} aria-label="Sleep stages breakdown" />
 
-      <Grid cols={4} gap={2}>
-        <Column gap={1} align="center" className="text-center">
-          <Text as="strong" size="detail" mono data-stage="deep">{fmtMins(stages.deep)}</Text>
-          <Text size="caption" color="faint">Deep</Text>
-        </Column>
-        <Column gap={1} align="center" className="text-center">
-          <Text as="strong" size="detail" mono data-stage="rem">{fmtMins(stages.rem)}</Text>
-          <Text size="caption" color="faint">REM</Text>
-        </Column>
-        <Column gap={1} align="center" className="text-center">
-          <Text as="strong" size="detail" mono data-stage="light">{fmtMins(stages.light)}</Text>
-          <Text size="caption" color="faint">Light</Text>
-        </Column>
-        <Column gap={1} align="center" className="text-center">
-          <Text as="strong" size="detail" mono data-stage="awake">{fmtMins(stages.awake)}</Text>
-          <Text size="caption" color="faint">Awake</Text>
-        </Column>
-      </Grid>
+        <Grid cols={4} gap={2}>
+          <Column gap={1} align="center" className="text-center">
+            <Text as="strong" size="detail" mono data-stage="deep">{fmtMins(stages.deep)}</Text>
+            <Text size="caption" color="faint">Deep</Text>
+          </Column>
+          <Column gap={1} align="center" className="text-center">
+            <Text as="strong" size="detail" mono data-stage="rem">{fmtMins(stages.rem)}</Text>
+            <Text size="caption" color="faint">REM</Text>
+          </Column>
+          <Column gap={1} align="center" className="text-center">
+            <Text as="strong" size="detail" mono data-stage="light">{fmtMins(stages.light)}</Text>
+            <Text size="caption" color="faint">Light</Text>
+          </Column>
+          <Column gap={1} align="center" className="text-center">
+            <Text as="strong" size="detail" mono data-stage="awake">{fmtMins(stages.awake)}</Text>
+            <Text size="caption" color="faint">Awake</Text>
+          </Column>
+        </Grid>
+      </Column>
     </Surface>
   );
 }
@@ -128,12 +126,14 @@ export function HomeReadinessWidget({ score, hasEntry }: HomeReadinessWidgetProp
   const label = !hasEntry ? '—' : score >= 80 ? 'Good' : score >= 60 ? 'OK' : 'Poor';
 
   return (
-    <Surface pad="sm" className="home-widget compact centered" aria-labelledby="hw-readiness-title">
-      <Text size="eyebrow" id="hw-readiness-title">Readiness</Text>
-      <ProgressRing value={hasEntry ? score : 0} tone={tone ?? 'accent'} size="sm">
-        <Text mono size="caption">{hasEntry ? score : '—'}</Text>
-      </ProgressRing>
-      {tone && <Text as="span" className="status-word" data-tone={tone}>{label}</Text>}
+    <Surface pad="sm" className="home-widget compact" aria-labelledby="hw-readiness-title">
+      <Column gap={3} align="center" className="text-center">
+        <Text size="eyebrow" id="hw-readiness-title">Readiness</Text>
+        <ProgressRing value={hasEntry ? score : 0} tone={tone ?? 'accent'} size="sm">
+          <Text mono size="caption">{hasEntry ? score : '—'}</Text>
+        </ProgressRing>
+        {tone && <Text as="span" className="status-word" data-tone={tone}>{label}</Text>}
+      </Column>
     </Surface>
   );
 }
@@ -143,12 +143,14 @@ export function HomeReadinessWidget({ score, hasEntry }: HomeReadinessWidgetProp
 export function HomeStreakWidget({ streak }: { streak: number }) {
   return (
     <Surface pad="sm" className="home-widget compact" aria-labelledby="hw-streak-title">
-      <Text size="eyebrow" id="hw-streak-title">Streak</Text>
-      <Row align="center" gap={2} className="streak-icon">
-        <Flame size={22} weight="fill" aria-hidden="true" />
-        <Metric value={streak} size="lg" />
-      </Row>
-      <Text size="detail" color="muted">days in a row</Text>
+      <Column gap={3}>
+        <Text size="eyebrow" id="hw-streak-title">Streak</Text>
+        <Row align="center" gap={2} className="streak-icon">
+          <Flame size={22} weight="fill" aria-hidden="true" />
+          <Metric value={streak} size="lg" />
+        </Row>
+        <Text size="detail" color="muted">days in a row</Text>
+      </Column>
     </Surface>
   );
 }
@@ -174,21 +176,23 @@ export function HomeChecklistWidget() {
 
   return (
     <Surface pad="sm" className="home-widget full" aria-labelledby="hw-checklist-title">
-      <Row align="center" justify="between" gap={3}>
-        <Text size="eyebrow" id="hw-checklist-title">Checklist</Text>
-        <Button variant="ghost" size="sm" aria-label="Add habit">+</Button>
-      </Row>
-      <Column gap={0}>
-        {DEFAULT_HABITS.map((label, i) => (
-          <Fragment key={label}>
-            {i > 0 && <Divider />}
-            <CheckRow
-              label={label}
-              checked={checked.has(i)}
-              onChange={() => toggle(i)}
-            />
-          </Fragment>
-        ))}
+      <Column gap={3}>
+        <Row align="center" justify="between" gap={3}>
+          <Text size="eyebrow" id="hw-checklist-title">Checklist</Text>
+          <Button variant="ghost" size="sm" aria-label="Add habit">+</Button>
+        </Row>
+        <Column gap={0}>
+          {DEFAULT_HABITS.map((label, i) => (
+            <Fragment key={label}>
+              {i > 0 && <Divider />}
+              <CheckRow
+                label={label}
+                checked={checked.has(i)}
+                onChange={() => toggle(i)}
+              />
+            </Fragment>
+          ))}
+        </Column>
       </Column>
     </Surface>
   );
@@ -199,35 +203,37 @@ export function HomeChecklistWidget() {
 export function HomeWeatherWidget() {
   return (
     <Surface pad="sm" className="home-widget full" aria-labelledby="hw-weather-title">
-      <Text size="eyebrow" id="hw-weather-title">Weather</Text>
-      <Row align="center" justify="between" gap={3}>
-        <Row align="center" gap={3} className="min-w-0">
-          <IconFrame size="xl" tone="accent">
-            <Cloud size={22} aria-hidden="true" />
-          </IconFrame>
-          <Column gap={0} className="min-w-0">
-            <Row align="baseline" gap={1}>
-              <Metric value={18} size="md" />
-              <Text size="detail" color="muted">°C</Text>
-            </Row>
-            <Text size="detail" color="muted">Partly cloudy</Text>
-          </Column>
+      <Column gap={3}>
+        <Text size="eyebrow" id="hw-weather-title">Weather</Text>
+        <Row align="center" justify="between" gap={3}>
+          <Row align="center" gap={3} className="min-w-0">
+            <IconFrame size="xl" tone="accent">
+              <Cloud size={22} aria-hidden="true" />
+            </IconFrame>
+            <Column gap={0} className="min-w-0">
+              <Row align="baseline" gap={1}>
+                <Metric value={18} size="md" />
+                <Text size="detail" color="muted">°C</Text>
+              </Row>
+              <Text size="detail" color="muted">Partly cloudy</Text>
+            </Column>
+          </Row>
+          <Row gap={3} aria-label="Weather details">
+            <Column gap={1} align="center">
+              <Text size="caption" color="muted" mono>12 km/h</Text>
+              <Text size="caption" color="faint">Wind</Text>
+            </Column>
+            <Column gap={1} align="center">
+              <Text size="caption" color="muted" mono>65%</Text>
+              <Text size="caption" color="faint">Hum.</Text>
+            </Column>
+            <Column gap={1} align="center">
+              <Text size="caption" color="muted" mono>UV 3</Text>
+              <Text size="caption" color="faint">UV</Text>
+            </Column>
+          </Row>
         </Row>
-        <Row gap={3} aria-label="Weather details">
-          <Column gap={1} align="center">
-            <Text size="caption" color="muted" mono>12 km/h</Text>
-            <Text size="caption" color="faint">Wind</Text>
-          </Column>
-          <Column gap={1} align="center">
-            <Text size="caption" color="muted" mono>65%</Text>
-            <Text size="caption" color="faint">Hum.</Text>
-          </Column>
-          <Column gap={1} align="center">
-            <Text size="caption" color="muted" mono>UV 3</Text>
-            <Text size="caption" color="faint">UV</Text>
-          </Column>
-        </Row>
-      </Row>
+      </Column>
     </Surface>
   );
 }
@@ -239,25 +245,27 @@ const DOT_COLORS = ['accent', 'ok', 'warn'] as const;
 export function HomeCalendarWidget({ appointments }: { appointments: Appointment[] }) {
   return (
     <Surface pad="sm" className="home-widget full" aria-labelledby="hw-calendar-title">
-      <Text size="eyebrow" id="hw-calendar-title">Today</Text>
-      {appointments.length === 0 ? (
-        <Text size="detail" color="muted">Nothing scheduled today</Text>
-      ) : (
-        <Column gap={0}>
-          {appointments.map((a, i) => (
-            <Fragment key={a.id}>
-              {i > 0 && <Divider />}
-              <Row align="center" gap={3} className="list-item sm">
-                <Dot color={DOT_COLORS[i % 3]} active size="sm" aria-hidden="true" />
-                <Text size="detail" truncate className="min-w-0">{a.title}</Text>
-                <Text mono size="caption" color="muted" className="shrink-0">
-                  {timeStr(a.scheduledAt)}
-                </Text>
-              </Row>
-            </Fragment>
-          ))}
-        </Column>
-      )}
+      <Column gap={3}>
+        <Text size="eyebrow" id="hw-calendar-title">Today</Text>
+        {appointments.length === 0 ? (
+          <Text size="detail" color="muted">Nothing scheduled today</Text>
+        ) : (
+          <Column gap={0}>
+            {appointments.map((a, i) => (
+              <Fragment key={a.id}>
+                {i > 0 && <Divider />}
+                <Row align="center" gap={3} className="list-item sm">
+                  <Dot color={DOT_COLORS[i % 3]} active size="sm" aria-hidden="true" />
+                  <Text size="detail" truncate className="min-w-0">{a.title}</Text>
+                  <Text mono size="caption" color="muted" className="shrink-0">
+                    {timeStr(a.scheduledAt)}
+                  </Text>
+                </Row>
+              </Fragment>
+            ))}
+          </Column>
+        )}
+      </Column>
     </Surface>
   );
 }

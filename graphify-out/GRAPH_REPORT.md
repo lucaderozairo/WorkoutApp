@@ -1,13 +1,13 @@
 # Graph Report - .  (2026-06-19)
 
 ## Corpus Check
-- 632 files Â· ~404,372 words
+- 632 files · ~408,692 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1245 nodes Â· 1656 edges Â· 90 communities detected
-- Extraction: 100% EXTRACTED Â· 0% INFERRED Â· 0% AMBIGUOUS
-- Token cost: 0 input Â· 0 output
+- 1245 nodes · 1656 edges · 90 communities detected
+- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
+- Token cost: 0 input · 0 output
 
 ## God Nodes (most connected - your core abstractions)
 1. `HybridEventStore` - 11 edges

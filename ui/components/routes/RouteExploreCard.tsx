@@ -2,7 +2,7 @@ import { forwardRef, type CSSProperties } from 'react';
 import { Bike, Footprints } from 'lucide-react';
 import { Button } from '@ui/molecules';
 import { Text } from '@ui/atoms';
-import { Column, Row } from '@ui/layout';
+import { Column, Grid, Row } from '@ui/layout';
 import { RoutePreview as RoutePreviewGraphic } from './RoutePreview';
 import type { SavedRoute } from '@features/routes';
 
@@ -50,25 +50,27 @@ export const RouteExploreCard = forwardRef<HTMLButtonElement, {
       style={style}
       onClick={() => onRoute(route)}
     >
-      <span className="route-explore-media">
-        <RouteExplorePreview route={route} />
-      </span>
-      <Column gap={2} className="pad-sm">
-        <Row gap={2} align="center">
-          <Row align="center" justify="center" className="route-card-icon" aria-hidden>
-            {profileIcon(route.profile)}
+      <Grid rows="var(--route-card-media-min) auto" className="self-fill">
+        <span className="route-explore-media">
+          <RouteExplorePreview route={route} />
+        </span>
+        <Column gap={2} className="pad-sm">
+          <Row gap={2} align="center">
+            <Row align="center" justify="center" className="route-card-icon" aria-hidden>
+              {profileIcon(route.profile)}
+            </Row>
+            <Text size="caption" color="muted">
+              {route.profile === 'bike' ? 'Bike' : 'Foot'}
+            </Text>
           </Row>
-          <Text size="caption" color="muted">
-            {route.profile === 'bike' ? 'Bike' : 'Foot'}
-          </Text>
-        </Row>
-        <Text bold truncate>{route.name}</Text>
-        <Text size="caption" className="clamp-2">{route.description ?? ''}</Text>
-        <Row justify="between" gap={2}>
-          <Text size="caption" mono className="shrink-0">{route.distanceKm.toFixed(1)} km</Text>
-          <Text size="caption" color="muted" truncate className="min-w-0">{routeDate(route)}</Text>
-        </Row>
-      </Column>
+          <Text bold truncate>{route.name}</Text>
+          <Text size="caption" className="clamp-2">{route.description ?? ''}</Text>
+          <Row justify="between" gap={2}>
+            <Text size="caption" mono className="shrink-0">{route.distanceKm.toFixed(1)} km</Text>
+            <Text size="caption" color="muted" truncate className="min-w-0">{routeDate(route)}</Text>
+          </Row>
+        </Column>
+      </Grid>
     </Button>
   );
 });
