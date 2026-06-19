@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { stripCommentsAndStrings, tokenize, detectKnownPattern, resolveLayerFiles, computeCoverage, isSubset, buildModel } from './css-chord-graph.mjs';
+import { stripCommentsAndStrings, tokenize, detectKnownPattern, resolveLayerFiles, computeCoverage, isSubset, buildModel, renderHtml } from './css-chord-graph.mjs';
 
 describe('stripCommentsAndStrings', () => {
   it('masks comments and string literals without changing length', () => {
@@ -216,5 +216,19 @@ describe('buildModel', () => {
 
     expect(model.meta.rawRuleBlockCount).toBe(2);
     expect(model.meta.coveredRawRuleBlockCount).toBe(1);
+  });
+});
+
+describe('renderHtml', () => {
+  it('embeds the model JSON, d3.chord usage, and metadata', () => {
+    const model = buildModel({
+      rawBlocks: [],
+      baselineBlocks: [],
+      meta: { scannedFiles: [], baselineFiles: [], orphanFiles: [] },
+    });
+    const html = renderHtml(model);
+    expect(html).toContain('d3.chord(');
+    expect(html).toContain('"generatedAt"');
+    expect(html).toContain('"baselineFiles"');
   });
 });

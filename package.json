@@ -13,6 +13,7 @@
     "lint": "eslint .",
     "lint:ui": "node scripts/check-ui-atomic.mjs",
     "lint:css": "stylelint \"styling/**/*.css\"",
+    "analyze:css-graph": "node scripts/css-chord-graph.mjs",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "storybook": "storybook dev -p 6006",
