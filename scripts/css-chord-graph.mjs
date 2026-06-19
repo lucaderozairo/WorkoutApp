@@ -54,6 +54,79 @@ export function resolveLayerFiles(globalCssText, allFiles, { baselineLayers, raw
   return { baselineFiles, rawFiles, ignoredFiles, orphanFiles, fileLayer, warnings };
 }
 
+export function isSubset(a, b) {
+  for (const key of a) if (!b.has(key)) return false;
+  return true;
+}
+
+function intersect(a, b) {
+  const out = new Set();
+  for (const key of a) if (b.has(key)) out.add(key);
+  return out;
+}
+
+function findCompositeMatch(rawProperties, baselineBlocks) {
+  for (const b1 of baselineBlocks) {
+    const r1 = intersect(rawProperties, b1.properties);
+    if (r1.size === 0) continue;
+    for (const b2 of baselineBlocks) {
+      if (b2.tier === b1.tier) continue;
+      const r2 = intersect(rawProperties, b2.properties);
+      if (r2.size === 0) continue;
+      const union = new Set([...r1, ...r2]);
+      if (union.size === rawProperties.size) {
+        return {
+          parts: [
+            { baseline: { file: b1.file, selector: b1.selector }, matchedKeys: [...r1] },
+            { baseline: { file: b2.file, selector: b2.selector }, matchedKeys: [...r2] },
+          ],
+          uncoveredKeys: [],
+        };
+      }
+    }
+  }
+  return null;
+}
+
+const MIN_COVERAGE_SIZE = 3;
+const NEAR_EXACT_THRESHOLD = 0.8;
+
+export function computeCoverage(rawBlock, baselineBlocks) {
+  const R = rawBlock.properties;
+  const knownPattern = detectKnownPattern(rawBlock.declarations);
+
+  let coveredBySubset = false;
+  let overlapRatio = 0;
+  let coveringBaseline = null;
+  if (R.size >= MIN_COVERAGE_SIZE) {
+    for (const baseline of baselineBlocks) {
+      if (!isSubset(R, baseline.properties)) continue;
+      coveredBySubset = true;
+      const ratio = R.size / baseline.properties.size;
+      if (ratio > overlapRatio) {
+        overlapRatio = ratio;
+        coveringBaseline = baseline;
+      }
+    }
+  }
+
+  const compositeMatch = coveredBySubset ? null : findCompositeMatch(R, baselineBlocks);
+  const nearExact = overlapRatio >= NEAR_EXACT_THRESHOLD;
+  const covered = coveredBySubset || compositeMatch !== null || knownPattern !== null;
+
+  return {
+    covered,
+    coveredBySubset,
+    overlapRatio,
+    nearExact,
+    coveringBaseline: coveringBaseline
+      ? { file: coveringBaseline.file, selector: coveringBaseline.selector, overlapRatio, nearExact }
+      : null,
+    compositeMatch,
+    knownPattern,
+  };
+}
+
 function parseDeclarations(text, frame) {
   const decls = text.split(';');
   for (const statement of decls) {

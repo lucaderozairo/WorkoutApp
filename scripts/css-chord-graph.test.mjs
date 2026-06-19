@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { stripCommentsAndStrings, tokenize, detectKnownPattern, resolveLayerFiles } from './css-chord-graph.mjs';
+import { stripCommentsAndStrings, tokenize, detectKnownPattern, resolveLayerFiles, computeCoverage, isSubset } from './css-chord-graph.mjs';
 
 describe('stripCommentsAndStrings', () => {
   it('masks comments and string literals without changing length', () => {
@@ -127,5 +127,55 @@ describe('resolveLayerFiles', () => {
     expect(result.baselineFiles).toContain('layout.css');
     expect(result.rawFiles).not.toContain('layout.css');
     expect(result.warnings.some((w) => w.includes('layout.css'))).toBe(true);
+  });
+});
+
+function block(props, decls = {}) {
+  return { properties: new Set(props), declarations: new Map(Object.entries(decls)) };
+}
+function baselineBlock(file, selector, props, tier) {
+  return { file, selector, tier, properties: new Set(props) };
+}
+
+describe('isSubset', () => {
+  it('returns true only when every key of a is in b', () => {
+    expect(isSubset(new Set(['x']), new Set(['x', 'y']))).toBe(true);
+    expect(isSubset(new Set(['x', 'z']), new Set(['x', 'y']))).toBe(false);
+  });
+});
+
+describe('computeCoverage', () => {
+  const baselineBlocks = [
+    baselineBlock('layout.css', '.row', ['display', 'flex-direction', 'gap'], 'layout'),
+    baselineBlock('layout.css', '.grid-center', ['display', 'place-items'], 'layout'),
+    baselineBlock('typography.css', '.muted', ['color'], 'base'),
+  ];
+
+  it('does not classify a raw block under the size-3 gate as covered, even if it is a literal subset', () => {
+    const result = computeCoverage(block(['display', 'gap']), baselineBlocks);
+    expect(result.coveredBySubset).toBe(false);
+    expect(result.covered).toBe(false);
+  });
+
+  it('marks a 3+-key raw block with overlap >= 0.8 as nearExact', () => {
+    const result = computeCoverage(block(['display', 'flex-direction', 'gap']), baselineBlocks);
+    expect(result.coveredBySubset).toBe(true);
+    expect(result.nearExact).toBe(true);
+  });
+
+  it('finds a 2-part composite match for the route-preview-empty worked example', () => {
+    const raw = block(['display', 'place-items', 'color'], { display: 'grid' });
+    const result = computeCoverage(raw, baselineBlocks);
+    expect(result.coveredBySubset).toBe(false);
+    expect(result.compositeMatch).not.toBeNull();
+    expect(result.compositeMatch.uncoveredKeys).toEqual([]);
+    expect(result.covered).toBe(true);
+  });
+
+  it('classifies a block as covered via knownPattern even when no baseline block matches', () => {
+    const raw = block(['display', 'flex-direction', 'animation-delay'], { display: 'flex', 'flex-direction': 'column' });
+    const result = computeCoverage(raw, baselineBlocks);
+    expect(result.knownPattern).toBe('column');
+    expect(result.covered).toBe(true);
   });
 });
