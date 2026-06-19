@@ -45,6 +45,37 @@ export function expandOwnerSelectors(selectorText) {
   return [trimmed];
 }
 
+const IMPORT_RE = /@import\s+["']\.\/([^"']+)["']\s+layer\(([\w-]+)\)/g;
+
+export function resolveLayerFiles(globalCssText, allFiles, { baselineLayers, rawLayers }) {
+  const fileLayer = new Map();
+  const warnings = [];
+  let match;
+  IMPORT_RE.lastIndex = 0;
+  while ((match = IMPORT_RE.exec(globalCssText))) {
+    const [, fileName, layer] = match;
+    if (fileLayer.has(fileName)) {
+      warnings.push(`${fileName} imported under multiple layers: ${fileLayer.get(fileName)}, ${layer}`);
+      continue;
+    }
+    fileLayer.set(fileName, layer);
+  }
+
+  const baselineFiles = [];
+  const rawFiles = [];
+  const ignoredFiles = [];
+  for (const [fileName, layer] of fileLayer) {
+    if (baselineLayers.includes(layer)) baselineFiles.push(fileName);
+    else if (rawLayers.includes(layer)) rawFiles.push(fileName);
+    else ignoredFiles.push(fileName);
+  }
+
+  const imported = new Set(fileLayer.keys());
+  const orphanFiles = allFiles.filter((f) => !imported.has(f));
+
+  return { baselineFiles, rawFiles, ignoredFiles, orphanFiles, fileLayer, warnings };
+}
+
 export function tokenize(cssText, file) {
   const css = stripCommentsAndStrings(cssText);
   const blocks = [];
