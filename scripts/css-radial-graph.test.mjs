@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { stripCommentsAndStrings, tokenize } from './css-radial-graph.mjs';
+import { stripCommentsAndStrings, tokenize, expandOwnerSelectors } from './css-radial-graph.mjs';
 
 describe('stripCommentsAndStrings', () => {
   it('masks comments and string literals without changing length', () => {
@@ -43,5 +43,23 @@ describe('tokenize', () => {
     const blocks = tokenize(css, 'layout.css');
     expect(blocks[0].selector).toBe(':is(.row, .column, .scroll-row)');
     expect(blocks[0].declarations.get('gap')).toBe('var(--s-3)');
+  });
+});
+
+describe('expandOwnerSelectors', () => {
+  it('expands a whole-selector :is(...) group into its member selectors', () => {
+    expect(expandOwnerSelectors(':is(.row, .column, .scroll-row)')).toEqual(['.row', '.column', '.scroll-row']);
+  });
+
+  it('expands :where(...) the same way', () => {
+    expect(expandOwnerSelectors(':where(.a, .b)')).toEqual(['.a', '.b']);
+  });
+
+  it('treats a plain selector as a single owner', () => {
+    expect(expandOwnerSelectors('.row')).toEqual(['.row']);
+  });
+
+  it('does not expand a compound selector with an embedded :is(...) (out of scope)', () => {
+    expect(expandOwnerSelectors('.foo :is(.row, .column) .bar')).toEqual(['.foo :is(.row, .column) .bar']);
   });
 });

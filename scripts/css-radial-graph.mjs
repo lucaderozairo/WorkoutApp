@@ -24,6 +24,15 @@ function parseDeclarations(text, frame) {
   }
 }
 
+export function expandOwnerSelectors(selectorText) {
+  const trimmed = selectorText.trim();
+  const match = /^:(?:is|where)\(([^)]*)\)$/.exec(trimmed);
+  if (match) {
+    return match[1].split(',').map((s) => s.trim()).filter(Boolean);
+  }
+  return [trimmed];
+}
+
 export function tokenize(cssText, file) {
   const css = stripCommentsAndStrings(cssText);
   const blocks = [];
