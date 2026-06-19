@@ -50,7 +50,7 @@ export const handleCreateHabit = defineCommand<CreateHabit, Id<'Habit'>>({
 
 export const handleLogHabitCompletion = defineCommand<LogHabitCompletion>({
   execute: async (cmd) => {
-    const habits = viewStore.get<Habit[]>('habits_today') ?? [];
+    const habits = viewStore.get('habits_today') ?? [];
     const habit = habits.find((entry) => entry.id === cmd.habitId);
     if (!habit || habit.completedToday) return { events: [] };
 

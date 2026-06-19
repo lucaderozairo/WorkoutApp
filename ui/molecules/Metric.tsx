@@ -1,6 +1,6 @@
 // .metric CSS sets display:inline-flex, align-items:baseline, gap:s-2
 // so value + unit sit inline without a Row wrapper
-import { Text } from './Text';
+import { Text } from '@ui/atoms';
 
 interface MetricProps {
   value: string | number;
@@ -14,7 +14,7 @@ export function Metric({ value, unit, size = 'md', mono, className }: MetricProp
   const classes = ['metric', size !== 'md' ? size : '', mono ? 'mono' : '', className].filter(Boolean).join(' ');
   return (
     <span className={classes}>
-      <span>{value}</span>
+      <Text as="span">{value}</Text>
       {unit && <Text as="span" size="caption" color="muted" className="unit">{unit}</Text>}
     </span>
   );

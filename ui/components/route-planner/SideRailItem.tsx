@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 import { Button } from '../../molecules/Button';
+import { Column } from '@ui/layout';
+import { Text } from '@ui/atoms';
 
 interface SideRailItemProps {
   id: string;
@@ -21,8 +23,10 @@ export function SideRailItem({ id, label, icon, active, onClick }: SideRailItemP
       aria-pressed={active}
       data-panel={id}
     >
-      {icon}
-      <span>{label}</span>
+      <Column align="center" gap={1}>
+        {icon}
+        <Text size="eyebrow">{label}</Text>
+      </Column>
     </Button>
   );
 }

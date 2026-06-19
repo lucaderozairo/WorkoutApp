@@ -87,17 +87,17 @@ function buildSleepHistory(): SleepEntryView[] {
 
 export function seedMockDataIfEmpty(): void {
   // ── Workouts ────────────────────────────────────────────────────────────────
-  const existingSessions = viewStore.get<ActivitiesState>('sessions');
+  const existingSessions = viewStore.get('sessions');
   if (!existingSessions || Object.keys(existingSessions.byId).length === 0) {
     viewStore.set('sessions', MOCK_SESSIONS_STATE);
   }
 
-  const cardio = viewStore.get<RecentCardioView>('recent_cardio_sessions');
+  const cardio = viewStore.get('recent_cardio_sessions');
   if (!cardio || cardio.sessions.length === 0) {
     viewStore.set('recent_cardio_sessions', { sessions: MOCK_CARDIO_SESSIONS });
   }
 
-  const existingProgressions = viewStore.get<ProgressionState>('exercise_progressions');
+  const existingProgressions = viewStore.get('exercise_progressions');
   const progressionsStale =
     !existingProgressions ||
     Object.values(existingProgressions).some(
@@ -108,7 +108,7 @@ export function seedMockDataIfEmpty(): void {
   }
 
   // ── Routes ──────────────────────────────────────────────────────────────────
-  const existingRoutes = viewStore.get<SavedRoute[]>('saved_routes') ?? [];
+  const existingRoutes = viewStore.get('saved_routes') ?? [];
   const existingIds = new Set(existingRoutes.map(r => r.id));
   const missingRoutes = MOCK_SAVED_ROUTES.filter(r => !existingIds.has(r.id));
   if (missingRoutes.length > 0) {
@@ -116,7 +116,7 @@ export function seedMockDataIfEmpty(): void {
   }
 
   // ── Sleep ───────────────────────────────────────────────────────────────────
-  const sleepHistory = viewStore.get<SleepEntryView[]>('sleep_history') ?? [];
+  const sleepHistory = viewStore.get('sleep_history') ?? [];
   if (sleepHistory.length === 0) {
     viewStore.set('sleep_history', buildSleepHistory());
   }
@@ -176,7 +176,7 @@ export function seedMockDataIfEmpty(): void {
   }
 
   // ── Health charts ───────────────────────────────────────────────────────────
-  const existingHealthCharts = viewStore.get<HealthChartMap>('health_charts');
+  const existingHealthCharts = viewStore.get('health_charts');
   if (!existingHealthCharts || Object.keys(existingHealthCharts).length === 0) {
     void handleSeedHealthCharts({ type: 'SeedHealthCharts', charts: CATEGORY_MOCK_CHARTS });
   }

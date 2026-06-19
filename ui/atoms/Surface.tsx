@@ -1,8 +1,8 @@
 import { forwardRef } from 'react';
 import type { ElementType, HTMLAttributes, ReactNode } from 'react';
 
-type SurfaceVariant = 'default' | 'plain' | 'flat' | 'accent' | 'ghost' | 'inset' | 'pinned';
-type SurfacePad = 'md' | 'sm' | 'xs' | 'none';
+export type SurfaceVariant = 'default' | 'plain' | 'flat' | 'accent' | 'ghost' | 'inset' | 'pinned';
+export type SurfacePad = 'md' | 'sm' | 'xs' | 'none';
 type SurfaceAs = 'div' | 'section' | 'article' | 'aside' | 'nav' | 'header' | 'footer' | 'main' | 'button';
 
 interface SurfaceProps extends Omit<HTMLAttributes<HTMLElement>, 'children' | 'onClick'> {

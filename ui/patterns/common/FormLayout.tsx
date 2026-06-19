@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { ResponsiveFrame, Stack } from '@ui/layout';
+import { ResponsiveFrame, Stack, Row } from '@ui/layout';
 
 interface FormLayoutProps {
   header?: ReactNode;
@@ -14,7 +14,7 @@ export function FormLayout({ header, actions, children, className }: FormLayoutP
       <Stack gap={4}>
         {header}
         <div className="form-layout-body">{children}</div>
-        {actions ? <div className="form-layout-actions">{actions}</div> : null}
+        {actions ? <Row justify="end" gap={2}>{actions}</Row> : null}
       </Stack>
     </ResponsiveFrame>
   );

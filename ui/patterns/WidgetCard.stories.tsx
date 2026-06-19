@@ -19,8 +19,7 @@ export const Default: Story = {
 
 export const Loading: Story = {
   args: {
-    label: 'Weekly load',
-    loading: true,
     children: null,
   },
+  render: () => <WidgetCard.Skeleton label footer />,
 };

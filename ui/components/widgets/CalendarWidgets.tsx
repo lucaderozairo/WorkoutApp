@@ -1,7 +1,7 @@
 import { useQuery } from '@ui/bindings';
 import { Grid, Row, Column } from '@ui/layout';
-import { DataValue, Surface, Text } from '@ui/atoms';
-import { Badge, Button } from '@ui/molecules';
+import { Surface, Text } from '@ui/atoms';
+import { Badge, Button, DataValue } from '@ui/molecules';
 import type { SportType } from '@features/training_log/domain/types';
 import type { MockCalendarEvent } from '@features/scheduling';
 

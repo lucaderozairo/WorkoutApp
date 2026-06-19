@@ -272,7 +272,7 @@ const SkHomeScreen: FC<{push?:(r:NavRoute)=>void; device?:Device; dark?:boolean}
   const isTablet  = device==="tablet";
   const isDesktop = device==="desktop";
   const isWide    = isTablet||isDesktop;
-  const gridCols  = isDesktop?4:isTablet?3:2;
+  const gridCols  = isDesktop?4:isTablet?4:2;
   const sleepSpan = Math.min(2,gridCols);
 
   const MainColumn = (

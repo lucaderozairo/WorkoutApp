@@ -1,34 +1,106 @@
 /* ── CSS custom property registrations (non-inheriting) ── */
-@property --grid-cols      { syntax: '*'; inherits: false; initial-value: 1fr; }
-@property --grid-rows      { syntax: '*'; inherits: false; initial-value: none; }
-@property --grid-auto-rows { syntax: '*'; inherits: false; initial-value: auto; }
-@property --grid-flow      { syntax: '*'; inherits: false; initial-value: row; }
-@property --grid-gap       { syntax: '*'; inherits: false; initial-value: 0px; }
-@property --grid-place     { syntax: '*'; inherits: false; initial-value: normal; }
-@property --grid-content   { syntax: '*'; inherits: false; initial-value: normal; }
-@property --grid-areas     { syntax: '*'; inherits: false; initial-value: none; }
-@property --col-span       { syntax: '*'; inherits: false; initial-value: auto; }
-@property --row-span       { syntax: '*'; inherits: false; initial-value: auto; }
-@property --place-self     { syntax: '*'; inherits: false; initial-value: auto; }
-@property --area           { syntax: '*'; inherits: false; initial-value: auto; }
-@property --layer-z        { syntax: '<integer>'; inherits: false; initial-value: 1; }
-@property --frame-max      { syntax: '*'; inherits: false; initial-value: 960px; }
-@property --frame-pad      { syntax: '<length>'; inherits: false; initial-value: 16px; }
-@property --sticky-offset  { syntax: '<length>'; inherits: false; initial-value: 0px; }
-@property --split-primary  { syntax: '*'; inherits: false; initial-value: minmax(280px, 360px); }
-@property --split-secondary { syntax: '*'; inherits: false; initial-value: minmax(0, 1fr); }
+@property --grid-cols {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1fr;
+}
+@property --grid-rows {
+  syntax: "*";
+  inherits: false;
+  initial-value: none;
+}
+@property --grid-auto-rows {
+  syntax: "*";
+  inherits: false;
+  initial-value: auto;
+}
+@property --grid-flow {
+  syntax: "*";
+  inherits: false;
+  initial-value: row;
+}
+@property --grid-gap {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0px;
+}
+@property --grid-place {
+  syntax: "*";
+  inherits: false;
+  initial-value: normal;
+}
+@property --grid-content {
+  syntax: "*";
+  inherits: false;
+  initial-value: normal;
+}
+@property --grid-areas {
+  syntax: "*";
+  inherits: false;
+  initial-value: none;
+}
+@property --col-span {
+  syntax: "*";
+  inherits: false;
+  initial-value: auto;
+}
+@property --row-span {
+  syntax: "*";
+  inherits: false;
+  initial-value: auto;
+}
+@property --place-self {
+  syntax: "*";
+  inherits: false;
+  initial-value: auto;
+}
+@property --area {
+  syntax: "*";
+  inherits: false;
+  initial-value: auto;
+}
+@property --layer-z {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 1;
+}
+@property --frame-max {
+  syntax: "*";
+  inherits: false;
+  initial-value: 960px;
+}
+@property --frame-pad {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 16px;
+}
+@property --sticky-offset {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+@property --split-primary {
+  syntax: "*";
+  inherits: false;
+  initial-value: minmax(280px, 360px);
+}
+@property --split-secondary {
+  syntax: "*";
+  inherits: false;
+  initial-value: minmax(0, 1fr);
+}
 
 /* ── Grid container — all config via CSS variables set by Grid.tsx ── */
 .grid {
   display: grid;
   grid-template-columns: var(--grid-cols, 1fr);
-  grid-template-rows:    var(--grid-rows, none);
-  grid-template-areas:   var(--grid-areas, none);
-  grid-auto-rows:        var(--grid-auto-rows, auto);
-  grid-auto-flow:        var(--grid-flow, row);
-  gap:                   var(--grid-gap, var(--s-3));
-  place-items:           var(--grid-place, normal);
-  place-content:         var(--grid-content, normal);
+  grid-template-rows: var(--grid-rows, none);
+  grid-template-areas: var(--grid-areas, none);
+  grid-auto-rows: var(--grid-auto-rows, auto);
+  grid-auto-flow: var(--grid-flow, row);
+  gap: var(--grid-gap, var(--s-3));
+  place-items: var(--grid-place, normal);
+  place-content: var(--grid-content, normal);
 
   &.grid-single {
     --grid-cols: 1fr;
@@ -75,20 +147,32 @@
     --grid-gap: var(--s-2);
   }
 
-  &.gap-0 { --grid-gap: 0; }
-  &.gap-1 { --grid-gap: var(--s-1); }
-  &.gap-2 { --grid-gap: var(--s-2); }
-  &.gap-3 { --grid-gap: var(--s-3); }
-  &.gap-4 { --grid-gap: var(--s-4); }
-  &.gap-5 { --grid-gap: var(--s-5); }
+  &.gap-0 {
+    --grid-gap: 0;
+  }
+  &.gap-1 {
+    --grid-gap: var(--s-1);
+  }
+  &.gap-2 {
+    --grid-gap: var(--s-2);
+  }
+  &.gap-3 {
+    --grid-gap: var(--s-3);
+  }
+  &.gap-4 {
+    --grid-gap: var(--s-4);
+  }
+  &.gap-5 {
+    --grid-gap: var(--s-5);
+  }
 
   /* ── Grid item — span + placement for children of .grid ── */
   & > .grid-item {
-    grid-area:   var(--area, auto);
+    grid-area: var(--area, auto);
     grid-column: var(--col-span, auto);
-    grid-row:    var(--row-span);
-    place-self:  var(--place-self, auto);
-    min-width:   0;
+    grid-row: var(--row-span);
+    place-self: var(--place-self, auto);
+    min-width: 0;
   }
 }
 
@@ -217,11 +301,21 @@
 }
 
 /* layer-z-* classes for Layered/Layer component — reference token scale */
-.layer-z-base     { --layer-z: var(--z-base,     0); }
-.layer-z-content  { --layer-z: var(--z-content,  1); }
-.layer-z-controls { --layer-z: var(--z-controls, 2); }
-.layer-z-sticky   { --layer-z: var(--z-sticky,   3); }
-.layer-z-fixed    { --layer-z: var(--z-fixed,    4); }
+.layer-z-base {
+  --layer-z: var(--z-base, 0);
+}
+.layer-z-content {
+  --layer-z: var(--z-content, 1);
+}
+.layer-z-controls {
+  --layer-z: var(--z-controls, 2);
+}
+.layer-z-sticky {
+  --layer-z: var(--z-sticky, 3);
+}
+.layer-z-fixed {
+  --layer-z: var(--z-fixed, 4);
+}
 
 /* ── Flex layout primitives ── */
 
@@ -230,34 +324,77 @@
   display: flex;
 
   /* gap scale — mirrors token scale directly (gap-{n} = --s-{n}) */
-  &.gap-0 { gap: 0; }
-  &.gap-1 { gap: var(--s-1); }
-  &.gap-2 { gap: var(--s-2); }
-  &.gap-3 { gap: var(--s-3); }
-  &.gap-4 { gap: var(--s-4); }
-  &.gap-5 { gap: var(--s-5); }
+  &.gap-0 {
+    gap: 0;
+  }
+  &.gap-1 {
+    gap: var(--s-1);
+  }
+  &.gap-2 {
+    gap: var(--s-2);
+  }
+  &.gap-3 {
+    gap: var(--s-3);
+  }
+  &.gap-4 {
+    gap: var(--s-4);
+  }
+  &.gap-5 {
+    gap: var(--s-5);
+  }
 
   /* align-items */
-  &.align-start    { align-items: flex-start; }
-  &.align-center   { align-items: center; }
-  &.align-end      { align-items: flex-end; }
-  &.align-stretch  { align-items: stretch; }
-  &.align-baseline { align-items: baseline; }
+  &.align-start {
+    align-items: flex-start;
+  }
+  &.align-center {
+    align-items: center;
+  }
+  &.align-end {
+    align-items: flex-end;
+  }
+  &.align-stretch {
+    align-items: stretch;
+  }
+  &.align-baseline {
+    align-items: baseline;
+  }
 
   /* justify-content */
-  &.justify-start   { justify-content: flex-start; }
-  &.justify-center  { justify-content: center; }
-  &.justify-end     { justify-content: flex-end; }
-  &.justify-between { justify-content: space-between; }
-  &.justify-around  { justify-content: space-around; }
+  &.justify-start {
+    justify-content: flex-start;
+  }
+  &.justify-center {
+    justify-content: center;
+  }
+  &.justify-end {
+    justify-content: flex-end;
+  }
+  &.justify-between {
+    justify-content: space-between;
+  }
+  &.justify-around {
+    justify-content: space-around;
+  }
 
-  &.wrap { flex-wrap: wrap; }
+  &.wrap {
+    flex-wrap: wrap;
+  }
 }
 
 /* direction + default gap per primitive */
-.row    { flex-direction: row;    gap: var(--s-3); }
-.column { flex-direction: column; gap: var(--s-4); }
-.stack  { flex-direction: column; gap: var(--s-4); }
+.row {
+  flex-direction: row;
+  gap: var(--s-3);
+}
+.column {
+  flex-direction: column;
+  gap: var(--s-4);
+}
+.stack {
+  flex-direction: column;
+  gap: var(--s-4);
+}
 
 /* .cluster: wrapping row for chips/tags — stays independent (different default gap, always wraps).
    Gap modifiers come from the shared :is(.row, .column, .cluster) rule above. */
@@ -266,16 +403,16 @@
   align-items: center;
   gap: var(--s-2);
 }
-
-/* legacy aliases — partially purged; remaining usages in molecules/nav/buttons pending full removal */
-
 /* .row.scroll — horizontal scroll row; .column.scroll — vertical scroll column */
 .row {
   &.scroll {
     overflow-x: auto;
     scrollbar-width: none;
     gap: var(--s-1);
-    & > * { flex-shrink: 0; width: auto; }
+    & > * {
+      flex-shrink: 0;
+      width: auto;
+    }
   }
 }
 .column {
@@ -294,21 +431,45 @@
   padding-inline: var(--frame-pad);
   min-width: 0;
 
-  &.responsive-frame-max-form { --frame-max: 480px; }
-  &.responsive-frame-max-content { --frame-max: 960px; }
-  &.responsive-frame-max-wide { --frame-max: 1200px; }
-  &.responsive-frame-max-none { --frame-max: none; }
+  &.responsive-frame-max-form {
+    --frame-max: 480px;
+  }
+  &.responsive-frame-max-content {
+    --frame-max: 960px;
+  }
+  &.responsive-frame-max-wide {
+    --frame-max: 1200px;
+  }
+  &.responsive-frame-max-none {
+    --frame-max: none;
+  }
 
-  &.responsive-frame-pad-none { --frame-pad: 0; }
-  &.responsive-frame-pad-sm { --frame-pad: var(--s-2); }
-  &.responsive-frame-pad-md { --frame-pad: var(--s-4); }
-  &.responsive-frame-pad-lg { --frame-pad: var(--s-6); }
+  &.responsive-frame-pad-none {
+    --frame-pad: 0;
+  }
+  &.responsive-frame-pad-sm {
+    --frame-pad: var(--s-2);
+  }
+  &.responsive-frame-pad-md {
+    --frame-pad: var(--s-4);
+  }
+  &.responsive-frame-pad-lg {
+    --frame-pad: var(--s-6);
+  }
 
-  &.responsive-frame-mobile { --frame-max: none; --frame-pad: var(--s-3); }
-  &.responsive-frame-tablet { --frame-max: 720px; }
-  &.responsive-frame-desktop { --frame-max: 960px; }
-  &.responsive-frame-wide { --frame-max: 1200px; }
-
+  &.responsive-frame-mobile {
+    --frame-max: none;
+    --frame-pad: var(--s-3);
+  }
+  &.responsive-frame-tablet {
+    --frame-max: 768px;
+  }
+  &.responsive-frame-desktop {
+    --frame-max: 960px;
+  }
+  &.responsive-frame-wide {
+    --frame-max: 1200px;
+  }
 }
 
 @media (max-width: 599px) {
@@ -388,9 +549,20 @@
 
 /* ── Narrow viewport (≤360px) ── */
 @media (max-width: 360px) {
-  .row    { flex-wrap: wrap; gap: var(--s-2); }
-  .column { gap: var(--s-2); }
-  h1 { font-size: var(--t-xl); }
-  h2 { font-size: var(--t-lg); }
-  h3 { font-size: var(--t-md); }
+  .row {
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+  .column {
+    gap: var(--s-2);
+  }
+  h1 {
+    font-size: var(--t-xl);
+  }
+  h2 {
+    font-size: var(--t-lg);
+  }
+  h3 {
+    font-size: var(--t-md);
+  }
 }

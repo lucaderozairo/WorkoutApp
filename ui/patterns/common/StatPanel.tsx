@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Metric } from '@ui/atoms/Metric';
+import { Metric } from '@ui/molecules/Metric';
 import { Text } from '@ui/atoms';
 import { Row } from '@ui/layout/Row';
 import { Column } from '@ui/layout/Column';

@@ -149,18 +149,6 @@ export function App() {
                 element={<EditSessionScreen />}
               />
               <Route path="/sessions/new" element={<NewSessionScreen />} />
-              <Route
-                path="/log"
-                element={<Navigate to="/sessions" replace />}
-              />
-              <Route
-                path="/log/:sessionId"
-                element={<Navigate to="/sessions/:sessionId" replace />}
-              />
-              <Route
-                path="/new-session"
-                element={<Navigate to="/sessions/new" replace />}
-              />
               {APP_MODE !== "github-pages" && (
                 <>
                   {/* <Route path="/schedule" element={<TrainingPlansScreen />} /> */}
@@ -174,7 +162,9 @@ export function App() {
                 path="/exercise/:exerciseName"
                 element={<ExerciseHistoryScreen />}
               />
+              
               <Route path="/weather" element={<WeatherScreen />} />
+
               <Route path="/profile" element={<ProfileScreen />} />
               <Route
                 path="/profile/health/:category"
@@ -182,12 +172,11 @@ export function App() {
               />
               <Route path="/settings" element={<SettingsScreen />} />
               <Route path="/notifications" element={<NotificationsScreen />} />
+
               <Route path="/routes" element={<RoutesScreen />} />
               <Route path="/routes/new" element={<RouteBuilderScreen />} />
               <Route path="/routes/:routeId" element={<RouteOverviewScreen />} />
               <Route path="/routes/:routeId/edit" element={<RouteBuilderScreen />} />
-              <Route path="/plan-route" element={<Navigate to="/routes/new" replace />} />
-              <Route path="/saved-routes" element={<Navigate to="/routes" replace />} />
               <Route path="*" element={<Navigate to="/home" replace />} />
             </Routes>
           </Suspense>

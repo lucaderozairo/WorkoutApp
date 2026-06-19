@@ -4,6 +4,8 @@ node_modules/
 # Build output
 dist/
 dist-ssr/
+coverage/
+.vite/
 
 # Environment variables — NEVER commit these
 .env
@@ -35,6 +37,7 @@ Thumbs.db
 
 # Misc
 *.stackdump
+*.pid
 build-out.txt
 tsc-out.txt
 vite-prototype.err
@@ -43,15 +46,20 @@ vite-prototype.log
 legacy/
 
 # IDE configs
-.cursor/
-.qwen/
-
-# Agent tooling
+.agents/
 .claude-flow/
+.claude/
+.codex/
 .code-review-graph/
-graphify-out/
-.worktrees/
+.impeccable/
+.playwright-mcp/
 .superpowers/
+.worktrees/
+graphify-out/
+
+# Graphify helper files generated locally
+.graphify_detect.json
+.graphify_python
 
 *storybook.log
 storybook-static

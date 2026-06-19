@@ -22,14 +22,12 @@
   /* display:none here (molecules layer) wins over .surface { display:block } (atoms layer),
      restoring the UA popover hiding that .surface would otherwise override. */
   display: none;
-  flex-direction: column;
-  gap: var(--s-4);
-  margin: auto auto 0;
+  margin: auto auto;
   width: 100%;
   max-width: var(--modal-md);
   max-height: 80vh;
   overflow-y: auto;
-  border-radius: var(--r-md) var(--r-md) 0 0;
+  border-radius: var(--r-md);
   padding: var(--s-5);
   transition:
     opacity var(--duration-medium) var(--ease),
@@ -201,9 +199,6 @@
   }
 
   & .body {
-    display: flex;
-    flex-direction: column;
-    gap: var(--s-3);
     padding: 0 var(--s-4) var(--s-4);
   }
 }

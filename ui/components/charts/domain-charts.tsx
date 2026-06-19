@@ -15,6 +15,7 @@ import type { DailyLoad } from '@features/progress_analysis';
 import type { GpsPoint } from '@data/sources/files/gps';
 import { distanceMeters } from '@shared/geo';
 import { formatPace } from '@shared/utils';
+import { Text } from '@ui/atoms';
 
 // ─── Shared chart constants ───────────────────────────────────────────────────
 
@@ -663,7 +664,7 @@ export function KmSplitsTable({ points }: { points: GpsPoint[] }) {
       <tbody>
         {splits.map(s => (
           <tr key={s.km}>
-            <td>{s.partial ? fmtDist(s.distanceM!) : s.km}</td>
+            <td><Text size="caption" bold>{s.partial ? fmtDist(s.distanceM!) : s.km}</Text></td>
             <td>{fmtPace(s.paceMinPerKm)}/km</td>
             <td>{s.avgHr != null ? `${s.avgHr} bpm` : '—'}</td>
             <td className={s.elevDeltaM > 0 ? 'elev-up' : s.elevDeltaM < 0 ? 'elev-down' : ''}>

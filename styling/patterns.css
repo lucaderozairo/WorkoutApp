@@ -12,7 +12,9 @@
 }
 
 @media (width >= 600px) {
-  .split-tabs-mobile { display: none; }
+  .split-tabs-mobile {
+    display: none;
+  }
 
   .split-tabs-split {
     display: grid;
@@ -44,7 +46,8 @@
 .list-detail-layout {
   align-items: start;
 
-  @media (max-width: 780px) {
+  /* --bp-md */
+  @media (max-width: 1023px) {
     --grid-cols: 1fr;
   }
 }
@@ -62,8 +65,12 @@
   padding-inline-start: calc((var(--toc-level, 1) - 1) * var(--s-3));
   text-decoration: none;
 
-  &[data-level="2"] { --toc-level: 2; }
-  &[data-level="3"] { --toc-level: 3; }
+  &[data-level="2"] {
+    --toc-level: 2;
+  }
+  &[data-level="3"] {
+    --toc-level: 3;
+  }
 
   &[aria-current="location"] {
     color: var(--ink);
@@ -119,7 +126,7 @@
 
   & .adaptive-presentation-panel {
     width: min(100%, var(--modal-md));
-    max-height: min(80vh, 720px);
+    max-height: min(80vh, 768px);
     overflow: auto;
   }
 
@@ -133,7 +140,8 @@
     padding: 0;
     align-items: end;
 
-    &:is(.adaptive-mobile-screen, .adaptive-mobile-sheet) .adaptive-presentation-panel {
+    &:is(.adaptive-mobile-screen, .adaptive-mobile-sheet)
+      .adaptive-presentation-panel {
       width: 100%;
       max-width: none;
       max-height: 100dvh;
@@ -164,7 +172,7 @@
       align-items: end;
 
       & .adaptive-presentation-panel {
-        width: min(720px, 100%);
+        width: min(768px, 100%);
         border-radius: var(--r-md) var(--r-md) 0 0;
       }
     }
@@ -203,7 +211,7 @@
   container: dashboard-grid / inline-size;
 }
 
-@container dashboard-grid (min-width: 720px) {
+@container dashboard-grid (min-width: 768px) {
   .dashboard-grid {
     --grid-cols: repeat(auto-fit, minmax(180px, 1fr));
   }
@@ -212,7 +220,7 @@
 .map-workspace {
   display: grid;
   grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
-  min-height: min(720px, 100dvh);
+  min-height: min(768px, 100dvh);
   border: 1px solid var(--line);
   border-radius: var(--r-md);
   overflow: hidden;
@@ -252,12 +260,6 @@
 .form-layout {
   & .form-layout-body {
     min-width: 0;
-  }
-
-  & .form-layout-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: var(--s-2);
   }
 }
 

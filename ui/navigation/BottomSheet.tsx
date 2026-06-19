@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Column } from '@ui/layout';
 
 type Snap = 'peek' | 'mid' | 'full';
 
@@ -12,7 +13,7 @@ export function BottomSheet({ snap, children }: BottomSheetProps) {
   return (
     <div className="bottom-sheet" data-snap={snap}>
       <div data-role="handle" />
-      <div className="body">{children}</div>
+      <Column gap={3} className="body">{children}</Column>
     </div>
   );
 }

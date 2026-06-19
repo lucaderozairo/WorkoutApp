@@ -75,7 +75,7 @@ export function HomeScreen() {
 
       <SplitTabs panels={statPanels} />
 
-      <Section label="Widgets">
+      <Section label="Widgets" labelSurface='ghost'>
         <div className="widget-grid">
           {lastNight && <HomeSleepWidget session={lastNight} />}
           <HomeWeatherWidget />

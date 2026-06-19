@@ -3,14 +3,10 @@ import type { RecentRoutine, TemplateState, WorkoutTemplate } from '../domain/ty
 import { getVisibleTemplates } from '../domain/reducers';
 import { buildRecentRoutinesFromSessions } from '../projections';
 
-interface SessionsSnapshot {
-  byId: Record<string, Parameters<typeof buildRecentRoutinesFromSessions>[0][string]>;
-}
-
 export function getTemplates(): WorkoutTemplate[] {
-  const state = viewStore.get<TemplateState>('template_state');
+  const state = viewStore.get('template_state');
   if (state) return getVisibleTemplates(state);
-  return viewStore.get<WorkoutTemplate[]>('template_list') ?? [];
+  return viewStore.get('template_list') ?? [];
 }
 
 export function getFavoriteTemplates(): WorkoutTemplate[] {
@@ -22,7 +18,7 @@ export function getTemplate(templateId: string): WorkoutTemplate | null {
 }
 
 export function getRecentRoutines(): RecentRoutine[] {
-  const sessions = viewStore.get<SessionsSnapshot>('sessions');
+  const sessions = viewStore.get('sessions');
   if (sessions) return buildRecentRoutinesFromSessions(sessions.byId);
-  return viewStore.get<RecentRoutine[]>('recent_routines') ?? [];
+  return viewStore.get('recent_routines') ?? [];
 }

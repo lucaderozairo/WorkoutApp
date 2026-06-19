@@ -13,7 +13,7 @@ export interface ImportCardioResult {
 }
 
 function applyAndStoreCardio(events: CardioEvent[]): void {
-  const live = viewStore.get<RecentCardioView>('recent_cardio_sessions') ?? loadFromStorage<RecentCardioView>('recent_cardio_sessions');
+  const live = viewStore.get('recent_cardio_sessions') ?? loadFromStorage<RecentCardioView>('recent_cardio_sessions');
   if (live) recentCardioProjection.setState(live);
   events.forEach(e => {
     recentCardioProjection.apply(e);

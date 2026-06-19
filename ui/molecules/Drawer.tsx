@@ -47,7 +47,7 @@ export function Drawer({ open, onClose, title, side = 'right', footer, children 
             <X size={16} aria-hidden="true" />
           </Button>
         </Row>
-        <Column gap={3} className="grow min-h-0 scroll-y">
+        <Column gap={3} grow className="scroll-y">
           {children}
         </Column>
         {footer ? <Row justify="end" gap={2}>{footer}</Row> : null}

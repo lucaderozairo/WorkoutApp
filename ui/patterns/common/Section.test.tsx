@@ -9,6 +9,24 @@ describe('Section', () => {
     expect(screen.getByText('Last Sessions')).toBeInTheDocument();
   });
 
+  it('renders the label inside a surface when labelSurface is provided', () => {
+    const { container } = render(
+      <Section label="Last Sessions" labelSurface="ghost">
+        content
+      </Section>,
+    );
+
+    expect(screen.getByText('Last Sessions').closest('.surface.ghost')).not.toBeNull();
+    expect(container.querySelector('section[aria-labelledby]')).not.toBeNull();
+  });
+
+  it('renders a skeleton companion', () => {
+    const { container } = render(<Section.Skeleton labelSurface="ghost" action />);
+
+    expect(container.querySelector('.surface.ghost')).not.toBeNull();
+    expect(container.querySelectorAll('.sk').length).toBeGreaterThan(0);
+  });
+
   it('renders children', () => {
     render(<Section label="Last Sessions"><p>child content</p></Section>);
     expect(screen.getByText('child content')).toBeInTheDocument();

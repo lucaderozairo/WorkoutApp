@@ -27,6 +27,7 @@ export function RoutePreview({ route, width = 320, height = 160 }: RoutePreviewP
     <svg
       className="route-preview-svg"
       viewBox={`0 0 ${width} ${height}`}
+      preserveAspectRatio="xMidYMid slice"
       role="img"
       aria-label={`${route.name} preview`}
     >

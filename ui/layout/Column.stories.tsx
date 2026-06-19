@@ -22,3 +22,7 @@ export const AlignCenter: Story = {
 export const JustifyBetween: Story = {
   args: { justify: 'between', children: [<Box key="a" label="Top" />, <Box key="b" label="Bottom" />] },
 };
+
+export const Grow: Story = {
+  args: { grow: true, children: [<Box key="a" label="Top" />, <Box key="b" label="Bottom" />] },
+};

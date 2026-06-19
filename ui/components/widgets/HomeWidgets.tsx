@@ -1,6 +1,6 @@
 ﻿import type React from 'react';
-import { Surface, Text, Metric } from '@ui/atoms';
-import { Badge } from '@ui/molecules';
+import { Surface, Text } from '@ui/atoms';
+import { Badge, Metric } from '@ui/molecules';
 import { Column, Row, Spacer } from '@ui/layout';
 import { SparklineArea } from '@ui/components/charts/domain-charts';
 import { useQuery } from '@ui/bindings';

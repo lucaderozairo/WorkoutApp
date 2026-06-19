@@ -1,5 +1,6 @@
 import type { ReactNode, ToggleEvent } from 'react';
 import { useEffect, useRef } from 'react';
+import { Column, Row } from '@ui/layout';
 
 interface ModalProps {
   open: boolean;
@@ -40,9 +41,11 @@ export function Modal({ open, onClose, title, footer, size = 'md', children }: M
       onToggle={handleToggle}
       className={['modal', 'surface', SIZE_CLASS[size]].filter(Boolean).join(' ')}
     >
+      <Column grow>
       {title && <h3>{title}</h3>}
-      <div className="modal-body">{children}</div>
-      {footer && <div className="modal-footer">{footer}</div>}
+      {children}
+      {footer && <Row grow justify='between'>{footer}</Row>}
+      </Column>
     </div>
   );
 }

@@ -61,7 +61,7 @@ export function LogScreen() {
             title="My Sessions"
             primary={
               <Button variant="primary" size="sm" onClick={() => navigate('/sessions/new')}>
-                ＋ Add
+                ï¼‹ Add
               </Button>
             }
           />
@@ -71,7 +71,7 @@ export function LogScreen() {
               <Row justify="between" align="center">
                 <Column gap={1} align="start">
                   <Text size="detail">{activeSession.name}</Text>
-                  <Text size="caption">{activeSession.startedAt ? `${new Date(activeSession.startedAt).toLocaleDateString()} — tap to continue` : 'Not started — tap to continue'}</Text>
+                  <Text size="caption">{activeSession.startedAt ? `${new Date(activeSession.startedAt).toLocaleDateString()} â€” tap to continue` : 'Not started â€” tap to continue'}</Text>
                 </Column>
               </Row>
             </Surface>

@@ -1,8 +1,8 @@
-/* ════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    SESSION / LOG PATTERNS
-   ════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Exercise rail — sticky horizontal exercise filter ── */
+/* â”€â”€ Exercise rail â€” sticky horizontal exercise filter â”€â”€ */
 .exercise-rail {
   position: sticky;
   top: 0;
@@ -15,8 +15,8 @@
   & .pill { flex-shrink: 0; }
 }
 
-/* ── Splits table — km splits for cardio sessions ──
-   th uses .eyebrow class for typography; CSS only handles layout/borders.  ── */
+/* â”€â”€ Splits table â€” km splits for cardio sessions â”€â”€
+   th uses .eyebrow class for typography; CSS only handles layout/borders.  â”€â”€ */
 .splits-table {
   width: 100%;
   border-collapse: collapse;
@@ -31,15 +31,13 @@
     padding: var(--s-2);
     color: var(--ink);
     border-top: 1px solid var(--line);
-
-    &:first-child { color: var(--ink-muted); font-size: var(--t-xs); font-weight: 600; }
   }
 
   & .elev-up   { color: var(--ok); }
   & .elev-down { color: var(--c-cardio); }
 }
 
-/* ── Event card — planned workout block on calendar ── */
+/* â”€â”€ Event card â€” planned workout block on calendar â”€â”€ */
 .event-card {
   background: var(--accent-soft);
   border-radius: var(--r-sm);
@@ -47,7 +45,7 @@
   border-left: 3px solid var(--accent);
 }
 
-/* ── Block — segmented/stacked bar unit (SetsBarChart) ── */
+/* â”€â”€ Block â€” segmented/stacked bar unit (SetsBarChart) â”€â”€ */
 .block {
   flex: 1 1 0;
   min-width: 20px;
@@ -55,7 +53,7 @@
   box-shadow: var(--box-shadow-sm);
 }
 
-/* ── Bottom banner — fixed overlay above nav (RestTimerAlert) ── */
+/* â”€â”€ Bottom banner â€” fixed overlay above nav (RestTimerAlert) â”€â”€ */
 .bottom-banner {
   position: fixed;
   bottom: calc(var(--nav-height) + var(--s-1));
@@ -65,20 +63,20 @@
   overflow: hidden;
 }
 
-/* ── Session header top bar ── */
+/* â”€â”€ Session header top bar â”€â”€ */
 .session-header-top {
   padding: var(--s-3) var(--s-4);
   background: var(--surface-0);
   border-bottom: 1px solid var(--line);
 }
 
-/* ── Set index number — fixed-width centered column ── */
+/* â”€â”€ Set index number â€” fixed-width centered column â”€â”€ */
 .set-number {
   min-width: var(--s-7);
   text-align: center;
 }
 
-/* ── Trend item — health metric list row ── */
+/* â”€â”€ Trend item â€” health metric list row â”€â”€ */
 .trend-item {
   padding: var(--s-3) var(--s-5);
   border-bottom: 1px solid var(--line);
@@ -89,7 +87,7 @@
   & .trend-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
 
-/* ── Exercise suggestion popover — domain popover sizing ── */
+/* â”€â”€ Exercise suggestion popover â€” domain popover sizing â”€â”€ */
 .exercise-suggestions {
   min-width: 220px;
   max-width: min(320px, calc(100vw - var(--s-4)));

@@ -1,7 +1,7 @@
 /* Route planner: side panel, rail, controls, route cards */
 
 @property --route-parallax-x {
-  syntax: '<percentage>';
+  syntax: "<percentage>";
   inherits: false;
   initial-value: 0%;
 }
@@ -23,6 +23,7 @@
   --route-planner-rail-width: 56px;
   --route-planner-rail-item-width: 48px;
   --route-card-media-min: 150px;
+  --route-card-featured-media-height: 190px;
   --route-card-min-height: 260px;
   --route-card-featured-min-height: 300px;
   --route-detail-map-min-height: 420px;
@@ -53,14 +54,15 @@
 
 .route-planner-side {
   flex: 0 0 auto;
-  display: flex;
-  flex-direction: row;
   height: 100%;
   max-height: 100%;
   background: transparent;
   overflow: hidden;
 
-  @media (max-width: 780px) { display: none; }
+  /* --bp-md */
+  @media (max-width: 1023px) {
+    display: none;
+  }
 }
 
 .route-planner-side-content {
@@ -79,19 +81,6 @@
   scrollbar-color: var(--line-strong) transparent;
 }
 
-.route-planner-side-header {
-  position: sticky;
-  top: 0;
-  z-index: var(--z-content);
-  background: var(--surface-1);
-  border-bottom: 1px solid var(--line);
-  padding: var(--s-4) var(--s-4) var(--s-3);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-shrink: 0;
-}
-
 .route-planner-rail {
   flex: 0 0 var(--route-planner-rail-width);
   width: var(--route-planner-rail-width);
@@ -100,14 +89,13 @@
   background: var(--surface-1);
   border: 1px solid var(--line);
   border-radius: var(--r-md) 0 0 var(--r-md);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--s-1);
   padding: var(--s-2) 0;
   overflow-y: auto;
 
-  @media (max-width: 780px) { display: none; }
+  /* --bp-md */
+  @media (max-width: 1023px) {
+    display: none;
+  }
 }
 
 .route-planner-side:not(:has(.route-planner-side-content)) .route-planner-rail {
@@ -115,20 +103,12 @@
 }
 
 .route-planner-rail-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--s-1);
   padding: var(--s-2) var(--s-1);
   border-radius: var(--r-sm);
   width: var(--route-planner-rail-item-width);
   min-height: 44px;
   cursor: pointer;
   color: var(--ink-muted);
-  font-size: var(--t-xs);
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
   border: none;
   background: none;
   transition:
@@ -141,12 +121,20 @@
   &[aria-pressed="true"] {
     background: var(--surface-2);
     color: var(--ink);
+
+    & .eyebrow {
+      color: var(--ink);
+    }
   }
 
   &:disabled,
   &[aria-disabled="true"] {
     cursor: default;
     color: var(--ink-faint);
+
+    & .eyebrow {
+      color: var(--ink-faint);
+    }
   }
 }
 
@@ -179,10 +167,18 @@
   &[aria-pressed="true"] {
     background: var(--surface-1);
 
-    &[data-id="run"]  { border-color: var(--c-cardio); }
-    &[data-id="hike"] { border-color: var(--warn); }
-    &[data-id="ride"] { border-color: var(--c-nutrition); }
-    &[data-id="walk"] { border-color: var(--c-recovery); }
+    &[data-id="run"] {
+      border-color: var(--c-cardio);
+    }
+    &[data-id="hike"] {
+      border-color: var(--warn);
+    }
+    &[data-id="ride"] {
+      border-color: var(--c-nutrition);
+    }
+    &[data-id="walk"] {
+      border-color: var(--c-recovery);
+    }
   }
 }
 
@@ -190,37 +186,63 @@
   width: var(--s-4);
   height: var(--s-4);
   border-radius: var(--r-pill);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   color: var(--accent-ink);
   opacity: 0.45;
   transition: opacity var(--duration-short) var(--ease);
 
-  &[data-id="run"]  { background: var(--c-cardio); }
-  &[data-id="hike"] { background: var(--warn); }
-  &[data-id="ride"] { background: var(--c-nutrition); }
-  &[data-id="walk"] { background: var(--c-recovery); }
+  &[data-id="run"] {
+    background: var(--c-cardio);
+  }
+  &[data-id="hike"] {
+    background: var(--warn);
+  }
+  &[data-id="ride"] {
+    background: var(--c-nutrition);
+  }
+  &[data-id="walk"] {
+    background: var(--c-recovery);
+  }
 }
 
-.activity-chip:is(.active, [aria-pressed="true"]) .activity-dot { opacity: 1; }
+.activity-chip:is(.active, [aria-pressed="true"]) .activity-dot {
+  opacity: 1;
+}
 
-@media (min-width: 781px) { .route-planner-bottom-sheet { display: none; } }
+/* --bp-md */
+@media (min-width: 1024px) {
+  .route-planner-bottom-sheet {
+    display: none;
+  }
+}
 
 [data-mobile-header] {
-  background: linear-gradient(180deg, rgba(14, 19, 32, 0.85) 0%, transparent 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(14, 19, 32, 0.85) 0%,
+    transparent 100%
+  );
   padding: var(--s-2) var(--s-3);
   pointer-events: none;
 
-  & > *    { pointer-events: auto; }
-  & .ghost { color: var(--accent-ink); }
+  & > * {
+    pointer-events: auto;
+  }
+  & .ghost {
+    color: var(--accent-ink);
+  }
 }
 
-[data-map-group] { padding: 0; overflow: hidden; }
+[data-map-group] {
+  padding: 0;
+  overflow: hidden;
+}
 
 [data-chart] {
   height: 100px;
-  & svg { width: 100%; height: 100%; }
+  & svg {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .surface-mix-bar {
@@ -228,8 +250,6 @@
   border-radius: var(--r-pill);
   overflow: hidden;
   width: 100%;
-  display: flex;
-  gap: 0;
 }
 
 .surface-mix-segment {
@@ -238,10 +258,18 @@
 }
 
 :is(.surface-mix-segment, .surface-mix-swatch) {
-  &[data-surface="paved"]   { background: var(--c-cardio); }
-  &[data-surface="gravel"]  { background: var(--warn); }
-  &[data-surface="trail"]   { background: var(--ok); }
-  &[data-surface="unpaved"] { background: var(--ink-faint); }
+  &[data-surface="paved"] {
+    background: var(--c-cardio);
+  }
+  &[data-surface="gravel"] {
+    background: var(--warn);
+  }
+  &[data-surface="trail"] {
+    background: var(--ok);
+  }
+  &[data-surface="unpaved"] {
+    background: var(--ink-faint);
+  }
 }
 
 .surface-mix-swatch {
@@ -249,12 +277,6 @@
   height: 10px;
   border-radius: var(--r-xs);
   flex-shrink: 0;
-}
-
-/* Interactive elevation profile (route overview) */
-.elevation-profile {
-  display: grid;
-  gap: var(--s-2);
 }
 
 .elevation-profile-svg {
@@ -291,24 +313,11 @@
   stroke-width: 2;
 }
 
-.elevation-profile-readout {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--s-2);
-  color: var(--ink-muted);
-  font-size: var(--t-xs);
-}
-
 .elevation-profile-empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--s-2);
   height: var(--media-sm);
   color: var(--ink-muted);
   background: var(--surface-2);
   border-radius: var(--r-sm);
-  font-size: var(--t-xs);
 }
 
 .route-map-hover-marker {
@@ -325,15 +334,7 @@
   margin-inline: auto;
 }
 
-.route-card {
-  width: 100%;
-  text-align: left;
-}
-
 .route-card-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: var(--s-6);
   height: var(--s-6);
   border-radius: var(--r-sm);
@@ -342,16 +343,20 @@
   flex: 0 0 auto;
 }
 
-@container (min-width: 720px) {
+@container (min-width: 768px) {
   .route-explore-card[data-featured] {
     min-height: var(--route-card-featured-min-height);
+
+    & .route-explore-media {
+      height: var(--route-card-featured-media-height);
+    }
   }
 }
 
 .route-explore-card {
   appearance: none;
   display: grid;
-  grid-template-rows: minmax(var(--route-card-media-min), 1fr) auto;
+  grid-template-rows: var(--route-card-media-min) auto;
   min-width: 0;
   min-height: var(--route-card-min-height);
   padding: 0;
@@ -392,9 +397,13 @@
   position: relative;
   display: block;
   overflow: hidden;
-  min-height: var(--route-card-media-min);
+  height: var(--route-card-media-min);
   background:
-    radial-gradient(circle at 20% 18%, color-mix(in oklch, var(--accent) 18%, transparent), transparent 32%),
+    radial-gradient(
+      circle at 20% 18%,
+      color-mix(in oklch, var(--accent) 18%, transparent),
+      transparent 32%
+    ),
     linear-gradient(135deg, var(--surface-2), var(--surface-3));
   border-bottom: 1px solid var(--line);
   isolation: isolate;
@@ -427,12 +436,12 @@
   --route-map-anchor-offset: -11px;
   --route-map-dot-size: 14px;
   --route-map-dot-border: 3px;
-  --route-map-dot-shadow: 0 0 0 1px rgb(14 19 32 / 0.36), 0 2px 5px rgb(14 19 32 / 0.42);
+  --route-map-dot-shadow:
+    0 0 0 1px rgb(14 19 32 / 0.36), 0 2px 5px rgb(14 19 32 / 0.42);
 
   display: block;
   width: 100%;
   margin-inline-start: 0;
-  min-height: inherit;
   pointer-events: none;
   transform: none;
   transition: none;
@@ -464,8 +473,7 @@
   min-height: inherit;
   background:
     linear-gradient(var(--line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--line) 1px, transparent 1px),
-    var(--surface-2);
+    linear-gradient(90deg, var(--line) 1px, transparent 1px), var(--surface-2);
   background-size: var(--s-6) var(--s-6);
 }
 
@@ -504,7 +512,7 @@
   overflow: hidden;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .route-detail-grid {
     --grid-cols: 1fr;
   }

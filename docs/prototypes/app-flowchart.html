@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App Flowchart</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js" integrity="sha512-RcuA+PEnJcg1caTn53YLhZ3bYVFXphzcPL1BjBoAwFiA3bErav+AndZz1xrqpAtv/8Waep2X+9zn8KWpwacUSA==" crossorigin="anonymous"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    header {
+      padding: 8px 14px;
+      background: #ffffff;
+      border-bottom: 1px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+    h1 { font-size: 12px; font-weight: 700; color: #0f172a; letter-spacing: .04em; white-space: nowrap; }
+    .sep { width: 1px; height: 18px; background: #cbd5e1; flex-shrink: 0; }
+    #search {
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      color: #0f172a;
+      padding: 3px 9px;
+      border-radius: 5px;
+      font-size: 11px;
+      width: 150px;
+      outline: none;
+    }
+    #search:focus { border-color: #94a3b8; }
+    #search::placeholder { color: #94a3b8; }
+    .filters { display: flex; gap: 4px; flex-wrap: wrap; }
+    .filter-btn {
+      padding: 2px 9px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .03em;
+      border: 1.5px solid;
+      cursor: pointer;
+      background: transparent;
+      transition: opacity .12s;
+    }
+    .filter-btn.active { opacity: 1; }
+    .filter-btn:not(.active) { opacity: 0.2; }
+    .spacer { flex: 1; }
+    .ctrl-btn {
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      color: #475569;
+      padding: 3px 9px;
+      border-radius: 5px;
+      font-size: 11px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color .12s, border-color .12s, background .12s;
+    }
+    .ctrl-btn:hover { color: #0f172a; border-color: #94a3b8; background: #fff; }
+    #strava-btn { border-color: #fc4c02; color: #fc4c02; }
+    #strava-btn:hover { background: rgba(252,76,2,.06); }
+    #strava-btn.active { background: #fc4c02; color: #fff; border-color: #fc4c02; }
+    #cy { flex: 1; }
+    #tooltip {
+      position: fixed;
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 7px;
+      padding: 7px 11px;
+      font-size: 11px;
+      color: #0f172a;
+      pointer-events: none;
+      display: none;
+      max-width: 210px;
+      line-height: 1.55;
+      box-shadow: 0 4px 16px rgba(0,0,0,.12);
+      z-index: 100;
+    }
+    #tooltip .t-section { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 2px; }
+    #tooltip .t-label { font-weight: 600; }
+    #tooltip .t-conns { margin-top: 5px; font-size: 10px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 5px; }
+    #strava-legend {
+      display: none;
+      position: fixed;
+      bottom: 40px;
+      right: 14px;
+      background: #ffffff;
+      border: 1.5px solid #fc4c02;
+      border-radius: 7px;
+      padding: 9px 13px;
+      font-size: 11px;
+      color: #0f172a;
+      line-height: 1.9;
+      z-index: 50;
+      min-width: 220px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.1);
+    }
+    #strava-legend.visible { display: block; }
+    #strava-legend h3 { font-size: 10px; font-weight: 700; color: #fc4c02; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+    #strava-legend .fi::before { content: '→ '; color: #fc4c02; font-weight: 700; }
+    #info-bar {
+      position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
+      background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px;
+      padding: 5px 12px; font-size: 10px; color: #94a3b8; pointer-events: none;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>App Flowchart</h1>
+    <div class="sep"></div>
+    <input id="search" type="text" placeholder="Search screens…" />
+    <div class="sep"></div>
+    <div class="filters" id="filters"></div>
+    <div class="spacer"></div>
+    <button class="ctrl-btn" id="strava-btn">Strava flows</button>
+    <button class="ctrl-btn" id="fit-btn">Fit</button>
+    <button class="ctrl-btn" id="reset-btn">Reset</button>
+  </header>
+  <div id="cy"></div>
+  <div id="tooltip"></div>
+  <div id="strava-legend">
+    <h3>Strava activity flow</h3>
+    <div class="fi">Route Overview → Start Activity</div>
+    <div class="fi">New Session → Pick a Route</div>
+    <div class="fi">Live Workout → Segment Tracker</div>
+    <div class="fi">Finish Session → Segment Analysis</div>
+    <div class="fi">Finish Session → Attach / Save Route</div>
+    <div class="fi">Session Detail → Route Thumbnail</div>
+    <div class="fi">Route Overview → Segment PBs</div>
+    <div class="fi">Route Overview → Plan a Run</div>
+  </div>
+  <div id="info-bar">Click node to explore · Scroll to zoom · Drag to pan</div>
+
+  <script>
+  // ── Config ──────────────────────────────────────────────────────────────────
+  const SECTIONS = {
+    global:       { label: 'Global',        color: '#94a3b8' },
+    home:         { label: 'Home',          color: '#3b82f6' },
+    workout:      { label: 'Workout',       color: '#f97316' },
+    routes:       { label: 'Routes',        color: '#22c55e' },
+    profile:      { label: 'Profile',       color: '#ec4899' },
+    social:       { label: 'Social',        color: '#a855f7' },
+    messages:     { label: 'Messages',      color: '#06b6d4' },
+    settings:     { label: 'Settings',      color: '#64748b' },
+    integrations: { label: 'Integrations',  color: '#f59e0b' },
+  };
+
+  // Light tints for node backgrounds (Tailwind 50-level)
+  const BG = {
+    global:       '#f8fafc',
+    home:         '#eff6ff',
+    workout:      '#fff7ed',
+    routes:       '#f0fdf4',
+    profile:      '#fdf4ff',
+    social:       '#faf5ff',
+    messages:     '#ecfeff',
+    settings:     '#f8fafc',
+    integrations: '#fffbeb',
+  };
+
+  // ── Zone background rectangles (isBg: true) ────────────────────────────────
+  // These are non-interactive, drawn behind all nodes.
+  // position = center; w/h = size in world units.
+  const bgNodes = [
+    { id: 'bg-global',   label: 'GLOBAL',               section: 'global',       x: 475,  y: -120, w: 370,  h: 150 },
+    { id: 'bg-home',     label: 'HOME',                  section: 'home',         x: 305,  y: 185,  w: 700,  h: 430 },
+    { id: 'bg-workout',  label: 'WORKOUT',               section: 'workout',      x: 470,  y: 830,  w: 1010, h: 700 },
+    { id: 'bg-routes',   label: 'ROUTES',                section: 'routes',       x: 1335, y: 120,  w: 700,  h: 290 },
+    { id: 'bg-profile',  label: 'PROFILE',               section: 'profile',      x: 1250, y: 625,  w: 530,  h: 300 },
+    { id: 'bg-settings', label: 'SETTINGS',              section: 'settings',     x: 1250, y: 830,  w: 530,  h: 170 },
+    { id: 'bg-integ',    label: 'INTEGRATIONS',          section: 'integrations', x: 1335, y: 1040, w: 700,  h: 290 },
+    { id: 'bg-social',   label: 'SOCIAL',                section: 'social',       x: 1875, y: 50,   w: 360,  h: 160 },
+    { id: 'bg-messages', label: 'MESSAGES',              section: 'messages',     x: 1875, y: 190,  w: 360,  h: 160 },
+  ];
+
+  // ── Screen/nav nodes with preset positions ─────────────────────────────────
+  const screenNodes = [
+    // GLOBAL
+    { id: 'Bell',            label: 'Bell Icon',                           section: 'global',       x: 390,  y: -120 },
+    { id: 'Notifications',   label: 'Notifications\nInbox',                section: 'global',       x: 560,  y: -120 },
+
+    // HOME
+    { id: 'Home',            label: 'Home',                                section: 'home',         x: 50,   y: 50,   isNav: true },
+    { id: 'WelcomeWidget',   label: 'Welcome\nReadiness Score',            section: 'home',         x: 220,  y: 50   },
+    { id: 'Upcoming',        label: 'Upcoming\nAppointments',              section: 'home',         x: 390,  y: 50   },
+    { id: 'ThisWeek',        label: 'This Week\nSummary',                  section: 'home',         x: 560,  y: 50   },
+    { id: 'HomeWidgets',     label: 'Widgets\nSleep · Calendar · Streak',  section: 'home',         x: 170,  y: 185  },
+    { id: 'WeatherWidget',   label: 'Weather\nWidget',                     section: 'home',         x: 390,  y: 185  },
+    { id: 'WeatherScreen',   label: 'Weather Screen\n7-Day · Rain · AQI', section: 'home',         x: 390,  y: 320  },
+    { id: 'LastSessions',    label: 'Recent\nSession Cards',               section: 'home',         x: 560,  y: 185  },
+
+    // WORKOUT
+    { id: 'Workout',         label: 'Workout',                             section: 'workout',      x: 50,   y: 560,  isNav: true },
+    { id: 'WorkoutTemplate', label: 'Workout\nTemplates',                  section: 'workout',      x: 220,  y: 560  },  // Hevy
+    { id: 'LogList',         label: 'Session List\nFilter · Sort',         section: 'workout',      x: 50,   y: 690  },
+    { id: 'WeekCal',         label: 'Week View',                           section: 'workout',      x: 220,  y: 690  },
+    { id: 'MonthCal',        label: 'Month View',                          section: 'workout',      x: 390,  y: 690  },
+    { id: 'SessionDetail',   label: 'Session Detail',                      section: 'workout',      x: 50,   y: 820  },
+    { id: 'EditSession',     label: 'Edit Session',                        section: 'workout',      x: 220,  y: 820  },
+    { id: 'ExerciseName',    label: 'Exercise tap',                        section: 'workout',      x: 50,   y: 950  },
+    { id: 'ExerciseHistory', label: 'Exercise History\nChart · PRs',       section: 'workout',      x: 220,  y: 950  }, // Hevy: PRs
+    { id: 'ActiveSession',   label: 'Active\nsession?',                    section: 'workout',      x: 550,  y: 690,  isDecision: true },
+    { id: 'NewSession',      label: 'New Session',                         section: 'workout',      x: 720,  y: 690  },
+    { id: 'WorkoutView',     label: 'Live Workout\nTimer · Sets · Reps',   section: 'workout',      x: 720,  y: 820  },
+    { id: 'RestTimer',       label: 'Rest Timer',                          section: 'workout',      x: 890,  y: 820  }, // Hevy
+    { id: 'LiveSegment',     label: 'Live Segment\nTarget vs actual pace', section: 'workout',      x: 720,  y: 950  }, // Strava
+    { id: 'ExercisePicker',  label: 'Exercise\nPicker',                    section: 'workout',      x: 890,  y: 950  },
+    { id: 'FinishSession',   label: 'Finish Session\nSummary and Save',    section: 'workout',      x: 720,  y: 1080 },
+    { id: 'SegmentAnalysis', label: 'Segment Analysis\nPace vs targets',   section: 'workout',      x: 890,  y: 1080 }, // Strava
+
+    // ROUTES
+    { id: 'Routes',          label: 'Routes',                              section: 'routes',       x: 1080, y: 50,   isNav: true },
+    { id: 'SavedRoutes',     label: 'Saved Routes\nFilter sport / dist',   section: 'routes',       x: 1250, y: 50   },
+    { id: 'RouteOverview',   label: 'Route Overview\nMap · Dist · Elev',   section: 'routes',       x: 1420, y: 50   },
+    { id: 'SegmentDetail',   label: 'Segment PBs\nHistory per segment',    section: 'routes',       x: 1590, y: 50   }, // Strava
+    { id: 'RouteBuilder',    label: 'Route Builder\nPlanner',              section: 'routes',       x: 1080, y: 190  },
+    { id: 'RouteEditor',     label: 'Route Editor',                        section: 'routes',       x: 1250, y: 190  },
+    { id: 'SegmentEditor',   label: 'Segment Editor\nPace targets',        section: 'routes',       x: 1420, y: 190  }, // Strava
+
+    // PROFILE
+    { id: 'Profile',         label: 'Profile',                             section: 'profile',      x: 1080, y: 560,  isNav: true },
+    { id: 'ProfileView',     label: 'Profile and Stats',                   section: 'profile',      x: 1250, y: 560  },
+    { id: 'HealthInsights',  label: 'Health Insights\nHRV · Sleep · Rec', section: 'profile',      x: 1420, y: 560  }, // Apple Health
+    { id: 'HealthSection',   label: 'Health Section',                      section: 'profile',      x: 1250, y: 690  },
+    { id: 'HealthCategory',  label: 'Health Category\nSleep · Injuries',   section: 'profile',      x: 1420, y: 690  },
+
+    // SETTINGS
+    { id: 'Settings',        label: 'Settings',                            section: 'settings',     x: 1080, y: 830,  isNav: true },
+    { id: 'SettingsView',    label: 'Settings Panel',                      section: 'settings',     x: 1250, y: 830  },
+    { id: 'ConnectedApps',   label: 'Connected Apps',                      section: 'settings',     x: 1420, y: 830  },
+
+    // INTEGRATIONS
+    { id: 'GarminSync',      label: 'Garmin',                              section: 'integrations', x: 1080, y: 970  },
+    { id: 'OuraSync',        label: 'Oura',                                section: 'integrations', x: 1250, y: 970  },
+    { id: 'WhoopSync',       label: 'Whoop',                               section: 'integrations', x: 1420, y: 970  },
+    { id: 'HealthKitSync',   label: 'Apple HealthKit',                     section: 'integrations', x: 1590, y: 970  },
+    { id: 'StravaImport',    label: 'Strava Import',                       section: 'integrations', x: 1080, y: 1110 },
+
+    // SOCIAL
+    { id: 'Social',          label: 'Social',                              section: 'social',       x: 1790, y: 50,   isNav: true },
+    { id: 'SocialFeed',      label: 'Social Feed\nExplore',                section: 'social',       x: 1960, y: 50   },
+
+    // MESSAGES
+    { id: 'Messages',        label: 'Messages',                            section: 'messages',     x: 1790, y: 190,  isNav: true },
+    { id: 'MessageThread',   label: 'Message\nThread',                     section: 'messages',     x: 1960, y: 190  },
+  ];
+
+  // ── Edges ──────────────────────────────────────────────────────────────────
+  // stravaFlow: highlighted by Strava overlay (Route ↔ Activity + segments)
+  // isIntegration: dashed style (external data sync)
+  const edgeList = [
+    // Global
+    { id: 'e1',  s: 'Bell',          t: 'Notifications' },
+
+    // Home
+    { id: 'e2',  s: 'Home',          t: 'WelcomeWidget' },
+    { id: 'e3',  s: 'Home',          t: 'Upcoming' },
+    { id: 'e4',  s: 'Home',          t: 'ThisWeek' },
+    { id: 'e5',  s: 'Upcoming',      t: 'RouteOverview',  label: 'tap planned run',       stravaFlow: true },
+    { id: 'e6',  s: 'Home',          t: 'WeatherWidget' },
+    { id: 'e7',  s: 'WeatherWidget', t: 'WeatherScreen' },
+    { id: 'e8',  s: 'Home',          t: 'HomeWidgets' },
+    { id: 'e9',  s: 'Home',          t: 'LastSessions' },
+    { id: 'e10', s: 'LastSessions',  t: 'SessionDetail' },
+    { id: 'e11', s: 'HomeWidgets',   t: 'WeatherWidget' },
+
+    // Workout
+    { id: 'e12', s: 'Workout',       t: 'WorkoutTemplate' },
+    { id: 'e13', s: 'WorkoutTemplate',t:'WorkoutView',   label: 'start from template' },
+    { id: 'e14', s: 'Workout',       t: 'LogList' },
+    { id: 'e15', s: 'Workout',       t: 'WeekCal' },
+    { id: 'e16', s: 'Workout',       t: 'MonthCal' },
+    { id: 'e17', s: 'LogList',       t: 'SessionDetail' },
+    { id: 'e18', s: 'SessionDetail', t: 'EditSession' },
+    { id: 'e19', s: 'SessionDetail', t: 'RouteOverview',  label: 'route thumbnail',       stravaFlow: true },
+    { id: 'e20', s: 'SessionDetail', t: 'ExerciseName' },
+    { id: 'e21', s: 'ExerciseName',  t: 'ExerciseHistory' },
+    { id: 'e22', s: 'Workout',       t: 'ActiveSession' },
+    { id: 'e23', s: 'ActiveSession', t: 'NewSession',     label: 'no' },
+    { id: 'e24', s: 'ActiveSession', t: 'WorkoutView',    label: 'yes' },
+    { id: 'e25', s: 'NewSession',    t: 'RouteOverview',  label: 'pick a route',          stravaFlow: true },
+    { id: 'e26', s: 'NewSession',    t: 'WorkoutView' },
+    { id: 'e27', s: 'WorkoutView',   t: 'ExercisePicker' },
+    { id: 'e28', s: 'ExercisePicker',t: 'WorkoutView' },
+    { id: 'e29', s: 'WorkoutView',   t: 'RestTimer' },
+    { id: 'e30', s: 'RestTimer',     t: 'WorkoutView',    label: 'done' },
+    { id: 'e31', s: 'WorkoutView',   t: 'LiveSegment',    label: 'route has segments',    stravaFlow: true },
+    { id: 'e32', s: 'LiveSegment',   t: 'FinishSession',                                  stravaFlow: true },
+    { id: 'e33', s: 'WorkoutView',   t: 'FinishSession' },
+    { id: 'e34', s: 'FinishSession', t: 'SegmentAnalysis',                                stravaFlow: true },
+    { id: 'e35', s: 'FinishSession', t: 'RouteEditor',    label: 'save GPS as route',     stravaFlow: true },
+    { id: 'e36', s: 'FinishSession', t: 'RouteOverview',  label: 'attach route',          stravaFlow: true },
+    { id: 'e37', s: 'FinishSession', t: 'LogList' },
+
+    // Routes
+    { id: 'e38', s: 'Routes',        t: 'SavedRoutes' },
+    { id: 'e39', s: 'SavedRoutes',   t: 'RouteOverview' },
+    { id: 'e40', s: 'RouteOverview', t: 'NewSession',     label: 'Start Activity',        stravaFlow: true },
+    { id: 'e41', s: 'RouteOverview', t: 'Upcoming',       label: 'Plan a Run',            stravaFlow: true },
+    { id: 'e42', s: 'RouteOverview', t: 'RouteEditor' },
+    { id: 'e43', s: 'RouteOverview', t: 'SegmentDetail',                                  stravaFlow: true },
+    { id: 'e44', s: 'Routes',        t: 'RouteBuilder' },
+    { id: 'e45', s: 'RouteBuilder',  t: 'RouteEditor' },
+    { id: 'e46', s: 'RouteEditor',   t: 'SegmentEditor',  label: 'add segments',          stravaFlow: true },
+    { id: 'e47', s: 'SegmentEditor', t: 'RouteEditor',    label: 'save',                  stravaFlow: true },
+    { id: 'e48', s: 'SegmentDetail', t: 'SegmentEditor',                                  stravaFlow: true },
+
+    // Profile
+    { id: 'e49', s: 'Profile',       t: 'ProfileView' },
+    { id: 'e50', s: 'Profile',       t: 'HealthInsights' },
+    { id: 'e51', s: 'Profile',       t: 'HealthSection' },
+    { id: 'e52', s: 'HealthSection', t: 'HealthCategory' },
+    { id: 'e53', s: 'HealthInsights',t: 'HealthCategory', label: 'drill down' },
+
+    // Settings
+    { id: 'e54', s: 'Settings',      t: 'SettingsView' },
+    { id: 'e55', s: 'Settings',      t: 'ConnectedApps' },
+    { id: 'e56', s: 'ConnectedApps', t: 'GarminSync',    isIntegration: true },
+    { id: 'e57', s: 'ConnectedApps', t: 'OuraSync',      isIntegration: true },
+    { id: 'e58', s: 'ConnectedApps', t: 'WhoopSync',     isIntegration: true },
+    { id: 'e59', s: 'ConnectedApps', t: 'HealthKitSync', isIntegration: true },
+    { id: 'e60', s: 'ConnectedApps', t: 'StravaImport',  isIntegration: true },
+
+    // Integration data flows
+    { id: 'e61', s: 'GarminSync',    t: 'LogList',        label: 'sync activities',       isIntegration: true },
+    { id: 'e62', s: 'GarminSync',    t: 'SavedRoutes',    label: 'sync routes',           isIntegration: true },
+    { id: 'e63', s: 'StravaImport',  t: 'LogList',        label: 'import activities',     isIntegration: true },
+    { id: 'e64', s: 'StravaImport',  t: 'SavedRoutes',    label: 'import routes',         isIntegration: true },
+    { id: 'e65', s: 'OuraSync',      t: 'HealthInsights', label: 'sleep & HRV',           isIntegration: true },
+    { id: 'e66', s: 'WhoopSync',     t: 'HealthInsights', label: 'recovery',              isIntegration: true },
+    { id: 'e67', s: 'HealthKitSync', t: 'HealthInsights', label: 'health metrics',        isIntegration: true },
+    { id: 'e68', s: 'HealthKitSync', t: 'HomeWidgets',    label: 'sleep & readiness',     isIntegration: true },
+
+    // Social / Messages
+    { id: 'e69', s: 'Social',        t: 'SocialFeed' },
+    { id: 'e70', s: 'Messages',      t: 'MessageThread' },
+  ];
+
+  // ── Build element arrays for cytoscape ────────────────────────────────────
+
+  const elements = [
+    // Background zones
+    ...bgNodes.map(n => ({
+      data: { id: n.id, label: n.label, isBg: true, section: n.section, w: n.w, h: n.h },
+      position: { x: n.x, y: n.y },
+    })),
+    // Screen nodes
+    ...screenNodes.map(n => ({
+      data: {
+        id: n.id, label: n.label, section: n.section,
+        ...(n.isNav      && { isNav: true }),
+        ...(n.isDecision && { isDecision: true }),
+      },
+      position: { x: n.x, y: n.y },
+    })),
+    // Edges
+    ...edgeList.map(e => ({
+      data: {
+        id: e.id, source: e.s, target: e.t,
+        ...(e.label        && { label: e.label }),
+        ...(e.stravaFlow   && { stravaFlow: true }),
+        ...(e.isIntegration && { isIntegration: true }),
+      },
+    })),
+  ];
+
+  // ── Cytoscape ──────────────────────────────────────────────────────────────
+
+  const cy = cytoscape({
+    container: document.getElementById('cy'),
+    elements,
+    style: [
+      // ── Background zones ──
+      {
+        selector: 'node[?isBg]',
+        style: {
+          'shape': 'round-rectangle',
+          'width':  ele => ele.data('w'),
+          'height': ele => ele.data('h'),
+          'background-color': ele => SECTIONS[ele.data('section')]?.color || '#64748b',
+          'background-opacity': 0.07,
+          'border-color': ele => SECTIONS[ele.data('section')]?.color || '#64748b',
+          'border-opacity': 0.35,
+          'border-width': 1.5,
+          'border-style': 'dashed',
+          'color': ele => SECTIONS[ele.data('section')]?.color || '#64748b',
+          'label': 'data(label)',
+          'font-size': '11px',
+          'font-weight': 700,
+          'letter-spacing': '2px',
+          'text-valign': 'top',
+          'text-halign': 'center',
+          'text-margin-y': 14,
+          'events': 'no',
+          'z-index': 0,
+        }
+      },
+      // ── Screen nodes ──
+      {
+        selector: 'node[!isBg]',
+        style: {
+          'label': 'data(label)',
+          'text-wrap': 'wrap',
+          'text-max-width': '115px',
+          'font-size': '10px',
+          'font-family': 'system-ui, -apple-system, sans-serif',
+          'text-valign': 'center',
+          'text-halign': 'center',
+          'background-color': ele => BG[ele.data('section')] || '#ffffff',
+          'border-color': ele => SECTIONS[ele.data('section')]?.color || '#64748b',
+          'border-width': 2,
+          'color': '#0f172a',
+          'width': 120,
+          'height': 46,
+          'shape': 'round-rectangle',
+          'z-index': 2,
+        }
+      },
+      {
+        selector: 'node[?isNav]',
+        style: {
+          'font-weight': 700,
+          'font-size': '12px',
+          'border-width': 0,
+          'background-color': ele => SECTIONS[ele.data('section')]?.color || '#64748b',
+          'color': '#ffffff',
+          'width': 105,
+          'height': 38,
+        }
+      },
+      {
+        selector: 'node[?isDecision]',
+        style: {
+          'shape': 'diamond',
+          'width': 88,
+          'height': 68,
+        }
+      },
+      // ── Edges ──
+      {
+        selector: 'edge',
+        style: {
+          'curve-style': 'bezier',
+          'target-arrow-shape': 'triangle',
+          'arrow-scale': 0.65,
+          'line-color': '#94a3b8',
+          'target-arrow-color': '#94a3b8',
+          'width': 1.5,
+          'label': 'data(label)',
+          'font-size': '8px',
+          'color': '#475569',
+          'text-background-color': '#f1f5f9',
+          'text-background-opacity': 1,
+          'text-background-padding': '2px',
+          'z-index': 1,
+        }
+      },
+      {
+        selector: 'edge[?isIntegration]',
+        style: {
+          'line-style': 'dashed',
+          'line-dash-pattern': [5, 3],
+          'line-color': '#cbd5e1',
+          'target-arrow-color': '#cbd5e1',
+          'width': 1.2,
+          'color': '#94a3b8',
+        }
+      },
+      // ── Focus states ──
+      { selector: '.dimmed',       style: { 'opacity': 0.12 } },
+      { selector: 'node.focused',  style: { 'border-width': 3, 'border-color': '#0f172a', 'z-index': 20 } },
+      { selector: 'node[?isNav].focused', style: { 'border-width': 3, 'border-color': '#0f172a', 'border-style': 'solid' } },
+      { selector: 'node.neighbor', style: { 'opacity': 1, 'z-index': 10 } },
+      { selector: 'edge.active-edge', style: { 'line-color': '#334155', 'target-arrow-color': '#334155', 'width': 2.5, 'z-index': 15 } },
+      // ── Search ──
+      { selector: 'node.match', style: { 'border-color': '#d97706', 'border-width': 3, 'opacity': 1, 'z-index': 20 } },
+      // ── Strava overlay ──
+      { selector: 'edge.strava-active', style: { 'line-color': '#fc4c02', 'target-arrow-color': '#fc4c02', 'width': 3, 'opacity': 1, 'z-index': 30, 'color': '#c73800' } },
+      { selector: 'node.strava-node',   style: { 'border-color': '#fc4c02', 'border-width': 3, 'opacity': 1, 'z-index': 25 } },
+      { selector: '.strava-dimmed',     style: { 'opacity': 0.12 } },
+    ],
+    layout: { name: 'preset', fit: true, padding: 60 },
+    wheelSensitivity: 0.3,
+    minZoom: 0.1,
+    maxZoom: 4,
+  });
+
+  // ── Zoom-aware text ────────────────────────────────────────────────────────
+  // Keep apparent font size ~constant by scaling world units with zoom.
+  // Clamped so text doesn't balloon when zoomed in close.
+
+  function syncText() {
+    const z = cy.zoom();
+    const normal = Math.min(18, 10 / z);
+    const nav    = Math.min(20, 12 / z);
+    const bgLbl  = Math.min(16, 11 / z);
+    const maxW   = Math.min(200, 115 / z);
+    cy.batch(() => {
+      cy.nodes('[!isBg][!isNav][!isDecision]').style({ 'font-size': normal + 'px', 'text-max-width': maxW + 'px' });
+      cy.nodes('[?isNav]').style({ 'font-size': nav + 'px' });
+      cy.nodes('[?isDecision]').style({ 'font-size': normal + 'px' });
+      cy.nodes('[?isBg]').style({ 'font-size': bgLbl + 'px' });
+    });
+  }
+  cy.on('zoom', syncText);
+  cy.ready(syncText);
+
+  // ── Section filters ────────────────────────────────────────────────────────
+
+  const active = new Set(Object.keys(SECTIONS));
+
+  Object.entries(SECTIONS).forEach(([key, { label, color }]) => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn active';
+    btn.textContent = label;
+    btn.style.cssText = `color:${color};border-color:${color}`;
+    btn.addEventListener('click', () => {
+      active.has(key) ? active.delete(key) : active.add(key);
+      btn.classList.toggle('active');
+      applyFilter();
+    });
+    document.getElementById('filters').appendChild(btn);
+  });
+
+  function applyFilter() {
+    cy.batch(() => {
+      cy.nodes('[!isBg]').forEach(n => {
+        n.style('display', active.has(n.data('section')) ? 'element' : 'none');
+      });
+      cy.nodes('[?isBg]').forEach(n => {
+        n.style('display', active.has(n.data('section')) ? 'element' : 'none');
+      });
+      cy.edges().forEach(e => {
+        const show = active.has(e.source().data('section')) && active.has(e.target().data('section'));
+        e.style('display', show ? 'element' : 'none');
+      });
+    });
+  }
+
+  // ── Click to focus ─────────────────────────────────────────────────────────
+
+  let focused = null;
+
+  cy.on('tap', 'node[!isBg]', evt => {
+    const n = evt.target;
+    if (focused?.id() === n.id()) { resetFocus(); return; }
+    focused = n;
+    const edges = n.connectedEdges();
+    cy.elements().addClass('dimmed').removeClass('focused neighbor active-edge');
+    n.removeClass('dimmed').addClass('focused');
+    edges.connectedNodes().removeClass('dimmed').addClass('neighbor');
+    edges.removeClass('dimmed').addClass('active-edge');
+    // keep bg zones visible but dimmed
+    cy.nodes('[?isBg]').removeClass('dimmed');
+  });
+
+  cy.on('tap', evt => { if (evt.target === cy) resetFocus(); });
+
+  function resetFocus() {
+    focused = null;
+    cy.elements().removeClass('dimmed focused neighbor active-edge');
+  }
+
+  // ── Strava overlay ─────────────────────────────────────────────────────────
+
+  let stravaOn = false;
+  const stravaBtn = document.getElementById('strava-btn');
+
+  stravaBtn.addEventListener('click', () => {
+    stravaOn = !stravaOn;
+    stravaBtn.classList.toggle('active', stravaOn);
+    document.getElementById('strava-legend').classList.toggle('visible', stravaOn);
+    applyStrava();
+  });
+
+  function applyStrava() {
+    cy.elements().removeClass('strava-active strava-node strava-dimmed');
+    if (!stravaOn) return;
+    const sEdges = cy.edges('[?stravaFlow]');
+    cy.elements().addClass('strava-dimmed');
+    sEdges.removeClass('strava-dimmed').addClass('strava-active');
+    sEdges.connectedNodes().removeClass('strava-dimmed').addClass('strava-node');
+    cy.nodes('[?isBg]').removeClass('strava-dimmed');
+  }
+
+  // ── Tooltip ────────────────────────────────────────────────────────────────
+
+  const tip = document.getElementById('tooltip');
+
+  cy.on('mouseover', 'node[!isBg]', evt => {
+    const n = evt.target;
+    const sec = SECTIONS[n.data('section')];
+    tip.innerHTML = `
+      <div class="t-section" style="color:${sec.color}">${sec.label}</div>
+      <div class="t-label">${n.data('label').replace(/\n/g,' · ')}</div>
+      <div class="t-conns">
+        ${n.indegree()  ? `← ${n.indegree()} in` : ''}
+        ${n.indegree() && n.outdegree() ? '&nbsp;' : ''}
+        ${n.outdegree() ? `→ ${n.outdegree()} out` : ''}
+      </div>`;
+    tip.style.display = 'block';
+  });
+  cy.on('mousemove', 'node[!isBg]', evt => {
+    tip.style.left = (evt.originalEvent.x + 14) + 'px';
+    tip.style.top  = (evt.originalEvent.y - 8)  + 'px';
+  });
+  cy.on('mouseout', 'node', () => { tip.style.display = 'none'; });
+
+  // ── Search ─────────────────────────────────────────────────────────────────
+
+  document.getElementById('search').addEventListener('input', function () {
+    cy.nodes().removeClass('match');
+    const q = this.value.trim().toLowerCase();
+    if (q) cy.nodes('[!isBg]').filter(n => n.data('label').toLowerCase().includes(q)).addClass('match');
+  });
+
+  // ── Controls ───────────────────────────────────────────────────────────────
+
+  document.getElementById('fit-btn').addEventListener('click', () => cy.fit(undefined, 60));
+
+  document.getElementById('reset-btn').addEventListener('click', () => {
+    resetFocus();
+    stravaOn = false;
+    stravaBtn.classList.remove('active');
+    document.getElementById('strava-legend').classList.remove('visible');
+    applyStrava();
+    cy.nodes().removeClass('match');
+    document.getElementById('search').value = '';
+    active.clear();
+    Object.keys(SECTIONS).forEach(k => active.add(k));
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.add('active'));
+    applyFilter();
+    cy.fit(undefined, 60);
+  });
+  </script>
+</body>
+</html>

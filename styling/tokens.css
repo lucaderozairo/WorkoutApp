@@ -1,5 +1,11 @@
 /* ── Activity category colors (theme-agnostic) ── */
 :root {
+  /* ── Breakpoints (documented literals — var() is not valid inside @media/@container conditions) ── */
+  --bp-xs: 360px;   /* extra-small phone tweaks */
+  --bp-sm: 600px;   /* mobile / tablet split (max-width: 599px / min-width: 600px) */
+  --bp-md: 1024px;  /* tablet / desktop split (max-width: 1023px / min-width: 1024px) */
+  --bp-container: 768px; /* container-query wide threshold */
+
   --c-strength: #e8785a;
   --c-cardio: #ef4a4a;
   --c-recovery: #7b9ef8;
@@ -127,31 +133,17 @@
   --accent-ink:  light-dark(#ffffff, #050c20);
   --accent-soft: light-dark(#c5d9fc, #0f2050);
 
-  /* Theme-agnostic backward-compat aliases (identical in both themes —
-     they reference tokens that are themselves theme-aware) */
+  /* Theme-agnostic backward-compat aliases — kept only where consumed by
+     inline SVG fills (Recharts) that can't use light-dark() tokens directly */
   --color-primary: var(--accent);
-  --color-accent: var(--accent);
   --color-warning: var(--warn);
   --color-success: var(--ok);
   --color-info: var(--c-recovery);
-  --color-surface: var(--surface-2);
   --color-background: var(--surface-0);
   --color-text-primary: var(--ink);
   --color-text-secondary: var(--ink-muted);
-  --color-on-primary: var(--accent-ink);
-  --color-on-surface: var(--ink);
-  --color-on-background: var(--ink);
-  --color-outline: var(--line-strong);
-  --color-border: var(--line);
-  --color-skeleton: var(--surface-3);
-  --color-primary-container: var(--accent-soft);
-  --color-on-primary-container: var(--ink);
 
-  --color-lift: var(--c-strength);
-  --color-run: var(--c-cardio);
-  --color-cycle: var(--c-nutrition);
   --color-swim: var(--c-water);
-  --color-rowing: var(--c-recovery);
 
   /* Sport/status text aliases — differ per theme (mix toward black in
      light, toward white / identity in dark) */
@@ -196,9 +188,6 @@
 
 [data-theme="light"] {
   color-scheme: light;
-  --shadow-1: 0 1px 2px rgba(14, 19, 32, 0.06), 0 1px 1px rgba(14, 19, 32, 0.04);
-  --shadow-2: 0 8px 32px rgba(14, 19, 32, 0.1), 0 2px 6px rgba(14, 19, 32, 0.06);
-  --box-shadow-md: 0 4px 12px rgba(14, 19, 32, 0.1);
 }
 
 [data-theme="dark"] {

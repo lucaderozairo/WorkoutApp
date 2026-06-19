@@ -1,4 +1,5 @@
 import { useRef, useEffect } from 'react';
+import { Text } from './Text';
 
 interface CheckboxProps {
   checked: boolean;
@@ -25,7 +26,7 @@ export function Checkbox({ checked, onChange, label, disabled, indeterminate = f
         disabled={disabled}
         onChange={e => onChange(e.target.checked)}
       />
-      {label && <span>{label}</span>}
+      {label && <Text as="span">{label}</Text>}
     </label>
   );
 }

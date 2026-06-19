@@ -12,7 +12,7 @@ import {
 } from "phosphor-react";
 import { Surface, Text } from "@ui/atoms";
 import { Dropdown, NavItem, Popover, Button } from "@ui/molecules";
-import { Spacer, Row } from "@ui/layout";
+import { Spacer, Row, Column } from "@ui/layout";
 import { PanelLeft } from "lucide-react";
 import { useState } from "react";
 
@@ -66,7 +66,7 @@ export function TabNavigation({
           {menuOpen && <Text>Menu</Text>}
         </Button>
       </header>
-      <nav className={`navbar ${menuOpen ? "open" : ""}`}>
+      <Column as="nav" gap={1} className={`navbar ${menuOpen ? "open" : ""}`}>
         {desktopTabs.map(({ label, path, Icon }) => (
           <NavItem
             key={path}
@@ -94,13 +94,13 @@ export function TabNavigation({
           Icon={Gear}
           iconSize={16}
         />
-      </nav>
+      </Column>
 
       {/* Header — top bar */}
       <header className="header">
-        <Row children={<>
-          <Button variant="primary" children={"Login"}/>
-          </>} />
+        <Row align="center" justify="end">
+          <Button variant="primary">Login</Button>
+        </Row>
       </header>
 
       {/* App bar — mobile bottom tab bar */}

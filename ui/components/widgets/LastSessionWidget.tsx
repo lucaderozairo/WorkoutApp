@@ -45,15 +45,15 @@ export function LastSessionWidget({ size }: { size: WidgetSize }) {
             <Column gap={1}>
               <Text size="detail">{last.name}</Text>
               <Row gap={3}>
-                <Column gap={0} className="surface flat pad-sm r-sm grow">
+                <Column gap={0} className="surface flat pad-sm r-sm" grow>
                   <Text size="caption" color="muted">Duration</Text>
                   <Text size="detail" mono>{durStr}</Text>
                 </Column>
-                <Column gap={0} className="surface flat pad-sm r-sm grow">
+                <Column gap={0} className="surface flat pad-sm r-sm" grow>
                   <Text size="caption" color="muted">Sets</Text>
                   <Text size="detail" mono>{last.totalSets}</Text>
                 </Column>
-                <Column gap={0} className="surface flat pad-sm r-sm grow">
+                <Column gap={0} className="surface flat pad-sm r-sm" grow>
                   <Text size="caption" color="muted">Date</Text>
                   <Text size="detail">{dateStr}</Text>
                 </Column>

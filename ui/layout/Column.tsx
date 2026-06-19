@@ -5,6 +5,7 @@ interface ColumnProps {
   gap?: Gap;
   align?: Align;
   justify?: Justify;
+  grow?: boolean;
   as?: ElementType;
   className?: string;
   'aria-describedby'?: string;
@@ -17,6 +18,7 @@ export function Column({
   gap,
   align,
   justify,
+  grow = false,
   as: Tag = 'div',
   className,
   'aria-describedby': ariaDescribedBy,
@@ -24,7 +26,7 @@ export function Column({
   children,
   onClick,
 }: ColumnProps) {
-  const classes = layoutClasses({ base: 'column', gap, defaultGap: 4, align, justify, className });
+  const classes = layoutClasses({ base: 'column', gap, defaultGap: 4, align, justify, grow, className });
   return (
     <Tag
       className={classes}

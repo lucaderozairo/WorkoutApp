@@ -18,7 +18,7 @@ export function Dialog({ open, onClose, title, message, confirm, onConfirm, dest
   return (
     <Modal open={open} onClose={onClose} title={title} size="sm"
       footer={
-        <Row justify="end">
+        <Row grow justify="between">
           <Button variant="ghost" onClick={onClose}>Cancel</Button>
           <Button
             variant={destructive ? 'destructive' : 'primary'}

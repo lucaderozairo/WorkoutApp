@@ -115,7 +115,7 @@ export async function handleUpdateCardioSessionFull(cmd: {
   comments?: import('../domain/types').SessionComment[];
   media?: string[];
 }): Promise<void> {
-  const view = viewStore.get<import('../projections').RecentCardioView>('recent_cardio_sessions') ?? { sessions: [] };
+  const view = viewStore.get('recent_cardio_sessions') ?? { sessions: [] };
   viewStore.set('recent_cardio_sessions', {
     sessions: view.sessions.map(s =>
       s.id !== cmd.sessionId ? s : {

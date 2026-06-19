@@ -5,8 +5,8 @@ import { parseGpsFile } from '@data/sources/files/gps';
 import type { GpsTrack } from '@data/sources/files/gps';
 import type { CardioSport } from '@features/cardio';
 import { Row, Column } from '@ui/layout';
-import { Surface, Text, Metric } from '@ui/atoms';
-import { Badge, Button, FileDropSurface, Modal, Slider, Textarea } from '@ui/molecules';
+import { Surface, Text } from '@ui/atoms';
+import { Badge, Button, FileDropSurface, Metric, Modal, Slider, Textarea } from '@ui/molecules';
 import { formatDuration } from '@shared/utils';
 
 type ImportContext = 'new-session' | 'enrich-session' | 'standalone';

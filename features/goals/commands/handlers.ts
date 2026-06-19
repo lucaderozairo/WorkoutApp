@@ -45,7 +45,7 @@ export const handleCreateGoal = defineCommand<CreateGoal, Id<'Goal'>>({
 
 export const handleUpdateGoalProgress = defineCommand<UpdateGoalProgress>({
   execute: async (cmd) => {
-    const goals = viewStore.get<Goal[]>('active_goals') ?? [];
+    const goals = viewStore.get('active_goals') ?? [];
     const goal = goals.find((entry) => entry.id === cmd.goalId);
     if (!goal) return { events: [] };
 

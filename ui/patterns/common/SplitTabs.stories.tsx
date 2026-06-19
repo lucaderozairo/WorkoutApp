@@ -18,3 +18,10 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: { panels },
 };
+
+export const Loading: Story = {
+  args: {
+    panels,
+  },
+  render: () => <SplitTabs.Skeleton panels={2} />,
+};

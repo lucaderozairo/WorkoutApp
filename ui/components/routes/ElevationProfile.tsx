@@ -2,6 +2,7 @@ import { useRef, type PointerEvent as ReactPointerEvent } from 'react';
 import { Mountain } from 'lucide-react';
 import type { ElevationSample } from '@features/routes/contract';
 import { Text } from '@ui/atoms';
+import { Column, Row } from '@ui/layout';
 
 const VIEW_W = 1000;
 const VIEW_H = 220;
@@ -50,10 +51,10 @@ export function ElevationProfile({ samples, hoveredIndex, onHover }: ElevationPr
 
   if (!projection) {
     return (
-      <div className="elevation-profile elevation-profile-empty">
+      <Row align="center" justify="center" gap={2} className="elevation-profile elevation-profile-empty">
         <Mountain size={18} aria-hidden />
-        <span>Elevation unavailable</span>
-      </div>
+        <Text size="caption">Elevation unavailable</Text>
+      </Row>
     );
   }
 
@@ -69,7 +70,7 @@ export function ElevationProfile({ samples, hoveredIndex, onHover }: ElevationPr
   const active = hoveredIndex != null ? samples[hoveredIndex] : undefined;
 
   return (
-    <div className="elevation-profile">
+    <Column gap={2} className="elevation-profile">
       <svg
         ref={ref}
         className="elevation-profile-svg"
@@ -101,20 +102,20 @@ export function ElevationProfile({ samples, hoveredIndex, onHover }: ElevationPr
           </>
         ) : null}
       </svg>
-      <div className="elevation-profile-readout" aria-hidden>
+      <Row justify="between" gap={2} aria-hidden>
         {active ? (
           <>
-            <Text as="span" mono>{active.distanceKm.toFixed(2)} km</Text>
-            <Text as="span" mono>{Math.round(active.elevationM)} m</Text>
-            <Text as="span" mono>{active.grade.toFixed(1)}%</Text>
+            <Text as="span" size="caption" mono>{active.distanceKm.toFixed(2)} km</Text>
+            <Text as="span" size="caption" mono>{Math.round(active.elevationM)} m</Text>
+            <Text as="span" size="caption" mono>{active.grade.toFixed(1)}%</Text>
           </>
         ) : (
           <>
-            <span>Low {Math.round(projection.minM)} m</span>
-            <span>High {Math.round(projection.maxM)} m</span>
+            <Text as="span" size="caption">Low {Math.round(projection.minM)} m</Text>
+            <Text as="span" size="caption">High {Math.round(projection.maxM)} m</Text>
           </>
         )}
-      </div>
-    </div>
+      </Row>
+    </Column>
   );
 }

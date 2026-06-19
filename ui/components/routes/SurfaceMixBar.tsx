@@ -17,7 +17,7 @@ export function SurfaceMixBar({ surfaces, showLegend = true }: SurfaceMixBarProp
   const visible = surfaces.filter(s => s.pct > 0);
   return (
     <>
-      <Row className="surface-mix-bar">
+      <Row gap={0} className="surface-mix-bar">
         {visible.map(s => (
           <span
             key={s.key}

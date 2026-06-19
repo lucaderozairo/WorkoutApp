@@ -66,7 +66,7 @@ function checkAchievement(
 
 export const handleCheckAchievements = defineCommand<CheckAchievements, Result<void, string>>({
   execute: async (cmd) => {
-    const currentState = viewStore.get<UserAchievement[]>('user_achievements') ?? [];
+    const currentState = viewStore.get('user_achievements') ?? [];
     const allEvents: AchievementEvent[] = [];
 
     const ctx: EvalContext = {

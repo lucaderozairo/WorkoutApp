@@ -143,10 +143,6 @@
 }
 
 .widget-add-tile {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--s-2);
   padding: var(--s-3);
   border: 1px dashed var(--line-strong);
   border-radius: var(--r-md);

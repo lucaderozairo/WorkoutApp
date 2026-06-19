@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import { Column } from './Column';
 
 interface FillScreenProps {
   className?: string;
@@ -8,8 +7,8 @@ interface FillScreenProps {
 
 export function FillScreen({ className, children }: FillScreenProps) {
   return (
-    <Column gap={0} className={['fill-screen', className].filter(Boolean).join(' ')}>
+    <div className={['fill-screen', className].filter(Boolean).join(' ')}>
       {children}
-    </Column>
+    </div>
   );
 }

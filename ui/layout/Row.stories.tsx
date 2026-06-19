@@ -30,3 +30,7 @@ export const GapLarge: Story = {
 export const Wrap: Story = {
   args: { wrap: true, children: Array.from({ length: 8 }, (_, i) => <Box key={i} label={`Item ${i + 1}`} />) },
 };
+
+export const Grow: Story = {
+  args: { grow: true, children: [<Box key="a" label="A" />, <Box key="b" label="B" />] },
+};

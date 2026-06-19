@@ -6,6 +6,7 @@ interface RowProps {
   align?: Align;
   justify?: Justify;
   wrap?: boolean;
+  grow?: boolean;
   as?: ElementType;
   className?: string;
   children: ReactNode;
@@ -13,7 +14,7 @@ interface RowProps {
   onKeyDown?: KeyboardEventHandler;
 }
 
-export function Row({ gap, align, justify, wrap = false, as: Tag = 'div', className, children, onClick, onKeyDown }: RowProps) {
-  const classes = layoutClasses({ base: 'row', gap, defaultGap: 3, align, justify, wrap, className });
+export function Row({ gap, align, justify, wrap = false, grow = false, as: Tag = 'div', className, children, onClick, onKeyDown }: RowProps) {
+  const classes = layoutClasses({ base: 'row', gap, defaultGap: 3, align, justify, wrap, grow, className });
   return <Tag className={classes} onClick={onClick} onKeyDown={onKeyDown}>{children}</Tag>;
 }

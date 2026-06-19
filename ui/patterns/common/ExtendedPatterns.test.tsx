@@ -11,10 +11,12 @@ import {
   ListDetailLayout,
   MapWorkspace,
   SettingsSection,
+  SplitTabs,
   StackedList,
   TableOfContents,
   ToolbarCluster,
   Tree,
+  WidgetCard,
 } from '@ui/patterns';
 import { SearchInput } from '@ui/molecules';
 import { Button } from '@ui/molecules';
@@ -99,5 +101,17 @@ describe('extended pattern primitives', () => {
     expect(screen.getByText('Map').closest('.map-workspace-map')).toBeInTheDocument();
     expect(screen.getByText('Fields').closest('.form-layout')).toBeInTheDocument();
     expect(screen.getByText('Feed').closest('.feed-layout')).toBeInTheDocument();
+  });
+
+  it('renders pattern skeleton companions', () => {
+    const { container } = render(
+      <>
+        <SplitTabs.Skeleton />
+        <WidgetCard.Skeleton label footer />
+      </>,
+    );
+
+    expect(container.querySelector('.split-tabs-mobile')).toBeInTheDocument();
+    expect(container.querySelectorAll('.sk').length).toBeGreaterThan(0);
   });
 });

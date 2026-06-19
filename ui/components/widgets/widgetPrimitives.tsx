@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Bar, BarChart, RadialBar, RadialBarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
-import { Badge } from '@ui/molecules';
-import { Divider, Metric, Surface, Text } from '@ui/atoms';
+import { Badge, Metric } from '@ui/molecules';
+import { Divider, Surface, Text } from '@ui/atoms';
 import { Cluster, Column, Grid, Row, Spacer } from '@ui/layout';
 
 export type WidgetSize = 'sm' | 'wide' | 'md' | 'lg';

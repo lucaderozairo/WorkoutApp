@@ -26,9 +26,10 @@ export function layoutClasses(opts: {
   align?: Align;
   justify?: Justify;
   wrap?: boolean;
+  grow?: boolean;
   className?: string;
 }): string {
-  const { base, gap, defaultGap, align, justify, wrap, className } = opts;
+  const { base, gap, defaultGap, align, justify, wrap, grow, className } = opts;
   const gapClass = gap !== undefined && gap !== defaultGap ? `gap-${gap}` : '';
   return [
     base,
@@ -36,6 +37,7 @@ export function layoutClasses(opts: {
     align   ? ALIGN_CLASS[align]   : '',
     justify ? JUSTIFY_CLASS[justify] : '',
     wrap    ? 'wrap'                 : '',
+    grow    ? 'grow'                 : '',
     className,
   ].filter(Boolean).join(' ');
 }

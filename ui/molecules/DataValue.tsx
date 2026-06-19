@@ -1,6 +1,6 @@
 import type { ElementType, ReactNode } from 'react';
 import { Metric } from './Metric';
-import { Text } from './Text';
+import { Text } from '@ui/atoms';
 
 type DataValueVariant = 'number' | 'unit' | 'percentage' | 'duration' | 'distance' | 'pace' | 'weight' | 'date' | 'time' | 'delta' | 'trend';
 type DataValueTone = 'default' | 'muted' | 'positive' | 'negative';

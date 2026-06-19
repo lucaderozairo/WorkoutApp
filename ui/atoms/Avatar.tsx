@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Text } from './Text';
 
 interface AvatarProps {
   src?: string;
@@ -31,8 +32,8 @@ export function Avatar({ src, name, size = 'md', className }: AvatarProps) {
   }
 
   return (
-    <span className={classes} aria-label={name}>
+    <Text as="span" className={classes} aria-label={name}>
       {name ? initials(name) : '?'}
-    </span>
+    </Text>
   );
 }

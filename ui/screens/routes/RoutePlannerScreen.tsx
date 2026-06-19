@@ -435,7 +435,7 @@ export function RoutePlannerScreen({ routeId }: RoutePlannerScreenProps = {}) {
             <Layer pin="full" z="controls" direction="none" className="desktop-only">
               <Row justify="end" className="route-planner-rail-layer">
                 <Row gap={0} className={`route-planner-side${sideOpen ? '' : ' collapsed'}`}>
-                  <Column className="route-planner-rail">
+                  <Column align="center" gap={1} className="route-planner-rail">
                     <Button
                       variant="ghost"
                       size="icon-sm"

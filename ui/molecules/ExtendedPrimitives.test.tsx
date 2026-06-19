@@ -1,9 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { DataValue, IconFrame, StatusDot } from '@ui/atoms';
+import { IconFrame, StatusDot } from '@ui/atoms';
 import {
   ColorPicker,
-  ContextMenu,
+  DataValue,
+  Dropdown,
   NumericStepper,
   PageControl,
   Pagination,
@@ -65,8 +66,8 @@ describe('extended molecule primitives', () => {
     expect(onPage).toHaveBeenCalledWith(3);
   });
 
-  it('context menus alias dropdown behavior', () => {
-    render(<ContextMenu trigger="More" items={[{ label: 'Archive', onClick: vi.fn() }]} />);
+  it('dropdown renders trigger and items', () => {
+    render(<Dropdown trigger="More" items={[{ label: 'Archive', onClick: vi.fn() }]} />);
 
     expect(document.querySelector('.dropdown')).toHaveClass('menu-popover');
     expect(document.querySelector('.dropdown')).toHaveTextContent('Archive');

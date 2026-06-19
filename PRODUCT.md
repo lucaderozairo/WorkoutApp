@@ -18,7 +18,6 @@ Precise, clinical, trustworthy. The voice of a sports scientist, not a personal 
 
 ## Anti-references
 
-- **Apple Fitness+ / glossy lifestyle**: No hero photography, no marketing imagery, no motivational copy. The interface is a cockpit, not a magazine spread.
 - **Any lifestyle aesthetic where the design upstages the data**: If the user notices the design more than the numbers, something went wrong.
 
 ## Design Principles
@@ -27,7 +26,7 @@ Precise, clinical, trustworthy. The voice of a sports scientist, not a personal 
 2. **Precision over personality.** The app should feel like a performance instrument — a heart-rate monitor, not a poster. Confident and quiet.
 3. **Respect complexity.** Performance athletes track many variables simultaneously. Honor that density; don't simplify away what they need.
 4. **Trust through consistency.** Identical patterns for identical situations. When the athlete sees a pill, a chart, or a stat tile, it behaves exactly as it did before. Surprise erodes trust.
-5. **Tool, not brand.** No lifestyle imagery, no glossy hero moments. This app has no brand story to tell — only the athlete's story.
+5. **Editorial restraint.** Visual storytelling, photography, and richer presentation are allowed when they clarify context or strengthen the athlete's narrative. They should support the training data, not compete with it.
 
 ## Accessibility & Inclusion
 

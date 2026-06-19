@@ -183,7 +183,8 @@
       "Bash(cd \"/c/Users/Deroz01/Documents/Coding Projects/Workout App/workoutApp\" && rm \"ui/screens/home/HomeSections.tsx\" && rtk git add -u \"ui/screens/home/HomeSections.tsx\")",
       "Bash(node .agents/skills/impeccable/scripts/live.mjs)",
       "Bash(node .agents/skills/impeccable/scripts/live-status.mjs)",
-      "Bash(node .agents/skills/impeccable/scripts/live-poll.mjs)"
+      "Bash(node .agents/skills/impeccable/scripts/live-poll.mjs)",
+      "PowerShell(Get-ChildItem *)"
     ],
     "additionalDirectories": [
       "c:\\c\\Users\\Deroz01\\Documents\\Coding Projects\\Workout App\\workoutApp\\ui\\screens\\home"

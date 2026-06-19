@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Cluster } from '@ui/layout';
 
 export interface BreadcrumbItem {
   label: ReactNode;
@@ -15,7 +16,7 @@ interface BreadcrumbProps {
 export function Breadcrumb({ items, label = 'Breadcrumb', className }: BreadcrumbProps) {
   return (
     <nav aria-label={label} className={['breadcrumb', className].filter(Boolean).join(' ')}>
-      <ol>
+      <Cluster as="ol" gap={1} align="center">
         {items.map((item, index) => {
           const current = index === items.length - 1;
           return (
@@ -30,7 +31,7 @@ export function Breadcrumb({ items, label = 'Breadcrumb', className }: Breadcrum
             </li>
           );
         })}
-      </ol>
+      </Cluster>
     </nav>
   );
 }

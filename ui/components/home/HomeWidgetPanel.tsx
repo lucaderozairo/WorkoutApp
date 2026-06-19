@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react';
 import { Flame, CaretRight, Cloud } from 'phosphor-react';
-import { Surface, Text, Metric, ProgressRing, MultiSegmentBar, IconFrame, Dot, Divider } from '@ui/atoms';
-import { CheckRow, Button } from '@ui/molecules';
+import { Surface, Text, ProgressRing, MultiSegmentBar, IconFrame, Dot, Divider } from '@ui/atoms';
+import { CheckRow, Button, Metric } from '@ui/molecules';
 import { Column, Grid, Row } from '@ui/layout';
 import type { SleepSession } from '@features/readiness/domain/mock-types';
 import type { ActivityHistoryItem } from '@features/training_log/contract';
@@ -75,7 +75,7 @@ export function HomeSleepWidget({ session }: { session: SleepSession }) {
   return (
     <Surface pad="sm" className="home-widget full" aria-labelledby="hw-sleep-title">
       <Row align="start" gap={3}>
-        <Column gap={1} className="grow min-w-0">
+        <Column gap={1} grow>
           <Text size="eyebrow" id="hw-sleep-title">Sleep</Text>
           <Metric value={sleepDuration(session)} size="lg" mono />
           <Text mono size="caption" color="muted">{sleepTimings(session)}</Text>
@@ -274,7 +274,7 @@ export function HomeSessionCard({ session }: { session: ActivityHistoryItem }) {
         <IconFrame size="lg" sport={sport as 'lift' | 'run' | 'cycle' | 'swim' | 'rowing' | 'mind' | undefined}>
           <Cloud size={20} aria-hidden="true" />
         </IconFrame>
-        <Column gap={0} className="grow min-w-0">
+        <Column gap={0} grow>
           <Text size="detail" bold truncate>{session.name}</Text>
           <Text size="caption" color="muted">{day}</Text>
         </Column>

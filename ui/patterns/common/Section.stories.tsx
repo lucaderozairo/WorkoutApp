@@ -22,3 +22,11 @@ export const WithAction: Story = {
     ),
   },
 };
+
+export const Loading: Story = {
+  args: {
+    label: 'Loading',
+    children: null,
+  },
+  render: () => <Section.Skeleton labelSurface="ghost" action />,
+};

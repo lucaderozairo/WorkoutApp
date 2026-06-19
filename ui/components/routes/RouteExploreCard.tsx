@@ -63,12 +63,10 @@ export const RouteExploreCard = forwardRef<HTMLButtonElement, {
           </Text>
         </Row>
         <Text bold truncate>{route.name}</Text>
-        {route.description ? (
-          <Text size="caption" className="clamp-2">{route.description}</Text>
-        ) : null}
+        <Text size="caption" className="clamp-2">{route.description ?? ''}</Text>
         <Row justify="between" gap={2}>
-          <Text size="caption" mono>{route.distanceKm.toFixed(1)} km</Text>
-          <Text size="caption" color="muted">{routeDate(route)}</Text>
+          <Text size="caption" mono className="shrink-0">{route.distanceKm.toFixed(1)} km</Text>
+          <Text size="caption" color="muted" truncate className="min-w-0">{routeDate(route)}</Text>
         </Row>
       </Column>
     </Button>
