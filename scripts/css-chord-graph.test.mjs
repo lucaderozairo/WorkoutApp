@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { stripCommentsAndStrings, tokenize } from './css-chord-graph.mjs';
+import { stripCommentsAndStrings, tokenize, detectKnownPattern } from './css-chord-graph.mjs';
 
 describe('stripCommentsAndStrings', () => {
   it('masks comments and string literals without changing length', () => {
@@ -61,5 +61,28 @@ describe('tokenize', () => {
     const css = `.weird::before { content: "a: b; c { d }"; } .after { display: flex; }`;
     const blocks = tokenize(css, 'patterns.css');
     expect(blocks.find((b) => b.selector === '.after').properties.has('display')).toBe(true);
+  });
+});
+
+describe('detectKnownPattern', () => {
+  it('detects row from bare display:flex with no flex-direction', () => {
+    expect(detectKnownPattern(new Map([['display', 'flex']]))).toBe('row');
+  });
+  it('detects row from flex-direction: row-reverse', () => {
+    expect(detectKnownPattern(new Map([['display', 'flex'], ['flex-direction', 'row-reverse']]))).toBe('row');
+  });
+  it('detects column from flex-direction: column', () => {
+    expect(detectKnownPattern(new Map([['display', 'flex'], ['flex-direction', 'column']]))).toBe('column');
+  });
+  it('detects grid from display:grid and display:inline-grid', () => {
+    expect(detectKnownPattern(new Map([['display', 'grid']]))).toBe('grid');
+    expect(detectKnownPattern(new Map([['display', 'inline-grid']]))).toBe('grid');
+  });
+  it('still detects column alongside unrelated typography properties', () => {
+    const decls = new Map([['display', 'flex'], ['flex-direction', 'column'], ['font-size', 'var(--t-lg)']]);
+    expect(detectKnownPattern(decls)).toBe('column');
+  });
+  it('returns null when there is no display key', () => {
+    expect(detectKnownPattern(new Map([['color', 'red']]))).toBeNull();
   });
 });

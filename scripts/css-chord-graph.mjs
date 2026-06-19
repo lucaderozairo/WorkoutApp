@@ -11,6 +11,18 @@ export function stripCommentsAndStrings(css) {
   return result;
 }
 
+export function detectKnownPattern(declarations) {
+  const display = declarations.get('display');
+  if (display === 'flex') {
+    const direction = declarations.get('flex-direction');
+    if (!direction || direction === 'row' || direction === 'row-reverse') return 'row';
+    if (direction === 'column' || direction === 'column-reverse') return 'column';
+    return null;
+  }
+  if (display === 'grid' || display === 'inline-grid') return 'grid';
+  return null;
+}
+
 function parseDeclarations(text, frame) {
   const decls = text.split(';');
   for (const statement of decls) {
