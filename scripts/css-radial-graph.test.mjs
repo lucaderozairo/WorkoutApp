@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { stripCommentsAndStrings, tokenize, expandOwnerSelectors, detectKnownPattern, resolveLayerFiles } from './css-radial-graph.mjs';
+import { stripCommentsAndStrings, tokenize, expandOwnerSelectors, detectKnownPattern, resolveLayerFiles, buildPointIndex, computeOwnership, pointKey } from './css-radial-graph.mjs';
 
 describe('stripCommentsAndStrings', () => {
   it('masks comments and string literals without changing length', () => {
@@ -77,6 +77,60 @@ const SAMPLE_GLOBAL_CSS = `
   @import "./map.css" layer(overrides);
 `;
 const LAYERS = { baselineLayers: ['layout', 'atoms', 'base'], rawLayers: ['molecules', 'patterns', 'project', 'utilities', 'overrides'] };
+
+function decls(obj) {
+  return new Map(Object.entries(obj));
+}
+
+describe('pointKey', () => {
+  it('produces a distinct key per (property, value) pair, not per property alone', () => {
+    expect(pointKey('font-weight', '500')).not.toBe(pointKey('font-weight', '400'));
+  });
+});
+
+describe('buildPointIndex / computeOwnership', () => {
+  const baselineBlocks = [
+    { owners: ['.row', '.column', '.scroll-row'], declarations: decls({ gap: 'var(--s-3)' }) },
+    { owners: ['.row'], declarations: decls({ display: 'flex', 'flex-direction': 'row' }) },
+    { owners: ['.column'], declarations: decls({ display: 'flex', 'flex-direction': 'column' }) },
+    { owners: ['.text-detail'], declarations: decls({ 'font-size': 'var(--t-md)', 'font-weight': '500' }) },
+  ];
+  const pointIndex = buildPointIndex(baselineBlocks);
+
+  it('attributes a shared declaration to every owner in an expanded :is() group', () => {
+    expect(pointIndex.get(pointKey('gap', 'var(--s-3)'))).toEqual(new Set(['.row', '.column', '.scroll-row']));
+  });
+
+  it('does not match a raw declaration whose value differs from the baseline value', () => {
+    const raw = { declarations: decls({ gap: 'var(--s-7)' }) };
+    const result = computeOwnership(raw, pointIndex);
+    expect(result.matchedPoints).toHaveLength(0);
+  });
+
+  it('identifies a composition of two owners (Row + Text) via exact-value point matches', () => {
+    const raw = { declarations: decls({ display: 'flex', 'flex-direction': 'row', gap: 'var(--s-3)', 'font-size': 'var(--t-md)', 'font-weight': '500' }) };
+    const result = computeOwnership(raw, pointIndex);
+    expect(result.covered).toBe(true);
+    const owners = result.composition.map((c) => c.owner);
+    expect(owners).toContain('.row');
+    expect(owners).toContain('.text-detail');
+    expect(result.uncoveredPoints).toHaveLength(0);
+  });
+
+  it('does not classify a single coincidental matched point as covered', () => {
+    const raw = { declarations: decls({ gap: 'var(--s-3)', cursor: 'pointer' }) };
+    const result = computeOwnership(raw, pointIndex);
+    expect(result.matchedPoints).toHaveLength(1);
+    expect(result.covered).toBe(false);
+  });
+
+  it('classifies a block as covered via knownPattern even with zero matched points', () => {
+    const raw = { declarations: decls({ display: 'flex', 'flex-direction': 'column', 'animation-delay': '200ms' }) };
+    const result = computeOwnership(raw, pointIndex);
+    expect(result.knownPattern).toBe('column');
+    expect(result.covered).toBe(true);
+  });
+});
 
 describe('resolveLayerFiles', () => {
   it('classifies files into baseline, raw, and ignored per layer', () => {

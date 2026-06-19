@@ -47,6 +47,68 @@ export function expandOwnerSelectors(selectorText) {
 
 const IMPORT_RE = /@import\s+["']\.\/([^"']+)["']\s+layer\(([\w-]+)\)/g;
 
+export function pointKey(key, value) {
+  return `${key}❖${value}`;
+}
+
+export function buildPointIndex(baselineBlocks) {
+  const index = new Map();
+  for (const block of baselineBlocks) {
+    for (const owner of block.owners) {
+      for (const [key, value] of block.declarations) {
+        const pk = pointKey(key, value);
+        if (!index.has(pk)) index.set(pk, new Set());
+        index.get(pk).add(owner);
+      }
+    }
+  }
+  return index;
+}
+
+const MIN_MATCHED_POINTS = 2;
+
+export function computeOwnership(rawBlock, pointIndex) {
+  const matchedPoints = [];
+  const uncoveredPoints = [];
+  for (const [key, value] of rawBlock.declarations) {
+    const owners = pointIndex.get(pointKey(key, value));
+    if (owners && owners.size > 0) matchedPoints.push({ key, value, owners: [...owners] });
+    else uncoveredPoints.push({ key, value });
+  }
+
+  const remaining = new Set(matchedPoints.map((m) => pointKey(m.key, m.value)));
+  const ownerCoverage = new Map();
+  for (const m of matchedPoints) {
+    const pk = pointKey(m.key, m.value);
+    for (const owner of m.owners) {
+      if (!ownerCoverage.has(owner)) ownerCoverage.set(owner, new Set());
+      ownerCoverage.get(owner).add(pk);
+    }
+  }
+
+  const composition = [];
+  while (remaining.size > 0) {
+    let bestOwner = null;
+    let bestCount = 0;
+    for (const [owner, pts] of ownerCoverage) {
+      const count = [...pts].filter((pt) => remaining.has(pt)).length;
+      if (count > bestCount) {
+        bestCount = count;
+        bestOwner = owner;
+      }
+    }
+    if (!bestOwner) break;
+    const covered = [...ownerCoverage.get(bestOwner)].filter((pt) => remaining.has(pt));
+    composition.push({ owner: bestOwner, matchedPointCount: covered.length });
+    for (const pt of covered) remaining.delete(pt);
+  }
+
+  const knownPattern = detectKnownPattern(rawBlock.declarations);
+  const covered = matchedPoints.length >= MIN_MATCHED_POINTS || knownPattern !== null;
+
+  return { covered, knownPattern, matchedPoints, uncoveredPoints, composition };
+}
+
 export function resolveLayerFiles(globalCssText, allFiles, { baselineLayers, rawLayers }) {
   const fileLayer = new Map();
   const warnings = [];
