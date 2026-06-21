@@ -138,15 +138,7 @@
 
 /* ── Dropdown — positioned panel ── */
 .dropdown {
-  min-width: 280px;
-
-  &.actions {
-    top: 100%;
-    right: 0;
-    min-width: 120px;
-
-    & button { text-align: left; }
-  }
+  min-width: 160px;
 
   &.filter-panel {
     right: 0;
