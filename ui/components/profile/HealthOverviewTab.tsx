@@ -3,6 +3,27 @@ import { useState, useMemo, useRef } from 'react'
 import { Grid } from '@ui/layout'
 import { useNavigate } from 'react-router-dom'
 import { Search } from 'lucide-react'
+import type { Icon as PhosphorIcon } from 'phosphor-react'
+import {
+  BatteryCharging,
+  Brain,
+  ClipboardText,
+  Drop,
+  Ear,
+  FirstAidKit,
+  ForkKnife,
+  Heart,
+  Lightning,
+  MapTrifold,
+  Moon,
+  PersonSimpleWalk,
+  Pill,
+  Scales,
+  SmileyXEyes,
+  Thermometer,
+  Trophy,
+  Wind,
+} from 'phosphor-react'
 import { ChartContainer } from '@ui/patterns/charts/charts'
 import { useQuery } from '@ui/bindings'
 import type { HealthChartDef, HealthChartMap } from '@features/health'
@@ -14,7 +35,7 @@ import { Input } from '@ui/molecules'
 
 type HealthCategory = {
   slug: string
-  icon: string
+  icon: PhosphorIcon
   name: string
   subtitle: string
   section: string
@@ -31,30 +52,30 @@ export const SECTIONS = [
 
 export const HEALTH_CATEGORIES: HealthCategory[] = [
   // Physical & Activity
-  { slug: 'activity-mobility', icon: '👣', name: 'Activity & Mobility', subtitle: 'steps · distance · workouts · VO₂ · daylight', section: 'Physical & Activity' },
-  { slug: 'body-measurements', icon: '⚖️', name: 'Body Measurements', subtitle: 'weight · BMI · body fat · lean mass · waist', section: 'Physical & Activity' },
-  { slug: 'injuries', icon: '🩹', name: 'Injuries', subtitle: 'active · resolved · body part', section: 'Physical & Activity' },
-  { slug: 'routes', icon: '🗺️', name: 'Routes', subtitle: 'saved · Strava import · map view', section: 'Physical & Activity' },
-  { slug: 'cycle-tracking', icon: '🩸', name: 'Cycle Tracking', subtitle: 'period · BBT · ovulation · LH · fertility', section: 'Physical & Activity' },
+  { slug: 'activity-mobility', icon: PersonSimpleWalk, name: 'Activity & Mobility', subtitle: 'steps · distance · workouts · VO₂ · daylight', section: 'Physical & Activity' },
+  { slug: 'body-measurements', icon: Scales, name: 'Body Measurements', subtitle: 'weight · BMI · body fat · lean mass · waist', section: 'Physical & Activity' },
+  { slug: 'injuries', icon: FirstAidKit, name: 'Injuries', subtitle: 'active · resolved · body part', section: 'Physical & Activity' },
+  { slug: 'routes', icon: MapTrifold, name: 'Routes', subtitle: 'saved · Strava import · map view', section: 'Physical & Activity' },
+  { slug: 'cycle-tracking', icon: Drop, name: 'Cycle Tracking', subtitle: 'period · BBT · ovulation · LH · fertility', section: 'Physical & Activity' },
   // Heart & Vitals
-  { slug: 'heart', icon: '❤️', name: 'Heart', subtitle: 'HR · resting HR · HRV · ECG · AFib burden', section: 'Heart & Vitals' },
-  { slug: 'vitals', icon: '🌡️', name: 'Vitals', subtitle: 'SpO₂ · blood pressure · glucose · resp. rate · wrist temp', section: 'Heart & Vitals' },
-  { slug: 'sleep', icon: '😴', name: 'Sleep', subtitle: 'duration · stages · score · breathing disturbances', section: 'Heart & Vitals' },
+  { slug: 'heart', icon: Heart, name: 'Heart', subtitle: 'HR · resting HR · HRV · ECG · AFib burden', section: 'Heart & Vitals' },
+  { slug: 'vitals', icon: Thermometer, name: 'Vitals', subtitle: 'SpO₂ · blood pressure · glucose · resp. rate · wrist temp', section: 'Heart & Vitals' },
+  { slug: 'sleep', icon: Moon, name: 'Sleep', subtitle: 'duration · stages · score · breathing disturbances', section: 'Heart & Vitals' },
   // Nutrition & Lifestyle
-  { slug: 'nutrition', icon: '🥗', name: 'Nutrition', subtitle: 'macros · vitamins · minerals · hydration · caffeine', section: 'Nutrition & Lifestyle' },
-  { slug: 'mental-wellbeing', icon: '🧠', name: 'Mental Wellbeing', subtitle: 'mindfulness · state of mind · PHQ-9 · GAD-7', section: 'Nutrition & Lifestyle' },
-  { slug: 'symptoms', icon: '🤒', name: 'Symptoms', subtitle: 'respiratory · digestive · pain · fatigue · 30+ conditions', section: 'Nutrition & Lifestyle' },
-  { slug: 'hearing', icon: '👂', name: 'Hearing', subtitle: 'env. sound · headphone levels · audiograms', section: 'Nutrition & Lifestyle' },
+  { slug: 'nutrition', icon: ForkKnife, name: 'Nutrition', subtitle: 'macros · vitamins · minerals · hydration · caffeine', section: 'Nutrition & Lifestyle' },
+  { slug: 'mental-wellbeing', icon: Brain, name: 'Mental Wellbeing', subtitle: 'mindfulness · state of mind · PHQ-9 · GAD-7', section: 'Nutrition & Lifestyle' },
+  { slug: 'symptoms', icon: SmileyXEyes, name: 'Symptoms', subtitle: 'respiratory · digestive · pain · fatigue · 30+ conditions', section: 'Nutrition & Lifestyle' },
+  { slug: 'hearing', icon: Ear, name: 'Hearing', subtitle: 'env. sound · headphone levels · audiograms', section: 'Nutrition & Lifestyle' },
   // Medications & Records
-  { slug: 'medications', icon: '💊', name: 'Medications', subtitle: 'schedule · dose log · drug interactions', section: 'Medications & Records' },
-  { slug: 'health-records', icon: '📋', name: 'Health Records', subtitle: 'labs · allergies · immunizations · insulin · falls', section: 'Medications & Records' },
+  { slug: 'medications', icon: Pill, name: 'Medications', subtitle: 'schedule · dose log · drug interactions', section: 'Medications & Records' },
+  { slug: 'health-records', icon: ClipboardText, name: 'Health Records', subtitle: 'labs · allergies · immunizations · insulin · falls', section: 'Medications & Records' },
   // Wearable Recovery
-  { slug: 'readiness', icon: '⚡', name: 'Readiness', subtitle: 'Oura · WHOOP · Garmin', section: 'Wearable Recovery' },
-  { slug: 'body-battery', icon: '🔋', name: 'Body Battery', subtitle: 'Garmin energy reserve', section: 'Wearable Recovery' },
-  { slug: 'stress', icon: '😤', name: 'Stress', subtitle: 'Garmin stress score', section: 'Wearable Recovery' },
-  { slug: 'skin-temperature', icon: '🌡️', name: 'Skin Temperature', subtitle: 'Oura · WHOOP overnight', section: 'Wearable Recovery' },
+  { slug: 'readiness', icon: Lightning, name: 'Readiness', subtitle: 'Oura · WHOOP · Garmin', section: 'Wearable Recovery' },
+  { slug: 'body-battery', icon: BatteryCharging, name: 'Body Battery', subtitle: 'Garmin energy reserve', section: 'Wearable Recovery' },
+  { slug: 'stress', icon: Wind, name: 'Stress', subtitle: 'Garmin stress score', section: 'Wearable Recovery' },
+  { slug: 'skin-temperature', icon: Thermometer, name: 'Skin Temperature', subtitle: 'Oura · WHOOP overnight', section: 'Wearable Recovery' },
   // Performance
-  { slug: 'goals-records', icon: '🏆', name: 'Goals & Records', subtitle: 'achievements · PRs · active goals', section: 'Performance' },
+  { slug: 'goals-records', icon: Trophy, name: 'Goals & Records', subtitle: 'achievements · PRs · active goals', section: 'Performance' },
 ]
 
 // ─── Internal sub-components ─────────────────────────────────────────────────
@@ -70,6 +91,7 @@ interface CategoryButtonProps {
 }
 
 function CategoryTile({ cat, isPinned = false, onClick, onLongPress, charts }: CategoryButtonProps) {
+  const Icon = cat.icon
   return (
     <Surface
       as="button"
@@ -84,7 +106,7 @@ function CategoryTile({ cat, isPinned = false, onClick, onLongPress, charts }: C
       onPointerCancel={onLongPress.cancel}
     >
       <Column align="center">
-        <span>{cat.icon}</span>
+        <Icon size={24} aria-hidden="true" />
         <Text size="caption">{cat.name}</Text>
       </Column>
     </Surface>
@@ -92,6 +114,7 @@ function CategoryTile({ cat, isPinned = false, onClick, onLongPress, charts }: C
 }
 
 function CategoryRow({ cat, isPinned = false, onClick, onLongPress, charts }: CategoryButtonProps) {
+  const Icon = cat.icon
   return (
     <Surface
       as="button"
@@ -107,7 +130,7 @@ function CategoryRow({ cat, isPinned = false, onClick, onLongPress, charts }: Ca
     >
       <Row justify="between" align="center">
         <Row align="center">
-          <span className="icon">{cat.icon}</span>
+          <Icon size={18} aria-hidden="true" />
           <Column gap={1} align="start">
             <Text>{cat.name}</Text>
           </Column>
