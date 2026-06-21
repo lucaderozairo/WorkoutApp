@@ -1,4 +1,4 @@
-# Dropdown action menu width fix
+# Dropdown action menu width fix + settings modal wiring
 
 ## Problem
 
@@ -23,3 +23,36 @@ Since the only current consumer of `Dropdown` needs a compact action menu, chang
 
 - Visual check: open the "⋮" action menu on a session list item (`/sessions`) and confirm the "Delete session" menu is compact, not ~280px wide.
 - Confirm no other live `.tsx` file references `.dropdown.actions` before deleting that CSS block (already verified via grep — zero matches).
+
+---
+
+## Part 2: Wire up the Settings modal
+
+### Problem
+
+`ui/components/modals/SettingsModal.tsx` exists and is fully implemented (header, `SettingsContent`, native Popover-API `Modal`), and `app/registry/App.tsx` already has the state plumbing for it (`showSettings`/`openSettings`, conditionally rendering `<SettingsModal onClose={...} />`, and passing `onOpenSettings={openSettings}` into `TabNavigation`). None of it fires: `TabNavigation`'s Settings entry (`ui/navigation/TabNavigation.tsx:90-96`) is a plain `NavItem to="/settings"`, which only ever navigates to the `/settings` route — `onOpenSettings` is an unused prop.
+
+The `.navbar` block containing the Settings link is the same DOM for both viewports: a persistent sidebar on desktop and a slide-out drawer on mobile, switched purely by the `@container (width >= 768px)` rule in `styling/app-shell.css`. There's no separate mobile-only settings entry point to redirect instead.
+
+Separately, `onMenuClose` (passed into `TabNavigation` from `App.tsx`, meant to close the mobile drawer) is also never called from inside `TabNavigation` — tapping a nav item in the open mobile drawer doesn't close it.
+
+### Fix
+
+- `ui/molecules/NavItem.tsx`: add an optional `onClick?: (e: MouseEvent) => void` prop, forwarded to the underlying `NavLink`.
+- `ui/navigation/TabNavigation.tsx`:
+  - Add a `handleNavClick = () => onMenuClose?.()` and pass it as `onClick` to every nav-drawer `NavItem` (desktop tabs, Profile, Settings) so tapping any of them closes the mobile drawer.
+  - For the Settings `NavItem` specifically, the `onClick` additionally checks `window.matchMedia('(min-width: 768px)').matches` (same breakpoint already used in `app-shell.css`). On a match, call `e.preventDefault()` and `onOpenSettings?.()` instead of navigating. Below that width, let the `NavLink` navigate to `/settings` as it does today.
+  - Mark the duplicated `768` literal with a `ponytail:` comment — the project has no shared JS breakpoint constant (all other breakpoints are CSS-only container queries); add one only if a third JS consumer needs it.
+- No changes to `App.tsx`, `Modal.tsx`, or `SettingsModal.tsx` — the open/close plumbing already works once it's triggered.
+
+### Out of scope
+
+- No new responsive-detection hook/utility for a single consumer.
+- No change to the bottom mobile tab bar (`allMobileTabs`) — Settings was never in it and isn't being added there.
+
+### Test plan
+
+- Desktop width (≥768px): click "Settings" in the sidebar → `SettingsModal` opens, URL stays put, no navigation to `/settings`.
+- Mobile width (<768px): open the drawer, tap "Settings" → navigates to `/settings` (full-page `SettingsScreen`), and the drawer closes.
+- Mobile width: tap any other nav item (e.g. Home) while the drawer is open → drawer closes.
+- Desktop: clicking other nav items still navigates normally (closing the drawer is a no-op there).
