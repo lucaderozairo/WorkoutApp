@@ -8,11 +8,12 @@ interface NavItemProps {
   Icon: PhosphorIcon;
   iconSize?: number;
   title?: string;
+  onClick?: (e: React.MouseEvent) => void;
 }
 
-export function NavItem({ to, label, Icon, iconSize = 18, title }: NavItemProps) {
+export function NavItem({ to, label, Icon, iconSize = 18, title, onClick }: NavItemProps) {
   return (
-    <NavLink to={to} title={title ?? label}>
+    <NavLink to={to} title={title ?? label} onClick={onClick}>
       {({ isActive }) => (
         <>
           <span className="icon">
