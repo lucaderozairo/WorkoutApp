@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { Grid } from './Grid';
+import { ResponsiveFrame } from './ResponsiveFrame';
 
 interface ShellProps {
   mode?: 'web' | 'app';
@@ -27,7 +28,11 @@ export function Shell({
       {menu}
       {header}
       {navbar}
-      <main className="content">{children}</main>
+      <main className="content">
+        <ResponsiveFrame mode="auto" maxWidth="wide" padding="none">
+          {children}
+        </ResponsiveFrame>
+      </main>
       {appbar}
       {footer}
     </Grid>

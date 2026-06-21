@@ -26,6 +26,22 @@ describe('Shell', () => {
 
     expect(screen.getByText('Content').closest('.layout')).toHaveClass('app');
   });
+
+  it('constrains content width via a ResponsiveFrame wrapper', () => {
+    render(
+      <Shell mode="web" menu={<nav className="menu">Menu</nav>}>
+        <span>Content</span>
+      </Shell>,
+    );
+
+    const frame = screen.getByText('Content').closest('.responsive-frame');
+    expect(frame).toHaveClass(
+      'responsive-frame-auto',
+      'responsive-frame-max-wide',
+      'responsive-frame-pad-none',
+    );
+    expect(screen.getByRole('main')).toHaveClass('content');
+  });
 });
 
 describe('FullScreen', () => {
