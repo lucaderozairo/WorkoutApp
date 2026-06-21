@@ -11,6 +11,7 @@
   border-radius: var(--r-pill);
   /* Neutral generic default; project overrides the brand gradient in @layer project */
   background: linear-gradient(135deg, var(--surface-2), var(--accent));
+  filter: hue-rotate(var(--avatar-hue, 0deg));
   font-weight: 600;
   font-size: calc(var(--size) * 0.4);
   color: var(--accent-ink);
