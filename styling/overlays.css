@@ -111,24 +111,28 @@
   max-width: var(--modal-md);
 }
 @supports (position-area: bottom) {
+  /* position-area rejects mixed physical+logical keyword pairs (e.g.
+     "bottom span-inline-end" is invalid) and silently drops the whole
+     declaration. Keep every pair physical — app is horizontal-tb/LTR only;
+     switch all of these to logical together if RTL support is ever added. */
   .menu-popover {
-    position-area: bottom span-inline-start;
+    position-area: bottom span-left;
     position-try-fallbacks: flip-block, flip-inline;
 
-    &.anchor-left  { position-area: bottom span-inline-end; }
-    &.anchor-above { position-area: top span-inline-start; }
-    &.popover-top { position-area: top span-inline-start; }
-    &.popover-bottom { position-area: bottom span-inline-start; }
-    &.popover-left { position-area: left span-block-start; }
-    &.popover-right { position-area: right span-block-start; }
+    &.anchor-left  { position-area: bottom span-right; }
+    &.anchor-above { position-area: top span-left; }
+    &.popover-top { position-area: top span-left; }
+    &.popover-bottom { position-area: bottom span-left; }
+    &.popover-left { position-area: left span-top; }
+    &.popover-right { position-area: right span-top; }
     &.popover-align-center { position-area: bottom center; }
-    &.popover-align-end { position-area: bottom span-inline-end; }
+    &.popover-align-end { position-area: bottom span-right; }
     &.popover-top.popover-align-center { position-area: top center; }
-    &.popover-top.popover-align-end { position-area: top span-inline-end; }
+    &.popover-top.popover-align-end { position-area: top span-right; }
     &.popover-left.popover-align-center { position-area: left center; }
-    &.popover-left.popover-align-end { position-area: left span-block-end; }
+    &.popover-left.popover-align-end { position-area: left span-bottom; }
     &.popover-right.popover-align-center { position-area: right center; }
-    &.popover-right.popover-align-end { position-area: right span-block-end; }
+    &.popover-right.popover-align-end { position-area: right span-bottom; }
   }
 }
 
