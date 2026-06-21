@@ -58,6 +58,18 @@ export function TabNavigation({
   onMenuToggle,
   onMenuClose,
 }: TabNavigationProps) {
+  const handleNavClick = () => onMenuClose?.();
+
+  const handleSettingsClick = (e: React.MouseEvent) => {
+    handleNavClick();
+    // ponytail: 768 duplicates the breakpoint in styling/app-shell.css;
+    // promote to a shared constant if a third JS consumer needs it.
+    if (window.matchMedia('(min-width: 768px)').matches) {
+      e.preventDefault();
+      onOpenSettings?.();
+    }
+  };
+
   return (
     <>
       <header className="menu">
@@ -75,6 +87,7 @@ export function TabNavigation({
             label={`${menuOpen ? label : ""}`}
             Icon={Icon}
             iconSize={16}
+            onClick={handleNavClick}
           />
         ))}
         <Spacer />
@@ -85,6 +98,7 @@ export function TabNavigation({
           label={`${menuOpen ? "Profile" : ""}`}
           Icon={UserCircle}
           iconSize={16}
+          onClick={handleNavClick}
         />
 
         <NavItem
@@ -93,14 +107,15 @@ export function TabNavigation({
           title="Settings"
           Icon={Gear}
           iconSize={16}
+          onClick={handleSettingsClick}
         />
       </Column>
 
       {/* Header — top bar */}
       <header className="header">
-        <Row align="center" justify="end">
+        {/* <Row align="center" justify="end">
           <Button variant="primary">Login</Button>
-        </Row>
+        </Row> */}
       </header>
 
       {/* App bar — mobile bottom tab bar */}
