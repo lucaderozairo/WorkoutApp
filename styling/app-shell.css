@@ -173,43 +173,31 @@
       display: none;
     }
 
-    /* mobile drawer */
-
     .navbar {
       border-right: 1px solid var(--line);
     }
 
-    &:has(.navbar.open) {
-      grid-template-areas:
-        "menu header"
-        "navbar content";
-      .content {
-        grid-column: col 1 / span 2;
-        opacity: 0.2;
-      }
-      .navbar {
-        z-index: var(--z-fixed);
-      }
-    }
-    &:not(:has(.navbar.open)) {
-      grid-template-areas:
-        "menu header"
-        "content content";
-
-      .navbar {
-        display: none;
-      }
-    }
-
-    @container (width >=768px) {
-      grid-template-columns: [col] auto [col] 1fr;
-      grid-template-areas:
-        "menu header"
-        "navbar content";
+    /* Mobile drawer — below 768px the navbar is an overlay, hidden unless
+       opened. At 768px+ the navbar falls back to the always-visible base
+       rules above (icon rail by default, expands to labels via .open), so
+       primary nav is never fully hidden on desktop. */
+    @container (width < 768px) {
       &:has(.navbar.open) {
         .content {
-          grid-column: col 2 / span 1;
-          opacity: 1;
+          grid-column: col 1 / span 2;
+          opacity: 0.2;
+        }
+        .navbar {
+          z-index: var(--z-fixed);
+        }
+      }
+      &:not(:has(.navbar.open)) {
+        grid-template-areas:
+          "menu header"
+          "content content";
+
+        .navbar {
+          display: none;
         }
       }
     }
